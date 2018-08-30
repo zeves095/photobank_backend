@@ -1,0 +1,94 @@
+.user-manager-wrapper{
+  width: 100%;
+  height: 100vh;
+}
+
+.userblock {
+  p {
+    float: left;
+    margin: 0;
+    padding: 2px;
+  }
+
+  a {
+    float: right;
+    padding: 2px;
+  }
+  height: 40px !important;
+  padding: 10px !important;
+  width: 97vw !important;
+  margin-bottom:3px;
+  border: none !important;
+}
+
+select{
+  position: relative !important;
+  opacity: 1 !important;
+  pointer-events: all !important;
+  display: block !important;
+}
+
+.users-inactive{
+  transition: 0.3s;
+  max-height:1000px;
+  overflow: hidden;
+  &.hidden{
+    max-height: 0px;
+  }
+}
+
+.user-list, .user-editor{
+  height:94vh;
+  overflow: auto;
+}
+
+.user-list{
+  outline-right:2px solid #333;
+  background-color: #eff9fd;
+}
+
+.user-item{
+  i{
+    padding: 0px 5px;
+  }
+}
+
+.brand-logo{
+  margin-left: 24px;
+}
+
+.card-panel{
+  padding: 12px !important;
+}
+.btn{
+  margin:4px;
+  i{
+        padding: 0px 5px;
+  }
+}
+
+nav{
+  z-index: 10;
+position: relative;
+}
+
+.fa-camera{padding: 20px 0;}
+
+.password-field{
+  i,input{
+    display: inline;
+  }
+  i{
+    width:5%;
+    padding: 0 10px;
+  }
+  input{
+    width:95% !important;
+  }
+}
+
+.collapsible{
+  border:none;
+  box-shadow: none;
+  margin: 0;
+}

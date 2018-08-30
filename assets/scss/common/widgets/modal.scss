@@ -1,0 +1,21 @@
+.modal-image-wrapper{
+  position: absolute;
+  background-color: rgba(50,50,50,0.4);
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  .modal-image{
+    background-size:: contain;
+    position: relative;
+  }
+  .close-modal{
+    position: absolute;
+    top:10px;
+    right:10px;
+    font-size: 35px;
+color: white;
+opacity: 0.8;
+  }
+}

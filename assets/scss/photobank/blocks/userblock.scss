@@ -1,0 +1,18 @@
+.userblock {
+  p {
+    float: left;
+    margin: 0;
+    padding: 2px;
+  }
+
+  a {
+    float: right;
+    padding: 2px;
+  }
+  height: 25px !important;
+  padding: 10px !important;
+  width: 97vw !important;
+  border-radius: $bordrad !important;
+  margin-bottom:3px;
+  border: none !important;
+}

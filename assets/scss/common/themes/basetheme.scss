@@ -1,0 +1,506 @@
+@import '../mixins/theme.scss';
+
+body {
+  background-color: $color-background;
+  font-size: 12px;
+  font-family: Roboto, sans-serif;
+  color:#333;
+  button{
+    transition: 0.3s;
+  }
+  .photobank-main div{
+    transition: 0.2s, flex-basis 0s;
+  }
+
+  .photobank-main input[type="checkbox"]{
+    //Обязательно для тестов selenium
+    width: 1px;
+    color:$color-accent;
+    font-size: 13px;
+    &::before{
+      font-family:"Font Awesome 5 Free";
+      content: "\f0c8";
+      position: absolute;
+      padding: 3px;
+    }
+    &:checked::before{
+      content: "\f14a";
+      color:$color-secondary;
+    }
+  }
+}
+
+.userblock {
+  a {
+    color:$color-text;
+  }
+  background-color: $color-tertiary !important;
+  color:$color-text !important;
+}
+
+.photobank-main {
+
+  .upload-pool{
+    background-color: $color-main;
+    button{
+      @include button-color();
+    }
+    & button.upload-pool__upload-all{
+      font-weight: bold;
+      background-color: $color-accent-fade;
+      color: $color-text-alt;
+      padding:10px;
+      font-size: 18px;
+      &:hover{
+        padding: 12px;
+        font-size: 18px;
+        background-color: $color-tertiary;
+        color: $color-text;
+        @include hover-shadow();
+      }
+    }
+    .view-button{
+      @include button-view-color();
+    }
+    .item-view__item-title{
+      background-color: $color-accent-fade;
+      color: $color-text-alt;
+      border-bottom: 1px solid $color-text-fade;
+    }
+    .item-view__subheader{
+      border-bottom: 1px solid $color-text-fade;
+    }
+    .file-list__file-item{
+      background-color: $color-tertiary-fade !important;
+    }
+  }
+
+  &__main-block {
+    color:$color-text;
+    background-color: $color-background;
+
+    .component-title {
+      color:$color-text;
+      background-color: $color-main;
+      //border-bottom: 2px solid $color-main;
+      .crumb-string{
+        font-size:15px;
+        color: $color-accent;
+      }
+    }
+  }
+  .draggable{
+    border-left: 1px solid $color-tertiary-fade;
+    border-right: 1px solid $color-tertiary-fade;
+    background-color: $color-main;
+  }
+}
+
+.catalogue-tree {
+  background-color: $color-main;
+  //border-right: 2px solid $color-tertiary;
+  //
+
+  .view-inner__list-view{
+    .list-view__cat_item{
+      @include list-item-color();
+      &.deleted{
+        color:#e45c75;
+      }
+    }
+  }
+
+  &__crumbs{
+        min-height: 27px;
+    .crumbs__crumb{
+      background-color: $color-main-fade;
+      border-right:1px solid $color-main;
+      &--active{
+        background-color:$color-accent;
+        color:$color-text-alt;
+      }
+    }
+  }
+}
+
+.node-viewer {
+  .view-inner {
+    .item-list {
+      @include component-section-color();
+      .list-item{
+        @include list-item-color();
+      }
+    }
+
+    &__item-section {
+      @include component-section-color();
+      background-color: $color-tertiary;
+      .component-title{
+        background-color: $color-tertiary-fade;
+      }
+    }
+    .item-section-switcher{
+      @include button-color();
+    }
+  }
+}
+
+.list-filter{
+  button{
+    @include button-accent-color();
+  }
+}
+
+.item-view {
+  .file-list__button-block, .item-view__subheader>.button-block{
+    button{
+      @include button-color();
+      color:$color-text;
+      &:disabled{
+        color: $color-main-fade;
+        background-color: transparent;
+        box-shadow: none;
+      }
+    }
+  }
+  .item-view__view-button{
+    @include button-view-color();
+  }
+  &__existing{
+    .pagination-controls{
+      button{
+        @include button-accent-color();
+      }
+      p{
+        background-color: $color-accent-fade;
+        color:$color-text-alt;
+      }
+      input{
+        border:none;
+        background-color: $color-main-fade;
+      }
+    }
+  }
+  &__item-title{
+    background-color: transparent;
+    color:$color-text;
+    border-bottom: 2px solid $color-main-fade;
+  }
+  &__subheader{
+    //background-color: $color-main-fade;
+    border-bottom: 2px solid $color-main-fade;
+    font-size: 17px;
+    font-weight: 100;
+    color: #24495e;
+  }
+  .item-view__inner {
+    .item-uploads{
+      .button-block{
+        &__btn{
+          @include button-color();
+        }
+      }
+    }
+    a{
+      color:$color-text;
+    }
+    &--icons-lg{
+      .existing-download-controls, .existing-download{
+        background-color: transparent !important;
+        i{
+          transition: margin-top 0.2s;
+          color: $color-text-alt;
+          cursor:pointer;
+        }
+        &:hover{
+          background-color: #3337 !important;
+          i{
+            &:hover{
+              background-color: $color-accent;
+            }
+          }
+        }
+      }
+      .file{
+        .file__thumbnail{
+          background-size: auto 100% !important;
+          background-position: center;
+          transition: background-size 0.1s linear;
+        }
+        &:hover{
+          @include hover-shadow();
+          .file__thumbnail{
+            background-size: auto 120% !important;
+          }
+        }
+      }
+      .item-uploads{
+        .file-list__file-item{
+          background-color:$color-main;
+          color: $color-text;
+        }
+      }
+    }
+    &--icons-sm{
+      .existing-download-controls, .existing-download{
+        background-color: transparent;
+        i{
+          transition: margin-top 0.2s;
+          color: $color-text-alt;
+          cursor:pointer;
+        }
+        &:hover{
+          background-color: #3337 !important;
+          i{
+            &:hover{
+              background-color: $color-accent;
+            }
+          }
+        }
+      }
+      .file{
+        .file__thumbnail{
+          background-size: auto 100% !important;
+          background-position: center;
+          transition: background-size 0.1s linear;
+        }
+        &:hover{
+          @include hover-shadow();
+          .file__thumbnail{
+            background-size: auto 120% !important;
+          }
+        }
+      }
+      .item-uploads{
+        .file-list__file-item{
+          background-color:$color-main;
+          color:$color-text;
+        }
+      }
+    }
+    &--detailed{
+      .existing-download-controls, .existing-download{
+        overflow: hidden;
+        background-color: transparent;
+        i{
+          transition: margin-top 0.2s;
+          font-size: 12px;
+          position: absolute;
+          margin-top: 50px;
+          width: 25%;
+          height: 100%;
+          padding: 5px 0;
+          color: $color-text-alt;
+          cursor:pointer;
+          &.get-url{
+            left: 0;
+          }
+          &.open-in-tab{
+            left: 25%;
+          }
+          &.dl-now{
+            right: 25%;
+          }
+          &.dl-cart-add{
+            right: 0;
+          }
+        }
+        &:hover{
+          background-color: #3337 !important;
+          i{
+            margin-top: 0;
+            &:hover{
+              background-color: $color-accent;
+            }
+          }
+        }
+      }
+      .item-resources{
+        //border: 2px solid $color-accent;
+        animation-name: foldout;
+        animation-duration: 3s;
+        .item-view__table-header{
+          .info__info-field{
+            background-color: $color-accent;
+            color:$color-text-alt;
+          }
+        }
+        .existing-files__file{
+          .info__info-field, .file>a, select, .edit-input{
+              @include table-cell-color();
+          }
+          select{
+            transition: 0s;
+            border: none;
+            background-color: transparent;
+            appearance: none;
+            padding: 1px;
+          }
+          &:hover{
+            box-shadow: none;
+            .info__info-field, .file>a, select, .edit-input{
+              transition: 0.3s;
+              background-color: $color-accent-fade;
+              color: $color-text-alt;
+            }
+            select{
+              transition: 0s;
+              outline: 1px solid $color-main-fade;
+              background-color: $color-background;
+              color:$color-text;
+              appearance: menulist;
+              padding: 0;
+            }
+            a{
+              color: $color-text-alt;
+            }
+            background-color: $color-accent-fade;
+            color: $color-text-alt;
+          }
+        }
+      }
+      .item-uploads{
+        //border: 2px solid $color-accent;
+        .info__info-field, .file>a, select, span, .edit-input{
+          @include table-cell-color();
+        }
+        .item-view__table-header>span{
+          background-color: $color-accent !important;
+          color: $color-text-alt !important;
+        }
+      }
+    }
+  }
+
+  .progress-bar{
+    &__bar{
+      background-color: $color-secondary;
+    }
+  }
+}
+
+.progress-bar{
+  transition: 0.5s;
+}
+
+.download-pool{
+  .pending-download{
+    border-bottom: 1px solid $color-accent;
+  }
+  button{
+    @include button-color();
+    border: none;
+    font-size: 15px;
+    color: $color-accent;
+    padding: 10px;
+  }
+  >button{
+    font-weight: bold;
+    background-color: $color-accent-fade;
+    color: $color-text-alt;
+    padding:12px;
+    font-size: 18px;
+    &:hover{
+      padding: 12px;
+      font-size: 18px;
+      background-color: $color-tertiary;
+      color: $color-text;
+      @include hover-shadow();
+    }
+  }
+}
+
+.resource-search-results, .link-resource{
+  .list-item{
+    @include list-item-color();
+  }
+}
+
+.link-list{
+  .button-block{
+    @include button-block();
+    button{
+      background-color: #ececec;
+    }
+  }
+}
+
+.link-adder{
+  .button-block{
+    @include button-block();
+    button{
+      background-color: #ececec;
+    }
+  }
+}
+
+fieldset{
+  border: none;
+  padding: 0;
+}
+
+#notification-overlay{
+  &>.notification{
+    border-radius: 5px;
+    button{
+      border:none;
+      border-radius: 30px;
+      font-size: 20px;
+      padding: 0;
+    }
+    .notification__notification-caption{
+      font-weight: bold;
+      font-size: 15px;
+    }
+    &--toast{
+      background-color: #41758aad;
+      .notification__notification-caption{
+        color: #fafdff;
+        border-bottom: 2px solid #fafdff;
+      }
+      button{
+        background-color: #41758aad;
+        color: #fafdff;
+      }
+    }
+    &--error{
+      background-color: #a71b1bad;
+      .notification__notification-caption{
+        color: #fff1f1;
+        border-bottom: 2px solid #fff1f1;
+      }
+      button{
+        background-color: #a71b1bad;
+        color: #fff1f1;
+      }
+    }
+  }
+}
+
+.deleted{
+  a{
+    text-decoration: line-through !important;
+    color: #e45c75 !important;
+    .jstree-icon::before{color: #e45c75 !important;}
+  }
+}
+
+.node-crud{
+  .button-block{
+    @include button-block();
+    button{
+      @include button-view-color();
+    }
+  }
+}
+
+.collection-tabs{
+  &__tab{
+    background-color: $color-tertiary;
+    font-weight: bold;
+    &.active{
+      background-color: $color-accent;
+      color: $color-tertiary;
+    }
+  }
+}

@@ -1,0 +1,328 @@
+.item-view {
+  .item-view__inner {
+    &--icons-lg{
+      .item-view__table-header{
+        display:none;
+      }
+      .item-resources{
+        display:block;
+        .info__info-field, .edit-input, .info__info-field--preset-done{
+          display:none;
+        }
+        .existing-download-controls, .existing-download{
+          @include download-controls();
+          i{
+            font-size: 20px;
+            margin-top: 250px;
+            width: 10%;
+            height: 10%;
+            padding: 20%;
+            cursor:pointer;
+            &.get-url{
+              top:0;
+              left: 0;
+            }
+            &.open-in-tab{
+              top: 0;
+              left:50%;
+            }
+            &.dl-now{
+              top: 50%;
+              left: 0;
+            }
+            &.dl-cart-add{
+              top: 50%;
+              left:50%;
+            }
+          }
+          &:hover{
+            i{
+              margin-top: 0;
+            }
+          }
+        }
+        .existing-files__file{
+          position: relative;
+          width: 170px;
+          white-space:nowrap;
+          text-overflow: ellipsis;
+          max-width: 150px;
+          @include icon-view();
+          .file__thumbnail{
+            width:150px;
+            height:150px;
+          }
+        }
+      }
+      .item-uploads{
+        display:block;
+
+        position: relative;
+        .file-item__upload-status{
+          display:none;
+        }
+        .file-list__file-item{
+          @include icon-upload();
+          width:150px;
+          height:150px;
+          .file-item__file-name{
+            font-size: 15pt;
+            bottom: -40px;
+            display: block;
+          }
+          .file-item__delete-upload{
+            margin-top: 5px;
+            margin-left: 115px;
+            font-size: 17px;
+          }
+        }
+      }
+      .progress-bar{
+        &__percentage{
+          display: none;
+        }
+        &__bar{
+          position: relative;
+          height: 100%;
+          top: -49px;
+        }
+      }
+    }
+
+
+    &--icons-sm{
+      .file-item__upload-status{
+        display:none;
+      }
+      .item-view__table-header{
+        display:none;
+      }
+      .existing-files{
+        display:table;
+        .info__info-field, .edit-input, .info__info-field--preset-done{
+          display:none;
+        }
+        .existing-download-controls, .existing-download{
+          @include download-controls();
+          i{
+            font-size: 20px;
+            margin-top: 250px;
+            width: 10%;
+            height: 10%;
+            padding: 20%;
+            cursor:pointer;
+            &.get-url{
+              top:0;
+              left: 0;
+            }
+            &.open-in-tab{
+              top: 0;
+              left:50%;
+            }
+            &.dl-now{
+              top: 50%;
+              left: 0;
+            }
+            &.dl-cart-add{
+              top: 50%;
+              left:50%;
+            }
+          }
+          &:hover{
+            i{
+              margin-top: 0;
+            }
+          }
+        }
+      }
+      .existing-files__file{
+        position: relative;
+        width: 120px;
+        @include icon-view();
+        .file__thumbnail{
+          width:100px;
+          height:100px;
+        }
+        a{
+          white-space:nowrap;
+          text-overflow: ellipsis;
+          max-width: 100px;
+        }
+      }
+      .item-uploads{
+        display:block;
+        position: relative;
+        .file-item__upload-status{
+          display:none;
+        }
+        .file-list__file-item{
+          @include icon-upload();
+          width:100px;
+          height:100px;
+          .file-item__file-name{
+            font-size: 10pt;
+            bottom: -15px;
+          }
+          .file-item__delete-upload{
+            margin-top: 5px;
+            margin-left: 75px;
+          }
+        }
+      }
+      .progress-bar{
+        &__percentage{
+          display: none;
+        }
+        &__bar{
+          position: relative;
+          height: 100%;
+          top: -40px;
+        }
+      }
+    }
+
+
+    &--detailed{
+      .existing-files{
+        display:table;
+        width:100%;
+        .item-view__table-header{
+          display:table-header-group;
+        }
+        .existing-files__file{
+          display:table-row;
+          position: relative;
+          .file__thumbnail{
+            height: 38px;
+            width: 38px;
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            left:0px;
+            top: 0;
+          }
+          .file__file-name{
+            max-width: 200px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding-left:40px;
+            position: relative;
+          }
+          .file__file-src{
+            padding: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            //min-width: 200px;
+          }
+          .info__info-field--preset-done, .info__info-field--sizepx{
+            width: 90px;
+          }
+          .info__info-field--uploaddate{
+            min-width: 65px;
+          }
+        }
+        .info__info-field, .file>a, .file>select, .file>span, .edit-input{
+          @include table-cell();
+          padding: 6px 2px;
+        }
+        .file>.edit-input{
+          select{
+            width: 125px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+          }
+          &--add-file{
+            min-width: 120px;
+            select{
+              width:100px;
+              display: inline-block;
+            }
+            input{
+              width:20px;
+              display: inline-block;
+            }
+          }
+        }
+        .existing-download-controls, .existing-download{
+          @include download-controls();
+        }
+        .edit-input{
+          &__priority-btn{
+            padding:5px;
+          }
+          &__context-menu{
+            position: absolute;
+            z-index: 100;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            right: -60px;
+            top: -41px;
+            border-radius:10px;
+            .item{
+              padding:3px;
+              &.active{
+                background-color: #666;
+              }
+            }
+            &::before {
+              content: "";
+              width: 10px;
+              height: 10px;
+              transform: rotate(45deg);
+              position: absolute;
+              display: block;
+              left: -5px;
+              top: 50px;
+              background-color: #333;
+            }
+            .context-menu__inner{
+              overflow: auto;
+              height: 150px;
+            }
+          }
+        }
+      }
+      .item-uploads{
+        position: relative;
+        width: 100%;
+        text-align: center;
+        .item-view__table-header{
+          display:table-header-group;
+        }
+        .item-uploads__upload-wrapper, .item-uploads__unfinished-wrapper{
+          width: 100%;
+          display: table;
+        }
+        .file-list__file-item{
+          display:table-row;
+          .file-item__file-name{
+            max-width: 100px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+        }
+        .info__info-field, .file>a, .file>select, .file>span, .edit-input,
+        .file-item>a, .file-item>span{
+          @include table-cell();
+        }
+      }
+      .progress-bar{
+        &__percentage{
+          display: block;
+        }
+        &__bar{
+          position: relative;
+          height: 5px;
+          top: 0;
+        }
+      }
+    }
+  }
+}

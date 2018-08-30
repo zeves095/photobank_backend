@@ -1,0 +1,47 @@
+.item-search{
+  display: block;
+  width: 200px;
+  margin: 0 auto;
+  label, input, button{
+    display: block;
+    margin:20px 0;
+    width: 200px;
+    color:#333;
+  }
+
+  input[type="text"]{
+    height: 27px !important;
+    background-color: white !important;
+  }
+
+  .subinput{
+    // margin-top: -19px;
+    font-size: 10px;
+    input{
+      display:inline-block;
+      //width:19px;
+      margin: 0;
+    }
+  }
+
+  input[type="checkbox"]{
+        //Обязательно для тестов selenium
+    width: 1px;
+        pointer-events: all;
+        position: relative;
+        vertical-align: baseline;
+    opacity: 1;
+  }
+
+  // input[type="checkbox"]{
+  //   width: 0;
+  //   &::before{
+  //     font-family:"Font Awesome 5 Free";
+  //     content: "\f0c8";
+  //   }
+  //   &:checked::before{
+  //     content: "\f14a";
+  //   }
+  // }
+
+}

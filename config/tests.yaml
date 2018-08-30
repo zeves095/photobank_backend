@@ -1,0 +1,7 @@
+parameters:
+  test_dump_path: '%kernel.project_dir%/tests/'
+  test_db_dump_path: '%kernel.project_dir%/tests/dump/db.sql'
+  test_fs_dump_path: '%kernel.project_dir%/tests/dump/fs/'
+  test_fs_target_path: '%kernel.project_dir%/%env(resolve:UPLOADS_PARENT)%/test/uploads'
+  test_phpunit_config_path: '%kernel.project_dir%/phpunit.xml.dist'
+  test_production_db_url: 'mysql://user:password@127.0.0.1:3306/phototest'

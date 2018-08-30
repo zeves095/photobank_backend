@@ -1,0 +1,48 @@
+security:
+    role_hierarchy:
+        ROLE_WRITER: ROLE_USER
+        ROLE_GARBAGE_ADMIN: ROLE_USER
+        ROLE_ADMIN: ROLE_WRITER
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_GARBAGE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+        App\Entity\Security\User: plaintext
+
+    providers:
+        database_user_provider:
+            entity:
+                class: App\Entity\Security\User
+                # property: username
+        in_memory:
+            memory:
+                users:
+                    root:
+                        password: prouse5terdl1234$
+                        roles: 'ROLE_SUPER_ADMIN'
+                    admin:
+                        password: prouse5terdl1234$
+                        roles: 'ROLE_ADMIN'
+                    writer:
+                        password: writer1234
+                        roles: 'ROLE_WRITER'
+                    user:
+                        password: user1234
+                        roles: 'ROLE_USER'
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+            form_login:
+                login_path: login
+                check_path: login
+            logout:
+                path:   /logout
+                target: /
+            provider: database_user_provider
+            # deprecated advanceduserinterface https://symfony.com/blog/new-in-symfony-4-1-deprecated-the-advanceduserinterface
+            # so -> https://symfony.com/doc/current/security/user_checkers.html
+            user_checker: App\Security\UserChecker
+            switch_user: true

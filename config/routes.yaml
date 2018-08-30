@@ -1,0 +1,7 @@
+logout:
+    path: /logout
+
+file_uploader:
+    resource: "@FileUploaderBundle/Controller"
+    type:     annotation
+    prefix:   "api/upload"

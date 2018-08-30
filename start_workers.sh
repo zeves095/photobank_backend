@@ -1,0 +1,15 @@
+/home/photo/photobank/bin/symfony_worker_links &
+/home/photo/photobank/bin/symfony_worker_links &
+/home/photo/photobank/bin/symfony_worker_links &
+/home/photo/photobank/bin/symfony_worker_links &
+/home/photo/photobank/bin/symfony_worker_links &
+/home/photo/photobank/bin/symfony_worker_links_delete &
+/home/photo/photobank/bin/symfony_worker_links_delete &
+/home/photo/photobank/bin/symfony_worker_links_delete &
+/home/photo/photobank/bin/symfony_worker_links_delete &
+/home/photo/photobank/bin/symfony_worker_links_delete &
+/home/photo/photobank/bin/symfony_worker_presets &
+/home/photo/photobank/bin/symfony_worker_presets &
+/home/photo/photobank/bin/symfony_worker_presets &
+/home/photo/photobank/bin/symfony_worker_presets &
+/home/photo/photobank/bin/symfony_worker_presets &

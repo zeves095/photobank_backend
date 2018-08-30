@@ -1,0 +1,36 @@
+security:
+    role_hierarchy:
+        ROLE_WRITER: ROLE_USER
+        ROLE_ADMIN: ROLE_WRITER
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+        App\Entity\Security\User: plaintext
+
+    providers:
+        database_user_provider:
+            entity:
+                class: App\Entity\Security\User
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+            http_basic:
+                realm: Secured Area
+            logout:
+                path:   /logout
+                target: /
+            provider: database_user_provider
+
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
+        - { path: ^/catalogue/node/item/resource/thumbnails, roles: ROLE_USER, requires_channel: http }
+        - { path: ^/catalogue/node/item/resource, methods: [PATCH], roles: ROLE_WRITER, requires_channel: http }
+        - { path: ^/usermanager, roles: ROLE_ADMIN , requires_channel: http }
+        - { path: ^/api/links/get, roles: IS_AUTHENTICATED_ANONYMOUSLY , requires_channel: http }
+        - { path: ^/api/links/, roles: ROLE_USER, requires_channel: http }
+        - { path: ^/, methods: [PATCH, POST], roles: ROLE_WRITER, requires_channel: http }
+        - { path: ^/, roles: ROLE_USER , requires_channel: http }

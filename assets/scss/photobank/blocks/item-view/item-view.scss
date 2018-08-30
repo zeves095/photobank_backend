@@ -1,0 +1,133 @@
+.item-view {
+  position: relative;
+  @include component-inner();
+  &__pagination-controls{
+    position: relative;
+    //margin-top: -47px;
+    //right: 50px;
+    p{
+      display: inline;
+      padding: 7px;
+      font-size: 12px;
+      vertical-align: middle;
+    }
+    input{
+      font-size: 12px !important;
+      height: auto !important;
+      width: 20px !important;
+      padding: 7px 3px !important;
+      vertical-align: top !important;
+      text-align: center !important;
+          vertical-align: middle !important;
+          margin:0 !important;
+    }
+    .pagination-controls__btn{
+      @include button();
+      padding: 2px 4px;
+      margin: 0;
+          vertical-align: middle;
+    }
+  }
+  .file-item--hidden{
+    display:none !important;
+  }
+  .file-list__button-block{
+    button{
+      @include button();
+    }
+  }
+  .file-list__drop-target{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 1000;
+    &--active{
+      display: block;
+border-radius: 11px;
+background-color: rgba(212, 212, 212, 0.7);
+border: 2px dashed #b5b1b1;
+
+    }
+  }
+  .item-view__view-button{
+    @include button-view();
+  }
+  &__item-title{
+    padding: 10px 20px;
+    font-size:15pt;
+    border-radius: $bordrad;
+  }
+  &__subheader-wrapper{
+    display: table-row;
+    width: 100%;
+    height: 70px;
+    .item-view__subheader{
+      padding:10px;
+      position: absolute;
+      width:100%;
+    }
+  }
+  &__subheader{
+    padding:10px;
+        margin-bottom: 0;
+        font-size: 15px;
+    position: relative;
+  }
+  .item-view__inner {
+    @include component-inner();
+    transition: 0.5s;
+    max-height: auto;
+    overflow: hidden;
+    &--closed{
+      max-height: 0;
+      .item-view__subheader{
+        position: relative;
+      }
+    }
+  }
+  .item-view__collapse-button{
+    position: absolute;
+    right: 15px;
+    margin:3px;
+  }
+  .existing-files{
+    &__file{
+      vertical-align: top;
+      &>div, &>span{
+        position: relative;
+      }
+    }
+    .existing-download-controls, .existing-download{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+  }
+  .item-uploads{
+    .button-block{
+      position: absolute;
+      top: 0;
+      right: 25px;
+      button{
+        @include button();
+        margin: 0;
+        font-size: 12px;
+      }
+    }
+  }
+  .item-view__existing .button-block{
+    position: absolute;
+    top: 0;
+    right: 25px;
+    button{
+      @include button();
+      margin: 0;
+      font-size: 12px;
+    }
+  }
+}
+
+@import "./item-view-types.scss";

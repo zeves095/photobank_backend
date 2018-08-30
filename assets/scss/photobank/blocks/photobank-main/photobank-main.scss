@@ -1,0 +1,65 @@
+.photobank-main {
+
+  max-width: 100vw;
+  .catalogue-tree,.item-list,.view-inner__item-section{
+    display:flex;
+    flex-direction: column;
+    .view-inner__container{
+      flex: 1 1 auto;
+    }
+    .inner-bump{
+      overflow-y: auto;
+    }
+  }
+
+  &__butt-wrapper{
+    position: fixed;
+    bottom: 50px;
+    left: 50vw;
+    z-index: 999;
+    button{
+      margin-left: -50%;
+      border: none;
+      border-radius: 20px;
+      padding:15px 20px;
+      font-size: 15pt;
+    }
+  }
+
+  &__main-block {
+    display: flex;
+    align-items: flex-start;
+
+    .view-inner__item-section{
+      position: relative;
+    }
+
+    .draggable{
+      min-width: 2px;
+      z-index: 100;
+      height: 100vh;
+      cursor:col-resize;
+      display: block;
+      flex-shrink: 0;
+    }
+    .draggable--flex{
+      display: flex;
+      flex: 0 0 auto;
+    }
+    #draggable-1{
+      order:2;
+    }
+    #draggable-2{
+      order:0;
+    }
+  }
+}
+
+.component-title {
+  @include component-title();
+}
+
+.titlefix{
+  flex: 0 0 40px;
+  min-width: inherit;
+}

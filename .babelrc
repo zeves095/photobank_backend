@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    "module:@babel/plugin-syntax-dynamic-import",
+    ["module:@babel/plugin-proposal-decorators", {
+      "legacy": true
+    }],
+    ["module:@babel/plugin-proposal-class-properties", {
+      "loose": false
+    }],
+  ],
+  "presets": ["@babel/preset-env", "@babel/preset-react"]
+}

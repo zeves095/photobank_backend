@@ -1,0 +1,90 @@
+.catalogue-tree {
+  display: block;
+  width: 100%;
+  order: 1;
+  height: 100vh;
+  display: inline-block;
+  overflow: overlay;
+  @include component-section();
+
+  .inner-bump{
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .view-inner{
+    flex: 1 1 auto;
+  }
+
+  .collection-tabs{
+    @include collection-tabs();
+  }
+
+  .view-inner{
+    padding-bottom: 30px;
+  }
+
+  .view-inner__list-view{
+    margin-top:10px;
+    .list-view__cat_item{
+      @include list-item();
+      white-space: pre;
+      cursor: pointer;
+      b::before{
+          font-weight: bold;
+          color: #36647d;
+          font-size: 15px;
+          font-family: "Font Awesome 5 Free";
+          padding: 5px;
+          content:"\f07b";
+      }
+    }
+  }
+
+  input[type="checkbox"]{
+        //Обязательно для тестов selenium
+    width: 1px;
+        pointer-events: all;
+        position: relative;
+        vertical-align: baseline;
+        padding:0 3px;
+    opacity: 1;
+  }
+
+  .show-deleted-nodes{
+    cursor: pointer;
+  }
+
+  &__crumbs{
+    max-width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+
+    .crumbs__crumb{
+      // outline: 1px solid red;
+      width:20px;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex-grow: 0;
+      flex-wrap: 1;
+      padding:5px;
+      display:inline;
+      bottom: -5px;
+      position: relative;
+      &:first-child,
+      &:last-child {
+        width:auto;
+        flex-shrink: 0;
+        flex-grow:1;
+      }
+      &--active{
+        border-radius: 0 0 $bordrad 0;
+      }
+      // &::after{
+      //   content:" >";
+      // }
+    }
+  }
+}

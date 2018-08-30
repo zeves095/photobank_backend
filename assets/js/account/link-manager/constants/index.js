@@ -1,0 +1,22 @@
+export const LINK_CHOICE = 'LINK_CHOICE';
+export const LINK_ADD = 'LINK_ADD';
+export const RESOURCE_SEARCH = 'RESOURCE_SEARCH';
+export const RESOURCE_CHOICE = 'RESOURCE_CHOICE';
+export const LINK_SUBMIT = 'LINK_SUBMIT';
+export const LINK_EDIT = 'LINK_EDIT';
+export const LINK_FETCH = 'LINK_FETCH';
+export const LINK_DELETE = 'LINK_DELETE';
+export const LINK_UPDATE = 'LINK_UPDATE';
+export const LINK_STOP_EDITING = 'LINK_STOP_EDITING';
+export const RESOURCE_THUMBNAIL = 'RESOURCE_THUMBNAIL';
+export const RESOURCE_ADD = 'RESOURCE_ADD';
+export const RESOURCE_REMOVE = 'RESOURCE_REMOVE';
+export const RESOURCE_REMOVE_ALL = 'RESOURCE_REMOVE_ALL';
+export const RESOURCE_PRESETS_FETCH = 'RESOURCE_PRESETS_FETCH';
+export const RESOURCE_TYPES_FETCH = 'RESOURCE_TYPES_FETCH';
+export const USER_INFO_FETCH = 'USER_INFO_FETCH';
+export const FORM_VALIDATE = 'FORM_VALIDATE';
+
+export const START = '_START';
+export const SUCCESS = '_SUCCESS';
+export const FAIL = '_FAIL';

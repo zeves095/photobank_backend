@@ -1,0 +1,19 @@
+.list-filter{
+  display:flex;
+  margin-bottom: 20px;
+  input{
+    width:85%;
+    height:32px !important;
+    padding:2px 10px;
+    border:none;
+    border-radius: $bordrad 0 0 $bordrad;
+  }
+  button{
+    width:45px;
+    height: 33px;
+    padding: 8px;
+    border:none;
+    color: white;
+    border-radius: 0 $bordrad $bordrad 0;
+  }
+}

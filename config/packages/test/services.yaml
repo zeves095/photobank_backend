@@ -1,0 +1,2 @@
+parameters:
+  test_mock_dir: "%kernel.project_dir%/tests/mock/"

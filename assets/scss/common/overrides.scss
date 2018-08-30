@@ -1,0 +1,42 @@
+.jstree{
+  .jstree-anchor.jstree-clicked{
+    background-color: transparent;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+}
+
+.catalogue-tree__component-title .fa-sitemap{
+  transform: rotate(-90deg);
+  font-size: 15px;
+}
+
+.info__info-field--comment{
+  display: none !important;
+}
+
+.jstree-anchor {
+  color:#36647d;
+  .jstree-icon{
+    background:none;
+    padding-left: 8px;
+    &::before{
+      font-weight: bold;
+      color: #36647d;
+      font-size: 15px;
+      font-family: "Font Awesome 5 Free";
+      content:"\f07b";
+    }
+  }
+}
+
+.jstree-open>a.jstree-anchor .jstree-icon{
+  &:before{
+    content: "\f07c";
+  }
+}
+
+.collapsible{
+  box-shadow: none !important;
+  border:none;
+}

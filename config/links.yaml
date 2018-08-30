@@ -1,0 +1,3 @@
+parameters:
+  link_url_prefix: '/api/links/get'
+  link_fs_path: 'generated'

@@ -1,0 +1,52 @@
+$color-main: #111;
+$color-main-fade: #555;
+$color-secondary: #39cc5a;
+$color-secondary-fade: #84de98;
+$color-tertiary: #FFF;
+$color-tertiary-fade: #222;
+$color-accent: #26475f;
+$color-accent-fade: #36647d;
+$color-background: #222;
+$color-text: #ffffff;
+$color-text-fade: #666666;
+$color-text-alt: #aaa;
+
+@import "./basetheme.scss";
+
+.userblock{
+  background-color: $color-main !important;
+}
+
+.catalogue-tree{
+  background-color: $color-background;
+}
+
+.node-viewer .view-inner__item-section{
+  background-color: $color-main;
+}
+
+.node-viewer .item-list{
+  background-color: $color-background;
+}
+
+.list-item, .list-view__cat_item{
+  border-bottom: 2px solid $color-accent;
+}
+
+// .view-inner__item-list,.catalogue-tree{
+//   -webkit-box-shadow: inset -24px 30px 136px -30px rgba(0,0,0,0.75);
+//   -moz-box-shadow: inset -24px 30px 136px -30px rgba(0,0,0,0.75);
+//   box-shadow: inset -24px 30px 136px -30px rgba(0,0,0,0.75);
+// }
+
+.catalogue-tree__crumbs .crumbs__crumb--active{
+  color: $color-text;
+}
+
+// .item-view__subheader{
+//   background-color: $color-secondary;
+// }
+
+.item-uploads .file-list__file-item{
+  background-color: $color-accent !important;
+}

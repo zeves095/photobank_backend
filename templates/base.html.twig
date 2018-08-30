@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Фотобанк!{% endblock %}</title>
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        {% block bodywrapper %}
+          <div class="main-wrapper">
+
+            <div class="body-container">
+              {% block body %}{% endblock %}
+            </div>
+          </div>
+        {% endblock %}
+
+
+      {% block javascripts %}{% endblock %}
+    </body>
+</html>

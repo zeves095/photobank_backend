@@ -1,0 +1,35 @@
+$bordrad:0px;
+
+body {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  button{
+    cursor:pointer;
+  }
+}
+
+i.fas{
+  padding:4px;
+}
+
+.loading{
+  @include loading();
+}
+
+.list-item{
+  @include list-item();
+  cursor: pointer;
+}
+
+@import "./blocks/userblock.scss";
+@import "./blocks/photobank-main/photobank-main.scss";
+@import "./blocks/upload-pool.scss";
+@import "./blocks/catalogue-tree.scss";
+@import "./blocks/node-viewer.scss";
+@import "./blocks/list-filter.scss";
+@import "./blocks/item-view/item-view.scss";
+@import "./blocks/download-pool.scss";
+@import "./blocks/item-search.scss";
+@import "./blocks/item-list.scss";
+@import "./blocks/node-crud.scss";

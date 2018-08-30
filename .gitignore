@@ -1,0 +1,41 @@
+###> symfony/framework-bundle ###
+/.env
+/public/bundles/
+/public/uploads/
+/private/uploads/
+/private/uploads3/
+/private/uploads_old/
+/private/test/uploads/
+/private/generated/
+/var/
+/vendor/
+/tests/dump/
+/docs/api/
+/docs/js/
+/bin/phpDocumentor*
+/build/api-cache/
+/tests/mock/generated/
+###< symfony/framework-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> symfony/web-server-bundle ###
+/.web-server-pid
+###< symfony/web-server-bundle ###
+vendor_old/
+
+\.env\.test
+
+test\.php
+
+private/test/
+
+###> symfony/webpack-encore-bundle ###
+/node_modules/
+/public/build/
+npm-debug.log
+yarn-error.log
+###< symfony/webpack-encore-bundle ###

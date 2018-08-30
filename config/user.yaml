@@ -1,0 +1,19 @@
+parameters:
+    user_set_url: "/usermanager/set"
+    user_get_url: "/usermanager/get"
+    user_roles:
+        superadmin:
+            id: 0
+            name: 'ROLE_SUPER_ADMIN'
+        admin:
+            id: 1
+            name: 'ROLE_ADMIN'
+        writer:
+            id: 2
+            name: 'ROLE_WRITER'
+        user:
+            id: 3
+            name: 'ROLE_USER'
+        garbageadmin:
+            id: 4
+            name: 'ROLE_GARBAGE_ADMIN'

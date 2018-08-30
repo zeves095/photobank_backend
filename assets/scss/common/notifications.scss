@@ -1,0 +1,73 @@
+#notification-overlay{
+  pointer-events: none;
+  position: fixed;
+  width: 250px;
+  height: auto;
+  bottom: 30px;
+  right: 10px;
+  z-index: 1000;
+  &>.notification{
+    position: relative;
+    width: 200px;
+    animation-name: slidein;
+    animation-duration: 0.4s;
+    pointer-events: all;
+    margin: 10px 0;
+    padding: 5px 25px;
+    button{
+      i{
+        pointer-events: none;
+      }
+      top: 20px;
+      right: 10px;
+      position: absolute;
+      width: 30px;
+      height: 30px;
+    }
+    &__notification-caption{
+      padding: 20px;
+    }
+    &--out{
+      animation-name: slideout;
+      animation-duration: 0.4s;
+    }
+  }
+}
+
+#notification-overlay{
+  &>.notification{
+    border-radius: 5px;
+    button{
+      border:none;
+      border-radius: 30px;
+      font-size: 20px;
+      padding: 0;
+    }
+    .notification__notification-caption{
+      font-weight: bold;
+      font-size: 15px;
+    }
+    &--toast{
+      background-color: #41758aad;
+      .notification__notification-caption{
+        color: #fafdff;
+        border-bottom: 2px solid #fafdff;
+      }
+      button{
+        background-color: #41758aad;
+        color: #fafdff;
+      }
+    }
+    &--error{
+      background-color: #a71b1bad;
+      .notification__notification-caption{
+        color: #fff1f1;
+        border-bottom: 2px solid #fff1f1;
+      }
+      button{
+        background-color: #a71b1bad;
+        color: #fff1f1;
+      }
+    }
+  }
+}
