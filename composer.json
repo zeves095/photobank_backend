@@ -9,6 +9,7 @@
         "symfony/asset": "*",
         "symfony/console": "*",
         "symfony/expression-language": "*",
+        "symfony/filesystem": "*",
         "symfony/flex": "^1.1",
         "symfony/form": "*",
         "symfony/framework-bundle": "*",
@@ -29,7 +30,7 @@
         "symfony/maker-bundle": "^1.0",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "*",
-        "symfony/web-server-bundle": "*"
+        "symfony/web-server-bundle": "^4.1"
     },
     "config": {
         "preferred-install": {
