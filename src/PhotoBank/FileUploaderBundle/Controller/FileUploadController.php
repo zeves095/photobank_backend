@@ -11,12 +11,12 @@ use App\PhotoBank\FileUploaderBundle\Service\UploadReceiver;
 class FileUploadController extends AbstractController
 {
     /**
-     * @Route("", methods={"POST"})
+     * @Route("/", methods={"POST"})
      */
     public function upload(UploadReceiver $receiver)
     {
       $receiver->uploadChunks();
-      return new Response('ok');
+      return new Response();
     }
     /**
      * @Route("/", methods={"GET"})
