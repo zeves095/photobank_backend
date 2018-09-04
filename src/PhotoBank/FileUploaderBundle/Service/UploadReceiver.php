@@ -21,6 +21,10 @@ class UploadReceiver
       $this->destinationDir = "uploads/test/";
       $this->tempDir = "uploads/test/temp/";
       $this->fileSystem = new Filesystem();
+      $this->response = array(
+        'completed' => false,
+        'path' => '',
+      );
   }
 
   public function testChunks(){
@@ -80,7 +84,7 @@ class UploadReceiver
         $this->createFileFromChunks($temp_dir, $this->request->request->get('resumableFilename'),$this->request->request->get('resumableChunkSize'), $this->request->request->get('resumableTotalSize'),$this->request->request->get('resumableTotalChunks'));
       }
     }
-    return true;
+    return $this->response;
   }
 
   protected function createFileFromChunks($temp_dir, $fileName, $chunkSize, $totalSize, $total_files) {
@@ -97,9 +101,10 @@ class UploadReceiver
           fwrite($fp, file_get_contents($temp_dir.'/'.$fileName.'.part'.$i));
         }
         fclose($fp);
-      } else {
-        return false;
+        $this->response['completed'] = true;
+        $this->response['path'] = $this->destinationDir.$fileName;
       }
+      return $this->response;
     }
   }
 }
