@@ -12,7 +12,7 @@ class TestPageController extends AbstractController
      */
     public function index()
     {
-        return $this->render('/test_page/index.html.twig', [
+        return $this->render('@FileUploader/test_page/index.html.twig', [
             'controller_name' => 'TestPageController',
         ]);
     }
