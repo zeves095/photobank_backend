@@ -1,0 +1,7 @@
+services:
+    App\PhotoBank\FileUploaderBundle\Controller\:
+      resource: '../../Controller'
+      tags: ['controller.service_arguments']
+    App\PhotoBank\FileUploaderBundle\Service\:
+      resource: '../../Service'
+      tags: ['controller.service_arguments']

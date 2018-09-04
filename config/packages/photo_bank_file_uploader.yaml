@@ -1,0 +1,7 @@
+file_uploader:
+    front:
+        chunk_size: 1*1024*1024
+        simultaneous_uploads: 3
+    back:
+        destination_dir: /assets/uploads/
+        temp_dir: /assets/uploads/temp/
