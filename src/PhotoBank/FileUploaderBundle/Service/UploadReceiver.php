@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\PhotoBank\FileUploaderBundle\Service;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Filesystem\Filesystem;
@@ -37,22 +37,17 @@ class UploadReceiver
 
   protected function handleChunkTest(){
     if ($this->request->getMethod() === 'GET') {
-      echo($this->request->query->get('resumableIdentifier'));
       if(null == $this->request->query->get('resumableIdentifier') && trim($this->request->query->get('resumableIdentifier'))!=''){
         $this->resumableVars["resumableIdentifier"] = '';
-        echo('shouldnt happen');
       }
       $temp_dir = $this->tempDir.$this->request->query->get('resumableIdentifier');
       if(null == $this->request->query->get('resumableFilename') && trim($this->request->query->get('resumableFilename'))!=''){
         $this->resumableVars["resumableFilename"] = '';
-        echo('shouldnt happen');
       }
       if(null == $this->request->query->get('resumableChunkNumber') && trim($this->request->query->get('resumableChunkNumber'))!=''){
         $this->resumableVars["resumableChunkNumber"] = '';
-        echo('shouldnt happen');
       }
       $chunk_file = $temp_dir.'/'.$this->resumableVars['resumableFilename'].'.part'.$this->resumableVars['resumableChunkNumber'];
-      echo($chunk_file."   ".file_exists($chunk_file));
       if (file_exists($chunk_file)) {
         return true;
         header("HTTP/1.0 200 Ok");

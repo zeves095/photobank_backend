@@ -1,0 +1,3 @@
+services:
+    App\PhotoBank\FileUploaderBundle\Controller\:
+      resource: '../../Controller'

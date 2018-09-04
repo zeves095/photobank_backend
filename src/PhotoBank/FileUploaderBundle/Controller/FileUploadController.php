@@ -1,39 +1,33 @@
 <?php
 
-namespace App\Controller;
+namespace App\PhotoBank\FileUploaderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-use App\Service\UploadReceiver;
+use App\PhotoBank\FileUploaderBundle\Service\UploadReceiver;
 
 class FileUploadController extends AbstractController
 {
     /**
-     * @Route("/file/upload", methods={"POST"})
+     * @Route("/", methods={"POST"})
      */
     public function upload(UploadReceiver $receiver)
     {
       $receiver->uploadChunks();
-      return new Response(
-            '<b>UP</b>'
-        );
+      return new Response();
     }
     /**
-     * @Route("/file/upload", methods={"GET"})
+     * @Route("/", methods={"GET"})
      */
     public function test(UploadReceiver $receiver)
     {
       if($receiver->testChunks()){
-        return new Response(
-          '<b>FOUND</b>'
-        );
+        return new Response();
       } else {
         throw $this->createNotFoundException();
-        return new Response(
-          '<b>NOT FOUND</b>'
-        );
+        return new Response();
       }
     }
 }
