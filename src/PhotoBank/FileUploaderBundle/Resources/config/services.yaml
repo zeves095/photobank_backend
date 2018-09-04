@@ -1,7 +1,8 @@
 services:
     App\PhotoBank\FileUploaderBundle\Controller\:
+      autowire: true
       resource: '../../Controller'
       tags: ['controller.service_arguments']
-    App\PhotoBank\FileUploaderBundle\Service\:
-      resource: '../../Service'
-      tags: ['controller.service_arguments']
+
+    App\PhotoBank\FileUploaderBundle\Service\UploadReceiver:
+      autowire: true

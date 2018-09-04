@@ -29,7 +29,7 @@
   <script>
   var i = $("#id").val();
   var r = new Resumable({
-    target:'/api/upload',
+    target:'/api/upload/',
     resumableIdentifier:i
   });
   r.assignBrowse(document.getElementById('browseButton'));
