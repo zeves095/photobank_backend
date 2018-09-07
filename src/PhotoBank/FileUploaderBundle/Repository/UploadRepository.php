@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace App\PhotoBank\FileUploaderBundle\Repository;
 
-use App\Entity\Upload;
+use App\PhotoBank\FileUploaderBundle\Entity\Upload;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 

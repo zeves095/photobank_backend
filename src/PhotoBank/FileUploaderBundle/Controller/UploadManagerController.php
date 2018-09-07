@@ -4,9 +4,9 @@ namespace App\PhotoBank\FileUploaderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityManagerInterface;
-use App\PhotoBank\FileUploaderBundle\Entity\Upload;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
+use App\PhotoBank\FileUploaderBundle\Service\UploadRecordManager;
 
 class UploadManagerController extends AbstractController
 {
@@ -15,32 +15,17 @@ class UploadManagerController extends AbstractController
      */
     public function check()
     {
-        return $this->render('@FileUploader/test_page/index.html.twig', [
-            'controller_name' => 'TestPageController',
-        ]);
+      
     }
     /**
      * @Route("/commit", name="upload_commit")
      */
-    public function set(RequestStack $requestStack)
+    public function set(RequestStack $requestStack, UploadRecordManager $recordManager)
     {
-      $this->requestStack = $requestStack;
-
-      $upload = new Upload();
-      $upload->setUsername($this->request->query->get('username'));
-      $upload->setCompleted($this->request->query->get('completed'));
-      $upload->setFileHash($this->request->query->get('filehash'));
-      $upload->setFilename($this->request->query->get('filename'));
-      $upload->setItemId($this->request->query->get('itemId'));
-
-      $this->entityManager->persist($upload);
-      $this->entityManager->flush($upload);
+      $request = $requestStack->getCurrentRequest();
+      $uploads = $request->request->all();
+      $recordManager->insert($uploads);
+      return new Response();
     }
-    /**
-     * @Route("/update", name="upload_update")
-     */
-    public function update()
-    {
 
-    }
 }

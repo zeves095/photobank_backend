@@ -134,6 +134,22 @@
   }
 
   $("button[type='submit']").click(function(){
+    uploadData = {};
+    for(i = 0; i<r.files.length; i++){
+      obj = {
+        'filehash': r.files[i].uniqueIdentifier,
+        'filename': r.files[i].fileName,
+        'itemid': r.files[i].itemId,
+        'totalchuks': r.files[i].chunks.length
+      }
+      uploadData[i] = obj;
+    }
+    console.log(uploadData);
+    $.ajax({
+      url: '/api/upload/commit',
+      method: 'POST',
+      data: uploadData
+    })
     r.upload();
   });
 

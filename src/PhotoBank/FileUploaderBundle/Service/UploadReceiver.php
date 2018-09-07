@@ -12,9 +12,10 @@ class UploadReceiver
       $this->fileSystem = new Filesystem();
       $this->response = array(
         'completed' => false,
+        'chunk_written' => false,
         'path' => '',
         'chunkPath' => '',
-        'filename' => '',
+        'filename' => ''
       );
   }
 
@@ -50,6 +51,11 @@ class UploadReceiver
         $this->fileSystem->mkdir($uploadParams['tempchunkdir'], 0777, true);
       }
       if ($file->move($uploadParams['tempchunkdir'], $dest_file)) {
+        $this->response['chunk_written'] = true;
+        $this->response['src_filename'] = $uploadParams['resumablevars']['resumableFilename'];
+        $this->response['chunkPath'] = $uploadParams['tempchunkdir'];
+        $this->response['path'] = $uploadParams['destinationdir'].$uploadParams['filename'];
+        $this->response['filename'] = $uploadParams['filename'];
         $this->createFileFromChunks($uploadParams);
       }
     }
@@ -72,10 +78,6 @@ class UploadReceiver
         $this->fileSystem->appendToFile($filepath,file_get_contents($uploadParams['tempchunkdir'].'/'.$uploadParams['filename'].'.part'.$i));
       }
       $this->response['completed'] = true;
-      $this->response['chunkPath'] = $uploadParams['tempchunkdir'];
-      $this->response['path'] = $uploadParams['destinationdir'].$uploadParams['filename'];
-      $this->response['filename'] = $uploadParams['filename'];
-      $this->response['src_filename'] = $uploadParams['resumablevars']['resumableFilename'];
       return $this->response;
     }
   }

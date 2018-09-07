@@ -27,7 +27,7 @@ class Resource
     private $username;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     private $item_id;
 

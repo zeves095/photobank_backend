@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\PhotoBank\FileUploaderBundle\Event\FileUploadedEvent;
+use App\PhotoBank\FileUploaderBundle\Event\ChunkWrittenEvent;
 use App\PhotoBank\FileUploaderBundle\Service\UploadReceiver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -21,7 +22,7 @@ class FileUploadController extends AbstractController
     {
       $this->username = $token->getToken()->getUser()->getUsername();
       $itemId = $requestStack->getCurrentRequest()->query->get('itemId');
-      $result = $receiver->uploadChunks($this->getUploadParameters($container, $requestStack));
+      $result = $receiver->uploadChunks($this->_getUploadParameters($container, $requestStack));
       if($result['completed']){
         $responseParams=array(
           'path'=>$result['path'],
@@ -36,6 +37,11 @@ class FileUploadController extends AbstractController
         $event= new FileUploadedEvent($responseParams);
         $dispatcher->dispatch(FileUploadedEvent::NAME, $event);
       }
+      if($result['chunk_written']){
+        echo("YISS");
+        $event= new ChunkWrittenEvent($this->username, $result['src_filename'], $itemId);
+        $dispatcher->dispatch(ChunkWrittenEvent::NAME, $event);
+      }
       return new Response();
     }
     /**
@@ -44,7 +50,7 @@ class FileUploadController extends AbstractController
     public function test(UploadReceiver $receiver, ContainerInterface $container, TokenStorageInterface $token, RequestStack $requestStack)
     {
       $this->username = $token->getToken()->getUser()->getUsername();
-      if($receiver->testChunks($this->getUploadParameters($container, $requestStack))){
+      if($receiver->testChunks($this->_getUploadParameters($container, $requestStack))){
         return new Response();
       } else {
         throw $this->createNotFoundException();
@@ -52,7 +58,7 @@ class FileUploadController extends AbstractController
       }
     }
 
-    private function getUploadParameters($container, $requestStack){
+    private function _getUploadParameters($container, $requestStack){
 
       $request = $requestStack->getCurrentRequest();
 

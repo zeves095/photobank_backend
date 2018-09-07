@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Entity;
+namespace App\PhotoBank\FileUploaderBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UploadRepository")
+ * @ORM\Entity(repositoryClass="App\PhotoBank\FileUploaderBundle\Repository\UploadRepository")
  */
 class Upload
 {
@@ -27,6 +27,16 @@ class Upload
     private $completed;
 
     /**
+     * @ORM\Column(type="bigint")
+     */
+    private $total_chunks;
+
+    /**
+     * @ORM\Column(type="bigint")
+     */
+    private $completed_chunks;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $file_hash;
@@ -37,7 +47,7 @@ class Upload
     private $filename;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     private $item_id;
 
@@ -66,6 +76,30 @@ class Upload
     public function setCompleted(bool $completed): self
     {
         $this->completed = $completed;
+
+        return $this;
+    }
+
+    public function getTotalChunks(): ?int
+    {
+        return $this->total_chunks;
+    }
+
+    public function setTotalChunks(int $total_chunks): self
+    {
+        $this->total_chunks = $total_chunks;
+
+        return $this;
+    }
+
+    public function getCompletedChunks(): ?int
+    {
+        return $this->completed_chunks;
+    }
+
+    public function setCompletedChunks(int $completed_chunks): self
+    {
+        $this->completed_chunks = $completed_chunks;
 
         return $this;
     }

@@ -11,10 +11,16 @@ services:
         resource: '../../Controller'
         tags: ['controller.service_arguments']
 
-    App\PhotoBank\FileUploaderBundle\Service\UploadReceiver:
+    App\PhotoBank\FileUploaderBundle\Service\:
         autowire: true
+        resource: '../../Service'
 
     App\PhotoBank\FileUploaderBundle\EventSubscriber\FileUploaderSubscriber:
         autowire: true
         autoconfigure: false
         tags: ['kernel.event_subscriber']
+
+    App\PhotoBank\FileUploaderBundle\Repository\:
+        resource: '../../Repository'
+        autowire: true
+        tags: ['doctrine.repository_service']
