@@ -1,3 +1,10 @@
+parameters:
+    fileuploader.desinationdir: '/uploads/'
+    fileuploader.tempdir: '/uploads/temp/'
+    fileuploader.targeturl: '/api/upload/'
+    fileuploader.chunksize: '1*1024*1024'
+    fileuploader.simultaneousuploads: 3
+
 services:
     App\PhotoBank\FileUploaderBundle\Controller\:
       autowire: true

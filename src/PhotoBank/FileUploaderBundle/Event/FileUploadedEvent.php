@@ -6,16 +6,17 @@ use Symfony\Component\EventDispatcher\Event;
 
 class FileUploadedEvent extends Event
 {
-    const NAME = 'file.uploaded';
+    const NAME = 'fileuploader.uploaded';
 
     protected $params;
 
     public function __construct($params)
     {
+
         $this->params = $params;
     }
 
-    public function getOrder()
+    public function getParams()
     {
         return $this->params;
     }

@@ -11,15 +11,25 @@ class Resource
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=255)
      */
     private $path;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $username;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $item_id;
 
     /**
      * @ORM\Column(type="integer")
@@ -32,24 +42,19 @@ class Resource
     private $type;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $group_id;
+    private $chunkPath;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255)
      */
-    private $item_id;
+    private $created_on;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255)
      */
-    private $created_by;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="preset")
-     */
-    private $user;
+    private $filename;
 
     public function getId(): ?int
     {
@@ -64,6 +69,30 @@ class Resource
     public function setPath(string $path): self
     {
         $this->path = $path;
+
+        return $this;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    public function getItemId(): ?int
+    {
+        return $this->item_id;
+    }
+
+    public function setItemId(int $item_id): self
+    {
+        $this->item_id = $item_id;
 
         return $this;
     }
@@ -92,51 +121,40 @@ class Resource
         return $this;
     }
 
-    public function getGroupId(): ?int
+    public function getChunkPath(): ?string
     {
-        return $this->group_id;
+        return $this->chunkPath;
     }
 
-    public function setGroupId(int $group_id): self
+    public function setChunkPath(?string $chunkPath): self
     {
-        $this->group_id = $group_id;
+        $this->chunkPath = $chunkPath;
 
         return $this;
     }
 
-    public function getItemId(): ?int
+    public function getCreatedOn(): ?string
     {
-        return $this->item_id;
+        return $this->created_on;
     }
 
-    public function setItemId(int $item_id): self
+    public function setCreatedOn(string $created_on): self
     {
-        $this->item_id = $item_id;
+        $this->created_on = $created_on;
 
         return $this;
     }
 
-    public function getCreatedBy(): ?int
+    public function getFilename(): ?string
     {
-        return $this->created_by;
+        return $this->filename;
     }
 
-    public function setCreatedBy(int $created_by): self
+    public function setFilename(string $filename): self
     {
-        $this->created_by = $created_by;
+        $this->filename = $filename;
 
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
 }
