@@ -53,6 +53,16 @@ class UploadRecordManager
   }
 
   public function get(){
-
+    $uploads = $this->entityManager
+    ->getRepository(Upload::class)
+    ->findBy(
+      ['username' => $this->token->getToken()->getUser()->getUsername(),
+      'completed' => false],
+      ['id' => 'ASC']
+    );
+    foreach($uploads as $upload){
+      $uploadArr[] = array($upload->getItemId(),$upload->getFileName(),$upload->getFileHash());
+    }
+    return $uploadArr;
   }
 }
