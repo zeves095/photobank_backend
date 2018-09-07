@@ -90,15 +90,18 @@
   integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
   crossorigin="anonymous"></script>
   <script>
+
   var getHash = function(file){
     var fileObj = file.file;
     reader = new FileReader();
     reader.onload = function(e) {
-      hashable = e.target.result.substring(0,200);
+      hashable = e.target.result.substring(0,500);
+      hashable = file.itemId+hashable;
       file.uniqueIdentifier = hex_md5(hashable);
     }
     reader.readAsText(fileObj);
   }
+
   var i = $("#id").val();
   var r = new Resumable({
     target:'{{ target_url }}',
@@ -106,6 +109,7 @@
     simultaneousUploads: {{ simultaneous_uploads }},
     resumableIdentifier:i
   });
+
   r.assignBrowse(document.getElementById('browseButton'));
   r.assignDrop(document.getElementById('dropTarget'));
   r.on('fileAdded', function(file, event){
