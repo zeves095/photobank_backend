@@ -1,0 +1,17 @@
+Edit:
+  type: entity
+  table: edits
+  id:
+    edit_id:
+        type: integer
+        generator:
+          strategy: auto
+  fields:
+    user_id:
+      type: integer
+    item_id:
+      type: integer
+    resource_id:
+      type: integer
+    date:
+      type: datetime

@@ -1,0 +1,157 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello {{ controller_name }}!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    #dropTarget{
+      height: 300px;
+      width: 500px;
+      background-color: #f1f1f1;
+      border: 2px solid #e0e0e0;
+      border-radius: 14px;
+      border-style: dashed;
+      display: inline-block;
+    }
+    #dropTarget::before{
+      content: 'DRAG & DROP';
+      color: #c5c5c5;
+      font-weight: bold;
+      font-size: 38pt;
+      position: absolute;
+      margin: 110px 60px;
+    }
+    button {
+      padding: 10px;
+      font-weight: bold;
+      border: 2px solid #dfdfdf;
+      background-color: #f1f1f1;
+      border-radius: 6px;
+      color: #464646;
+      font-size: 12pt;
+      width:100px;
+    }
+    #fileList{
+      list-style-type: none;
+    }
+    #fileList>li{
+      background-color: #f1f1f1;
+      margin: 10px 0;
+      border: 2px solid #e0e0e0;
+      border-radius: 14px;
+      padding: 8px;
+    }
+    #fileList>li.uploading{
+      color: white;
+      background-color: #46bbff;
+    }
+    #fileList>li.completed{
+      color: white;
+      background-color: #25c548;
+    }
+    #catalogue{
+      display: inline-block;
+      margin: 0 21px;
+      position: relative;
+      top: -106px;
+      font-size: 16pt;
+    }
+    #catalogue>.catalogue_radio{
+      display:block;
+    }
+</style>
+
+<div class="example-wrapper">
+    <h1>File uploader</h1>
+
+<div>
+  <div id="dropTarget"></div>
+  <div id="catalogue">
+    <div class="catalogue_radio"><input type="radio" name="item" value="12312312312" checked="">Item 1</div>
+    <div class="catalogue_radio"><input type="radio" name="item" value="12111111111">Item 2</div>
+    <div class="catalogue_radio"><input type="radio" name="item" value="22222222222">Item 3</div>
+    <div class="catalogue_radio"><input type="radio" name="item" value="69696969696">Item 4</div>
+  </div>
+</div>
+<button id="browseButton">BROWSE</button>
+<button type="submit">SUBMIT</button>
+<ul id="fileList"></ul>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="/bundles/fileuploader/assets/js/vendor/md5.js"></script>
+  <script type="text/javascript" src="/bundles/fileuploader/assets/js/vendor/resumable.js"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+  <script>
+
+  var r = new Resumable({
+    target:'{{ target_url }}',
+    chunkSize:{{ chunk_size }},
+    simultaneousUploads: {{ simultaneous_uploads }}
+  });
+
+  r.assignBrowse(document.getElementById('browseButton'));
+  r.assignDrop(document.getElementById('dropTarget'));
+  r.on('fileAdded', function(file, event){
+    file.itemId=$('input[name="item"]:checked').val();
+    getHash(file);
+    updateList();
+  });
+  r.on('fileSuccess', function(file, message){
+    updateList();
+  });
+
+  var getHash = function(file){
+    var fileObj = file.file;
+    reader = new FileReader();
+    reader.onload = function(e) {
+      hashable = e.target.result.substring(0,500);
+      hashable = file.itemId+hashable;
+      file.uniqueIdentifier = hex_md5(hashable);
+    }
+    reader.readAsText(fileObj);
+  }
+
+  var updateList = function(){
+    $('#fileList').html('');
+    for(i=1;i<=r.files.length;i++){
+      file = r.files[i-1];
+      var liClass;
+      if(file.isUploading(i-1)){
+        liClass="uploading";
+      }
+      if(file.isComplete(i-1)){
+        liClass="completed";
+      }
+      $('#fileList').append('<li class="'+ liClass +'">File ' + i + ': '+ file.fileName+'</li>');
+    }
+  }
+
+  $("button[type='submit']").click(function(){
+    uploadData = {};
+    for(i = 0; i<r.files.length; i++){
+      obj = {
+        'filehash': r.files[i].uniqueIdentifier,
+        'filename': r.files[i].fileName,
+        'itemid': r.files[i].itemId,
+        'totalchuks': r.files[i].chunks.length
+      }
+      uploadData[i] = obj;
+    }
+    console.log(uploadData);
+    $.ajax({
+      url: '/api/upload/commit',
+      method: 'POST',
+      data: uploadData
+    })
+    r.upload();
+  });
+
+</script>
+{% endblock %}

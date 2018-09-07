@@ -1,0 +1,11 @@
+file_uploader_test:
+    path: /bundle/upload
+    controller: App\PhotoBank\FileUploaderBundle\Controller\FileUploadController::testChunks
+    methods: [ GET ]
+file_uploader_upload:
+    path: /bundle/upload
+    controller: App\PhotoBank\FileUploaderBundle\Controller\FileUploadController::uploadChunks
+    methods: [ POST ]
+test_page:
+    path: /bundle/test
+    controller: App\PhotoBank\FileUploaderBundle\TestPageController::index
