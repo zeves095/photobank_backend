@@ -1,0 +1,70 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Вход в фотобанк{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .login_form {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+
+        }
+        .auth {
+            display: flex;
+            flex-flow: column;
+            width: 300px;
+            margin: auto;
+        }
+        .auth__item {
+            display: flex;
+            flex-flow: row;
+            margin: 10px 0;
+        }
+        .auth__item>input,
+        .auth__item>label {
+            flex-grow: 0;
+            min-width: 30%;
+            height: 30px;
+            line-height: 30px;
+        }
+        .auth__item>input {
+            flex-grow: 1;
+        }
+        .auth__item--submit>button{
+            width: 100%;
+            height: 30px;
+        }
+        .auth__item--error {
+            color:red;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <form action="{{ path('login') }}" method="post" class="login_form">
+        <div class="auth">
+            <div class="auth__item auth__item--login">
+                <label for="username">Логин:</label>
+                <input type="text" id="username" name="_username" value="{{ last_username }}" />
+            </div>
+            <div class="auth__item auth__item--password">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="_password" />
+            </div>
+            <div class="auth__item auth__item--submit">
+                <button type="submit">Войти</button>
+            </div>
+            {% block login_error %}
+                {% if error %}
+                    <div class="auth__item auth__item--error">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                {% endif %}
+            {% endblock %}
+        </div>
+    </form>
+{% endblock %}
+
+
