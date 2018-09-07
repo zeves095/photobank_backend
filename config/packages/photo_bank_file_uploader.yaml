@@ -1,0 +1,8 @@
+file_uploader:
+    front:
+        target_url: '/api/upload/'
+        chunk_size: 1048576
+        simultaneous_uploads: 3
+    back:
+        destination_dir: 'uploads/'
+        temp_dir: 'uploads/temp/'
