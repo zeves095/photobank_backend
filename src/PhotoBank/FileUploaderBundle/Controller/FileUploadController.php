@@ -25,6 +25,7 @@ class FileUploadController extends AbstractController
           'path'=>$result['path'],
           'chunkPath'=>$result['chunkPath'],
           'filename'=>$result['filename'],
+          'src_filename'=>$result['src_filename'],
           'username'=>$this->username,
           'item_id'=>1,
           'preset'=>1,

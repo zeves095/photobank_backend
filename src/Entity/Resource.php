@@ -56,6 +56,11 @@ class Resource
      */
     private $filename;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $src_filename;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -153,6 +158,18 @@ class Resource
     public function setFilename(string $filename): self
     {
         $this->filename = $filename;
+
+        return $this;
+    }
+
+    public function getSrcFilename(): ?string
+    {
+        return $this->src_filename;
+    }
+
+    public function setSrcFilename(string $src_filename): self
+    {
+        $this->src_filename = $src_filename;
 
         return $this;
     }

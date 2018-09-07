@@ -31,6 +31,7 @@ class FileUploaderSubscriber implements EventSubscriberInterface
     $resource->setType($event->getParams()['type']);
     $resource->setChunkPath($event->getParams()['chunkPath']);
     $resource->setFilename($event->getParams()['filename']);
+    $resource->setSrcFilename($event->getParams()['src_filename']);
     $resource->setCreatedOn(date('d-m-Y H:i:s'));
 
     $this->entityManager->persist($resource);

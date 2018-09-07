@@ -127,6 +127,7 @@ class UploadReceiver
       $this->response['chunkPath'] = $this->tempChunkDir;
       $this->response['path'] = $this->destinationDir.$fileName;
       $this->response['filename'] = $this->filename;
+      $this->response['src_filename'] = $this->resumableVars['resumableFilename'];
       return $this->response;
     }
   }
