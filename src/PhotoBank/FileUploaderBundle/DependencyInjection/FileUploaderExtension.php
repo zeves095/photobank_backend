@@ -18,7 +18,11 @@ class FileUploaderExtension extends Extension
 
     $configuration = new Configuration();
     $config = $this->processConfiguration($configuration, $configs);
-
+    $container->setParameter('fileuploader.desinationdir', $config['back']['destination_dir']);
+    $container->setParameter('fileuploader.tempdir', $config['back']['temp_dir']);
+    $container->setParameter('fileuploader.targeturl', $config['front']['target_url']);
+    $container->setParameter('fileuploader.chunksize', $config['front']['chunk_size']);
+    $container->setParameter('fileuploader.simultaneousuploads', $config['front']['simultaneous_uploads']);
     $this->addAnnotatedClassesToCompile(array(
         '@FileUploaderBundle\\Controller',
     ));

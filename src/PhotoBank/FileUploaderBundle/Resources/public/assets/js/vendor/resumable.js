@@ -48,6 +48,7 @@
       fileNameParameterName: 'resumableFilename',
       relativePathParameterName: 'resumableRelativePath',
       totalChunksParameterName: 'resumableTotalChunks',
+      associatedEntityName: 'itemId',
       dragOverClass: 'dragover',
       throttleProgressCallbacks: 0.5,
       query:{},
@@ -172,8 +173,8 @@
         }
         var relativePath = file.webkitRelativePath||file.relativePath||file.fileName||file.name; // Some confusion in different versions of Firefox
         //var size = file.size;
-        var id = $.getOpt('resumableIdentifier');
-        return(id + '-' + relativePath.replace(/[^0-9a-zA-Z_-]/img, ''));
+        var size = file.size;
+        return(size + '-' + relativePath.replace(/[^0-9a-zA-Z_-]/img, ''));
       },
       contains:function(array,test) {
         var result = false;
@@ -436,7 +437,7 @@
 
         function addFile(uniqueIdentifier){
           if (!$.getFromUniqueIdentifier(uniqueIdentifier)) {(function(){
-            file.uniqueIdentifier = uniqueIdentifier;
+            //file.uniqueIdentifier = uniqueIdentifier;
             var f = new ResumableFile($, file, uniqueIdentifier);
             $.files.push(f);
             files.push(f);
@@ -488,6 +489,9 @@
       $.container = '';
       $.preprocessState = 0; // 0 = unprocessed, 1 = processing, 2 = finished
       var _error = uniqueIdentifier !== undefined;
+
+      $.itemId = '';
+      $.contentHash = '';
 
       // Callback when something happens within the chunk
       var chunkEvent = function(event, message){
@@ -725,7 +729,8 @@
             ['identifierParameterName', $.fileObj.uniqueIdentifier],
             ['fileNameParameterName', $.fileObj.fileName],
             ['relativePathParameterName', $.fileObj.relativePath],
-            ['totalChunksParameterName', $.fileObj.chunks.length]
+            ['totalChunksParameterName', $.fileObj.chunks.length],
+            ['associatedEntityName', $.fileObj.itemId]
           ].filter(function(pair){
             // include items that resolve to truthy values
             // i.e. exclude false, null, undefined and empty strings
@@ -823,6 +828,7 @@
           ['fileNameParameterName', $.fileObj.fileName],
           ['relativePathParameterName', $.fileObj.relativePath],
           ['totalChunksParameterName', $.fileObj.chunks.length],
+          ['associatedEntityName', $.fileObj.itemId]
         ].filter(function(pair){
           // include items that resolve to truthy values
           // i.e. exclude false, null, undefined and empty strings

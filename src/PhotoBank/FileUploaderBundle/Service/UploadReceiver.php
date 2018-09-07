@@ -1,105 +1,84 @@
 <?php
 
 namespace App\PhotoBank\FileUploaderBundle\Service;
-
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Filesystem\Filesystem;
 
 class UploadReceiver
 {
   protected $requestStack;
 
-  public function __construct(RequestStack $requestStack)
+  public function __construct()
   {
-      $this->requestStack = $requestStack;
-      $this->request = $this->requestStack->getCurrentRequest();
-      $this->resumableVars = array(
-        "resumableIdentifier"=>$this->request->query->get('resumableIdentifier'),
-        "resumableFilename"=>$this->request->query->get('resumableFilename'),
-        "resumableChunkNumber"=>$this->request->query->get('resumableChunkNumber'),
-      );
-      $this->destinationDir = "uploads/test/";
-      $this->tempDir = "uploads/test/temp/";
       $this->fileSystem = new Filesystem();
+      $this->response = array(
+        'completed' => false,
+        'chunk_written' => false,
+        'path' => '',
+        'chunkPath' => '',
+        'filename' => ''
+      );
   }
 
-  public function testChunks(){
-    try{return $this->handleChunkTest();}catch(Exception $e){
-      //TODO handle exceptions
+  public function testChunks($uploadParams){
+    if(null == $uploadParams['resumablevars']['resumableIdentifier'] && trim($uploadParams['resumablevars']['resumableIdentifier'])!=''){
+      $uploadParams['resumablevars']["resumableIdentifier"] = '';
+    }
+    if(null == $uploadParams['resumablevars']['resumableFilename'] && trim($uploadParams['resumablevars']['resumableFilename'])!=''){
+      $uploadParams['resumablevars']["resumableFilename"] = '';
+    }
+    if(null == $uploadParams['resumablevars']['resumableChunkNumber'] && trim($uploadParams['resumablevars']['resumableChunkNumber'])!=''){
+      $uploadParams['resumablevars']["resumableChunkNumber"] = '';
+    }
+    if (file_exists($uploadParams['tempchunkdir'].'/'.$uploadParams['filename'].$uploadParams['partstring'])) {
+      return true;
+      header("HTTP/1.0 200 Ok");
+    } else {
+      return false;
+      header("HTTP/1.0 404 Not Found");
     }
   }
 
-  public function uploadChunks(){
-    try{return $this->handleChunkUpload();}catch(Exception $e){
-      //TODO handle exceptions
-    }
-  }
-
-  protected function handleChunkTest(){
-    if ($this->request->getMethod() === 'GET') {
-      if(null == $this->request->query->get('resumableIdentifier') && trim($this->request->query->get('resumableIdentifier'))!=''){
-        $this->resumableVars["resumableIdentifier"] = '';
-      }
-      $temp_dir = $this->tempDir.$this->request->query->get('resumableIdentifier');
-      if(null == $this->request->query->get('resumableFilename') && trim($this->request->query->get('resumableFilename'))!=''){
-        $this->resumableVars["resumableFilename"] = '';
-      }
-      if(null == $this->request->query->get('resumableChunkNumber') && trim($this->request->query->get('resumableChunkNumber'))!=''){
-        $this->resumableVars["resumableChunkNumber"] = '';
-      }
-      $chunk_file = $temp_dir.'/'.$this->resumableVars['resumableFilename'].'.part'.$this->resumableVars['resumableChunkNumber'];
-      if (file_exists($chunk_file)) {
-        return true;
-        header("HTTP/1.0 200 Ok");
-      } else {
-        return false;
-        header("HTTP/1.0 404 Not Found");
-      }
-    }
-  }
-
-  public function handleChunkUpload(){
-    $fileArray = $this->request->files;
-    if (!empty($fileArray)) foreach ($fileArray as $file) {
+  public function uploadChunks($uploadParams){
+    if (!empty($uploadParams['files'])) foreach ($uploadParams['files'] as $file) {
       if ($file->getError() != 0) {
-        //TODO log maybe
         continue;
       }
-      if(null!=$this->request->request->get('resumableIdentifier') && trim($this->request->request->get('resumableIdentifier'))!=''){
-        $temp_dir = $this->tempDir.$this->request->request->get('resumableIdentifier');
+      if(null!=$uploadParams['resumablevars']['resumableIdentifier'] && trim($uploadParams['resumablevars']['resumableIdentifier'])!=''){
+        //$uploadParams['tempchunkdir'] = $this->tempDir.$uploadParams['resumablevars']['resumableIdentifier'];
       }
-      //$dest_dir = $temp_dir.'/'.$this->request->request->get('resumableFilename').'.part'.$this->request->request->get('resumableChunkNumber');
-      $dest_file = $this->request->request->get('resumableFilename').'.part'.$this->request->request->get('resumableChunkNumber');
-      if (!is_dir($temp_dir)) {
-        $this->fileSystem->mkdir($temp_dir, 0777, true);
+      $dest_file = $uploadParams['filename'].$uploadParams['partstring'];
+      if (!is_dir($uploadParams['tempchunkdir'])) {
+        $this->fileSystem->mkdir($uploadParams['tempchunkdir'], 0777, true);
       }
-      if (!$file->move($temp_dir, $dest_file)) {
-
-        //TODO log maybe
-      } else {
-        $this->createFileFromChunks($temp_dir, $this->request->request->get('resumableFilename'),$this->request->request->get('resumableChunkSize'), $this->request->request->get('resumableTotalSize'),$this->request->request->get('resumableTotalChunks'));
+      if ($file->move($uploadParams['tempchunkdir'], $dest_file)) {
+        $this->response['chunk_written'] = true;
+        $this->response['src_filename'] = $uploadParams['resumablevars']['resumableFilename'];
+        $this->response['chunkPath'] = $uploadParams['tempchunkdir'];
+        $this->response['path'] = $uploadParams['destinationdir'].$uploadParams['filename'];
+        $this->response['filename'] = $uploadParams['filename'];
+        $this->createFileFromChunks($uploadParams);
       }
     }
-    return true;
+    return $this->response;
   }
 
-  protected function createFileFromChunks($temp_dir, $fileName, $chunkSize, $totalSize, $total_files) {
+  protected function createFileFromChunks($uploadParams) {
     $total_files_on_server_size = 0;
     $temp_total = 0;
-    foreach(scandir($temp_dir) as $file) {
+    foreach(scandir($uploadParams['tempchunkdir']) as $file) {
       $temp_total = $total_files_on_server_size;
-      $tempfilesize = filesize($temp_dir.'/'.$file);
+      $tempfilesize = filesize($uploadParams['tempchunkdir'].'/'.$file);
       $total_files_on_server_size = $temp_total + $tempfilesize;
     }
-    if ($total_files_on_server_size >= $totalSize) {
-      if (($fp = fopen($this->destinationDir.$fileName, 'w')) !== false) {
-        for ($i=1; $i<=$total_files; $i++) {
-          fwrite($fp, file_get_contents($temp_dir.'/'.$fileName.'.part'.$i));
-        }
-        fclose($fp);
-      } else {
-        return false;
+    if ($total_files_on_server_size >= $uploadParams['resumablevars']['resumableTotalSize']) {
+      $filepath = $uploadParams['destinationdir'].$uploadParams['filename'];
+      $this->fileSystem->mkdir($uploadParams['destinationdir']);
+      $this->fileSystem->dumpFile($filepath,'');
+      for ($i=1; $i<=$uploadParams['resumablevars']['resumableTotalChunks']; $i++) {
+        $this->fileSystem->appendToFile($filepath,file_get_contents($uploadParams['tempchunkdir'].'/'.$uploadParams['filename'].'.part'.$i));
       }
+      $this->response['completed'] = true;
+      return $this->response;
     }
   }
 }

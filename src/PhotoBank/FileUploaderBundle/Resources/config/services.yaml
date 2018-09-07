@@ -1,8 +1,26 @@
+parameters:
+    fileuploader.desinationdir: '/uploads/'
+    fileuploader.tempdir: '/uploads/temp/'
+    fileuploader.targeturl: '/api/upload/'
+    fileuploader.chunksize: '1*1024*1024'
+    fileuploader.simultaneousuploads: 3
+
 services:
     App\PhotoBank\FileUploaderBundle\Controller\:
-      autowire: true
-      resource: '../../Controller'
-      tags: ['controller.service_arguments']
+        autowire: true
+        resource: '../../Controller'
+        tags: ['controller.service_arguments']
 
-    App\PhotoBank\FileUploaderBundle\Service\UploadReceiver:
-      autowire: true
+    App\PhotoBank\FileUploaderBundle\Service\:
+        autowire: true
+        resource: '../../Service'
+
+    App\PhotoBank\FileUploaderBundle\EventSubscriber\FileUploaderSubscriber:
+        autowire: true
+        autoconfigure: false
+        tags: ['kernel.event_subscriber']
+
+    App\PhotoBank\FileUploaderBundle\Repository\:
+        resource: '../../Repository'
+        autowire: true
+        tags: ['doctrine.repository_service']

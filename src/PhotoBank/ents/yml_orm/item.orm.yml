@@ -1,0 +1,37 @@
+Item:
+    type: entity
+    table: items
+    id:
+        item_id:
+            type: integer
+            generator:
+                strategy: auto
+    fields:
+        name:
+            type: string
+            length: 50
+            unique: true
+        code:
+            type: integer
+            unique: true
+        parent_id:
+            type: integer
+            nullable: true
+            options:
+                default: 0
+    oneToMany:
+        resources:
+            targetEntity: Resource
+            mappedBy: item_id
+            cascade: [ persist ]
+            orderBy:
+                group_id: ASC
+            fetch: EAGER
+    manyToOne:
+        cnode:
+            targetEntity: Cnode
+            inversedBy: items
+            joinCulumn:
+                name: node_id
+                referencedColumnName: node_id
+                nullable: true

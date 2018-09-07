@@ -1,7 +1,8 @@
 file_uploader:
     front:
-        chunk_size: 1*1024*1024
+        target_url: '/api/upload/'
+        chunk_size: 1048576
         simultaneous_uploads: 3
     back:
-        destination_dir: /assets/uploads/
-        temp_dir: /assets/uploads/temp/
+        destination_dir: 'uploads/'
+        temp_dir: 'uploads/temp/'
