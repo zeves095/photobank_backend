@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventSubscriber;
+namespace App\PhotoBank\FileUploaderBundle\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use App\PhotoBank\FileUploaderBundle\Event\FileUploadedEvent;

@@ -7,9 +7,14 @@ parameters:
 
 services:
     App\PhotoBank\FileUploaderBundle\Controller\:
-      autowire: true
-      resource: '../../Controller'
-      tags: ['controller.service_arguments']
+        autowire: true
+        resource: '../../Controller'
+        tags: ['controller.service_arguments']
 
     App\PhotoBank\FileUploaderBundle\Service\UploadReceiver:
-      autowire: true
+        autowire: true
+
+    App\PhotoBank\FileUploaderBundle\EventSubscriber\FileUploaderSubscriber:
+        autowire: true
+        autoconfigure: false
+        tags: ['kernel.event_subscriber']

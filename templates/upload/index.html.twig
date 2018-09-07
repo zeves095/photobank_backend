@@ -78,7 +78,6 @@
 <button id="browseButton">BROWSE</button>
 <button type="submit">SUBMIT</button>
 <ul id="fileList"></ul>
-<input type="hidden" id="id" value="123124">
 </div>
 {% endblock %}
 
@@ -91,23 +90,10 @@
   crossorigin="anonymous"></script>
   <script>
 
-  var getHash = function(file){
-    var fileObj = file.file;
-    reader = new FileReader();
-    reader.onload = function(e) {
-      hashable = e.target.result.substring(0,500);
-      hashable = file.itemId+hashable;
-      file.uniqueIdentifier = hex_md5(hashable);
-    }
-    reader.readAsText(fileObj);
-  }
-
-  var i = $("#id").val();
   var r = new Resumable({
     target:'{{ target_url }}',
     chunkSize:{{ chunk_size }},
-    simultaneousUploads: {{ simultaneous_uploads }},
-    resumableIdentifier:i
+    simultaneousUploads: {{ simultaneous_uploads }}
   });
 
   r.assignBrowse(document.getElementById('browseButton'));
@@ -120,9 +106,17 @@
   r.on('fileSuccess', function(file, message){
     updateList();
   });
-  r.on('fileError', function(file, message){
-    updateList();
-  });
+
+  var getHash = function(file){
+    var fileObj = file.file;
+    reader = new FileReader();
+    reader.onload = function(e) {
+      hashable = e.target.result.substring(0,500);
+      hashable = file.itemId+hashable;
+      file.uniqueIdentifier = hex_md5(hashable);
+    }
+    reader.readAsText(fileObj);
+  }
 
   var updateList = function(){
     $('#fileList').html('');
@@ -142,8 +136,6 @@
   $("button[type='submit']").click(function(){
     r.upload();
   });
-  $("button#listfiles").click(function(){
-    console.log(r.files);
-  });
+
 </script>
 {% endblock %}
