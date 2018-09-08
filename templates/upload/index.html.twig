@@ -114,7 +114,7 @@
     var fileObj = file.file;
     reader = new FileReader();
     reader.onload = function(e) {
-      hashable = e.target.result.substring(0,500)+file.itemId;
+      hashable = e.target.result.slice(-2500)+file.itemId;
       file.uniqueIdentifier = hex_md5(hashable);
     }
     reader.readAsText(fileObj);
