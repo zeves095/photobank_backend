@@ -28,8 +28,16 @@ class UploadRecordManager
       $upload->setTotalChunks($uploads[$i]['totalchuks']);
       $upload->setCompletedChunks(0);
 
-      $this->entityManager->persist($upload);
-      $this->entityManager->flush($upload);
+      if(sizeof($this->entityManager
+      ->getRepository(Upload::class)
+      ->findBy([
+        'username' => $upload->getUsername(),
+        'file_hash' => $upload->getFileHash(),
+        'item_id' => $upload->getItemId()
+      ]))==0){
+        $this->entityManager->persist($upload);
+        $this->entityManager->flush($upload);
+      }
     }
   }
 
@@ -42,17 +50,20 @@ class UploadRecordManager
       'item_id' => $event->getParams()['itemId']],
       ['id' => 'DESC']
     );
-    $upload = $uploads[0];
-    $completed = $upload->getCompletedChunks();
-    $upload->setCompletedChunks($completed+1);
-    if($upload->getTotalChunks()==$completed+1){
-      $upload->setCompleted(true);
+    //$upload = $uploads[0];
+    foreach($uploads as $upload){
+      $completed = $upload->getCompletedChunks();
+      $upload->setCompletedChunks($completed+1);
+      if($upload->getTotalChunks()==$completed+1){
+        $upload->setCompleted(true);
+      }
+      $this->entityManager->persist($upload);
+      $this->entityManager->flush($upload);
     }
-    $this->entityManager->persist($upload);
-    $this->entityManager->flush($upload);
   }
 
   public function get(){
+    $uploadArr = array();
     $uploads = $this->entityManager
     ->getRepository(Upload::class)
     ->findBy(
