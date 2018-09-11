@@ -32,7 +32,7 @@
       position: absolute;
       margin: 110px 60px;
     }
-    button {
+    .example-wrapper button {
       padding: 10px;
       font-weight: bold;
       border: 2px solid #dfdfdf;
@@ -109,7 +109,13 @@
     }
   </style>
 
+
+<script>
+  window.resumableContainer = [];
+</script>
   <div id="photobank-wrapper"></div>
+
+
   <div class="example-wrapper">
     <h1>File uploader</h1>
 
@@ -141,7 +147,8 @@
   <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
 <script type="text/babel" src="/assets/js/components/photobank/CatalogueTree.jsx"></script>
   <script type="text/babel" src="/assets/js/components/photobank/PhotoBank.jsx"></script>
-  <script>
+  <link rel="stylesheet" href="/assets/css/components/photobank/photobank.css">
+<script>
 
     hashPool = [];
 
