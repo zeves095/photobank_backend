@@ -1,12 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello {{ controller_name }}!{% endblock %}
+{% block title %}Hello
+  {{ controller_name }}!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    #dropTarget{
+  <style>
+    .example-wrapper {
+      margin: 1em auto;
+      max-width: 800px;
+      width: 95%;
+      font: 18px/1.5 sans-serif;
+    }
+    .example-wrapper code {
+      background: #F5F5F5;
+      padding: 2px 6px;
+    }
+    #dropTarget {
       height: 300px;
       width: 500px;
       background-color: #f1f1f1;
@@ -15,7 +24,7 @@
       border-style: dashed;
       display: inline-block;
     }
-    #dropTarget::before{
+    #dropTarget::before {
       content: 'DRAG & DROP';
       color: #c5c5c5;
       font-weight: bold;
@@ -31,158 +40,239 @@
       border-radius: 6px;
       color: #464646;
       font-size: 12pt;
-      width:100px;
+      width: 100px;
     }
-    #fileList{
+    #fileList ul {
       list-style-type: none;
     }
-    #fileList>li{
+    #fileList li {
       background-color: #f1f1f1;
       margin: 10px 0;
       border: 2px solid #e0e0e0;
       border-radius: 14px;
       padding: 8px;
     }
-    #fileList>li.uploading{
+    #fileList li.uploading {
       color: white;
       background-color: #46bbff;
     }
-    #fileList>li.completed{
+    #fileList li.completed {
       color: white;
       background-color: #25c548;
     }
-    #catalogue{
+    #fileList li.unfinished {
+      color: #a5a5a5;
+      background-color: #d6d6d6;
+    }
+    #catalogue {
       display: inline-block;
       margin: 0 21px;
       position: relative;
       top: -106px;
       font-size: 16pt;
     }
-    #catalogue>.catalogue_radio{
-      display:block;
+    #catalogue > .catalogue_radio {
+      display: block;
     }
-</style>
+    #fileList li.processing {
+      background-color: #fbbcbc;
+      color: #966d6d;
+    }
+    #fileList li.processing::before {
+      content: '|';
+      animation-name: spin;
+      animation-duration: 1000ms;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+      display: inline-block;
+      left: -35px;
+      position: relative;
+      font-size: 16pt;
+    }
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 
-<div class="example-wrapper">
+  <div class="example-wrapper">
     <h1>File uploader</h1>
 
-<div>
-  <div id="dropTarget"></div>
-  <div id="catalogue">
-    <div class="catalogue_radio"><input type="radio" name="item" value="12312312312" checked="">Item 1</div>
-    <div class="catalogue_radio"><input type="radio" name="item" value="12111111111">Item 2</div>
-    <div class="catalogue_radio"><input type="radio" name="item" value="22222222222">Item 3</div>
-    <div class="catalogue_radio"><input type="radio" name="item" value="69696969696">Item 4</div>
+    <div>
+      <div id="dropTarget"></div>
+      <div id="catalogue">
+        <div class="catalogue_radio"><input type="radio" name="item" value="12312312312" checked="">Item 1</div>
+        <div class="catalogue_radio"><input type="radio" name="item" value="12111111111">Item 2</div>
+        <div class="catalogue_radio"><input type="radio" name="item" value="22222222222">Item 3</div>
+        <div class="catalogue_radio"><input type="radio" name="item" value="69696969696">Item 4</div>
+      </div>
+    </div>
+    <button id="browseButton">BROWSE</button>
+    <button type="submit">SUBMIT</button>
+    <div id="fileList"></div>
+    <input type="hidden" id="unfinished_uploads" value="{{ unfinished_uploads }}"/>
   </div>
-</div>
-<button id="browseButton">BROWSE</button>
-<button type="submit">SUBMIT</button>
-<ul id="fileList"></ul>
-<input type="hidden" id="unfinished_uploads" value="{{ unfinished_uploads }}" />
-</div>
 {% endblock %}
 
 {% block javascripts %}
   <script type="text/javascript" src="/bundles/fileuploader/assets/js/vendor/md5.js"></script>
+  <script type="text/javascript" src="/bundles/fileuploader/assets/js/vendor/crc32.js"></script>
   <script type="text/javascript" src="/bundles/fileuploader/assets/js/vendor/resumable.js"></script>
-  <script
-  src="https://code.jquery.com/jquery-3.3.1.js"
-  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-  crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
   <script>
 
-  var r = new Resumable({
-    target:'{{ target_url }}',
-    chunkSize:{{ chunk_size }},
-    simultaneousUploads: {{ simultaneous_uploads }}
-  });
+    hashPool = [];
 
-  r.assignBrowse(document.getElementById('browseButton'));
-  r.assignDrop(document.getElementById('dropTarget'));
-  r.on('fileAdded', function(file, event){
-    file.itemId=$('input[name="item"]:checked').val();
-    getHash(file);
-    updateList();
-  });
-  r.on('fileSuccess', function(file, message){
-    updateList();
-  });
-
-  items = [];
-
-  var getHash = function(file){
-    var fileObj = file.file;
-    reader = new FileReader();
-    reader.onload = function(e) {
-      hashable = e.target.result.slice(-2500)+file.itemId;
-      file.uniqueIdentifier = hex_md5(hashable);
-    }
-    reader.readAsText(fileObj);
-  }
-
-  var updateList = function(){
-
-    $('#fileList').html('');
-    // for(i=0;i<r.files.length;i++){
-    //   found = false;
-    //   for(j=0;j<=items.length;j++){
-    //     if(items[j] == r.files[i].itemId){
-    //       found = true;
-    //     }
-    //   }
-    //           console.log(i+" "+found+" "+r.files[i].itemId);
-    //   if(!found){
-    //     items.push(r.files[i].itemId);
-    //     //console.log(items);
-    //   }
-    // }
-
-    unfinishedUploads = $("#unfinished_uploads").val();
-    unfinishedUploadsSplit = unfinishedUploads.split("|");
-    unfinishedUploadsProcessed = [];
-    for(i = 0; i<unfinishedUploadsSplit.length; i++){
-      unfinishedParts = unfinishedUploadsSplit[i].split(',');
-      unfinishedUploadsProcessed[i] = {
-        'itemId':unfinishedParts[0],
-        'filename':unfinishedParts[1],
-        'hash':unfinishedParts[2]
+    var getHash = function(callback) {
+      for(i = 0; i<hashPool.length; i++){
+      file = hashPool[i];
+      console.log("H");
+      var fileObj = file.file;
+      reader = new FileReader();
+      reader.onload = function(e) {
+        hashable = e.target.result;
+        hashable = new Uint8Array(hashable);
+        //hashable = e.target.result.slice(0,2000) + file.itemId + file.file.size;
+        //file.uniqueIdentifier = hex_md5(hashable);
+        hashable = CRC32.buf(hashable);
+        //hashable = e.target.result;//.result.slice(0,2000);// + file.itemId + file.file.size;
+        file.uniqueIdentifier = hex_md5(hashable+file.itemId + file.file.size);
+        file.ready = true;
+        callback();
+      }
+      reader.readAsArrayBuffer(fileObj);
+      hashPool.slice(i,1);
       }
     }
 
-    console.log(unfinishedParts);
+    var buildList = function() {
+      if (typeof updateListTimer != 'undefined') {
+        clearTimeout(updateListTimer);
+      }
+      updateListTimer = setTimeout(function() {
 
-    for(i=1;i<=r.files.length;i++){
-      file = r.files[i-1];
-      var liClass = "";
-      if(file.isUploading(i-1)){
-        liClass="uploading";
-      }
-      if(file.isComplete(i-1)){
-        liClass="completed";
-      }
-      $('#fileList').append('<li class="'+ liClass +'">File ' + i + ': '+ file.fileName+'</li>');
+        $("#fileList").html("");
+
+        uploads = [];
+
+        uploads = fetchUnfinishedUploads(uploads);
+        uploads = fetchPendingUploads(uploads);
+        uploads = resolveResumedUploads(uploads);
+
+        items = [];
+        for (i = 0; i < uploads.length; i++) {
+          found = false;
+          for (j = 0; j <= items.length; j++) {
+            if (items[j] == uploads[i]["itemId"]) {
+              found = true;
+            }
+          }
+          if (!found && uploads[i]["itemId"] !== "") {
+            items.push(uploads[i]["itemId"]);
+          }
+        }
+        renderUploads();
+      }, 300);
+
     }
-  }
 
-  $("button[type='submit']").click(function(){
-    uploadData = {};
-    for(i = 0; i<r.files.length; i++){
-      obj = {
-        'filehash': r.files[i].uniqueIdentifier,
-        'filename': r.files[i].fileName,
-        'itemid': r.files[i].itemId,
-        'totalchuks': r.files[i].chunks.length
+    var updateList = function(files) {
+      for (i = 0; i < uploads.length; i++) {
+        for (j = 0; j < files.length; j++) {
+          if (uploads[i]["filename"] == files[j].fileName && uploads[i]["filehash"] == files[j].uniqueIdentifier) {
+            console.log("" + files[j].isComplete() + files[j].isUploading());
+            if (files[j].isUploading()) {
+              uploads[i]["class"] = "uploading";
+            }
+            if (files[j].isComplete()) {
+              uploads[i]["class"] = "completed";
+            }
+          }
+        }
       }
-      uploadData[i] = obj;
+      renderUploads();
     }
-    console.log(uploadData);
-    $.ajax({
-      url: '/api/upload/commit',
-      method: 'POST',
-      data: uploadData
-    })
-    r.upload();
-  });
 
-</script>
+    var renderUploads = function() {
+      $("#fileList").html("");
+      for (i = 0; i < items.length; i++) {
+        listItem = $('#fileList').append("<b>ITEM " + items[i] + "</b><ul class='item item" + i + "'></ul>");
+      }
+      for (i = 0; i < uploads.length; i++) {
+        listItemId = items.indexOf(uploads[i]['itemId']);
+        $('#fileList .item.item' + listItemId).append('<li class="' + uploads[i]["class"] + (uploads[i]["ready"]? "": " processing") + '">File ' + i + ': ' + uploads[i]["filename"] + '</li>');
+      }
+    }
+
+    var fetchUnfinishedUploads = function(uploadArr) {
+      unfinishedUploads = $("#unfinished_uploads").val().split("|");
+      if (unfinishedUploads == "") {
+        return uploadArr
+      }
+      for (i = 0; i < unfinishedUploads.length; i++) {
+        unfinishedParts = unfinishedUploads[i].split(',');
+        uploadArr.push({'itemId': unfinishedParts[0], 'filename': unfinishedParts[1], 'filehash': unfinishedParts[2], 'class': "unfinished", "ready": true});
+      }
+      return uploadArr;
+    }
+
+    var fetchPendingUploads = function(uploadArr) {
+      for (i = 0; i < r.files.length; i++) {
+        uploadArr.push({"itemId": r.files[i].itemId, "filename": r.files[i].fileName, "filehash": r.files[i].uniqueIdentifier, "class": "pending", "ready": r.files[i].ready});
+      }
+      return uploadArr;
+    }
+
+    var resolveResumedUploads = function(uploadArr) {
+      for (i = 0; i < uploadArr.length; i++) {
+        for (j = 0; j < uploadArr.length; j++) {
+          if (uploads[i]["class"] == "unfinished" && i != j && uploads[i]["filename"] == uploads[j]["filename"] && uploads[i]["itemId"] == uploads[j]["itemId"] && uploads[i]["filehash"] == uploads[j]["filehash"]) {
+            uploads.splice(i, 1);
+            return resolveResumedUploads(uploadArr);
+          }
+        }
+      }
+      return uploadArr;
+    }
+
+    // var getUploadByFile = function(file){   for (i = 0; i < uploads.length; i++) {     if (uploads[i]["filename"] == file.fileName && uploads[i]["itemId"] == file.itemId && uploads[i]["filehash"] == file.uniqueIdentifier) {     if
+    // (uploads[i]["fileId"] == r.files.indexOf(file)) {       return(uploads[i]);     }   } }
+
+    var r = new Resumable({target: '{{ target_url }}', chunkSize: {{ chunk_size }}, simultaneousUploads: {{ simultaneous_uploads }}});
+    buildList();
+    r.assignBrowse(document.getElementById('browseButton'));
+    r.assignDrop(document.getElementById('dropTarget'));
+    r.on('fileAdded', function(file, event) {
+      file.itemId = $('input[name="item"]:checked').val();
+      file.ready = false;
+      buildList();
+      hashPool.push(file);
+      getHash(buildList);
+    });
+    r.on('fileSuccess', function(file, message) {
+      updateList(r.files);
+    });
+
+    $("button[type='submit']").click(function() {
+      if ($(".processing").length == 0) {
+        uploadData = {};
+        for (i = 0; i < r.files.length; i++) {
+          obj = {
+            'filehash': r.files[i].uniqueIdentifier,
+            'filename': r.files[i].fileName,
+            'itemid': r.files[i].itemId,
+            'totalchuks': r.files[i].chunks.length
+          }
+          uploadData[i] = obj;
+        }
+        $.ajax({url: '/api/upload/commit', method: 'POST', data: uploadData})
+        r.upload();
+        updateList(r.files);
+      }
+    });
+  </script>
 {% endblock %}
