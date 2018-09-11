@@ -40,7 +40,7 @@
       border-radius: 6px;
       color: #464646;
       font-size: 12pt;
-      width: 100px;
+      width: 120px;
     }
     #fileList ul {
       list-style-type: none;
@@ -97,8 +97,19 @@
         transform: rotate(360deg);
       }
     }
+    .example-wrapper{
+      max-height: 0px;
+      transition: 1s;
+      position: relative;
+      overflow: hidden;
+    }
+    .example-wrapper.open{
+      max-height: 500px;
+      overflow: scroll;
+    }
   </style>
 
+  <div id="photobank-wrapper"></div>
   <div class="example-wrapper">
     <h1>File uploader</h1>
 
@@ -116,13 +127,20 @@
     <div id="fileList"></div>
     <input type="hidden" id="unfinished_uploads" value="{{ unfinished_uploads }}"/>
   </div>
+  <button type="button" id="expand_uploader">FILE UPLOADER</button>
 {% endblock %}
 
 {% block javascripts %}
   <script type="text/javascript" src="/bundles/fileuploader/assets/js/vendor/md5.js"></script>
   <script type="text/javascript" src="/bundles/fileuploader/assets/js/vendor/crc32.js"></script>
   <script type="text/javascript" src="/bundles/fileuploader/assets/js/vendor/resumable.js"></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+  <!--<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>-->
+  <script type="text/javascript" src="/assets/js/vendor/jquery-3.3.1.js"></script>
+  <script type="text/javascript" src="/assets/js/vendor/react.js"></script>
+  <script type="text/javascript" src="/assets/js/vendor/react-dom.js"></script>
+  <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+<script type="text/babel" src="/assets/js/components/photobank/CatalogueTree.jsx"></script>
+  <script type="text/babel" src="/assets/js/components/photobank/PhotoBank.jsx"></script>
   <script>
 
     hashPool = [];
@@ -274,5 +292,7 @@
         updateList(r.files);
       }
     });
+
+    $('#expand_uploader').click(function(){$('.example-wrapper').toggleClass('open')});
   </script>
 {% endblock %}
