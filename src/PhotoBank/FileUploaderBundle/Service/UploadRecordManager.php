@@ -53,6 +53,7 @@ class UploadRecordManager
   }
 
   public function get(){
+    $uploadArr = [];
     $uploads = $this->entityManager
     ->getRepository(Upload::class)
     ->findBy(
