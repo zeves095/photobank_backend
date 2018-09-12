@@ -216,12 +216,12 @@ class ItemSection extends React.Component{
 
     this.buildList = this.buildList.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
     this.getHash = this.getHash.bind(this);
     this.resolveResumedUploads = this.resolveResumedUploads.bind(this);
   }
 
   buildList() {
-    console.log(this.resumable.files);
     if (typeof this.updateListTimer != 'undefined') {
       clearTimeout(this.updateListTimer);
     }
@@ -246,7 +246,7 @@ class ItemSection extends React.Component{
 
       this.resolveResumedUploads();
 
-      let uploads = this.uploads.map((upload)=><span key={upload.filename+upload.filehash} className={upload.class + (upload.ready? "": " processing")}>F: {upload.filename}</span>);
+      let uploads = this.uploads.map((upload)=><span key={upload.filename+upload.filehash} className={upload.class + (upload.ready? "": " processing")}>F: {upload.filename}<span className="delete_upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span></span>);
       this.setState({
         "uploads":uploads
       });
@@ -264,27 +264,6 @@ class ItemSection extends React.Component{
     }
   }
 
-  // getHash() {
-  //   console.log(this.hashPool);
-  //   for(var i = 0; i<this.hashPool.length; i++){
-  //     let file = this.hashPool[i];
-  //     let fileObj = file.file;
-  //     let reader = new FileReader();
-  //     reader.onload = function(e) {
-  //       let hashable = e.target.result;
-  //       hashable = new Uint8Array(hashable);
-  //       hashable = CRC32.buf(hashable);
-  //       console.log(""+fileObj.filename + hashable);
-  //       file.uniqueIdentifier = hex_md5(hashable+file.itemId + file.file.size);
-  //       file.ready = true;
-  //       this.buildList();
-  //     }.bind(this);
-  //     reader.readAsArrayBuffer(fileObj);
-  //     this.hashPool.slice(i,1);
-  //     console.log(this.hashPool);
-  //   }
-  // }
-
   getHash(file) {
     let fileObj = file.file;
     let reader = new FileReader();
@@ -292,9 +271,7 @@ class ItemSection extends React.Component{
       let hashable = e.target.result;
       hashable = new Uint8Array(hashable);
       hashable = CRC32.buf(hashable).toString();
-      console.log(hashable);
       file.uniqueIdentifier = hex_md5(hashable+file.itemId + file.file.size);
-      console.log(hex_md5(hashable+file.itemId+file.file.size));
       file.ready = true;
       this.buildList();
     }.bind(this);
@@ -321,7 +298,6 @@ class ItemSection extends React.Component{
         }
         uploadData[i] = obj;
       }
-      console.log(uploadData);
       $.ajax({url: '/api/upload/commit', method: 'POST', data: uploadData})
       this.resumable.upload();
     }
@@ -343,6 +319,19 @@ class ItemSection extends React.Component{
       this.buildList();
     }.bind(this));
     this.buildList();
+  }
+
+  handleDelete(e){
+    let filehash = $(e.target).data("item");
+    for(var i = 0; i<this.resumable.files.length; i++){
+      console.log(this.resumable.files[i].uniqueIdentifier);
+      console.log(filehash);
+      console.log(this.resumable.files[i].uniqueIdentifier == filehash);
+      if(this.resumable.files[i].uniqueIdentifier == filehash){
+        this.resumable.files.splice(i,1);
+        this.buildList();
+      }
+    }
   }
 
   render() {
@@ -424,7 +413,6 @@ class PhotoBank extends React.Component {
 
   fetchUnfinished(){
     let unfinishedUploads = $("#unfinished_uploads").val().split("|");
-    console.log(unfinishedUploads);
     if (unfinishedUploads[0] !== "") {
       for (var i = 0; i < unfinishedUploads.length; i++) {
         let unfinishedParts = unfinishedUploads[i].split(',');
