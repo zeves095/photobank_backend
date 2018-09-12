@@ -92,6 +92,10 @@ position: relative;
 float: right;
 }
 
+#photobank-wrapper .delete_upload{
+  float:right;
+}
+
 #photobank-wrapper .file_list ul {
   list-style-type: none;
 }
