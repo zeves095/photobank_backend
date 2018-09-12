@@ -5,18 +5,22 @@ class CatalogueTree extends React.Component {
     this.state ={
       "catalogue_data": this.props.catalogue_data,
       "catalogue_nodes": [],
-      "catalogue_tree": []
+      "catalogue_tree": [],
+      "current_node": 0,
+      "crumbs": []
     }
-    this.parseCatalogueStructure = this.parseCatalogueStructure.bind(this);
+    this.getCatalogueNodes = this.getCatalogueNodes.bind(this);
     this.getNodeById = this.getNodeById.bind(this);
     this.getNodeParent = this.getNodeParent.bind(this);
     this.getNodeChildren = this.getNodeChildren.bind(this);
     this.getNodeLevel = this.getNodeLevel.bind(this);
     this.populateTree = this.populateTree.bind(this);
     this.getEntity = this.getEntity.bind(this);
+    this.getCrumbs = this.getCrumbs.bind(this);
+    this.nodeChoiceHandler = this.nodeChoiceHandler.bind(this);
   }
 
-  parseCatalogueStructure(data){
+  getCatalogueNodes(data){
     let nodes = this.getEntity("cnode", data);
     this.state.catalogue_nodes = nodes;
     let catalogueData = [];
@@ -29,10 +33,11 @@ class CatalogueTree extends React.Component {
     this.setState({
       "catalogue_nodes": catalogueData
     });
-    let catalogueTree = this.populateTree();
+    let catalogueTree = this.populateTree(this.state.current_node);
     this.setState({
       "catalogue_tree": catalogueTree
     });
+    this.getCrumbs();
   }
 
   getEntity(type, src){
@@ -52,12 +57,30 @@ class CatalogueTree extends React.Component {
     for(var i = 0; i<children.length; i++){
       let child = children[i];
       if(child.hasChildren){
-        element.push(<li key={child.id}><b data-node={child.id} onClick={this.props.nodeChoiceHandler}>{child.name}</b><ul>{this.populateTree(child.id)}</ul></li>);
+        element.push(<span key={child.id} className="cat_item parent" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></span>);
       } else {
-        element.push(<li key={child.id}><b data-node={child.id} onClick={this.props.nodeChoiceHandler}>{child.name}</b></li>)  ;
+        element.push(<span key={child.id} className="cat_item child" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></span>)  ;
       }
     }
     return element;
+  }
+
+  getCrumbs(){
+    let crumbs = [];
+    let cur_node = this.getNodeById(this.state.current_node);
+    cur_node.active = true;
+    crumbs.push(cur_node);
+    while(this.getNodeParent(cur_node) != cur_node && this.getNodeParent(cur_node)!= null){
+      let parent = this.getNodeParent(cur_node);
+      parent.active = false;
+      crumbs.push(parent);
+      cur_node = this.getNodeById(parent.id);
+    }
+    crumbs = crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"active":""} onClick={this.nodeChoiceHandler}>{crumb.name}</span>);
+    crumbs.reverse();
+    this.setState({
+      "crumbs":crumbs
+    });
   }
 
   getNodeParent(node){
@@ -95,19 +118,30 @@ class CatalogueTree extends React.Component {
     return 0;
   }
 
+  nodeChoiceHandler(e){
+    e.stopPropagation();
+    let curr_id = e.target.getAttribute('data-node');
+    this.state.current_node = curr_id;
+    this.getCatalogueNodes(this.props.catalogue_data);
+    this.props.nodeChoiceHandler(curr_id);
+  }
+
   componentDidMount(){
-    if(this.state.catalogue_data.length>0){
-      this.parseCatalogueStructure(this.props.catalogue_data);
-    }
+    this.getCatalogueNodes(this.props.catalogue_data);
   }
 
   render() {
     return (
       <div className="catalogue_tree">
-        <h2 className="component_title">Catalogue</h2>
-        <ul>
+        <h2 className="component_title">Каталог</h2>
+        <div>
+          <div className="crumbs">
+            {this.state.crumbs}
+          </div>
+          <div className="catalogue_tree_inner">
           {this.state.catalogue_tree}
-        </ul>
+          </div>
+        </div>
       </div>
     );
   }
@@ -154,8 +188,10 @@ class NodeViewer extends React.Component{
   render() {
     return (
       <div className="node_viewer">
-        <h2 className="component_title">Node viewer</h2>
-        {this.state.node_items.map((item)=><div key={item.id}><ItemSection item_id={item.id} /></div>)}
+        <h2 className="component_title">Просмотр категории</h2>
+        <div className="node_viewer_inner">
+        {this.state.node_items.map((item)=><div key={item.id}><ItemSection item_id={item.id} open_by_default={false}/></div>)}
+        </div>
       </div>
     );
   }
@@ -165,16 +201,14 @@ class ItemSection extends React.Component{
   constructor(props) {
     super(props);
     if(typeof window.resumableContainer[this.props.item_id] == 'undefined'){
-      console.log(1);
-      this.resumable = new Resumable({target: '/api/upload'});
-      window.resumableContainer[this.props.item_id] = this.resumable;
+      this.resumable = new Resumable({target: '/api/upload/'});
     } else {
-      console.log(2);
       this.resumable = window.resumableContainer[this.props.item_id];
     }
     this.state={
       "resumable":this.resumable,
       "item_id":this.props.item_id,
+      "open":this.props.open_by_default,
       "ready":false
     };
     this.hashPool = [];
@@ -183,67 +217,103 @@ class ItemSection extends React.Component{
     this.buildList = this.buildList.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getHash = this.getHash.bind(this);
+    this.resolveResumedUploads = this.resolveResumedUploads.bind(this);
   }
 
   buildList() {
+    console.log(this.resumable.files);
     if (typeof this.updateListTimer != 'undefined') {
       clearTimeout(this.updateListTimer);
     }
     this.updateListTimer = setTimeout(function() {
       let unfinishedUploads = $("#unfinished_uploads").val().split("|");
 
+      this.uploads = [];
+
       if (unfinishedUploads !== "") {
         for (var i = 0; i < unfinishedUploads.length; i++) {
           let unfinishedParts = unfinishedUploads[i].split(',');
-          if(unfinishedParts[0]==this.state.itemId){
+          if(unfinishedParts[0]==this.state.item_id){
             this.uploads.push({'filename': unfinishedParts[1], 'filehash': unfinishedParts[2], 'class': "unfinished", "ready": true});
           }
         }
       }
 
       for (var i = 0; i < this.resumable.files.length; i++) {
-        this.uploads.push({"filename": this.resumable.files[i].fileName, "filehash": this.resumable.files[i].uniqueIdentifier, "class": "pending", "ready": this.resumable.files[i].ready});
+        let className = this.resumable.files[i].isComplete()?"completed":"pending";
+        this.uploads.push({"filename": this.resumable.files[i].fileName, "filehash": this.resumable.files[i].uniqueIdentifier, "class": className, "ready": this.resumable.files[i].ready});
       }
 
-      for (var i = 0; i < this.uploads.length; i++) {
-        for (var j = 0; j < this.uploads.length; j++) {
-          if (this.uploads[i]["class"] == "unfinished" && i != j && this.uploads[i]["filename"] == this.uploads[j]["filename"] && this.uploads[i]["itemId"] == this.uploads[j]["itemId"] && this.uploads[i]["filehash"] == this.uploads[j]["filehash"]) {
-            this.uploads.splice(i, 1);
-            this.resolveResumedUploads();
-          }
-        }
-      }
+      this.resolveResumedUploads();
 
-      let uploads = this.uploads.map((upload)=><li key={upload.filename} className={upload.class + (upload.ready? "": "processing")}>F: {upload.filename}</li>);
-      console.log(this.resumable.files);
+      let uploads = this.uploads.map((upload)=><span key={upload.filename+upload.filehash} className={upload.class + (upload.ready? "": " processing")}>F: {upload.filename}</span>);
       this.setState({
         "uploads":uploads
       });
     }.bind(this), 300);
   }
 
-  getHash() {
-    for(var i = 0; i<this.hashPool.length; i++){
-      let file = this.hashPool[i];
-      let fileObj = file.file;
-      let reader = new FileReader();
-      reader.onload = function(e) {
-        let hashable = e.target.result;
-        hashable = new Uint8Array(hashable);
-        hashable = CRC32.buf(hashable);
-        file.uniqueIdentifier = hex_md5(hashable+file.itemId + file.file.size);
-        file.ready = true;
+  resolveResumedUploads(){
+    for (var i = 0; i < this.uploads.length; i++) {
+      for (var j = 0; j < this.uploads.length; j++) {
+        if (this.uploads[i]["class"] == "unfinished" && i != j && this.uploads[i]["filename"] == this.uploads[j]["filename"] && this.uploads[i]["itemId"] == this.uploads[j]["itemId"] && this.uploads[i]["filehash"] == this.uploads[j]["filehash"]) {
+          this.uploads.splice(i, 1);
+          this.resolveResumedUploads();
+        }
       }
-      reader.readAsArrayBuffer(fileObj);
-      this.hashPool.slice(i,1);
     }
   }
 
+  // getHash() {
+  //   console.log(this.hashPool);
+  //   for(var i = 0; i<this.hashPool.length; i++){
+  //     let file = this.hashPool[i];
+  //     let fileObj = file.file;
+  //     let reader = new FileReader();
+  //     reader.onload = function(e) {
+  //       let hashable = e.target.result;
+  //       hashable = new Uint8Array(hashable);
+  //       hashable = CRC32.buf(hashable);
+  //       console.log(""+fileObj.filename + hashable);
+  //       file.uniqueIdentifier = hex_md5(hashable+file.itemId + file.file.size);
+  //       file.ready = true;
+  //       this.buildList();
+  //     }.bind(this);
+  //     reader.readAsArrayBuffer(fileObj);
+  //     this.hashPool.slice(i,1);
+  //     console.log(this.hashPool);
+  //   }
+  // }
+
+  getHash(file) {
+    let fileObj = file.file;
+    let reader = new FileReader();
+    reader.onload = function(e) {
+      let hashable = e.target.result;
+      hashable = new Uint8Array(hashable);
+      hashable = CRC32.buf(hashable).toString();
+      console.log(hashable);
+      file.uniqueIdentifier = hex_md5(hashable+file.itemId + file.file.size);
+      console.log(hex_md5(hashable+file.itemId+file.file.size));
+      file.ready = true;
+      this.buildList();
+    }.bind(this);
+    reader.readAsArrayBuffer(fileObj);
+    this.buildList();
+  }
+
   handleSubmit(){
-    if (this.state.ready) {
+    let ready = true;
+    for(var i = 0; i< this.resumable.files.length; i++){
+      if (!this.resumable.files[i].ready){
+        ready = false;
+      }
+    }
+    console.log(ready);
+    if (ready) {
       let uploadData = {};
       for (var i = 0; i < this.resumable.files.length; i++) {
-        obj = {
+        let obj = {
           'filehash': this.resumable.files[i].uniqueIdentifier,
           'filename': this.resumable.files[i].fileName,
           'itemid': this.resumable.files[i].itemId,
@@ -253,36 +323,87 @@ class ItemSection extends React.Component{
       }
       $.ajax({url: '/api/upload/commit', method: 'POST', data: uploadData})
       this.resumable.upload();
-      updateList(this.resumable.files);
     }
   }
 
   componentDidMount(){
-    console.log(this.state);
     this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id));
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
     this.resumable.on('fileAdded', function(file, event) {
       file.itemId = this.state.item_id;
       file.ready = false;
-      this.buildList();
-      this.hashPool.push(file);
-      this.getHash();
+      //this.hashPool.push(file);
+      this.getHash(file);
+      if(window.resumableContainer[this.state.item_id] == undefined){
+        window.resumableContainer[this.props.item_id] = this.resumable;
+      }
     }.bind(this));
-    this.resumable.on('fileSuccess', function(file, message) {
-      updateList(this.resumable.files);
-    });
-
+    this.resumable.on('fileSuccess', function(file,event){
+      this.buildList();
+    }.bind(this));
     this.buildList();
   }
 
   render() {
     return (
-      <div className="item-view">
-        <h4>{this.state.item_id}</h4>
+      <div className="item_view">
+        <h4 onClick={()=>{this.setState({"open":!this.state.open})}}>{this.state.item_id}</h4>
+        <div className={this.state.open?"item_view_inner open":"item_view_inner"}>
         <div className="file_list" id={"file_list" + this.props.item_id}>{this.state.uploads}</div>
         <div className="drop_target" id={"drop_target" + this.props.item_id}></div>
-        <button type="button" id={"browse" + this.props.item_id}>browse</button>
-        <button type="button" onclick={this.handleSubmit} id={"submit" + this.props.item_id}>submit</button>
+        <div className="button_block">
+          <button type="button" id={"browse" + this.props.item_id}>Выбрать</button>
+          <button type="button" onClick={this.handleSubmit} id={"submit" + this.props.item_id}>Загрузить</button>
+        </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+class UploadPool extends React.Component{
+
+  constructor(props){
+    super(props);
+    this.state = {
+      "resumable_container": window.resumableContainer,
+      "pool":[]
+    }
+    this.getResumableList = this.getResumableList.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  };
+
+  getResumableList(){
+    let resumables = [];
+    let res_container = this.state.resumable_container;
+    for(var itemId in res_container){
+      resumables.push(<ItemSection key={itemId} item_id={itemId} open_by_default={true} />);
+    }
+    this.setState({
+      "pool":resumables
+    });
+  }
+
+  componentDidMount(){
+    let container = window.resumableContainer;
+    this.state.resumable_container = container;
+    this.getResumableList();
+  }
+
+  handleSubmit(){
+    for(var res in this.state.resumable_container){
+      this.state.resumable_container[res].upload();
+    }
+  }
+
+  render(){
+    return(
+      <div className="upload_pool">
+        <h2 className="component_title">Загрузки</h2>
+        <div className="upload_pool_inner">
+          {this.state.pool}
+          <button type="button" onClick={this.handleSubmit}>Загрузить</button>
+        </div>
       </div>
     );
   }
@@ -293,17 +414,16 @@ class PhotoBank extends React.Component {
   constructor(props) {
     super(props);
     this.state ={
-      "catalogue_data": []
+      "catalogue_data": [],
+      "view_pool": false
     }
 
     this.handleNodeChoice = this.handleNodeChoice.bind(this);
   }
 
-  handleNodeChoice(e){
-    e.stopPropagation();
-    let selectedNode = e.target.getAttribute('data-node');
+  handleNodeChoice(id){
     this.setState({
-      "selected_node": selectedNode
+      "selected_node": id
     });
   }
 
@@ -319,12 +439,18 @@ class PhotoBank extends React.Component {
   render() {
     if(this.state.catalogue_data.length>0){
     return (
-      <div className="photobank-main">
+      <div className="photobank_main">
+      <div className="main_block">
         <CatalogueTree catalogue_data={this.state.catalogue_data} nodeChoiceHandler={this.handleNodeChoice} />
         <NodeViewer catalogue_data={this.state.catalogue_data} node={this.state.selected_node} />
+        </div>
+        {this.state.view_pool?<UploadPool />:""}
+        <div className="butt-wrapper">
+        <button type="button" className=" large_btn" onClick={()=>{this.setState({"view_pool":!this.state.view_pool})}}>{this.state.view_pool?"Скрыть":"Загрузки"}</button>
+        </div>
       </div>
     );
-  } else {return (<h1>LOADING</h1>)}
+  } else {return (<h1>ЗАГРУЗКА...</h1>)}
   }
 }
 
