@@ -321,6 +321,7 @@ class ItemSection extends React.Component{
         }
         uploadData[i] = obj;
       }
+      console.log(uploadData);
       $.ajax({url: '/api/upload/commit', method: 'POST', data: uploadData})
       this.resumable.upload();
     }
@@ -417,8 +418,24 @@ class PhotoBank extends React.Component {
       "catalogue_data": [],
       "view_pool": false
     }
-
+    this.fetchUnfinished();
     this.handleNodeChoice = this.handleNodeChoice.bind(this);
+  }
+
+  fetchUnfinished(){
+    let unfinishedUploads = $("#unfinished_uploads").val().split("|");
+    console.log(unfinishedUploads);
+    if (unfinishedUploads[0] !== "") {
+      for (var i = 0; i < unfinishedUploads.length; i++) {
+        let unfinishedParts = unfinishedUploads[i].split(',');
+        if(typeof window.resumableContainer[unfinishedParts[0]] == 'undefined'){
+          window.resumableContainer[unfinishedParts[0]]=new Resumable({target: '/api/upload/'});
+        }
+        if(unfinishedParts[0]==this.state.item_id){
+          this.uploads.push({'filename': unfinishedParts[1], 'filehash': unfinishedParts[2], 'class': "unfinished", "ready": true});
+        }
+      }
+    }
   }
 
   handleNodeChoice(id){
