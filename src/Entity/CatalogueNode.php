@@ -24,12 +24,12 @@ class CatalogueNode
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\CatalogueNode", mappedBy="parent2")
+     * @ORM\OneToMany(targetEntity="App\Entity\CatalogueNode", mappedBy="parent")
      */
     private $children;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\CatalogueNode")
+     * @ORM\ManyToOne(targetEntity="App\Entity\CatalogueNode", inversedBy="children")
      */
     private $parent;
 

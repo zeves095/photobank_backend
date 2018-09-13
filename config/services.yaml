@@ -14,3 +14,36 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+
+
+
+    # JSON Encoder
+    app.encoder.json:
+        class: 'Symfony\Component\Serializer\Encoder\JsonEncoder'
+    # XML Encoder
+    app.encoder.xml:
+        class: 'Symfony\Component\Serializer\Encoder\XmlEncoder'
+
+    app.normalizer.catalogue.node:
+        class: 'App\Serializer\Normalizer\CatalogueNodeNormalizer'
+    
+    app.normalizer.catalogue.item:
+        class: 'App\Serializer\Normalizer\CatalogueNodeItemNormalizer'
+
+    app.normalizer.resource:
+        class: 'App\Serializer\Normalizer\ResourceNormalizer'
+
+    App\Serializer\AppSerializer:
+        autowire: false
+        autoconfigure: false
+        public: false
+        arguments:
+            0:
+                - '@app.normalizer.catalogue.node'
+                - '@app.normalizer.catalogue.item'
+                - '@app.normalizer.resource'
+                - '@serializer.normalizer.object'
+            1:
+                - '@app.encoder.json'
+                - '@app.encoder.xml'
