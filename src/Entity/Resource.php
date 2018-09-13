@@ -27,11 +27,6 @@ class Resource
     private $username;
 
     /**
-     * @ORM\Column(type="bigint")
-     */
-    private $item_id;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $preset;
@@ -61,6 +56,12 @@ class Resource
      */
     private $src_filename;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\CatalogueNodeItem", inversedBy="resources")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $item;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,18 +87,6 @@ class Resource
     public function setUsername(string $username): self
     {
         $this->username = $username;
-
-        return $this;
-    }
-
-    public function getItemId(): ?int
-    {
-        return $this->item_id;
-    }
-
-    public function setItemId(int $item_id): self
-    {
-        $this->item_id = $item_id;
 
         return $this;
     }
@@ -170,6 +159,18 @@ class Resource
     public function setSrcFilename(string $src_filename): self
     {
         $this->src_filename = $src_filename;
+
+        return $this;
+    }
+
+    public function getItem(): ?CatalogueNodeItem
+    {
+        return $this->item;
+    }
+
+    public function setItem(?CatalogueNodeItem $item): self
+    {
+        $this->item = $item;
 
         return $this;
     }
