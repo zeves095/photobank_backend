@@ -104,7 +104,7 @@ float: right;
   background-color: #f1f1f1;
   margin: 10px 0;
   border: 2px solid #00c1fb;
-  padding: 10px 35px;
+  padding: 10px 28px;
   display: block;
 }
 
@@ -213,6 +213,36 @@ background-color: #f1f1f1;
   color: white;
   background-color: #00c1fb;
   font-weight: bold;
+}
+
+#photobank-wrapper .file_list .edit_fields{
+
+    padding-top: 12px;
+  display: block;
+}
+
+#photobank-wrapper .file_list .edit_fields button{
+  width: 70px;
+  height: 22px;
+  padding: 5px;
+  font-size: 9pt;
+  display: inline-block;
+top: -9px;
+position: relative;
+}
+#photobank-wrapper .file_list .edit_fields input[type='text']{
+  width: 15px;
+}
+#photobank-wrapper .file_list .edit_fields label{
+  font-size: 8pt;
+}
+#photobank-wrapper .file_list .edit_input{
+  width: 95px;
+    display: inline-block;
+    text-align: center;
+}
+#photobank-wrapper .file_list .edit_input label{
+  display:block;
 }
 
 @keyframes spin {
