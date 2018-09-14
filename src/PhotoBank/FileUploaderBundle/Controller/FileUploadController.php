@@ -24,6 +24,7 @@ class FileUploadController extends AbstractController
       $itemId = $requestStack->getCurrentRequest()->query->get('itemId');
       $itemCode = $requestStack->getCurrentRequest()->query->get('itemCode');
       $result = $receiver->uploadChunks($this->_getUploadParameters($container, $requestStack));
+      var_dump($itemCode);
       if($result['completed']){
         $responseParams=array(
           'path'=>$result['path'],
@@ -32,7 +33,7 @@ class FileUploadController extends AbstractController
           'src_filename'=>$result['src_filename'],
           'username'=>$this->username,
           'item_id'=>$itemId,
-          'item_code'=>$itemId,
+          'item_code'=>$itemCode,
           'preset'=>1,
           'type'=>1,
         );
@@ -73,11 +74,12 @@ class FileUploadController extends AbstractController
       );
 
       $itemId = $request->query->get('itemId');
+      $itemCode = $request->query->get('itemCode');
       $files = $request->files;
 
       $splitId = array();
-      for($i=0; $i<=strlen($itemId)/2; $i++){
-        $splitId[] = substr($itemId, $i*2, 2);
+      for($i=0; $i<=strlen($itemCode)/2; $i++){
+        $splitId[] = substr($itemCode, $i*2, 2);
       }
       $splitIdPath = implode('/',$splitId)."/";
       $destinationDir = $container->getParameter('fileuploader.desinationdir').$splitIdPath;

@@ -164,7 +164,6 @@ class NodeViewer extends React.Component{
       this.setState({
         "node_items": data
       });
-      console.error(data);
     });
   }
 
@@ -191,6 +190,7 @@ class ItemSection extends React.Component{
     this.state={
       "resumable":this.resumable,
       "item_id":this.props.item_id,
+      "item_code":this.props.item_code,
       "open":this.props.open_by_default,
       "ready":false,
       "existing": []
@@ -210,7 +210,7 @@ class ItemSection extends React.Component{
   fetchExisting(){
     $.getJSON("/catalogue/node/item/resources/"+this.props.item_id, (data)=>{
       data = data.map((file)=>
-      <span key={file.filename+file.filehash}>{file.src_filename}>
+      <span key={file.filename+file.filehash}>{file.src_filename}
         <span className="edit_fields">
           <span className="edit_input"><input type="text" name="priority"/><label htmlFor="priority">Приоритет 1С</label></span>
           <span className="edit_input"><input type="checkbox" value="" name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
@@ -223,7 +223,6 @@ class ItemSection extends React.Component{
       this.setState({
         "existing": data
       });
-      console.warn(data);
     });
   }
 
@@ -252,7 +251,7 @@ class ItemSection extends React.Component{
 
       this.resolveResumedUploads();
 
-      let uploads = this.uploads.map((upload)=><span key={upload.filename+upload.filehash} className={upload.class + (upload.ready? "": " processing")}>F: {upload.filename}<span className="delete_upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span></span>);
+      let uploads = this.uploads.map((upload)=><span key={upload.filename+upload.filehash} className={upload.class + (upload.ready? "": " processing")}>F: {upload.filename}<span className="delete_upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span><span className="progress_bar" id={"progress_bar"+upload.filehash}><span></span></span></span>);
       this.setState({
         "uploads":uploads
       });
@@ -303,6 +302,7 @@ class ItemSection extends React.Component{
         }
         uploadData[i] = obj;
       }
+      console.log(this.resumable.files);
       $.ajax({url: '/api/upload/commit', method: 'POST', data: uploadData})
       this.resumable.upload();
     }
@@ -313,6 +313,7 @@ class ItemSection extends React.Component{
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
     this.resumable.on('fileAdded', function(file, event) {
       file.itemId = this.state.item_id;
+      file.itemCode = this.state.item_code;
       file.ready = false;
       //this.hashPool.push(file);
       this.getHash(file);
@@ -321,6 +322,10 @@ class ItemSection extends React.Component{
       }
     }.bind(this));
     this.resumable.on('fileSuccess', function(file,event){
+      this.buildList();
+    }.bind(this));
+    this.resumable.on('fileProgress', function(file,event){
+      $("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
       this.buildList();
     }.bind(this));
     this.fetchExisting();
@@ -348,7 +353,6 @@ class ItemSection extends React.Component{
       if(chk.length){data[chk.prop('name')]=chk.prop("checked")}
       if(txt.length){data[txt.prop('name')]=txt.val()}
     });
-    console.log(data);
   }
 
   render() {
