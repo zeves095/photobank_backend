@@ -22,7 +22,9 @@ class FileUploadController extends AbstractController
     {
       $this->username = $token->getToken()->getUser()->getUsername();
       $itemId = $requestStack->getCurrentRequest()->query->get('itemId');
+      $itemCode = $requestStack->getCurrentRequest()->query->get('itemCode');
       $result = $receiver->uploadChunks($this->_getUploadParameters($container, $requestStack));
+      var_dump($itemCode);
       if($result['completed']){
         $responseParams=array(
           'path'=>$result['path'],
@@ -31,6 +33,7 @@ class FileUploadController extends AbstractController
           'src_filename'=>$result['src_filename'],
           'username'=>$this->username,
           'item_id'=>$itemId,
+          'item_code'=>$itemCode,
           'preset'=>1,
           'type'=>1,
         );
@@ -38,7 +41,6 @@ class FileUploadController extends AbstractController
         $dispatcher->dispatch(FileUploadedEvent::NAME, $event);
       }
       if($result['chunk_written']){
-        echo("YISS");
         $event= new ChunkWrittenEvent($this->username, $result['src_filename'], $itemId);
         $dispatcher->dispatch(ChunkWrittenEvent::NAME, $event);
       }
@@ -72,11 +74,12 @@ class FileUploadController extends AbstractController
       );
 
       $itemId = $request->query->get('itemId');
+      $itemCode = $request->query->get('itemCode');
       $files = $request->files;
 
       $splitId = array();
-      for($i=0; $i<=strlen($itemId)/2; $i++){
-        $splitId[] = substr($itemId, $i*2, 2);
+      for($i=0; $i<=strlen($itemCode)/2; $i++){
+        $splitId[] = substr($itemCode, $i*2, 2);
       }
       $splitIdPath = implode('/',$splitId)."/";
       $destinationDir = $container->getParameter('fileuploader.desinationdir').$splitIdPath;
@@ -85,7 +88,7 @@ class FileUploadController extends AbstractController
       $username = $this->username;
       $filenameArr = explode(".",$resumableVars['resumableFilename']);
       $extension = sizeof($filenameArr)>1?end($filenameArr):"";
-      $filename = $resumableVars['resumableIdentifier'].".".$extension;
+      $filename = $resumableVars['resumableIdentifier'].($extension!=""?(".".$extension):"");
       $partstring = '.part'.$resumableVars['resumableChunkNumber'];
       $tempChunkDir = $tempDir.$username.'/'.$resumableVars['resumableIdentifier'];
       return array(

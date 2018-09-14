@@ -3,66 +3,52 @@ class CatalogueTree extends React.Component {
   constructor(props) {
     super(props);
     this.state ={
-      "catalogue_data": this.props.catalogue_data,
-      "catalogue_nodes": [],
+      "catalogue_data": [],
       "catalogue_tree": [],
-      "current_node": 0,
+      "tracked_nodes": [],
+      "current_node": 1,
       "crumbs": []
     }
     this.getCatalogueNodes = this.getCatalogueNodes.bind(this);
     this.getNodeById = this.getNodeById.bind(this);
     this.getNodeParent = this.getNodeParent.bind(this);
-    this.getNodeChildren = this.getNodeChildren.bind(this);
+    this.populateCatalogue = this.populateCatalogue.bind(this);
     this.getNodeLevel = this.getNodeLevel.bind(this);
-    this.populateTree = this.populateTree.bind(this);
-    this.getEntity = this.getEntity.bind(this);
     this.getCrumbs = this.getCrumbs.bind(this);
     this.nodeChoiceHandler = this.nodeChoiceHandler.bind(this);
   }
 
   getCatalogueNodes(data){
-    let nodes = this.getEntity("cnode", data);
-    this.state.catalogue_nodes = nodes;
-    let catalogueData = [];
-    catalogueData = nodes.map((cnode)=>{
-      cnode.hasChildren = this.getNodeChildren(cnode).length>0;
-      cnode.catLevel = 0;
-      cnode.level = this.getNodeLevel(cnode);
-      return cnode;
+    $.getJSON("/catalogue/nodes/"+this.state.current_node, (data)=>{
+      let cat_data = [];
+      for(var node in data){
+        if(this.state.tracked_nodes.indexOf(data[node].id) == -1){
+          cat_data.push(data[node]);
+          this.state.tracked_nodes.push(data[node].id);
+        }
+      }
+      if(cat_data.length>0){
+        this.setState({
+          "catalogue_data": this.state.catalogue_data.concat(cat_data)
+        });
+      }
+      this.populateCatalogue();
     });
-    this.setState({
-      "catalogue_nodes": catalogueData
-    });
-    let catalogueTree = this.populateTree(this.state.current_node);
+  }
+
+  populateCatalogue(){
+    let element = [];
+    let parent = this.getNodeById(this.state.current_node);
+    let children = this.getNodeChildren(parent);
+    for(var i = 0; i<children.length; i++){
+      let child = children[i];
+      element.push(<span key={child.id} className="cat_item parent" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></span>);
+    }
+    let catalogueTree = element;
     this.setState({
       "catalogue_tree": catalogueTree
     });
     this.getCrumbs();
-  }
-
-  getEntity(type, src){
-    let result = [];
-    for(var i = 0; i<src.length; i++){
-      if(src[i].type == type){
-        result.push(src[i]);
-      }
-    }
-    return result;
-  }
-
-  populateTree(baseParent=0){
-    let element = [];
-    let parent = this.getNodeById(baseParent);
-    let children = this.getNodeChildren(parent);
-    for(var i = 0; i<children.length; i++){
-      let child = children[i];
-      if(child.hasChildren){
-        element.push(<span key={child.id} className="cat_item parent" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></span>);
-      } else {
-        element.push(<span key={child.id} className="cat_item child" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></span>)  ;
-      }
-    }
-    return element;
   }
 
   getCrumbs(){
@@ -84,18 +70,9 @@ class CatalogueTree extends React.Component {
   }
 
   getNodeParent(node){
-    for(var i = 0; i<this.state.catalogue_nodes.length; i++){
-      if(node.parent == this.state.catalogue_nodes[i].id){
-        return this.state.catalogue_nodes[i];
-      }
-    }
-    return null;
-  }
-
-  getNodeById(id){
-    for(var i = 0; i<this.state.catalogue_nodes.length; i++){
-      if(id == this.state.catalogue_nodes[i].id){
-        return this.state.catalogue_nodes[i];
+    for(var i = 0; i<this.state.catalogue_data.length; i++){
+      if(node.parent == this.state.catalogue_data[i].id){
+        return this.state.catalogue_data[i];
       }
     }
     return null;
@@ -103,12 +80,21 @@ class CatalogueTree extends React.Component {
 
   getNodeChildren(node){
     let children = [];
-    for(var i = 0; i<this.state.catalogue_nodes.length; i++){
-      if(node.id == this.state.catalogue_nodes[i].parent && node.id !== this.state.catalogue_nodes[i].id){
-        children.push(this.state.catalogue_nodes[i]);
+    for(var i = 0; i<this.state.catalogue_data.length; i++){
+      if(node.id == this.state.catalogue_data[i].parent && node.id !== this.state.catalogue_data[i].id){
+        children.push(this.state.catalogue_data[i]);
       }
     }
     return children;
+  }
+
+  getNodeById(id){
+    for(var i = 0; i<this.state.catalogue_data.length; i++){
+      if(id == this.state.catalogue_data[i].id){
+        return this.state.catalogue_data[i];
+      }
+    }
+    return null;
   }
 
   getNodeLevel(node){
@@ -126,8 +112,11 @@ class CatalogueTree extends React.Component {
     this.props.nodeChoiceHandler(curr_id);
   }
 
-  componentDidMount(){
-    this.getCatalogueNodes(this.props.catalogue_data);
+  componentDidUpdate(prevProps){
+    if(this.props.catalogue_data != prevProps.catalogue_data){
+      this.state.catalogue_data = this.props.catalogue_data;
+      this.getCatalogueNodes();
+    }
   }
 
   render() {
@@ -151,7 +140,6 @@ class NodeViewer extends React.Component{
   constructor(props) {
     super(props);
     this.state ={
-      "catalogue_data": this.props.catalogue_data,
       "node": this.props.node,
       "node_items": []
     }
@@ -161,28 +149,22 @@ class NodeViewer extends React.Component{
   componentDidUpdate(prevProps){
     if(this.props.node !== prevProps.node){
       this.setState({
-        "catalogue_data": this.props.catalogue_data,
-        "node": this.props.node,
-        "node_items": this.getItems(this.props.node)
+        "node": this.props.node
       });
+      this.getItems();
     }
   }
 
   componentDidMount(){
-    this.setState({
-      "node_items": this.getItems()
-    });
+    this.getItems();
   }
 
-  getItems(nodeId = this.state.node){
-    let items = [];
-    for(var i = 0; i<this.state.catalogue_data.length; i++){
-      let item = this.state.catalogue_data[i];
-      if(item.type == "item" && item.parent == nodeId){
-        items.push(item);
-      }
-    }
-    return items
+  getItems(nodeId = this.props.node){
+    $.getJSON("/catalogue/node/items/"+nodeId, (data)=>{
+      this.setState({
+        "node_items": data
+      });
+    });
   }
 
   render() {
@@ -190,7 +172,7 @@ class NodeViewer extends React.Component{
       <div className="node_viewer">
         <h2 className="component_title">Просмотр категории</h2>
         <div className="node_viewer_inner">
-        {this.state.node_items.map((item)=><div key={item.id}><ItemSection item_id={item.id} open_by_default={false}/></div>)}
+        {this.state.node_items.map((item)=><div key={item.id}><ItemSection item_code={item.itemCode} item_id={item.id} name={item.name} open_by_default={false}/></div>)}
         </div>
       </div>
     );
@@ -208,8 +190,10 @@ class ItemSection extends React.Component{
     this.state={
       "resumable":this.resumable,
       "item_id":this.props.item_id,
+      "item_code":this.props.item_code,
       "open":this.props.open_by_default,
-      "ready":false
+      "ready":false,
+      "existing": []
     };
     this.hashPool = [];
     this.uploads = [];
@@ -219,6 +203,27 @@ class ItemSection extends React.Component{
     this.handleDelete = this.handleDelete.bind(this);
     this.getHash = this.getHash.bind(this);
     this.resolveResumedUploads = this.resolveResumedUploads.bind(this);
+    this.fetchExisting = this.fetchExisting.bind(this);
+    this.handleResurceUpdate = this.handleResurceUpdate.bind(this);
+  }
+
+  fetchExisting(){
+    $.getJSON("/catalogue/node/item/resources/"+this.props.item_id, (data)=>{
+      data = data.map((file)=>
+      <span key={file.filename+file.filehash}>{file.src_filename}
+        <span className="edit_fields">
+          <span className="edit_input"><input type="text" name="priority"/><label htmlFor="priority">Приоритет 1С</label></span>
+          <span className="edit_input"><input type="checkbox" value="" name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
+          <span className="edit_input"><input type="checkbox" value="" name="deleted"/><label htmlFor="deleted">Удален</label></span>
+          <span className="edit_input"><input type="checkbox" value="" name="default"/><label htmlFor="default">По умолчанию</label></span>
+          <input type="hidden" name="id" value={file.id}/>
+          <button onClick={this.handleResurceUpdate}>Обновить</button>
+        </span>
+      </span>);
+      this.setState({
+        "existing": data
+      });
+    });
   }
 
   buildList() {
@@ -246,7 +251,7 @@ class ItemSection extends React.Component{
 
       this.resolveResumedUploads();
 
-      let uploads = this.uploads.map((upload)=><span key={upload.filename+upload.filehash} className={upload.class + (upload.ready? "": " processing")}>F: {upload.filename}<span className="delete_upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span></span>);
+      let uploads = this.uploads.map((upload)=><span key={upload.filename+upload.filehash} className={upload.class + (upload.ready? "": " processing")}>F: {upload.filename}<span className="delete_upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span><span className="progress_bar" id={"progress_bar"+upload.filehash}><span></span></span></span>);
       this.setState({
         "uploads":uploads
       });
@@ -286,7 +291,6 @@ class ItemSection extends React.Component{
         ready = false;
       }
     }
-    console.log(ready);
     if (ready) {
       let uploadData = {};
       for (var i = 0; i < this.resumable.files.length; i++) {
@@ -298,6 +302,7 @@ class ItemSection extends React.Component{
         }
         uploadData[i] = obj;
       }
+      console.log(this.resumable.files);
       $.ajax({url: '/api/upload/commit', method: 'POST', data: uploadData})
       this.resumable.upload();
     }
@@ -308,6 +313,7 @@ class ItemSection extends React.Component{
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
     this.resumable.on('fileAdded', function(file, event) {
       file.itemId = this.state.item_id;
+      file.itemCode = this.state.item_code;
       file.ready = false;
       //this.hashPool.push(file);
       this.getHash(file);
@@ -316,17 +322,20 @@ class ItemSection extends React.Component{
       }
     }.bind(this));
     this.resumable.on('fileSuccess', function(file,event){
+      this.fetchExisting();
       this.buildList();
     }.bind(this));
+    this.resumable.on('fileProgress', function(file,event){
+      $("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
+      this.buildList();
+    }.bind(this));
+    this.fetchExisting();
     this.buildList();
   }
 
   handleDelete(e){
     let filehash = $(e.target).data("item");
     for(var i = 0; i<this.resumable.files.length; i++){
-      console.log(this.resumable.files[i].uniqueIdentifier);
-      console.log(filehash);
-      console.log(this.resumable.files[i].uniqueIdentifier == filehash);
       if(this.resumable.files[i].uniqueIdentifier == filehash){
         this.resumable.files.splice(i,1);
         this.buildList();
@@ -334,11 +343,27 @@ class ItemSection extends React.Component{
     }
   }
 
+  handleResurceUpdate(e){
+    let form = $(e.target).parent().parent();
+    let data = {
+      "id" : form.find("input[name='id']").val()
+    };
+    form.find(".edit_input").each(function(){
+      let chk = $(this).find("input[type='checkbox']");
+      let txt = $(this).find("input[type='text']");
+      if(chk.length){data[chk.prop('name')]=chk.prop("checked")}
+      if(txt.length){data[txt.prop('name')]=txt.val()}
+    });
+  }
+
   render() {
     return (
       <div className="item_view">
-        <h4 onClick={()=>{this.setState({"open":!this.state.open})}}>{this.state.item_id}</h4>
+        <h4 onClick={()=>{this.setState({"open":!this.state.open})}}>{this.props.name}</h4>
         <div className={this.state.open?"item_view_inner open":"item_view_inner"}>
+        <h4>Файлы товара</h4>
+        <div className="file_list">{this.state.existing}</div>
+        <h4>Загрузки</h4>
         <div className="file_list" id={"file_list" + this.props.item_id}>{this.state.uploads}</div>
         <div className="drop_target" id={"drop_target" + this.props.item_id}></div>
         <div className="button_block">
@@ -404,7 +429,7 @@ class PhotoBank extends React.Component {
   constructor(props) {
     super(props);
     this.state ={
-      "catalogue_data": [],
+      "catalogue_data": {},
       "view_pool": false
     }
     this.fetchUnfinished();
@@ -433,16 +458,17 @@ class PhotoBank extends React.Component {
   }
 
   componentWillMount(){
-    $.getJSON("/assets/js/components/photobank/dummy_data1.json", (data)=>{
+    //$.getJSON("/assets/js/components/photobank/dummy_data1.json", (data)=>{
+    $.getJSON("/catalogue/nodes/", (data)=>{
       this.setState({
         "catalogue_data":data,
-        "selected_node":0
+        "selected_node":1
       });
     });
   }
 
   render() {
-    if(this.state.catalogue_data.length>0){
+    if(this.state.catalogue_data != {}){
     return (
       <div className="photobank_main">
       <div className="main_block">

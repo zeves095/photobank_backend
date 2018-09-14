@@ -18,7 +18,7 @@ class FileUploaderSubscriber implements EventSubscriberInterface
   private $recordManager;
 
   public function __construct(
-      EntityManagerInterface $entityManager, 
+      EntityManagerInterface $entityManager,
       UploadRecordManager $recordManager,
       TranslatorInterface $translator)
   {
@@ -39,9 +39,10 @@ class FileUploaderSubscriber implements EventSubscriberInterface
 
     $repository = $this->entityManager->getRepository(CatalogueNodeItem::class);
     $item_id = $event->getParams()['item_id'];
-    $item = $repository->findOneBy( ['itemCode' => $item_id] );
+    $item_code = $event->getParams()['item_code'];
+    $item = $repository->findOneBy( ['itemCode' => $item_code] );
     if (!$item) {
-        $error_string = $this->translator->trans("Product not founded",[],'file_uploader') . '. '. $this->translator->trans("The code is:",[],'file_uploader') . ' ' . $item_id ;
+        $error_string = $this->translator->trans("Product not founded",[],'file_uploader') . '. '. $this->translator->trans("The code is:",[],'file_uploader') . ' ' . $item_code ;
         throw new NotFoundHttpException($error_string);
     }
 
