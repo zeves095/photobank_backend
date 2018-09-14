@@ -49,6 +49,7 @@
       relativePathParameterName: 'resumableRelativePath',
       totalChunksParameterName: 'resumableTotalChunks',
       associatedEntityName: 'itemId',
+      associatedEntityCodeName: 'itemCode',
       dragOverClass: 'dragover',
       throttleProgressCallbacks: 0.5,
       query:{},
@@ -491,6 +492,7 @@
       var _error = uniqueIdentifier !== undefined;
 
       $.itemId = '';
+      $.itemCode = '';
       $.contentHash = '';
 
       // Callback when something happens within the chunk
@@ -730,7 +732,8 @@
             ['fileNameParameterName', $.fileObj.fileName],
             ['relativePathParameterName', $.fileObj.relativePath],
             ['totalChunksParameterName', $.fileObj.chunks.length],
-            ['associatedEntityName', $.fileObj.itemId]
+            ['associatedEntityName', $.fileObj.itemId],
+            ['associatedEntityCodeName', $.fileObj.itemCode]
           ].filter(function(pair){
             // include items that resolve to truthy values
             // i.e. exclude false, null, undefined and empty strings
@@ -828,7 +831,8 @@
           ['fileNameParameterName', $.fileObj.fileName],
           ['relativePathParameterName', $.fileObj.relativePath],
           ['totalChunksParameterName', $.fileObj.chunks.length],
-          ['associatedEntityName', $.fileObj.itemId]
+          ['associatedEntityName', $.fileObj.itemId],
+          ['associatedEntityCodeName', $.fileObj.itemCode]
         ].filter(function(pair){
           // include items that resolve to truthy values
           // i.e. exclude false, null, undefined and empty strings

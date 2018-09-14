@@ -42,7 +42,7 @@ class FileUploaderSubscriber implements EventSubscriberInterface
     $item_code = $event->getParams()['item_code'];
     $item = $repository->findOneBy( ['itemCode' => $item_code] );
     if (!$item) {
-        $error_string = $this->translator->trans("Product not founded",[],'file_uploader') . '. '. $this->translator->trans("The code is:",[],'file_uploader') . ' ' . $item_id ;
+        $error_string = $this->translator->trans("Product not founded",[],'file_uploader') . '. '. $this->translator->trans("The code is:",[],'file_uploader') . ' ' . $item_code ;
         throw new NotFoundHttpException($error_string);
     }
 
