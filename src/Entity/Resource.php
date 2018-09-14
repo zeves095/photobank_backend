@@ -27,11 +27,6 @@ class Resource
     private $username;
 
     /**
-     * @ORM\Column(type="bigint")
-     */
-    private $item_id;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $preset;
@@ -61,6 +56,32 @@ class Resource
      */
     private $src_filename;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\CatalogueNodeItem", inversedBy="resources")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $item;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default" = false})
+     */
+    private $is1c;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default" = false})
+     */
+    private $isDeleted;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default" = false})
+     */
+    private $isDefault;
+
+    /**
+     * @ORM\Column(type="integer", options={"default" = 0})
+     */
+    private $priority;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,18 +107,6 @@ class Resource
     public function setUsername(string $username): self
     {
         $this->username = $username;
-
-        return $this;
-    }
-
-    public function getItemId(): ?int
-    {
-        return $this->item_id;
-    }
-
-    public function setItemId(int $item_id): self
-    {
-        $this->item_id = $item_id;
 
         return $this;
     }
@@ -170,6 +179,66 @@ class Resource
     public function setSrcFilename(string $src_filename): self
     {
         $this->src_filename = $src_filename;
+
+        return $this;
+    }
+
+    public function getItem(): ?CatalogueNodeItem
+    {
+        return $this->item;
+    }
+
+    public function setItem(?CatalogueNodeItem $item): self
+    {
+        $this->item = $item;
+
+        return $this;
+    }
+
+    public function getIs1c(): ?bool
+    {
+        return $this->is1c;
+    }
+
+    public function setIs1c(bool $is1c): self
+    {
+        $this->is1c = $is1c;
+
+        return $this;
+    }
+
+    public function getIsDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): self
+    {
+        $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+
+    public function getIsDefault(): ?bool
+    {
+        return $this->isDefault;
+    }
+
+    public function setIsDefault(bool $isDefault): self
+    {
+        $this->isDefault = $isDefault;
+
+        return $this;
+    }
+
+    public function getPriority(): ?int
+    {
+        return $this->priority;
+    }
+
+    public function setPriority(int $priority): self
+    {
+        $this->priority = $priority;
 
         return $this;
     }

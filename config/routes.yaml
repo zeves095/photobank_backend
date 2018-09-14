@@ -1,3 +1,5 @@
+logout:
+    path: /logout
 
 file_uploader:
     resource: "@FileUploaderBundle/Controller"
