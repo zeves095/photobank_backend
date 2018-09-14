@@ -38,5 +38,5 @@ security:
     
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/catalogue/node/item/resource, methods: [PATCH], roles: ROLE_WRITER }
         - { path: ^/, roles: ROLE_USER }
-	- { path ^/catalogue/node/item/resource, methods: [PATCH], roles: ROLE_WRITER)

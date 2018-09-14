@@ -24,6 +24,10 @@ class ResourceNormalizer extends CustomNormalizer implements NormalizerInterface
             'created_on' => $object->getCreatedOn(),
             'filename' => $object->getFilename(),
             'src_filename' => $object->getSrcFilename(),
+            'is1c' => $object->getIs1c(),
+            'isDeleted' => $object->getIsDeleted(),
+            'isDefault' => $object->getIsDefault(),
+            'priority' => $object->getPriority(),
             'item' => $object->getItem()?$object->getItem()->getId():$object->getItem(),
         ];
     }

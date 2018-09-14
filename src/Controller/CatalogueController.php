@@ -186,24 +186,22 @@ class CatalogueController extends AbstractController
      */
     public function patchResource(Resource $resource, Request $request, AppSerializer $serializer)
     {
-        
-        // {id: "11", priority: "", 1c: false, deleted: false, default: true}
         $data = json_decode(
             $request->getContent(),
             true
         );
 
         $priority = $data['priority']??$resource->getPriority();
-        $resource->setPriority($priority);
+        $resource->setPriority(intval($priority));
 
         $Is1c = $data['1c']??$resource->getIs1c();
-        $resource->setIs1c($Is1c);
+        $resource->setIs1c(intval($Is1c));
         
         $IsDeleted = $data['deleted']??$resource->getIsDeleted();
-        $resource->setIsDeleted($IsDeleted);
+        $resource->setIsDeleted(intval($IsDeleted));
 
         $IsDefault = $data['default']??$resource->getIsDefault();
-        $resource->setIsDefault($IsDefault);
+        $resource->setIsDefault(intval($IsDefault));
         
         $em = $this->getDoctrine()->getManager();
         $em->flush($resource);
