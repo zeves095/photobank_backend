@@ -204,21 +204,21 @@ class ItemSection extends React.Component{
     this.getHash = this.getHash.bind(this);
     this.resolveResumedUploads = this.resolveResumedUploads.bind(this);
     this.fetchExisting = this.fetchExisting.bind(this);
-    this.handleResurceUpdate = this.handleResurceUpdate.bind(this);
+    this.handleResourceUpdate = this.handleResourceUpdate.bind(this);
   }
 
   fetchExisting(){
     $.getJSON("/catalogue/node/item/resources/"+this.props.item_id, (data)=>{
       console.log(data);
       data = data.map((file)=>
-      <span key={file.src_filename+file.filename}>{file.src_filename}
+      <span key={file.src_filename+file.filename}><a href={"/catalogue/node/item/resource/"+file.id+".jpg"}>{file.src_filename}</a>
         <span className="edit_fields">
-          <span className="edit_input"><input type="text" name="priority" value={file.priority} /><label htmlFor="priority">Приоритет 1С</label></span>
-          <span className="edit_input"><input type="checkbox" defaultChecked={file["1c"]} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
-          <span className="edit_input"><input type="checkbox" defaultChecked={file["deleted"]} name="deleted"/><label htmlFor="deleted">Удален</label></span>
-          <span className="edit_input"><input type="checkbox" defaultChecked={file["default"]} name="default"/><label htmlFor="default">По умолчанию</label></span>
+          <span className="edit_input"><input type="text" name="priority" defaultValue={file.priority} /><label htmlFor="priority">Приоритет 1С</label></span>
+          <span className="edit_input"><input type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
+          <span className="edit_input"><input type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
+          <span className="edit_input"><input type="checkbox" defaultChecked={file.isDefault} name="default"/><label htmlFor="default">По умолчанию</label></span>
           <input type="hidden" name="id" value={file.id}/>
-          <button onClick={this.handleResurceUpdate}>Обновить</button>
+          <button onClick={this.handleResourceUpdate}>Обновить</button>
         </span>
       </span>);
       this.setState({
@@ -344,7 +344,7 @@ class ItemSection extends React.Component{
     }
   }
 
-  handleResurceUpdate(e){
+  handleResourceUpdate(e){
     let form = $(e.target).parent().parent();
     let data = {
       "id" : form.find("input[name='id']").val()
@@ -355,8 +355,14 @@ class ItemSection extends React.Component{
       if(chk.length){data[chk.prop('name')]=chk.prop("checked")}
       if(txt.length){data[txt.prop('name')]=txt.val()}
     });
-    console.log(data);
-    $.ajax({url: '/catalogue/node/item/'+data.id, method: 'PATCH', data: data})
+    let dataJson = JSON.stringify(data);
+    $.ajax({
+      url: '/catalogue/node/item/resource/'+data.id,
+      method: 'PATCH',
+      data: dataJson,
+      contentType: "application/json; charset=utf-8",
+      dataType: "json"
+    });
   }
 
   render() {

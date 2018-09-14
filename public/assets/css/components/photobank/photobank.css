@@ -231,7 +231,7 @@ top: -9px;
 position: relative;
 }
 #photobank-wrapper .file_list .edit_fields input[type='text']{
-  width: 15px;
+  width: 35px;
 }
 #photobank-wrapper .file_list .edit_fields label{
   font-size: 8pt;
