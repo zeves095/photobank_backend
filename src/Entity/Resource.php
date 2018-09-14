@@ -65,22 +65,22 @@ class Resource
     /**
      * @ORM\Column(type="boolean", options={"default" = false})
      */
-    private $is1c;
+    private $is1c = 0;
 
     /**
      * @ORM\Column(type="boolean", options={"default" = false})
      */
-    private $isDeleted;
+    private $isDeleted = 0;
 
     /**
      * @ORM\Column(type="boolean", options={"default" = false})
      */
-    private $isDefault;
+    private $isDefault = 0;
 
     /**
      * @ORM\Column(type="integer", options={"default" = 0})
      */
-    private $priority;
+    private $priority = 0;
 
     public function getId(): ?int
     {

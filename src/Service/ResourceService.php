@@ -4,12 +4,12 @@ namespace App\Service;
 
 class ResourceService{
 
-  public function generatePath($itemId){
+  public function generatePath($item_code){
     $splitId = array();
-    for($i=0; $i<=strlen($itemId)/2; $i++){
-      $splitId[] = substr($itemId, $i*2, 2);
+    for($i=0; $i<=strlen($item_code)/2; $i++){
+      $splitId[] = substr($item_code, $i*2, 2);
     }
-    $splitIdPath = implode('/',$splitId)."/";
+    $splitIdPath = "/".implode('/',$splitId)."/";
 
     return $splitIdPath;
   }

@@ -18,12 +18,14 @@ use App\Entity\CatalogueNode;
 use App\Entity\CatalogueNodeItem;
 use App\Entity\Resource;
 
+use App\Service\ResourceService;
+
 class CatalogueController extends AbstractController
 {
     /**
-     * @Route("/catalogue/node/{id}", 
-     * methods={"GET"}, 
-     * schemes={"HTTP"}, 
+     * @Route("/catalogue/node/{id}",
+     * methods={"GET"},
+     * schemes={"HTTP"},
      * name="catalogue_node")
      */
     public function getNode(CatalogueNode $cnode, AppSerializer $serializer)
@@ -38,14 +40,14 @@ class CatalogueController extends AbstractController
         return $response;
     }
     /**
-     * @Route("/catalogue/nodes/{id}", 
-     * methods={"GET"}, 
-     * name="catalogue_nodes", 
+     * @Route("/catalogue/nodes/{id}",
+     * methods={"GET"},
+     * name="catalogue_nodes",
      * defaults={"id" = null})
      */
     public function getNodes($id, CatalogueNode $cnode = null, AppSerializer $serializer)
     {
-        
+
         if (!is_null($id) && !$cnode) {
             throw $this->createNotFoundException(
                 'Не найдено категории с идентификатором = '.$id
@@ -72,8 +74,8 @@ class CatalogueController extends AbstractController
     }
 
     /**
-     * @Route("/catalogue/node/item/{id}", 
-     * methods={"GET"}, 
+     * @Route("/catalogue/node/item/{id}",
+     * methods={"GET"},
      * name="catalogue_node_item")
      */
     public function getItem(CatalogueNodeItem $citem, AppSerializer $serializer)
@@ -81,7 +83,7 @@ class CatalogueController extends AbstractController
         $response = new JsonResponse();
 
         $citemArray = $serializer->normalize($citem, null, array(
-            ObjectNormalizer::ENABLE_MAX_DEPTH => true, 
+            ObjectNormalizer::ENABLE_MAX_DEPTH => true,
             'groups' => array('main','parent')
         ));
 
@@ -89,8 +91,8 @@ class CatalogueController extends AbstractController
         return $response;
     }
     /**
-     * @Route("/catalogue/node/items/{id}", 
-     * methods={"GET"}, 
+     * @Route("/catalogue/node/items/{id}",
+     * methods={"GET"},
      * name="catalogue_node_items")
      */
     public function getItems(CatalogueNode $cnode, AppSerializer $serializer)
@@ -99,7 +101,7 @@ class CatalogueController extends AbstractController
 
         $items = $cnode->getItems();
         $itemsArray = $serializer->normalize($items, null, array(
-            ObjectNormalizer::ENABLE_MAX_DEPTH => true, 
+            ObjectNormalizer::ENABLE_MAX_DEPTH => true,
             'groups' => array('main')
         ));
 
@@ -109,7 +111,7 @@ class CatalogueController extends AbstractController
 
     /**
      * @Route(
-     *      "/catalogue/node/item/resource/{id}", 
+     *      "/catalogue/node/item/resource/{id}",
      *      methods={"GET"},
      *      name="catalogue_node_item_resource",
      *      requirements={"id"="\d+"}
@@ -120,13 +122,13 @@ class CatalogueController extends AbstractController
         $response = new JsonResponse();
 
         $resourceArray = $serializer->normalize($resource, null, array());
-        
+
         $response->setData($resourceArray);
         return $response;
     }
     /**
      * @Route(
-     *      "/catalogue/node/item/resources/{id}", 
+     *      "/catalogue/node/item/resources/{id}",
      *      methods={"GET"},
      *      name="catalogue_node_item_resources"
      * )
@@ -134,7 +136,7 @@ class CatalogueController extends AbstractController
     public function getResources(CatalogueNodeItem $citem, AppSerializer $serializer)
     {
         $response = new JsonResponse();
-        
+
         $resources = $citem->getResources();
         $resourcesArray = $serializer->normalize($resources, 'json', array());
 
@@ -143,16 +145,16 @@ class CatalogueController extends AbstractController
     }
     /**
      * @Route(
-     *      "/catalogue/node/item/resource/{id}.{_format}", 
+     *      "/catalogue/node/item/resource/{id}.{_format}",
      *      methods={"GET"},
-     *      name="catalogue_node_item_resource_raw", 
+     *      name="catalogue_node_item_resource_raw",
      *      requirements={
      *          "id"="\d+",
      *          "_format": "jpg|json"
      *      }
      * )
      */
-    public function getResourceRaw($_format, Resource $resource)
+    public function getResourceRaw($_format, Resource $resource, ResourceService $resourceService)
     {
         if($_format == 'json'){
             return $this->redirect(
@@ -163,10 +165,11 @@ class CatalogueController extends AbstractController
             );
         }
 
-        
+
         $upload_directory = $this->getParameter('upload_directory');
         // @TODO: DELETE and use service|utils methods to get $fileDirectory
-        $fileDirectory = $upload_directory . '/12/31/23/12/31/2/'; 
+        $item_code = $resource->getItem()->getItemCode();
+        $fileDirectory = $upload_directory . $resourceService->generatePath($item_code);
         $filename = $resource->getFilename();
         $fullFilePath = $fileDirectory . $filename;
         $src_filename = $resource->getSrcFilename()?:'noName';
@@ -176,9 +179,9 @@ class CatalogueController extends AbstractController
 
     /**
      * @Route(
-     *      "/catalogue/node/item/resource/{id}", 
+     *      "/catalogue/node/item/resource/{id}",
      *      methods={"PATCH"},
-     *      name="patch_resource", 
+     *      name="patch_resource",
      *      requirements={
      *          "id"="\d+"
      *      }
@@ -196,13 +199,13 @@ class CatalogueController extends AbstractController
 
         $Is1c = $data['1c']??$resource->getIs1c();
         $resource->setIs1c(intval($Is1c));
-        
+
         $IsDeleted = $data['deleted']??$resource->getIsDeleted();
         $resource->setIsDeleted(intval($IsDeleted));
 
         $IsDefault = $data['default']??$resource->getIsDefault();
         $resource->setIsDefault(intval($IsDefault));
-        
+
         $em = $this->getDoctrine()->getManager();
         $em->flush($resource);
 
@@ -212,5 +215,3 @@ class CatalogueController extends AbstractController
         return $response;
     }
 }
-
-
