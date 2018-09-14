@@ -322,6 +322,7 @@ class ItemSection extends React.Component{
       }
     }.bind(this));
     this.resumable.on('fileSuccess', function(file,event){
+      this.fetchExisting();
       this.buildList();
     }.bind(this));
     this.resumable.on('fileProgress', function(file,event){
