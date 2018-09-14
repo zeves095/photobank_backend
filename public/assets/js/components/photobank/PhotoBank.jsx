@@ -213,10 +213,10 @@ class ItemSection extends React.Component{
       data = data.map((file)=>
       <span key={file.src_filename+file.filename}>{file.src_filename}
         <span className="edit_fields">
-          <span className="edit_input"><input type="text" name="priority"/><label htmlFor="priority">Приоритет 1С</label></span>
-          <span className="edit_input"><input type="checkbox" value="" name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
-          <span className="edit_input"><input type="checkbox" value="" name="deleted"/><label htmlFor="deleted">Удален</label></span>
-          <span className="edit_input"><input type="checkbox" value="" name="default"/><label htmlFor="default">По умолчанию</label></span>
+          <span className="edit_input"><input type="text" name="priority" value={file.priority} /><label htmlFor="priority">Приоритет 1С</label></span>
+          <span className="edit_input"><input type="checkbox" defaultChecked={file["1c"]} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
+          <span className="edit_input"><input type="checkbox" defaultChecked={file["deleted"]} name="deleted"/><label htmlFor="deleted">Удален</label></span>
+          <span className="edit_input"><input type="checkbox" defaultChecked={file["default"]} name="default"/><label htmlFor="default">По умолчанию</label></span>
           <input type="hidden" name="id" value={file.id}/>
           <button onClick={this.handleResurceUpdate}>Обновить</button>
         </span>
@@ -355,6 +355,7 @@ class ItemSection extends React.Component{
       if(chk.length){data[chk.prop('name')]=chk.prop("checked")}
       if(txt.length){data[txt.prop('name')]=txt.val()}
     });
+    console.log(data);
     $.ajax({url: '/catalogue/node/item/'+data.id, method: 'PATCH', data: data})
   }
 
