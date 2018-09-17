@@ -13,16 +13,19 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+use App\PhotoBank\FileUploaderBundle\Service\UploadRecordManager;
+
 class FileUploadController extends AbstractController
 {
     /**
      * @Route("/", methods={"POST"})
      */
-    public function upload(UploadReceiver $receiver, EventDispatcherInterface $dispatcher, ContainerInterface $container, TokenStorageInterface $token, RequestStack $requestStack)
+    public function upload(UploadReceiver $receiver, EventDispatcherInterface $dispatcher, ContainerInterface $container, TokenStorageInterface $token, RequestStack $requestStack, UploadRecordManager $recordManager)
     {
       $this->username = $token->getToken()->getUser()->getUsername();
       $itemId = $requestStack->getCurrentRequest()->query->get('itemId');
       $itemCode = $requestStack->getCurrentRequest()->query->get('itemCode');
+      $totalChunks = $requestStack->getCurrentRequest()->query->get('resumableTotalChunks');
       $result = $receiver->uploadChunks($this->_getUploadParameters($container, $requestStack));
       var_dump($itemCode);
       if($result['completed']){
@@ -36,13 +39,13 @@ class FileUploadController extends AbstractController
           'item_code'=>$itemCode,
           'preset'=>1,
           'type'=>1,
+          'total_chunks'=> $totalChunks
         );
         $event= new FileUploadedEvent($responseParams);
         $dispatcher->dispatch(FileUploadedEvent::NAME, $event);
       }
       if($result['chunk_written']){
-        $event= new ChunkWrittenEvent($this->username, $result['src_filename'], $itemId);
-        $dispatcher->dispatch(ChunkWrittenEvent::NAME, $event);
+        $recordManager->update($this->username, $result['src_filename'], $itemId);
       }
       return new Response();
     }
@@ -59,6 +62,15 @@ class FileUploadController extends AbstractController
         return new Response();
       }
     }
+
+    /**
+     * @Route("/unfinished", methods={"GET"})
+     */
+    public function getUnfinished(TokenStorageInterface $token)
+    {
+      
+    }
+
 
     private function _getUploadParameters($container, $requestStack){
 

@@ -169,7 +169,7 @@ class CatalogueController extends AbstractController
         $upload_directory = $this->getParameter('upload_directory');
         // @TODO: DELETE and use service|utils methods to get $fileDirectory
         $item_code = $resource->getItem()->getItemCode();
-        $fileDirectory = $upload_directory . $resourceService->generatePath($item_code);
+        $fileDirectory = $upload_directory .'/'. $resourceService->generatePath($item_code);
         $filename = $resource->getFilename();
         $fullFilePath = $fileDirectory . $filename;
         $src_filename = $resource->getSrcFilename()?:'noName';
