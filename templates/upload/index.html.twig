@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello
-  {{ controller_name }}!{% endblock %}
+{% block title %}Фотобанк - загрузки{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+{% endblock %}
 
 {% block body %}
-<script>
-  window.resumableContainer = [];
-</script>
-
-<input type="hidden" id="unfinished_uploads" value="{{ unfinished_uploads }}"/>
   <div id="photobank-wrapper"></div>
-
+  <input type="hidden" id="unfinished_uploads" value="{{ unfinished_uploads }}"/>
 {% endblock %}
 
 {% block javascripts %}
-  <script type="text/javascript" src="/bundles/fileuploader/assets/js/vendor/md5.js"></script>
+  <script src="{{ asset('build/app.js') }}"></script>
+
+  {# <script type="text/javascript" src="/bundles/fileuploader/assets/js/vendor/md5.js"></script>
   <script type="text/javascript" src="/bundles/fileuploader/assets/js/vendor/crc32.js"></script>
   <script type="text/javascript" src="/bundles/fileuploader/assets/js/vendor/resumable.js"></script>
   <!--<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>-->
@@ -24,6 +24,6 @@
   <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
 <script type="text/babel" src="/assets/js/components/photobank/CatalogueTree.jsx"></script>
   <script type="text/babel" src="/assets/js/components/photobank/PhotoBank.jsx"></script>
-  <link rel="stylesheet" href="/assets/css/components/photobank/photobank.css">
-  <link rel="stylesheet" href="/assets/css/fonts/fontawesome/all.min.css">
+  <link rel="stylesheet" href="/assets/css/components/photobank/photobank.css"> #}
+  {# <link rel="stylesheet" href="/assets/css/fonts/fontawesome/all.min.css"> #}
 {% endblock %}
