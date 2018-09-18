@@ -41,13 +41,13 @@ class UploadRecordManager
     }
   }
 
-  public function update($event){
+  public function update($username, $filename, $itemId){
     $uploads = $this->entityManager
     ->getRepository(Upload::class)
     ->findBy(
-      ['username' => $event->getParams()['username'],
-      'filename' => $event->getParams()['filename'],
-      'item_id' => $event->getParams()['itemId']],
+      ['username' => $username,
+      'filename' => $filename,
+      'item_id' => $itemId],
       ['id' => 'DESC']
     );
     //$upload = $uploads[0];
