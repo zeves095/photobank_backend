@@ -14,20 +14,11 @@ class UploadController extends AbstractController
      */
     public function index(ContainerInterface $container, UploadRecordManager $recordManager)
     {
-        $uploadArr = array();
-        $uploads = $recordManager->get();
-        foreach($uploads as $upload){
-          $uploadArr[] = implode(',', $upload);
-        }
-        $unfinished_uploads = implode('|', $uploadArr);
-
-
         return $this->render('upload/index.html.twig', [
             'controller_name' => 'UploadController',
             'target_url' => $container->getParameter('fileuploader.targeturl'),
             'chunk_size' => $container->getParameter('fileuploader.chunksize'),
-            'simultaneous_uploads' => $container->getParameter('fileuploader.simultaneousuploads'),
-            'unfinished_uploads' => $unfinished_uploads
+            'simultaneous_uploads' => $container->getParameter('fileuploader.simultaneousuploads')
         ]);
     }
 }

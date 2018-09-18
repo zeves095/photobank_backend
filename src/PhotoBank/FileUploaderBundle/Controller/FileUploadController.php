@@ -4,6 +4,7 @@ namespace App\PhotoBank\FileUploaderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\PhotoBank\FileUploaderBundle\Event\FileUploadedEvent;
@@ -12,7 +13,6 @@ use App\PhotoBank\FileUploaderBundle\Service\UploadReceiver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-
 use App\PhotoBank\FileUploaderBundle\Service\UploadRecordManager;
 
 class FileUploadController extends AbstractController
@@ -66,9 +66,10 @@ class FileUploadController extends AbstractController
     /**
      * @Route("/unfinished", methods={"GET"})
      */
-    public function getUnfinished(TokenStorageInterface $token)
+    public function getUnfinished(TokenStorageInterface $token, UploadRecordManager $recordManager)
     {
-      
+      $uploads = $recordManager->get();
+      return new JsonResponse($uploads);
     }
 
 
