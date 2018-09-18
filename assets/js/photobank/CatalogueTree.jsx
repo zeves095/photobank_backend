@@ -1,13 +1,14 @@
 import React from 'react';
 // import $ from 'jquery';
-
+import TreeView from 'react-simple-jstree';
 export class CatalogueTree extends React.Component {
 
   constructor(props) {
     super(props);
     this.state ={
       "catalogue_data": [],
-      "catalogue_tree": [],
+      "catalogue_list": [],
+      "catalogue_tree": {},
       "tracked_nodes": [],
       "current_node": 1,
       "crumbs": []
@@ -19,6 +20,8 @@ export class CatalogueTree extends React.Component {
     this.getNodeLevel = this.getNodeLevel.bind(this);
     this.getCrumbs = this.getCrumbs.bind(this);
     this.nodeChoiceHandler = this.nodeChoiceHandler.bind(this);
+    this.makeTree = this.makeTree.bind(this);
+    this.handleTreeClick = this.handleTreeClick.bind(this);
   }
 
   getCatalogueNodes(data){
@@ -47,11 +50,34 @@ export class CatalogueTree extends React.Component {
       let child = children[i];
       element.push(<span key={child.id} className="cat_item parent" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></span>);
     }
-    let catalogueTree = element;
+    let catalogueList = element;
     this.setState({
-      "catalogue_tree": catalogueTree
+      "catalogue_list": catalogueList
     });
     this.getCrumbs();
+    this.makeTree();
+  }
+
+  makeTree(){
+    let tree={ core: { data: [] }, 'selected':[]};
+    for(var node in this.state.catalogue_data){
+      let item = this.state.catalogue_data[node];
+      let treeNode ={};
+      treeNode.text = item.name;
+      treeNode.parent = item.parent;
+      if(treeNode.parent == null){
+        treeNode.parent = "#";
+      }
+      treeNode.id = item.id;
+      tree['core']['data'].push(treeNode);
+      if(item.id == this.state.current_node){
+        tree['selected'] = [item.id];
+      }
+    }
+    console.warn(tree);
+    this.setState({
+      'catalogue_tree': tree
+    });
   }
 
   getCrumbs(){
@@ -115,6 +141,15 @@ export class CatalogueTree extends React.Component {
     this.props.nodeChoiceHandler(curr_id);
   }
 
+  handleTreeClick(e,data){
+    console.log(data);
+    if(data.selected[0] != this.state.current_node && data.selected[0]!=data.old_selection && data.action != "deselect_all"){
+      this.state.current_node = data.selected[0];
+      this.getCatalogueNodes(this.props.catalogue_data);
+      this.props.nodeChoiceHandler(data.selected[0]);
+    }
+  }
+
   componentDidUpdate(prevProps){
     if(this.props.catalogue_data != prevProps.catalogue_data){
       this.state.catalogue_data = this.props.catalogue_data;
@@ -131,7 +166,10 @@ export class CatalogueTree extends React.Component {
             {this.state.crumbs}
           </div>
           <div className="catalogue_tree_inner">
-          {this.state.catalogue_tree}
+          {this.state.catalogue_list}
+            <div className="tree_view">
+              <TreeView treeData={this.state.catalogue_tree} onChange={this.handleTreeClick} />
+            </div>
           </div>
         </div>
       </div>

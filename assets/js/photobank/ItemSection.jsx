@@ -56,7 +56,6 @@ export class ItemSection extends React.Component{
       clearTimeout(this.updateListTimer);
     }
     this.updateListTimer = setTimeout(function() {
-      console.log(this.uploads);
       for (var i = 0; i < this.resumable.files.length; i++) {
         let className = this.resumable.files[i].isComplete()?"completed":"pending";
         this.uploads.push({"filename": this.resumable.files[i].fileName, "filehash": this.resumable.files[i].uniqueIdentifier, "class": className, "ready": this.resumable.files[i].ready});
@@ -126,7 +125,6 @@ export class ItemSection extends React.Component{
         }
         uploadData[i] = obj;
       }
-      console.log(this.resumable.files);
       $.ajax({url: '/api/upload/commit', method: 'POST', data: uploadData})
       this.resumable.upload();
     }
