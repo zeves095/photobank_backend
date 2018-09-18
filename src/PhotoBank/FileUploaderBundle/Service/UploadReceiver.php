@@ -20,6 +20,7 @@ class UploadReceiver
   }
 
   public function testChunks($uploadParams){
+    $this->uploadParams = $uploadParams;
     if(null == $uploadParams['resumablevars']['resumableIdentifier'] && trim($uploadParams['resumablevars']['resumableIdentifier'])!=''){
       $uploadParams['resumablevars']["resumableIdentifier"] = '';
     }
@@ -39,6 +40,7 @@ class UploadReceiver
   }
 
   public function uploadChunks($uploadParams){
+    $this->uploadParams = $uploadParams;
     if (!empty($uploadParams['files'])) foreach ($uploadParams['files'] as $file) {
       if ($file->getError() != 0) {
         continue;
@@ -54,31 +56,36 @@ class UploadReceiver
         $this->response['chunk_written'] = true;
         $this->response['src_filename'] = $uploadParams['resumablevars']['resumableFilename'];
         $this->response['chunkPath'] = $uploadParams['tempchunkdir'];
-        $this->response['path'] = $uploadParams['destinationdir'].$uploadParams['filename'];
+        $this->response['path'] = $uploadParams['tempchunkdir'].'/'.$uploadParams['filename'];
         $this->response['filename'] = $uploadParams['filename'];
-        $this->createFileFromChunks($uploadParams);
+        $this->processUploadedChunk();
       }
     }
     return $this->response;
   }
 
-  protected function createFileFromChunks($uploadParams) {
+  protected function processUploadedChunk() {
     $total_files_on_server_size = 0;
     $temp_total = 0;
-    foreach(scandir($uploadParams['tempchunkdir']) as $file) {
+    foreach(scandir($this->uploadParams['tempchunkdir']) as $file) {
       $temp_total = $total_files_on_server_size;
-      $tempfilesize = filesize($uploadParams['tempchunkdir'].'/'.$file);
+      $tempfilesize = filesize($this->uploadParams['tempchunkdir'].'/'.$file);
       $total_files_on_server_size = $temp_total + $tempfilesize;
     }
-    if ($total_files_on_server_size >= $uploadParams['resumablevars']['resumableTotalSize']) {
-      $filepath = $uploadParams['destinationdir'].$uploadParams['filename'];
-      $this->fileSystem->mkdir($uploadParams['destinationdir']);
-      $this->fileSystem->dumpFile($filepath,'');
-      for ($i=1; $i<=$uploadParams['resumablevars']['resumableTotalChunks']; $i++) {
-        $this->fileSystem->appendToFile($filepath,file_get_contents($uploadParams['tempchunkdir'].'/'.$uploadParams['filename'].'.part'.$i));
-      }
-      $this->response['completed'] = true;
-      return $this->response;
+    if ($total_files_on_server_size >= $this->uploadParams['resumablevars']['resumableTotalSize']) {
+      $this->compileFile();
     }
   }
+
+  protected function compileFile(){
+    $filepath = $this->uploadParams['tempchunkdir'].'/'.$this->uploadParams['filename'];
+    var_dump($filepath);
+    $this->fileSystem->dumpFile($filepath,'');
+    for ($i=1; $i<=$this->uploadParams['resumablevars']['resumableTotalChunks']; $i++) {
+      $this->fileSystem->appendToFile($filepath,file_get_contents($this->uploadParams['tempchunkdir'].'/'.$this->uploadParams['filename'].'.part'.$i));
+    }
+    $this->response['completed'] = true;
+    return $this->response;
+  }
+
 }
