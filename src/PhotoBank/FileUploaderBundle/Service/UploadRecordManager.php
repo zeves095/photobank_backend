@@ -17,27 +17,38 @@ class UploadRecordManager
     $this->token = $token;
   }
 
-  public function insert($uploads){
-    for($i = 0; $i<sizeof($uploads); $i++ ){
-      $upload = new Upload();
-      $upload->setUsername($this->token->getToken()->getUser()->getUsername());
-      $upload->setCompleted(false);
-      $upload->setFileHash($uploads[$i]['filehash']);
-      $upload->setFilename($uploads[$i]['filename']);
-      $upload->setItemId($uploads[$i]['itemid']);
-      $upload->setTotalChunks($uploads[$i]['totalchuks']);
-      $upload->setCompletedChunks(0);
+  public function insert($upload){
+    $file = new Upload();
+    $file->setUsername($this->token->getToken()->getUser()->getUsername());
+    $file->setCompleted(false);
+    $file->setFileHash($upload['filehash']);
+    $file->setFilename($upload['filename']);
+    $file->setItemId($upload['itemid']);
+    $file->setTotalChunks($upload['totalchuks']);
+    $file->setCompletedChunks(0);
+    if(sizeof($this->entityManager
+    ->getRepository(Upload::class)
+    ->findBy([
+      'username' => $file->getUsername(),
+      'file_hash' => $file->getFileHash(),
+      'item_id' => $file->getItemId()
+    ]))==0){
+      $this->entityManager->persist($file);
+      $this->entityManager->flush($file);
+    }
+  }
 
-      if(sizeof($this->entityManager
-      ->getRepository(Upload::class)
-      ->findBy([
-        'username' => $upload->getUsername(),
-        'file_hash' => $upload->getFileHash(),
-        'item_id' => $upload->getItemId()
-      ]))==0){
-        $this->entityManager->persist($upload);
-        $this->entityManager->flush($upload);
-      }
+  public function remove($upload){
+    $toBeDeleted = $this->entityManager
+    ->getRepository(Upload::class)
+    ->findBy([
+      'username' => $this->token->getToken()->getUser()->getUsername(),
+      'file_hash' => $upload['filehash'],
+      'item_id' => $upload['itemid']
+    ]);
+    for($i = 0; $i<sizeof($toBeDeleted); $i++ ){
+      $this->entityManager->remove($toBeDeleted[$i]);
+      $this->entityManager->flush();
     }
   }
 
