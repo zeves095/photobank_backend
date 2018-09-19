@@ -16,12 +16,11 @@ export class ItemSection extends React.Component{
       "item_code":this.props.item_code,
       "open":this.props.open_by_default,
       "ready":false,
-      "existing": []
+      "uploads":[],
+      "upload_list":[],
+      "existing": [],
+      "unfinished":[]
     };
-    this.hashPool = [];
-    this.uploads = [];
-    this.fetchUnfinished();
-
     this.buildList = this.buildList.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -30,6 +29,30 @@ export class ItemSection extends React.Component{
     this.fetchExisting = this.fetchExisting.bind(this);
     this.fetchUnfinished = this.fetchUnfinished.bind(this);
     this.handleResourceUpdate = this.handleResourceUpdate.bind(this);
+    this.removeUpload = this.removeUpload.bind(this);
+  }
+
+  buildList() {
+    if (typeof this.updateListTimer != 'undefined') {
+      clearTimeout(this.updateListTimer);
+    }
+    this.updateListTimer = setTimeout(function() {
+      this.state.uploads = [];
+      for(var i = 0; i < this.state.unfinished.length; i++){
+        let className = "unfinished";
+        this.state.uploads.push({"filename": this.state.unfinished[i].filename, "filehash": this.state.unfinished[i].filehash, "class": className, "ready": true});
+      }
+      for (var i = 0; i < this.resumable.files.length; i++) {
+        let className = this.resumable.files[i].isComplete()?"completed":"pending";
+        this.state.uploads.push({"filename": this.resumable.files[i].fileName, "filehash": this.resumable.files[i].uniqueIdentifier, "class": className, "ready": this.resumable.files[i].ready});
+      }
+      this.resolveResumedUploads();
+      let uploadList = this.state.uploads;
+      uploadList = uploadList.map((upload)=><span key={upload.filename+upload.filehash} className={upload.class + (upload.ready? "": " processing")}>F: {upload.filename}<span className="delete_upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span><span className="progress_bar" id={"progress_bar"+upload.filehash}><span></span></span></span>);
+      this.setState({
+        "upload_list":uploadList
+      });
+    }.bind(this), 300);
   }
 
   fetchExisting(){
@@ -51,41 +74,27 @@ export class ItemSection extends React.Component{
     });
   }
 
-  buildList() {
-    if (typeof this.updateListTimer != 'undefined') {
-      clearTimeout(this.updateListTimer);
-    }
-    this.updateListTimer = setTimeout(function() {
-      for (var i = 0; i < this.resumable.files.length; i++) {
-        let className = this.resumable.files[i].isComplete()?"completed":"pending";
-        this.uploads.push({"filename": this.resumable.files[i].fileName, "filehash": this.resumable.files[i].uniqueIdentifier, "class": className, "ready": this.resumable.files[i].ready});
-      }
-
-      this.resolveResumedUploads();
-
-      let uploads = this.uploads.map((upload)=><span key={upload.filename+upload.filehash} className={upload.class + (upload.ready? "": " processing")}>F: {upload.filename}<span className="delete_upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span><span className="progress_bar" id={"progress_bar"+upload.filehash}><span></span></span></span>);
-      this.setState({
-        "uploads":uploads
-      });
-    }.bind(this), 300);
-  }
-
   fetchUnfinished(){
+    let unfinished = [];
     $.getJSON("/api/upload/unfinished/", (data)=>{
       for (var i = 0; i < data.length; i++) {
         let unfinishedUpload = data[i];
         if(unfinishedUpload[[0]]==this.state.item_id){
-          this.uploads.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true});
+          unfinished.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true});
         }
       }
+    });
+    this.setState({
+      "unfinished":unfinished
     });
   }
 
   resolveResumedUploads(){
-    for (var i = 0; i < this.uploads.length; i++) {
-      for (var j = 0; j < this.uploads.length; j++) {
-        if (this.uploads[i]["class"] == "unfinished" && i != j && this.uploads[i]["filename"] == this.uploads[j]["filename"] && this.uploads[i]["itemId"] == this.uploads[j]["itemId"] && this.uploads[i]["filehash"] == this.uploads[j]["filehash"]) {
-          this.uploads.splice(i, 1);
+    console.log(this.state.uploads);
+    for (var i = 0; i < this.state.uploads.length; i++) {
+      for (var j = 0; j < this.state.uploads.length; j++) {
+        if (this.state.uploads[i]["class"] == "unfinished" && i != j && this.state.uploads[i]["filename"] == this.state.uploads[j]["filename"] && this.state.uploads[i]["filehash"] == this.state.uploads[j]["filehash"]) {
+          this.state.uploads.splice(i, 1);
           this.resolveResumedUploads();
         }
       }
@@ -101,9 +110,41 @@ export class ItemSection extends React.Component{
       hashable = CRC32.buf(hashable).toString();
       file.uniqueIdentifier = hex_md5(hashable+file.itemId + file.file.size);
       file.ready = true;
+      this.commitUpload(file);
       this.buildList();
     }.bind(this);
     reader.readAsArrayBuffer(fileObj);
+    this.buildList();
+  }
+
+  commitUpload(file){
+    let obj = {
+      'filehash': file.uniqueIdentifier,
+      'filename': file.fileName,
+      'itemid': file.itemId,
+      'totalchuks': file.chunks.length
+    }
+    $.ajax({url: '/api/upload/commit', method: 'POST', data: obj});
+  }
+
+  removeUpload(upload){
+    let obj = {
+      'filehash': upload.filehash,
+      'filename': upload.filename,
+      'itemid': this.state.item_id
+    }
+    $.ajax({url: '/api/upload/remove', method: 'POST', data: obj});
+  }
+
+  handleDelete(e){
+    let filehash = $(e.target).data("item");
+    this.removeUpload(this.state.uploads.filter((upload)=>{return upload.filehash == filehash})[0]);
+    for(var i = 0; i<this.resumable.files.length; i++){
+      if(this.resumable.files[i].uniqueIdentifier == filehash){
+        this.resumable.files.splice(i,1);
+      }
+    }
+    this.fetchUnfinished();
     this.buildList();
   }
 
@@ -115,53 +156,7 @@ export class ItemSection extends React.Component{
       }
     }
     if (ready) {
-      let uploadData = {};
-      for (var i = 0; i < this.resumable.files.length; i++) {
-        let obj = {
-          'filehash': this.resumable.files[i].uniqueIdentifier,
-          'filename': this.resumable.files[i].fileName,
-          'itemid': this.resumable.files[i].itemId,
-          'totalchuks': this.resumable.files[i].chunks.length
-        }
-        uploadData[i] = obj;
-      }
-      $.ajax({url: '/api/upload/commit', method: 'POST', data: uploadData})
       this.resumable.upload();
-    }
-  }
-
-  componentDidMount(){
-    this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id));
-    this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
-    this.resumable.on('fileAdded', function(file, event) {
-      file.itemId = this.state.item_id;
-      file.itemCode = this.state.item_code;
-      file.ready = false;
-      //this.hashPool.push(file);
-      this.getHash(file);
-      if(window.resumableContainer[this.state.item_id] == undefined){
-        window.resumableContainer[this.props.item_id] = this.resumable;
-      }
-    }.bind(this));
-    this.resumable.on('fileSuccess', function(file,event){
-      this.fetchExisting();
-      this.buildList();
-    }.bind(this));
-    this.resumable.on('fileProgress', function(file,event){
-      $("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
-      this.buildList();
-    }.bind(this));
-    this.fetchExisting();
-    this.buildList();
-  }
-
-  handleDelete(e){
-    let filehash = $(e.target).data("item");
-    for(var i = 0; i<this.resumable.files.length; i++){
-      if(this.resumable.files[i].uniqueIdentifier == filehash){
-        this.resumable.files.splice(i,1);
-        this.buildList();
-      }
     }
   }
 
@@ -186,6 +181,31 @@ export class ItemSection extends React.Component{
     });
   }
 
+  componentDidMount(){
+    this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id));
+    this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
+    this.resumable.on('fileAdded', function(file, event) {
+      file.itemId = this.state.item_id;
+      file.itemCode = this.state.item_code;
+      file.ready = false;
+      //this.hashPool.push(file);
+      this.getHash(file);
+      if(window.resumableContainer[this.state.item_id] == undefined){
+        window.resumableContainer[this.props.item_id] = this.resumable;
+      }
+    }.bind(this));
+    this.resumable.on('fileSuccess', function(file,event){
+      this.fetchExisting();
+      this.buildList();
+    }.bind(this));
+    this.resumable.on('fileProgress', function(file,event){
+      $("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
+    }.bind(this));
+    this.fetchUnfinished();
+    this.fetchExisting();
+    this.buildList();
+  }
+
   render() {
     return (
       <div className="item_view">
@@ -194,7 +214,7 @@ export class ItemSection extends React.Component{
         <h4>Файлы товара</h4>
         <div className="file_list">{this.state.existing}</div>
         <h4>Загрузки</h4>
-        <div className="file_list" id={"file_list" + this.props.item_id}>{this.state.uploads}</div>
+      <div className="file_list" id={"file_list" + this.props.item_id}>{this.state.upload_list}</div>
         <div className="drop_target" id={"drop_target" + this.props.item_id}></div>
         <div className="button_block">
           <button type="button" id={"browse" + this.props.item_id}>Выбрать</button>
