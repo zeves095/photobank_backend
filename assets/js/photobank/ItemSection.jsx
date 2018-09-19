@@ -178,7 +178,7 @@ export class ItemSection extends React.Component{
     let data = {
       "id" : form.find("input[name='id']").val()
     };
-    form.find(".edit_input").each(function(){
+    form.find(".edit-fields__edit-input").each(function(){
       let sel = $(this).find("select");
       let chk = $(this).find("input[type='checkbox']");
       let txt = $(this).find("input[type='text']");
