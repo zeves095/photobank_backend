@@ -1,16 +1,18 @@
 import React from 'react';
 // import $ from 'jquery';
-
+import TreeView from 'react-simple-jstree';
 export class CatalogueTree extends React.Component {
 
   constructor(props) {
     super(props);
     this.state ={
       "catalogue_data": [],
-      "catalogue_tree": [],
+      "catalogue_list": [],
+      "catalogue_tree": {},
       "tracked_nodes": [],
       "current_node": 1,
-      "crumbs": []
+      "crumbs": [],
+      "view": 1
     }
     this.getCatalogueNodes = this.getCatalogueNodes.bind(this);
     this.getNodeById = this.getNodeById.bind(this);
@@ -19,6 +21,9 @@ export class CatalogueTree extends React.Component {
     this.getNodeLevel = this.getNodeLevel.bind(this);
     this.getCrumbs = this.getCrumbs.bind(this);
     this.nodeChoiceHandler = this.nodeChoiceHandler.bind(this);
+    this.makeTree = this.makeTree.bind(this);
+    this.handleTreeClick = this.handleTreeClick.bind(this);
+    this.handleViewChoice = this.handleViewChoice.bind(this);
   }
 
   getCatalogueNodes(data){
@@ -47,11 +52,34 @@ export class CatalogueTree extends React.Component {
       let child = children[i];
       element.push(<span key={child.id} className="cat_item parent" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></span>);
     }
-    let catalogueTree = element;
+    let catalogueList = element;
     this.setState({
-      "catalogue_tree": catalogueTree
+      "catalogue_list": catalogueList
     });
     this.getCrumbs();
+    console.warn(this.state.catalogue_tree);
+    this.makeTree();
+  }
+
+  makeTree(){
+    let tree={ core: { data: [] }, 'selected':[]};
+    for(var node in this.state.catalogue_data){
+      let item = this.state.catalogue_data[node];
+      let treeNode ={};
+      if(item.id == this.state.current_node){
+        tree['selected'] = [item.id];
+      }
+      treeNode.text = item.name;
+      treeNode.parent = item.parent;
+      if(treeNode.parent == null){
+        treeNode.parent = "#";
+      }
+      treeNode.id = item.id;
+      tree['core']['data'].push(treeNode);
+    }
+    this.setState({
+      'catalogue_tree': tree
+    });
   }
 
   getCrumbs(){
@@ -113,6 +141,15 @@ export class CatalogueTree extends React.Component {
     this.state.current_node = curr_id;
     this.getCatalogueNodes(this.props.catalogue_data);
     this.props.nodeChoiceHandler(curr_id);
+
+  }
+
+  handleTreeClick(e,data){
+    if(data.selected[0] != this.state.current_node && data.action == "select_node"){
+      this.state.current_node = data.selected[0];
+      this.getCatalogueNodes(this.props.catalogue_data);
+      this.props.nodeChoiceHandler(data.selected[0]);
+    }
   }
 
   componentDidUpdate(prevProps){
@@ -122,16 +159,26 @@ export class CatalogueTree extends React.Component {
     }
   }
 
+  handleViewChoice(e){
+    let view = $(e.target).attr("data-view");
+    this.setState({'view':view});
+  }
+
   render() {
     return (
       <div className="catalogue_tree">
-        <h2 className="component_title">Каталог</h2>
+        <h2 className="component_title">Каталог<span className="view_icons"><i className="fas fa-stream" data-view="2" onClick={this.handleViewChoice}></i><i className="fas fa-list" data-view="1" onClick={this.handleViewChoice}></i></span></h2>
         <div>
           <div className="crumbs">
             {this.state.crumbs}
           </div>
           <div className="catalogue_tree_inner">
-          {this.state.catalogue_tree}
+            <div className="list_view">
+              {this.state.view==1?this.state.catalogue_list:""}
+            </div>
+            <div className="tree_view">
+              {this.state.view==2?<TreeView treeData={this.state.catalogue_tree} onChange={this.handleTreeClick} />:""}
+            </div>
           </div>
         </div>
       </div>
