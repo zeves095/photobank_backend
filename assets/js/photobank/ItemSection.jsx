@@ -60,12 +60,11 @@ export class ItemSection extends React.Component{
       data = data.map((file)=>
       <span key={file.src_filename+file.filename}><a href={"/catalogue/node/item/resource/"+file.id+".jpg"}>{file.src_filename}</a>
         <span className="edit_fields">
-          <span className="edit_input"><input type="text" name="priority" defaultValue={file.priority} /><label htmlFor="priority">Приоритет 1С</label></span>
-          <span className="edit_input"><input type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
-          <span className="edit_input"><input type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
-          <span className="edit_input"><input type="checkbox" defaultChecked={file.isDefault} name="default"/><label htmlFor="default">По умолчанию</label></span>
+          <span className="edit_input"><input onChange={this.handleResourceUpdate} type="text" name="priority" defaultValue={file.priority} /><label htmlFor="priority">Приоритет 1С</label></span>
+          <span className="edit_input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
+          <span className="edit_input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
+          <span className="edit_input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDefault} name="default"/><label htmlFor="default">По умолчанию</label></span>
           <input type="hidden" name="id" value={file.id}/>
-          <button onClick={this.handleResourceUpdate}>Обновить</button>
         </span>
       </span>);
       this.setState({
