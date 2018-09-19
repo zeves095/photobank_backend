@@ -34,7 +34,7 @@ class Resource
     /**
      * @ORM\Column(type="integer")
      */
-    private $type;
+    private $type = 3;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)

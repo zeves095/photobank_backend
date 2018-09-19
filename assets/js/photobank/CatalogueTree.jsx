@@ -51,7 +51,7 @@ export class CatalogueTree extends React.Component {
     for(var i = 0; i<children.length; i++){
       let child = children[i];
       element.push(
-        <span key={child.id} className="cat_item parent" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></span>
+        <span key={child.id} className="list-view__cat_item list-view__cat_item--parent" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></span>
       );
     }
     let catalogueList = element;
@@ -109,7 +109,7 @@ export class CatalogueTree extends React.Component {
       crumbs.push(parent);
       cur_node = this.getNodeById(parent.id);
     }
-    crumbs = crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"active":""} onClick={this.nodeChoiceHandler}>{crumb.name}</span>);
+    crumbs = crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"crumbs__crumb crumbs__crumb--active":"crumbs__crumb"} onClick={this.nodeChoiceHandler}>{crumb.name}</span>);
     crumbs.reverse();
     this.setState({
       "crumbs":crumbs
@@ -181,17 +181,17 @@ export class CatalogueTree extends React.Component {
 
   render() {
     return (
-      <div className="catalogue_tree">
-        <h2 className="component_title">Каталог<span className="view_icons"><i className="fas fa-stream" data-view="2" onClick={this.handleViewChoice}></i><i className="fas fa-list" data-view="1" onClick={this.handleViewChoice}></i></span></h2>
+      <div className="catalogue-tree">
+        <h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-stream" data-view="2" onClick={this.handleViewChoice}></i><i className="fas fa-list" data-view="1" onClick={this.handleViewChoice}></i></span></h2>
         <div>
-          <div className="crumbs">
+          <div className="catalogue-tree__crumbs crumbs">
             {this.state.crumbs}
           </div>
-          <div className="catalogue_tree_inner">
-            <div className="list_view">
+          <div className="catalogue-tree__view-inner view-inner">
+            <div className="view-inner__list-view list-view">
               {this.state.view==1?this.state.catalogue_list:""}
             </div>
-            <div className="tree_view">
+            <div className="view-inner__tree-view">
               {this.state.view==2?<TreeView treeData={this.state.catalogue_tree} onChange={this.handleTreeClick} />:""}
             </div>
           </div>

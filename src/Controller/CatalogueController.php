@@ -218,6 +218,9 @@ class CatalogueController extends AbstractController
         $priority = $data['priority']??$resource->getPriority();
         $resource->setPriority(intval($priority));
 
+        $type = $data['type']??$resource->getType();
+        $resource->setType(intval($type));
+
         $Is1c = $data['1c']??$resource->getIs1c();
         $resource->setIs1c(intval($Is1c));
 

@@ -26,7 +26,10 @@ class FileUploadController extends AbstractController
       $itemId = $requestStack->getCurrentRequest()->query->get('itemId');
       $itemCode = $requestStack->getCurrentRequest()->query->get('itemCode');
       $totalChunks = $requestStack->getCurrentRequest()->query->get('resumableTotalChunks');
-      $result = $receiver->uploadChunks($this->_getUploadParameters($container, $requestStack));
+      $uploadParams = $this->_getUploadParameters($container, $requestStack);
+      if($this->_validateUpload($uploadParams)){
+        $result = $receiver->uploadChunks($uploadParams);
+      }
       var_dump($itemCode);
       if($result['completed']){
         $responseParams=array(
@@ -72,6 +75,9 @@ class FileUploadController extends AbstractController
       return new JsonResponse($uploads);
     }
 
+    private function _validateUpload($uploadParams){
+      return true;
+    }
 
     private function _getUploadParameters($container, $requestStack){
 
@@ -86,16 +92,7 @@ class FileUploadController extends AbstractController
         "resumableTotalChunks"=>$request->query->get('resumableTotalChunks'),
       );
 
-      $itemId = $request->query->get('itemId');
-      $itemCode = $request->query->get('itemCode');
       $files = $request->files;
-
-      $splitId = array();
-      for($i=0; $i<=strlen($itemCode)/2; $i++){
-        $splitId[] = substr($itemCode, $i*2, 2);
-      }
-      $splitIdPath = implode('/',$splitId)."/";
-      $destinationDir = $container->getParameter('fileuploader.desinationdir').$splitIdPath;
 
       $tempDir = $container->getParameter('fileuploader.tempdir');
       $username = $this->username;
@@ -109,7 +106,6 @@ class FileUploadController extends AbstractController
         'filename' => $filename,
         'partstring' => $partstring,
         'tempchunkdir' => $tempChunkDir,
-        'destinationdir' => $destinationDir,
         'files' => $files,
         'temp_dir' => $tempDir,
         'username' => $username,
