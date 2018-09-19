@@ -3,6 +3,7 @@
 namespace App\PhotoBank\FileUploaderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,6 +30,8 @@ class FileUploadController extends AbstractController
       $uploadParams = $this->_getUploadParameters($container, $requestStack);
       if($this->_validateUpload($uploadParams)){
         $result = $receiver->uploadChunks($uploadParams);
+      } else {
+        throw new NotAcceptableHttpException();
       }
       var_dump($itemCode);
       if($result['completed']){
@@ -76,7 +79,11 @@ class FileUploadController extends AbstractController
     }
 
     private function _validateUpload($uploadParams){
-      return true;
+      $allowedFiletypes = explode(',',$this->container->getParameter('fileuploader.allowedfiletypes'));
+      if(in_array($uploadParams['extension'], $allowedFiletypes)){
+        return true;
+      }
+      return false;
     }
 
     private function _getUploadParameters($container, $requestStack){
@@ -105,6 +112,7 @@ class FileUploadController extends AbstractController
         'resumablevars' => $resumableVars,
         'filename' => $filename,
         'partstring' => $partstring,
+        'extension' => $extension,
         'tempchunkdir' => $tempChunkDir,
         'files' => $files,
         'temp_dir' => $tempDir,
