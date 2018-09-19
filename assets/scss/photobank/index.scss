@@ -6,16 +6,16 @@ body {
 
 .userblock {
   width: 100%;
-height: 20px;
-margin: 0;
-padding: 10px;
-border: none;
-background-color: #333;
-border-radius: 0;
-color: white;
-font-weight: bold;
-font-size: 13pt;
-border-bottom: 2px solid #00c1fb;
+  height: 20px;
+  margin: 0;
+  padding: 10px;
+  border: none;
+  background-color: #333;
+  border-radius: 0;
+  color: white;
+  font-weight: bold;
+  font-size: 13pt;
+  border-bottom: 2px solid #00c1fb;
 }
 
 .userblock p {
@@ -27,243 +27,268 @@ border-bottom: 2px solid #00c1fb;
 
 .userblock a {
   display: inline-block;
-right: 20px;
-position: absolute;
-margin: 0;
-color: white;
-border: 1px solid white;
-border-radius: 5px;
-padding: 1px 5px;
+  right: 20px;
+  position: absolute;
+  margin: 0;
+  color: white;
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 1px 5px;
 }
 
-.main_block{
-  display:flex;
+.main_block {
+  display: flex;
 }
 
-.butt-wrapper{
+.butt-wrapper {
   text-align: center;
 }
 
 #photobank-wrapper {
-  font-family: sans-serif;
-}
+  .drop_target {
+    height: 150px;
+    width: 96%;
+    background-color: #f1f1f1;
+    outline: 2px solid #00c1f7;
+    outline-style: dashed;
+    display: inline-block;
+    margin: 2%;
+  }
 
-#photobank-wrapper .drop_target {
-  height: 150px;
-width: 96%;
-background-color: #f1f1f1;
-outline: 2px solid #00c1f7;
-outline-style: dashed;
-display: inline-block;
-margin: 2%;
-}
+  .drop_target::before {
+    content: 'DRAG DROP';
+    color: #c5c5c5;
+    font-weight: bold;
+    font-size: 38pt;
+    position: relative;
+    padding: 60px;
+    bottom: -52px;
+  }
 
-#photobank-wrapper .drop_target::before {
-  content: 'DRAG & DROP';
-  color: #c5c5c5;
-  font-weight: bold;
-  font-size: 38pt;
-  position: relative;
-  padding: 60px;
-  bottom: -52px;
-}
-
-#photobank-wrapper button {
-  padding: 10px;
-  margin: 0 4px;
-  font-weight: bold;
-  border: 0;
+  button {
+    padding: 10px;
+    margin: 0 4px;
+    font-weight: bold;
+    border: 0;
     border-bottom: 2px solid #44c1ff;
     border-radius: 2px;
-  background-color: #3d4e50;
-  color: #ffffff;
-  font-size: 12pt;
-  width: 120px;
-}
+    background-color: #3d4e50;
+    color: #ffffff;
+    font-size: 12pt;
+    width: 120px;
+  }
 
-#photobank-wrapper button.large_btn{
-  font-size: 18pt;
+  button.large_btn {
+    font-size: 18pt;
     width: 150px;
-}
+  }
 
-#photobank-wrapper .button_block{
-  display: inline-block;
-position: relative;
-float: right;
-}
+  .button_block {
+    display: inline-block;
+    position: relative;
+    float: right;
+  }
 
-#photobank-wrapper .delete_upload{
-  float:right;
-}
+  .delete_upload {
+    float: right;
+  }
 
-#photobank-wrapper .file_list ul {
-  list-style-type: none;
-}
+  .catalogue_tree,
+  .node_viewer,
+  .upload_pool {
+    outline: 1px solid #e0e0e0;
+    margin: 0;
+    width: 50%;
+    display: inline-block;
+  }
 
-#photobank-wrapper .file_list>span {
-  background-color: #f1f1f1;
-  margin: 10px 0;
-  border: 2px solid #00c1fb;
-  padding: 10px 28px;
-  display: block;
-}
+  .catalogue_tree_inner,
+  .node_viewer_inner,
+  .upload_pool_inner {
+    overflow-y: scroll;
+    height: 785px;
+  }
 
-#photobank-wrapper .file_list>span.uploading {
-  color: white;
-  background-color: #46bbff;
-}
+  .item_view_inner {
+    max-height: 0;
+    transition: 1s;
+    overflow: hidden;
+  }
 
-#photobank-wrapper .file_list>span.completed {
-  color: white;
-  background-color: #25c548;
-}
+  .item_view_inner.open {
+    max-height: 500px;
+    transition: 1s;
+    overflow: scroll;
+  }
 
-#photobank-wrapper .file_list>span.unfinished {
-  color: #a5a5a5;
-  background-color: #d6d6d6;
-}
-
-#photobank-wrapper .node_viewer, #photobank-wrapper .catalogue_tree, #photobank-wrapper .upload_pool {
-  outline: 1px solid #e0e0e0;
-  margin: 0px;
-  width: 50%;
-  display: inline-block;
-}
-#photobank-wrapper .node_viewer_inner, #photobank-wrapper .catalogue_tree_inner, #photobank-wrapper .upload_pool_inner {
-overflow-y: scroll;
-  height: 785px;
-}
-#photobank-wrapper .item_view_inner{
-  max-height: 0px;
-transition: 1s;
-overflow: hidden;
-}
-#photobank-wrapper .item_view_inner.open{
-  max-height: 500px;
-transition: 1s;
-overflow: scroll;
-}
-#photobank-wrapper .upload_pool{
+  .upload_pool {
     position: absolute;
     display: block;
     top: 42px;
     margin: 0 auto;
     left: 25%;
     background-color: #f1f1f1;
-}
+  }
 
-#photobank-wrapper .item_view {
-  border-bottom: 1px solid #e0e0e0;
-}
+  .item_view {
+    border-bottom: 1px solid #e0e0e0;
+  }
 
-#photobank-wrapper .item_view>h4{
-  margin: 0;
-padding: 10px;
-outline: 2px solid #3e4f51;
-color: #3e4f51;
-background-color: #f1f1f1;
-}
-
-#photobank-wrapper .file_list>span.processing {
-  background-color: #fbbcbc;
-  color: #966d6d;
-}
-
-#photobank-wrapper .file_list>span.processing::before {
-  content: '|';
-  animation-name: spin;
-  animation-duration: 1000ms;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  display: inline-block;
-  left: -15px;
-  position: relative;
-  font-size: 16pt;
-}
-
-#photobank-wrapper h2.component_title {
-  margin: 0;
-  padding: 10px 12px;
-  border: 2px solid;
-  border-color: transparent transparent #44c1ff;
-  background-color: #3d4e50;
-  color: #fff;
-  font-weight:normal;
-}
-
-#photobank-wrapper span.cat_item {
-  display: block;
-  padding: 10px;
-  border-bottom: 1px solid #dfdfdf;
-  color: #333;
-}
-
-#photobank-wrapper span.cat_item:nth-child(even) {
+  .item_view > h4 {
+    margin: 0;
+    padding: 10px;
+    outline: 2px solid #3e4f51;
+    color: #3e4f51;
     background-color: #f1f1f1;
-}
+  }
 
-#photobank-wrapper .catalogue_tree .crumbs>span {
-  padding: 10px;
-  display: inline-block;
-  border-bottom: 1px solid #dedede;
-  border-right: 1px solid #dedede;
-}
+  h2.component_title {
+    margin: 0;
+    padding: 10px 12px;
+    border: 2px solid;
+    border-color: transparent transparent #44c1ff;
+    background-color: #3d4e50;
+    color: #fff;
+    font-weight: normal;
+  }
 
-#photobank-wrapper .catalogue_tree .crumbs>span.active {
-  color: white;
-  background-color: #00c1fb;
-  font-weight: bold;
-}
+  span.cat_item {
+    display: block;
+    padding: 10px;
+    border-bottom: 1px solid #dfdfdf;
+    color: #333;
+  }
 
-#photobank-wrapper .file_list .edit_fields{
+  span.cat_item:nth-child(even) {
+    background-color: #f1f1f1;
+  }
 
-    padding-top: 12px;
-  display: block;
-}
+  .catalogue_tree {
+    .crumbs > span {
+      padding: 10px;
+      display: inline-block;
+      border-bottom: 1px solid #dedede;
+      border-right: 1px solid #dedede;
+    }
 
-#photobank-wrapper .file_list .edit_fields button{
-  width: 70px;
-  height: 22px;
-  padding: 5px;
-  font-size: 9pt;
-  display: inline-block;
-top: -9px;
-position: relative;
-}
-#photobank-wrapper .file_list .edit_fields input[type='text']{
-  width: 35px;
-}
-#photobank-wrapper .file_list .edit_fields label{
-  font-size: 8pt;
-}
-#photobank-wrapper .file_list .edit_input{
-  width: 95px;
-    display: inline-block;
-    text-align: center;
-}
-#photobank-wrapper .file_list .edit_input label{
-  display:block;
-}
-#photobank-wrapper .file_list .pending .progress_bar{
-  height: 3px;
-  background-color: #dfdfdf;
-  width: 100%;
-  display: block;
-}
-#photobank-wrapper .file_list .pending .progress_bar>span{
-  height: 3px;
-  background-color: #00c1f7;
-  width: 0%;
-  display: block;
-  transition:0.2s;
-}
-#photobank-wrapper .file_list>span{
-  transition:0.3s;
+    .crumbs > span.active {
+      color: white;
+      background-color: #00c1fb;
+      font-weight: bold;
+    }
+
+    .view_icons{
+      float:right;
+    }
+
+    .view_icons i{
+      padding:2px;
+    }
+  }
+
+  .file_list {
+    ul {
+      list-style-type: none;
+    }
+
+    > span {
+      background-color: #f1f1f1;
+      margin: 10px 0;
+      border: 2px solid #00c1fb;
+      padding: 10px 28px;
+      display: block;
+    }
+
+    > span.uploading {
+      color: white;
+      background-color: #46bbff;
+    }
+
+    > span.completed {
+      color: white;
+      background-color: #25c548;
+    }
+
+    > span.unfinished {
+      color: #a5a5a5;
+      background-color: #d6d6d6;
+    }
+
+    > span.processing {
+      background-color: #fbbcbc;
+      color: #966d6d;
+    }
+
+    > span.processing::before {
+      content: '|';
+      animation-name: spin;
+      animation-duration: 1000ms;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+      display: inline-block;
+      left: -15px;
+      position: relative;
+      font-size: 16pt;
+    }
+
+    .edit_fields {
+      padding-top: 12px;
+      display: block;
+    }
+
+    .edit_fields button {
+      width: 70px;
+      height: 22px;
+      padding: 5px;
+      font-size: 9pt;
+      display: inline-block;
+      top: -9px;
+      position: relative;
+    }
+
+    .edit_fields input[type='text'] {
+      width: 35px;
+    }
+
+    .edit_fields label {
+      font-size: 8pt;
+    }
+
+    .edit_input {
+      width: 95px;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .edit_input label {
+      display: block;
+    }
+
+    .pending .progress_bar {
+      height: 3px;
+      background-color: #dfdfdf;
+      width: 100%;
+      display: block;
+    }
+
+    .pending .progress_bar > span {
+      height: 3px;
+      background-color: #00c1f7;
+      width: 0;
+      display: block;
+      transition: 0.2s;
+    }
+
+    > span {
+      transition: 0.3s;
+    }
+  }
 }
 @keyframes spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
