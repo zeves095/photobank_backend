@@ -20,6 +20,7 @@ export class ItemSection extends React.Component{
     };
     this.hashPool = [];
     this.uploads = [];
+    this.fetchUnfinished();
 
     this.buildList = this.buildList.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -27,12 +28,12 @@ export class ItemSection extends React.Component{
     this.getHash = this.getHash.bind(this);
     this.resolveResumedUploads = this.resolveResumedUploads.bind(this);
     this.fetchExisting = this.fetchExisting.bind(this);
+    this.fetchUnfinished = this.fetchUnfinished.bind(this);
     this.handleResourceUpdate = this.handleResourceUpdate.bind(this);
   }
 
   fetchExisting(){
-    $.getJSON("/catalogue/node/item/resources/"+this.props.item_id, (data)=>{
-      console.log(data);
+    $.getJSON("/catalogue/node/item/resources/"+this.state.item_id, (data)=>{
       data = data.map((file)=>
       <span key={file.src_filename+file.filename}><a href={"/catalogue/node/item/resource/"+file.id+".jpg"}>{file.src_filename}</a>
         <span className="edit_fields">
@@ -55,19 +56,6 @@ export class ItemSection extends React.Component{
       clearTimeout(this.updateListTimer);
     }
     this.updateListTimer = setTimeout(function() {
-      let unfinishedUploads = $("#unfinished_uploads").val().split("|");
-
-      this.uploads = [];
-
-      if (unfinishedUploads !== "") {
-        for (var i = 0; i < unfinishedUploads.length; i++) {
-          let unfinishedParts = unfinishedUploads[i].split(',');
-          if(unfinishedParts[0]==this.state.item_id){
-            this.uploads.push({'filename': unfinishedParts[1], 'filehash': unfinishedParts[2], 'class': "unfinished", "ready": true});
-          }
-        }
-      }
-
       for (var i = 0; i < this.resumable.files.length; i++) {
         let className = this.resumable.files[i].isComplete()?"completed":"pending";
         this.uploads.push({"filename": this.resumable.files[i].fileName, "filehash": this.resumable.files[i].uniqueIdentifier, "class": className, "ready": this.resumable.files[i].ready});
@@ -80,6 +68,17 @@ export class ItemSection extends React.Component{
         "uploads":uploads
       });
     }.bind(this), 300);
+  }
+
+  fetchUnfinished(){
+    $.getJSON("/api/upload/unfinished/", (data)=>{
+      for (var i = 0; i < data.length; i++) {
+        let unfinishedUpload = data[i];
+        if(unfinishedUpload[[0]]==this.state.item_id){
+          this.uploads.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true});
+        }
+      }
+    });
   }
 
   resolveResumedUploads(){
@@ -126,7 +125,6 @@ export class ItemSection extends React.Component{
         }
         uploadData[i] = obj;
       }
-      console.log(this.resumable.files);
       $.ajax({url: '/api/upload/commit', method: 'POST', data: uploadData})
       this.resumable.upload();
     }

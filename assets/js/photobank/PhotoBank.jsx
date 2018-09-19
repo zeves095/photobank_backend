@@ -19,18 +19,14 @@ export class PhotoBank extends React.Component {
   }
 
   fetchUnfinished(){
-    let unfinishedUploads = $("#unfinished_uploads").val().split("|");
-    if (unfinishedUploads[0] !== "") {
-      for (var i = 0; i < unfinishedUploads.length; i++) {
-        let unfinishedParts = unfinishedUploads[i].split(',');
-        if(typeof window.resumableContainer[unfinishedParts[0]] == 'undefined'){
-          window.resumableContainer[unfinishedParts[0]]=new Resumable({target: '/api/upload/'});
-        }
-        if(unfinishedParts[0]==this.state.item_id){
-          this.uploads.push({'filename': unfinishedParts[1], 'filehash': unfinishedParts[2], 'class': "unfinished", "ready": true});
+    $.getJSON("/api/upload/unfinished/", (data)=>{
+      for (var i = 0; i < data.length; i++) {
+        let unfinishedUpload = data[i];
+        if(typeof window.resumableContainer[unfinishedUpload[0]] == 'undefined'){
+          window.resumableContainer[unfinishedUpload[0]]=new Resumable({target: '/api/upload/'});
         }
       }
-    }
+    });
   }
 
   handleNodeChoice(id){
