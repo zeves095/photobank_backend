@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,6 +71,26 @@ class CatalogueController extends AbstractController
         ));
 
         $response->setData($cnodeArray);
+        return $response;
+    }
+    /**
+     * @Route("/catalogue/node/item/{item}",
+     * requirements={"item" = "\d{11}"},
+     * methods={"GET"},
+     * name="catalogue_node_item_by_itemcode")
+     * @ParamConverter("citem", class="App\Entity\CatalogueNodeItem", options={"mapping": {"item": "itemCode"}})
+     */
+    public function getItemByItemCode(CatalogueNodeItem $citem, AppSerializer $serializer)
+    {
+        $response = new JsonResponse();
+
+        $citemArray = $serializer->normalize($citem, null, array(
+            ObjectNormalizer::ENABLE_MAX_DEPTH => true,
+            'groups' => array('main','parent')
+        ));
+
+        $response->setData($citemArray);
+
         return $response;
     }
 
