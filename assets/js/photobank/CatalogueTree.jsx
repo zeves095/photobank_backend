@@ -50,7 +50,9 @@ export class CatalogueTree extends React.Component {
     let children = this.getNodeChildren(parent);
     for(var i = 0; i<children.length; i++){
       let child = children[i];
-      element.push(<span key={child.id} className="cat_item parent" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></span>);
+      element.push(
+        <span key={child.id} className="cat_item parent" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></span>
+      );
     }
     let catalogueList = element;
     this.setState({
@@ -65,9 +67,23 @@ export class CatalogueTree extends React.Component {
     let tree={ core: { data: [] }, 'selected':[]};
     for(var node in this.state.catalogue_data){
       let item = this.state.catalogue_data[node];
-      let treeNode ={};
+      let treeNode ={
+        'text':"",
+        'parent':"",
+        'state':{
+          'selected':false,
+          'opened':true
+        }
+      };
       if(item.id == this.state.current_node){
         tree['selected'] = [item.id];
+        treeNode['state']['selected'] = true;
+        let nodeToOpen = item;
+        console.log(nodeToOpen);
+        while(nodeToOpen.parent != null && nodeToOpen.parent != 1){
+          treeNode['state']['opened'] = true;
+          nodeToOpen = this.state.catalogue_data[nodeToOpen.parent];
+        }
       }
       treeNode.text = item.name;
       treeNode.parent = item.parent;
@@ -141,7 +157,6 @@ export class CatalogueTree extends React.Component {
     this.state.current_node = curr_id;
     this.getCatalogueNodes(this.props.catalogue_data);
     this.props.nodeChoiceHandler(curr_id);
-
   }
 
   handleTreeClick(e,data){

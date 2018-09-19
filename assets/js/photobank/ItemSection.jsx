@@ -209,7 +209,7 @@ export class ItemSection extends React.Component{
   render() {
     return (
       <div className="item_view">
-        <h4 onClick={()=>{this.setState({"open":!this.state.open})}}>{this.props.name}</h4>
+        <button type="button" onClick={()=>{this.setState({"open":!this.state.open})}}>{this.state.open?"Скрыть":"Показать"}</button>
         <div className={this.state.open?"item_view_inner open":"item_view_inner"}>
         <h4>Файлы товара</h4>
         <div className="file_list">{this.state.existing}</div>
