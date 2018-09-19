@@ -15,7 +15,7 @@ class UploadManagerController extends AbstractController
      */
     public function check()
     {
-      
+
     }
     /**
      * @Route("/commit", name="upload_commit")
@@ -25,6 +25,17 @@ class UploadManagerController extends AbstractController
       $request = $requestStack->getCurrentRequest();
       $uploads = $request->request->all();
       $recordManager->insert($uploads);
+      return new Response();
+    }
+
+    /**
+     * @Route("/remove", name="upload_remove")
+     */
+    public function remove(RequestStack $requestStack, UploadRecordManager $recordManager)
+    {
+      $request = $requestStack->getCurrentRequest();
+      $uploads = $request->request->all();
+      $recordManager->remove($uploads);
       return new Response();
     }
 
