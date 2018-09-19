@@ -39,16 +39,23 @@ export class ItemSection extends React.Component{
     this.updateListTimer = setTimeout(function() {
       this.state.uploads = [];
       for(var i = 0; i < this.state.unfinished.length; i++){
-        let className = "unfinished";
+        let className = "--unfinished";
         this.state.uploads.push({"filename": this.state.unfinished[i].filename, "filehash": this.state.unfinished[i].filehash, "class": className, "ready": true});
       }
       for (var i = 0; i < this.resumable.files.length; i++) {
-        let className = this.resumable.files[i].isComplete()?"completed":"pending";
+        let className = this.resumable.files[i].isComplete()?"--completed":"--pending";
         this.state.uploads.push({"filename": this.resumable.files[i].fileName, "filehash": this.resumable.files[i].uniqueIdentifier, "class": className, "ready": this.resumable.files[i].ready});
       }
       this.resolveResumedUploads();
       let uploadList = this.state.uploads;
-      uploadList = uploadList.map((upload)=><span key={upload.filename+upload.filehash} className={upload.class + (upload.ready? "": " processing")}>F: {upload.filename}<span className="delete_upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span><span className="progress_bar" id={"progress_bar"+upload.filehash}><span></span></span></span>);
+      uploadList = uploadList.map((upload)=>
+      <span key={upload.filename+upload.filehash} className={"file-list__file-item file-item file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing")}>
+        F: {upload.filename}
+        <span className="file-item__delete-upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span>
+      <span className="file-item__progress-bar" id={"progress_bar"+upload.filehash}>
+          <span></span>
+        </span>
+      </span>);
       this.setState({
         "upload_list":uploadList
       });
@@ -58,9 +65,9 @@ export class ItemSection extends React.Component{
   fetchExisting(){
     $.getJSON("/catalogue/node/item/resources/"+this.state.item_id, (data)=>{
       data = data.map((file)=>
-      <span key={file.src_filename+file.filename}><a href={"/catalogue/node/item/resource/"+file.id+".jpg"}>{file.src_filename}</a>
-        <span className="edit_fields">
-          <span className="edit_input">
+      <span className="existing-files__file file" key={file.src_filename+file.filename}><a href={"/catalogue/node/item/resource/"+file.id+".jpg"}>{file.src_filename}</a>
+        <span className="file__edit-fields edit-fields">
+          <span className="edit-fields__edit-input">
             <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
               <option value="1">Основное</option>
               <option value="2">Дополнительное</option>
@@ -68,9 +75,9 @@ export class ItemSection extends React.Component{
             </select>
             <label htmlFor="type">Тип ресурса</label>
           </span>
-          <span className="edit_input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
-          <span className="edit_input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
-          <span className="edit_input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDefault} name="default"/><label htmlFor="default">По умолчанию</label></span>
+          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
+          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
+          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDefault} name="default"/><label htmlFor="default">По умолчанию</label></span>
           <input type="hidden" name="id" value={file.id}/>
         </span>
       </span>);
@@ -220,7 +227,7 @@ export class ItemSection extends React.Component{
         <button type="button" onClick={()=>{this.setState({"open":!this.state.open})}}>{this.state.open?"Скрыть":"Показать"}</button>
         <div className={this.state.open?"item-view__inner item-view__inner--open":"item-view__inner"}>
           <h4>Файлы товара</h4>
-          <div className="item-view__file-list">{this.state.existing}</div>
+        <div className="item-view__file-list existing-files">{this.state.existing}</div>
           <h4>Загрузки</h4>
           <div className="item-view__file-list file-list" id={"file_list" + this.props.item_id}>{this.state.upload_list}</div>
           <div className="file-list__drop-target" id={"drop_target" + this.props.item_id}></div>

@@ -40,9 +40,9 @@ export class UploadPool extends React.Component{
 
   render(){
     return(
-      <div className="upload_pool">
-        <h2 className="component_title">Загрузки</h2>
-        <div className="upload_pool_inner">
+      <div className="upload-pool">
+        <h2 className="upload-pool__component-title component-title">Загрузки</h2>
+        <div className="upload-pool__view-inner view-inner">
           {this.state.pool}
           <button type="button" onClick={this.handleSubmit}>Загрузить</button>
         </div>
