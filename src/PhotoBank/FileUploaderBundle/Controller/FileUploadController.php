@@ -3,6 +3,7 @@
 namespace App\PhotoBank\FileUploaderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +27,12 @@ class FileUploadController extends AbstractController
       $itemId = $requestStack->getCurrentRequest()->query->get('itemId');
       $itemCode = $requestStack->getCurrentRequest()->query->get('itemCode');
       $totalChunks = $requestStack->getCurrentRequest()->query->get('resumableTotalChunks');
-      $result = $receiver->uploadChunks($this->_getUploadParameters($container, $requestStack));
+      $uploadParams = $this->_getUploadParameters($container, $requestStack);
+      if($this->_validateUpload($uploadParams)){
+        $result = $receiver->uploadChunks($uploadParams);
+      } else {
+        throw new NotAcceptableHttpException();
+      }
       var_dump($itemCode);
       if($result['completed']){
         $responseParams=array(
@@ -34,6 +40,8 @@ class FileUploadController extends AbstractController
           'chunkPath'=>$result['chunkPath'],
           'filename'=>$result['filename'],
           'src_filename'=>$result['src_filename'],
+          'filesize'=>$result['filesize'],
+          'extension'=>$uploadParams['extension'],
           'username'=>$this->username,
           'item_id'=>$itemId,
           'item_code'=>$itemCode,
@@ -72,6 +80,13 @@ class FileUploadController extends AbstractController
       return new JsonResponse($uploads);
     }
 
+    private function _validateUpload($uploadParams){
+      $allowedFiletypes = explode(',',$this->container->getParameter('fileuploader.allowedfiletypes'));
+      if(in_array($uploadParams['extension'], $allowedFiletypes)){
+        return true;
+      }
+      return false;
+    }
 
     private function _getUploadParameters($container, $requestStack){
 
@@ -86,16 +101,7 @@ class FileUploadController extends AbstractController
         "resumableTotalChunks"=>$request->query->get('resumableTotalChunks'),
       );
 
-      $itemId = $request->query->get('itemId');
-      $itemCode = $request->query->get('itemCode');
       $files = $request->files;
-
-      $splitId = array();
-      for($i=0; $i<=strlen($itemCode)/2; $i++){
-        $splitId[] = substr($itemCode, $i*2, 2);
-      }
-      $splitIdPath = implode('/',$splitId)."/";
-      $destinationDir = $container->getParameter('fileuploader.desinationdir').$splitIdPath;
 
       $tempDir = $container->getParameter('fileuploader.tempdir');
       $username = $this->username;
@@ -108,8 +114,8 @@ class FileUploadController extends AbstractController
         'resumablevars' => $resumableVars,
         'filename' => $filename,
         'partstring' => $partstring,
+        'extension' => $extension,
         'tempchunkdir' => $tempChunkDir,
-        'destinationdir' => $destinationDir,
         'files' => $files,
         'temp_dir' => $tempDir,
         'username' => $username,

@@ -48,14 +48,14 @@ export class PhotoBank extends React.Component {
   render() {
     if(this.state.catalogue_data != {}){
     return (
-      <div className="photobank_main">
-      <div className="main_block">
+      <div className="photobank-main">
+      <div className="photobank-main__main-block">
         <CatalogueTree catalogue_data={this.state.catalogue_data} nodeChoiceHandler={this.handleNodeChoice} />
         <NodeViewer catalogue_data={this.state.catalogue_data} node={this.state.selected_node} />
         </div>
         {this.state.view_pool?<UploadPool />:""}
-        <div className="butt-wrapper">
-        <button type="button" className=" large_btn" onClick={()=>{this.setState({"view_pool":!this.state.view_pool})}}>{this.state.view_pool?"Скрыть":"Загрузки"}</button>
+        <div className="photobank-main__butt-wrapper">
+        <button type="button" className="photobank-main__large-btn" onClick={()=>{this.setState({"view_pool":!this.state.view_pool})}}>{this.state.view_pool?"Скрыть":"Загрузки"}</button>
         </div>
       </div>
     );

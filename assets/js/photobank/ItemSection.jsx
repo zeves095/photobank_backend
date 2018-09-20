@@ -30,6 +30,7 @@ export class ItemSection extends React.Component{
     this.fetchUnfinished = this.fetchUnfinished.bind(this);
     this.handleResourceUpdate = this.handleResourceUpdate.bind(this);
     this.removeUpload = this.removeUpload.bind(this);
+    this.buildExisting = this.buildExisting.bind(this);
   }
 
   buildList() {
@@ -39,16 +40,23 @@ export class ItemSection extends React.Component{
     this.updateListTimer = setTimeout(function() {
       this.state.uploads = [];
       for(var i = 0; i < this.state.unfinished.length; i++){
-        let className = "unfinished";
+        let className = "--unfinished";
         this.state.uploads.push({"filename": this.state.unfinished[i].filename, "filehash": this.state.unfinished[i].filehash, "class": className, "ready": true});
       }
       for (var i = 0; i < this.resumable.files.length; i++) {
-        let className = this.resumable.files[i].isComplete()?"completed":"pending";
+        let className = this.resumable.files[i].isComplete()?"--completed":"--pending";
         this.state.uploads.push({"filename": this.resumable.files[i].fileName, "filehash": this.resumable.files[i].uniqueIdentifier, "class": className, "ready": this.resumable.files[i].ready});
       }
       this.resolveResumedUploads();
       let uploadList = this.state.uploads;
-      uploadList = uploadList.map((upload)=><span key={upload.filename+upload.filehash} className={upload.class + (upload.ready? "": " processing")}>F: {upload.filename}<span className="delete_upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span><span className="progress_bar" id={"progress_bar"+upload.filehash}><span></span></span></span>);
+      uploadList = uploadList.map((upload)=>
+      <span key={upload.filename+upload.filehash} className={"file-list__file-item file-item file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing")}>
+        F: {upload.filename}
+        <span className="file-item__delete-upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span>
+      <span className="file-item__progress-bar" id={"progress_bar"+upload.filehash}>
+          <span></span>
+        </span>
+      </span>);
       this.setState({
         "upload_list":uploadList
       });
@@ -57,19 +65,7 @@ export class ItemSection extends React.Component{
 
   fetchExisting(){
     $.getJSON("/catalogue/node/item/resources/"+this.state.item_id, (data)=>{
-      data = data.map((file)=>
-      <span key={file.src_filename+file.filename}><a href={"/catalogue/node/item/resource/"+file.id+".jpg"}>{file.src_filename}</a>
-        <span className="edit_fields">
-          <span className="edit_input"><input onChange={this.handleResourceUpdate} type="text" name="priority" defaultValue={file.priority} /><label htmlFor="priority">Приоритет 1С</label></span>
-          <span className="edit_input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
-          <span className="edit_input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
-          <span className="edit_input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDefault} name="default"/><label htmlFor="default">По умолчанию</label></span>
-          <input type="hidden" name="id" value={file.id}/>
-        </span>
-      </span>);
-      this.setState({
-        "existing": data
-      });
+      this.buildExisting(data);
     });
   }
 
@@ -92,7 +88,7 @@ export class ItemSection extends React.Component{
     console.log(this.state.uploads);
     for (var i = 0; i < this.state.uploads.length; i++) {
       for (var j = 0; j < this.state.uploads.length; j++) {
-        if (this.state.uploads[i]["class"] == "unfinished" && i != j && this.state.uploads[i]["filename"] == this.state.uploads[j]["filename"] && this.state.uploads[i]["filehash"] == this.state.uploads[j]["filehash"]) {
+        if (this.state.uploads[i]["class"] == "--unfinished" && i != j && this.state.uploads[i]["filename"] == this.state.uploads[j]["filename"] && this.state.uploads[i]["filehash"] == this.state.uploads[j]["filehash"]) {
           this.state.uploads.splice(i, 1);
           this.resolveResumedUploads();
         }
@@ -164,9 +160,11 @@ export class ItemSection extends React.Component{
     let data = {
       "id" : form.find("input[name='id']").val()
     };
-    form.find(".edit_input").each(function(){
+    form.find(".edit-fields__edit-input").each(function(){
+      let sel = $(this).find("select");
       let chk = $(this).find("input[type='checkbox']");
       let txt = $(this).find("input[type='text']");
+      if(sel.length){data[sel.prop('name')]=sel.val()}
       if(chk.length){data[chk.prop('name')]=chk.prop("checked")}
       if(txt.length){data[txt.prop('name')]=txt.val()}
     });
@@ -205,20 +203,59 @@ export class ItemSection extends React.Component{
     this.buildList();
   }
 
+  buildExisting(data){
+    data = data.map((file)=>
+    <div className="existing-files__file file" key={file.src_filename+file.filename}><a href={"/catalogue/node/item/resource/"+file.id+".jpg"}>{file.src_filename}</a>
+      <span className="file__edit-fields edit-fields">
+        <span className="edit-fields__edit-input">
+          <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
+            <option value="1">Основное</option>
+            <option value="2">Дополнительное</option>
+            <option value="3">Исходник</option>
+          </select>
+          <label htmlFor="type">Тип ресурса</label>
+        </span>
+        <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
+        <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
+        <input type="hidden" name="id" value={file.id}/>
+      </span>
+      <div className="file__info info">
+        <span className="info__info-field info__info-field--sizepx">
+          {file.size_px}
+        </span>
+        <span className="info__info-field info__info-field--sizemb">
+          {Math.round(file.size_bytes/(1024*1024), -2)}
+        </span>
+        <span className="info__info-field info__info-field--uploaddate">
+          {file.created_on}
+        </span>
+        <span className="info__info-field info__info-field--username">
+          {file.username}
+        </span>
+        <span className="info__info-field info__info-field--comment">
+          {file.comment}
+        </span>
+      </div>
+    </div>);
+    this.setState({
+      "existing": data
+    });
+  }
+
   render() {
     return (
-      <div className="item_view">
+      <div className="item-view">
         <button type="button" onClick={()=>{this.setState({"open":!this.state.open})}}>{this.state.open?"Скрыть":"Показать"}</button>
-        <div className={this.state.open?"item_view_inner open":"item_view_inner"}>
-        <h4>Файлы товара</h4>
-        <div className="file_list">{this.state.existing}</div>
-        <h4>Загрузки</h4>
-      <div className="file_list" id={"file_list" + this.props.item_id}>{this.state.upload_list}</div>
-        <div className="drop_target" id={"drop_target" + this.props.item_id}></div>
-        <div className="button_block">
-          <button type="button" id={"browse" + this.props.item_id}>Выбрать</button>
-          <button type="button" onClick={this.handleSubmit} id={"submit" + this.props.item_id}>Загрузить</button>
-        </div>
+        <div className={this.state.open?"item-view__inner item-view__inner--open":"item-view__inner"}>
+          <h4>Файлы товара</h4>
+        <div className="item-view__file-list existing-files">{this.state.existing}</div>
+          <h4>Загрузки</h4>
+          <div className="item-view__file-list file-list" id={"file_list" + this.props.item_id}>{this.state.upload_list}</div>
+          <div className="file-list__drop-target" id={"drop_target" + this.props.item_id}></div>
+          <div className="file-list__button-block">
+            <button type="button" id={"browse" + this.props.item_id}>Выбрать</button>
+            <button type="button" onClick={this.handleSubmit} id={"submit" + this.props.item_id}>Загрузить</button>
+          </div>
         </div>
       </div>
     );

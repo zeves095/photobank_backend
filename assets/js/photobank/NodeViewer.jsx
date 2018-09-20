@@ -57,9 +57,9 @@ export class NodeViewer extends React.Component{
 
   render() {
     return (
-      <div className="node_viewer">
-        <h2 className="component_title">Просмотр категории</h2>
-        <div className="node_viewer_inner">
+      <div className="node-viewer">
+        <h2 className="node-viewer__component-title component-title">Просмотр категории</h2>
+        <div className="node-viewer__view-inner view-inner">
           {this.state.node_items}
         </div>
       </div>
