@@ -6,7 +6,7 @@ export class ItemSection extends React.Component{
   constructor(props) {
     super(props);
     if(typeof window.resumableContainer[this.props.item_id] == 'undefined'){
-      this.resumable = new Resumable({target: '/api/upload/'});
+      this.resumable = new Resumable({target: window.config.upload_target_url});
     } else {
       this.resumable = window.resumableContainer[this.props.item_id];
     }
@@ -19,7 +19,9 @@ export class ItemSection extends React.Component{
       "uploads":[],
       "upload_list":[],
       "existing": [],
-      "unfinished":[]
+      "unfinished":[],
+      "main": null,
+      "additional": []
     };
     this.buildList = this.buildList.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -64,14 +66,14 @@ export class ItemSection extends React.Component{
   }
 
   fetchExisting(){
-    $.getJSON("/catalogue/node/item/resources/"+this.state.item_id, (data)=>{
+    $.getJSON(window.config.existing_uploads_url+this.state.item_id, (data)=>{
       this.buildExisting(data);
     });
   }
 
   fetchUnfinished(){
     let unfinished = [];
-    $.getJSON("/api/upload/unfinished/", (data)=>{
+    $.getJSON(window.config.unfinished_uploads_url, (data)=>{
       for (var i = 0; i < data.length; i++) {
         let unfinishedUpload = data[i];
         if(unfinishedUpload[[0]]==this.state.item_id){
@@ -119,7 +121,7 @@ export class ItemSection extends React.Component{
       'itemid': file.itemId,
       'totalchuks': file.chunks.length
     }
-    $.ajax({url: '/api/upload/commit', method: 'POST', data: obj});
+    $.ajax({url: window.config.commit_upload_url, method: 'POST', data: obj});
   }
 
   removeUpload(upload){
@@ -128,7 +130,7 @@ export class ItemSection extends React.Component{
       'filename': upload.filename,
       'itemid': this.state.item_id
     }
-    $.ajax({url: '/api/upload/remove', method: 'POST', data: obj});
+    $.ajax({url: window.config.remove_upload_url, method: 'POST', data: obj});
   }
 
   handleDelete(e){
@@ -170,7 +172,7 @@ export class ItemSection extends React.Component{
     });
     let dataJson = JSON.stringify(data);
     $.ajax({
-      url: '/catalogue/node/item/resource/'+data.id,
+      url: window.config.update_resource_url+data.id,
       method: 'PATCH',
       data: dataJson,
       contentType: "application/json; charset=utf-8",
@@ -205,7 +207,7 @@ export class ItemSection extends React.Component{
 
   buildExisting(data){
     data = data.map((file)=>
-    <div className="existing-files__file file" key={file.src_filename+file.filename}><a href={"/catalogue/node/item/resource/"+file.id+".jpg"}>{file.src_filename}</a>
+    <div className="existing-files__file file" key={file.src_filename+file.filename}><a href={window.config.update_resource_url+file.id+".jpg"}>{file.src_filename}</a>
       <span className="file__edit-fields edit-fields">
         <span className="edit-fields__edit-input">
           <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>

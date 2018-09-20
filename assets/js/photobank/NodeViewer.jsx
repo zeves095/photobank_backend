@@ -29,7 +29,7 @@ export class NodeViewer extends React.Component{
   }
 
   getItems(nodeId = this.props.node){
-    $.getJSON("/catalogue/node/items/"+nodeId, (data)=>{
+    $.getJSON(window.config.get_items_url+nodeId, (data)=>{
       console.log(this.state.opened_items);
       let node_items = data.map((item)=>
         <div key={item.id}>
