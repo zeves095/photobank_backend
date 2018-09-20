@@ -33,7 +33,7 @@ export class ItemSection extends React.Component{
     this.handleResourceUpdate = this.handleResourceUpdate.bind(this);
     this.removeUpload = this.removeUpload.bind(this);
     this.buildExisting = this.buildExisting.bind(this);
-    this.drawList = this.drawList.bind(this);
+    this.sortList = this.sortList.bind(this);
     this.cleanUpDone = this.cleanUpDone.bind(this);
   }
 
@@ -56,8 +56,30 @@ export class ItemSection extends React.Component{
       }
       this.cleanUpDone();
       this.resolveResumedUploads();
-      this.drawList();
+      this.sortList();
     }.bind(this), 300);
+  }
+
+  sortList(){
+    console.log(this.state.uploads);
+    let uploadList = this.state.uploads;
+    let active = uploadList.filter((item)=>{return item.class != '--unfinished'});
+    let unfinished = uploadList.filter((item)=>{return item.class == '--unfinished'});
+    let pending = active.filter((item)=>{return item.ready == false});
+    let ready = active.filter((item)=>{return item.ready == true && item.uploading == false});
+    let uploading = active.filter((item)=>{return item.uploading == true});
+
+    let uploadListMarkup = [pending.length>0?<h4>Обрабатываются...</h4>:""];
+    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(pending));
+    uploadListMarkup.push(ready.length>0?<h4>Загрузки</h4>:"");
+    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(ready));
+    uploadListMarkup.push(uploading.length>0?<h4>Загружаются...</h4>:"");
+    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(uploading));
+    uploadListMarkup.push(unfinished.length>0?<h4>Незаконченные</h4>:"");
+    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(unfinished));
+    this.setState({
+      "upload_list":uploadListMarkup
+    });
   }
 
   fetchExisting(){
@@ -182,6 +204,7 @@ export class ItemSection extends React.Component{
       contentType: "application/json; charset=utf-8",
       dataType: "json"
     });
+    this.fetchExisting();
   }
 
   componentDidMount(){
@@ -213,13 +236,19 @@ export class ItemSection extends React.Component{
   }
 
   buildExisting(data){
+    let maxMain = window.config.max_main_resources;
+    let maxAdd = window.config.max_additional_resources;
+    let currMain = data.filter((file)=>{return file.type == 1}).length;
+    let currAdd = data.filter((file)=>{return file.type == 2}).length;
+    let mainStatus = currMain+"/"+maxMain;
+    let addStatus = currAdd+"/"+maxAdd;
     data = data.map((file)=>
     <div className="existing-files__file file" key={file.src_filename+file.filename}><a href={window.config.update_resource_url+file.id+".jpg"}>{file.src_filename}</a>
       <span className="file__edit-fields edit-fields">
         <span className="edit-fields__edit-input">
           <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
-            <option value="1">Основное</option>
-            <option value="2">Дополнительное</option>
+            <option disabled={currMain>=maxMain?true:false} value="1">Основноe{mainStatus}</option>
+          <option disabled={currAdd>=maxAdd?true:false} value="2">Дополнительное{addStatus}</option>
             <option value="3">Исходник</option>
           </select>
           <label htmlFor="type">Тип ресурса</label>
@@ -248,28 +277,6 @@ export class ItemSection extends React.Component{
     </div>);
     this.setState({
       "existing": data
-    });
-  }
-
-  drawList(){
-    console.log(this.state.uploads);
-    let uploadList = this.state.uploads;
-    let active = uploadList.filter((item)=>{return item.class != '--unfinished'});
-    let unfinished = uploadList.filter((item)=>{return item.class == '--unfinished'});
-    let pending = active.filter((item)=>{return item.ready == false});
-    let ready = active.filter((item)=>{return item.ready == true && item.uploading == false});
-    let uploading = active.filter((item)=>{return item.uploading == true});
-
-    let uploadListMarkup = [pending.length>0?<h4>Обрабатываются...</h4>:""];
-    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(pending));
-    uploadListMarkup.push(ready.length>0?<h4>Загрузки</h4>:"");
-    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(ready));
-    uploadListMarkup.push(uploading.length>0?<h4>Загружаются...</h4>:"");
-    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(uploading));
-    uploadListMarkup.push(unfinished.length>0?<h4>Незаконченные</h4>:"");
-    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(unfinished));
-    this.setState({
-      "upload_list":uploadListMarkup
     });
   }
 
