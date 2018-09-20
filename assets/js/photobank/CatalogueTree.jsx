@@ -27,7 +27,7 @@ export class CatalogueTree extends React.Component {
   }
 
   getCatalogueNodes(data){
-    $.getJSON("/catalogue/nodes/"+this.state.current_node, (data)=>{
+    $.getJSON(window.config.get_nodes_url+this.state.current_node, (data)=>{
       let cat_data = [];
       for(var node in data){
         if(this.state.tracked_nodes.indexOf(data[node].id) == -1){
