@@ -68,6 +68,7 @@ class ResourceService{
     $resource->setUsername($event->getParams()['username']);
     $resource->setItem($item);
     $resource->setSizeBytes($event->getParams()['filesize']);
+    $resource->setPreset($event->getParams()['preset']);
     $resource->setChunkPath($event->getParams()['chunkPath']);
     $resource->setFilename($event->getParams()['filename']);
     $resource->setSrcFilename($event->getParams()['src_filename']);
