@@ -59,7 +59,6 @@ export class CatalogueTree extends React.Component {
       "catalogue_list": catalogueList
     });
     this.getCrumbs();
-    console.warn(this.state.catalogue_tree);
     this.makeTree();
   }
 
@@ -79,7 +78,6 @@ export class CatalogueTree extends React.Component {
         tree['selected'] = [item.id];
         treeNode['state']['selected'] = true;
         let nodeToOpen = item;
-        console.log(nodeToOpen);
         while(nodeToOpen.parent != null && nodeToOpen.parent != 1){
           treeNode['state']['opened'] = true;
           nodeToOpen = this.state.catalogue_data[nodeToOpen.parent];
