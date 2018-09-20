@@ -30,6 +30,7 @@ export class ItemSection extends React.Component{
     this.fetchUnfinished = this.fetchUnfinished.bind(this);
     this.handleResourceUpdate = this.handleResourceUpdate.bind(this);
     this.removeUpload = this.removeUpload.bind(this);
+    this.buildExisting = this.buildExisting.bind(this);
   }
 
   buildList() {
@@ -64,26 +65,7 @@ export class ItemSection extends React.Component{
 
   fetchExisting(){
     $.getJSON("/catalogue/node/item/resources/"+this.state.item_id, (data)=>{
-      data = data.map((file)=>
-      <span className="existing-files__file file" key={file.src_filename+file.filename}><a href={"/catalogue/node/item/resource/"+file.id+".jpg"}>{file.src_filename}</a>
-        <span className="file__edit-fields edit-fields">
-          <span className="edit-fields__edit-input">
-            <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
-              <option value="1">Основное</option>
-              <option value="2">Дополнительное</option>
-              <option value="3">Исходник</option>
-            </select>
-            <label htmlFor="type">Тип ресурса</label>
-          </span>
-          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
-          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
-          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDefault} name="default"/><label htmlFor="default">По умолчанию</label></span>
-          <input type="hidden" name="id" value={file.id}/>
-        </span>
-      </span>);
-      this.setState({
-        "existing": data
-      });
+      this.buildExisting(data);
     });
   }
 
@@ -106,7 +88,7 @@ export class ItemSection extends React.Component{
     console.log(this.state.uploads);
     for (var i = 0; i < this.state.uploads.length; i++) {
       for (var j = 0; j < this.state.uploads.length; j++) {
-        if (this.state.uploads[i]["class"] == "unfinished" && i != j && this.state.uploads[i]["filename"] == this.state.uploads[j]["filename"] && this.state.uploads[i]["filehash"] == this.state.uploads[j]["filehash"]) {
+        if (this.state.uploads[i]["class"] == "--unfinished" && i != j && this.state.uploads[i]["filename"] == this.state.uploads[j]["filename"] && this.state.uploads[i]["filehash"] == this.state.uploads[j]["filehash"]) {
           this.state.uploads.splice(i, 1);
           this.resolveResumedUploads();
         }
@@ -219,6 +201,45 @@ export class ItemSection extends React.Component{
     this.fetchUnfinished();
     this.fetchExisting();
     this.buildList();
+  }
+
+  buildExisting(data){
+    data = data.map((file)=>
+    <div className="existing-files__file file" key={file.src_filename+file.filename}><a href={"/catalogue/node/item/resource/"+file.id+".jpg"}>{file.src_filename}</a>
+      <span className="file__edit-fields edit-fields">
+        <span className="edit-fields__edit-input">
+          <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
+            <option value="1">Основное</option>
+            <option value="2">Дополнительное</option>
+            <option value="3">Исходник</option>
+          </select>
+          <label htmlFor="type">Тип ресурса</label>
+        </span>
+        <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
+        <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
+        <input type="hidden" name="id" value={file.id}/>
+      </span>
+      <div className="file__info info">
+        <span className="info__info-field info__info-field--sizepx">
+          {file.size_px}
+        </span>
+        <span className="info__info-field info__info-field--sizemb">
+          {Math.round(file.size_bytes/(1024*1024), -2)}
+        </span>
+        <span className="info__info-field info__info-field--uploaddate">
+          {file.created_on}
+        </span>
+        <span className="info__info-field info__info-field--username">
+          {file.username}
+        </span>
+        <span className="info__info-field info__info-field--comment">
+          {file.comment}
+        </span>
+      </div>
+    </div>);
+    this.setState({
+      "existing": data
+    });
   }
 
   render() {

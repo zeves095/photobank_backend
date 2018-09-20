@@ -40,6 +40,8 @@ class FileUploadController extends AbstractController
           'chunkPath'=>$result['chunkPath'],
           'filename'=>$result['filename'],
           'src_filename'=>$result['src_filename'],
+          'filesize'=>$result['filesize'],
+          'extension'=>$uploadParams['extension'],
           'username'=>$this->username,
           'item_id'=>$itemId,
           'item_code'=>$itemCode,
