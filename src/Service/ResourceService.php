@@ -59,9 +59,15 @@ class ResourceService{
         throw new NotFoundHttpException($error_string);
     }
 
+    if(in_array($event->getParams()['extension'],array('jpg','jpeg','png'))){
+      $filesizepx = getimagesize($event->getParams()['path']);
+      $resource->setSizePx($filesizepx[0].'/'.$filesizepx[1]);
+    }
+
     $resource->setPath($event->getParams()['path']);
     $resource->setUsername($event->getParams()['username']);
     $resource->setItem($item);
+    $resource->setSizeBytes($event->getParams()['filesize']);
     $resource->setPreset($event->getParams()['preset']);
     $resource->setType($event->getParams()['type']);
     $resource->setChunkPath($event->getParams()['chunkPath']);

@@ -23,7 +23,7 @@ export class PhotoBank extends React.Component {
       for (var i = 0; i < data.length; i++) {
         let unfinishedUpload = data[i];
         if(typeof window.resumableContainer[unfinishedUpload[0]] == 'undefined'){
-          window.resumableContainer[unfinishedUpload[0]]=new Resumable({target: '/api/upload/'});
+          window.resumableContainer[unfinishedUpload[0]]=new Resumable({target: window.config.upload_target_url});
         }
       }
     });
@@ -37,7 +37,7 @@ export class PhotoBank extends React.Component {
 
   componentWillMount(){
     //$.getJSON("/assets/js/components/photobank/dummy_data1.json", (data)=>{
-    $.getJSON("/catalogue/nodes/", (data)=>{
+    $.getJSON(window.config.get_nodes_url, (data)=>{
       this.setState({
         "catalogue_data":data,
         "selected_node":1

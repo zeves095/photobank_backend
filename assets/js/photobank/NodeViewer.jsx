@@ -29,8 +29,7 @@ export class NodeViewer extends React.Component{
   }
 
   getItems(nodeId = this.props.node){
-    $.getJSON("/catalogue/node/items/"+nodeId, (data)=>{
-      console.log(this.state.opened_items);
+    $.getJSON(window.config.get_items_url+nodeId, (data)=>{
       let node_items = data.map((item)=>
         <div key={item.id}>
           <h4 data-item={item.id} onClick={this.itemClickHandler}>{item.name}</h4>
@@ -45,7 +44,6 @@ export class NodeViewer extends React.Component{
 
   itemClickHandler(e){
     let item = $(e.target).attr("data-item");
-    console.log(this.state.opened_items.indexOf(item));
     if(this.state.opened_items.indexOf(item) == -1){
       this.state.opened_items.push(item);
       this.setState({

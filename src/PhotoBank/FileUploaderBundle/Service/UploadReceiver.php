@@ -15,7 +15,8 @@ class UploadReceiver
         'chunk_written' => false,
         'path' => '',
         'chunkPath' => '',
-        'filename' => ''
+        'filename' => '',
+        'filesize' => ''
       );
   }
 
@@ -32,10 +33,8 @@ class UploadReceiver
     }
     if (file_exists($uploadParams['tempchunkdir'].'/'.$uploadParams['filename'].$uploadParams['partstring'])) {
       return true;
-      header("HTTP/1.0 200 Ok");
     } else {
       return false;
-      header("HTTP/1.0 404 Not Found");
     }
   }
 
@@ -58,6 +57,7 @@ class UploadReceiver
         $this->response['chunkPath'] = $uploadParams['tempchunkdir'];
         $this->response['path'] = $uploadParams['tempchunkdir'].'/'.$uploadParams['filename'];
         $this->response['filename'] = $uploadParams['filename'];
+        $this->response['filesize'] = $uploadParams['resumablevars']['resumableTotalSize'];
         $this->processUploadedChunk();
       }
     }

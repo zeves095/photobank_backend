@@ -6,7 +6,7 @@ export class ItemSection extends React.Component{
   constructor(props) {
     super(props);
     if(typeof window.resumableContainer[this.props.item_id] == 'undefined'){
-      this.resumable = new Resumable({target: '/api/upload/'});
+      this.resumable = new Resumable({target: window.config.upload_target_url});
     } else {
       this.resumable = window.resumableContainer[this.props.item_id];
     }
@@ -19,7 +19,9 @@ export class ItemSection extends React.Component{
       "uploads":[],
       "upload_list":[],
       "existing": [],
-      "unfinished":[]
+      "unfinished":[],
+      "main": null,
+      "additional": []
     };
     this.buildList = this.buildList.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,6 +32,9 @@ export class ItemSection extends React.Component{
     this.fetchUnfinished = this.fetchUnfinished.bind(this);
     this.handleResourceUpdate = this.handleResourceUpdate.bind(this);
     this.removeUpload = this.removeUpload.bind(this);
+    this.buildExisting = this.buildExisting.bind(this);
+    this.drawList = this.drawList.bind(this);
+    this.cleanUpDone = this.cleanUpDone.bind(this);
   }
 
   buildList() {
@@ -39,57 +44,31 @@ export class ItemSection extends React.Component{
     this.updateListTimer = setTimeout(function() {
       this.state.uploads = [];
       for(var i = 0; i < this.state.unfinished.length; i++){
+        let file = this.state.unfinished[i];
         let className = "--unfinished";
-        this.state.uploads.push({"filename": this.state.unfinished[i].filename, "filehash": this.state.unfinished[i].filehash, "class": className, "ready": true});
+        this.state.uploads.push({"filename": file.filename, "filehash": file.filehash, "class": className, "ready": true, "uploading": false});
       }
       for (var i = 0; i < this.resumable.files.length; i++) {
-        let className = this.resumable.files[i].isComplete()?"--completed":"--pending";
-        this.state.uploads.push({"filename": this.resumable.files[i].fileName, "filehash": this.resumable.files[i].uniqueIdentifier, "class": className, "ready": this.resumable.files[i].ready});
+        let file = this.resumable.files[i];
+        let className = file.isComplete()?"--completed":"--pending";
+        console.warn(file.isUploading());
+        this.state.uploads.push({"filename": file.fileName, "filehash": file.uniqueIdentifier, "class": className, "ready": file.ready, "uploading":file.isUploading()});
       }
+      this.cleanUpDone();
       this.resolveResumedUploads();
-      let uploadList = this.state.uploads;
-      uploadList = uploadList.map((upload)=>
-      <span key={upload.filename+upload.filehash} className={"file-list__file-item file-item file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing")}>
-        F: {upload.filename}
-        <span className="file-item__delete-upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span>
-      <span className="file-item__progress-bar" id={"progress_bar"+upload.filehash}>
-          <span></span>
-        </span>
-      </span>);
-      this.setState({
-        "upload_list":uploadList
-      });
+      this.drawList();
     }.bind(this), 300);
   }
 
   fetchExisting(){
-    $.getJSON("/catalogue/node/item/resources/"+this.state.item_id, (data)=>{
-      data = data.map((file)=>
-      <span className="existing-files__file file" key={file.src_filename+file.filename}><a href={"/catalogue/node/item/resource/"+file.id+".jpg"}>{file.src_filename}</a>
-        <span className="file__edit-fields edit-fields">
-          <span className="edit-fields__edit-input">
-            <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
-              <option value="1">Основное</option>
-              <option value="2">Дополнительное</option>
-              <option value="3">Исходник</option>
-            </select>
-            <label htmlFor="type">Тип ресурса</label>
-          </span>
-          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
-          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
-          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDefault} name="default"/><label htmlFor="default">По умолчанию</label></span>
-          <input type="hidden" name="id" value={file.id}/>
-        </span>
-      </span>);
-      this.setState({
-        "existing": data
-      });
+    $.getJSON(window.config.existing_uploads_url+this.state.item_id, (data)=>{
+      this.buildExisting(data);
     });
   }
 
   fetchUnfinished(){
     let unfinished = [];
-    $.getJSON("/api/upload/unfinished/", (data)=>{
+    $.getJSON(window.config.unfinished_uploads_url, (data)=>{
       for (var i = 0; i < data.length; i++) {
         let unfinishedUpload = data[i];
         if(unfinishedUpload[[0]]==this.state.item_id){
@@ -103,13 +82,22 @@ export class ItemSection extends React.Component{
   }
 
   resolveResumedUploads(){
-    console.log(this.state.uploads);
     for (var i = 0; i < this.state.uploads.length; i++) {
       for (var j = 0; j < this.state.uploads.length; j++) {
-        if (this.state.uploads[i]["class"] == "unfinished" && i != j && this.state.uploads[i]["filename"] == this.state.uploads[j]["filename"] && this.state.uploads[i]["filehash"] == this.state.uploads[j]["filehash"]) {
+        if (this.state.uploads[i]["class"] == "--unfinished" && i != j && this.state.uploads[i]["filename"] == this.state.uploads[j]["filename"] && this.state.uploads[i]["filehash"] == this.state.uploads[j]["filehash"]) {
           this.state.uploads.splice(i, 1);
           this.resolveResumedUploads();
         }
+      }
+    }
+  }
+
+  cleanUpDone(){
+    for (var i = 0; i < this.state.uploads.length; i++) {
+      let file = this.state.uploads[i];
+      if(file.class=="--completed"){
+        this.state.uploads.splice(i,1);
+        this.removeUpload(file);
       }
     }
   }
@@ -137,7 +125,7 @@ export class ItemSection extends React.Component{
       'itemid': file.itemId,
       'totalchuks': file.chunks.length
     }
-    $.ajax({url: '/api/upload/commit', method: 'POST', data: obj});
+    $.ajax({url: window.config.commit_upload_url, method: 'POST', data: obj});
   }
 
   removeUpload(upload){
@@ -146,7 +134,7 @@ export class ItemSection extends React.Component{
       'filename': upload.filename,
       'itemid': this.state.item_id
     }
-    $.ajax({url: '/api/upload/remove', method: 'POST', data: obj});
+    $.ajax({url: window.config.remove_upload_url, method: 'POST', data: obj});
   }
 
   handleDelete(e){
@@ -178,7 +166,7 @@ export class ItemSection extends React.Component{
     let data = {
       "id" : form.find("input[name='id']").val()
     };
-    form.find(".edit_input").each(function(){
+    form.find(".edit-fields__edit-input").each(function(){
       let sel = $(this).find("select");
       let chk = $(this).find("input[type='checkbox']");
       let txt = $(this).find("input[type='text']");
@@ -188,7 +176,7 @@ export class ItemSection extends React.Component{
     });
     let dataJson = JSON.stringify(data);
     $.ajax({
-      url: '/catalogue/node/item/resource/'+data.id,
+      url: window.config.update_resource_url+data.id,
       method: 'PATCH',
       data: dataJson,
       contentType: "application/json; charset=utf-8",
@@ -216,9 +204,84 @@ export class ItemSection extends React.Component{
     this.resumable.on('fileProgress', function(file,event){
       $("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
     }.bind(this));
+    this.resumable.on('uploadStart', function(file,event){
+      this.buildList();
+    }.bind(this));
     this.fetchUnfinished();
     this.fetchExisting();
     this.buildList();
+  }
+
+  buildExisting(data){
+    data = data.map((file)=>
+    <div className="existing-files__file file" key={file.src_filename+file.filename}><a href={window.config.update_resource_url+file.id+".jpg"}>{file.src_filename}</a>
+      <span className="file__edit-fields edit-fields">
+        <span className="edit-fields__edit-input">
+          <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
+            <option value="1">Основное</option>
+            <option value="2">Дополнительное</option>
+            <option value="3">Исходник</option>
+          </select>
+          <label htmlFor="type">Тип ресурса</label>
+        </span>
+        <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
+        <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
+        <input type="hidden" name="id" value={file.id}/>
+      </span>
+      <div className="file__info info">
+        <span className="info__info-field info__info-field--sizepx">
+          {file.size_px}
+        </span>
+        <span className="info__info-field info__info-field--sizemb">
+          {Math.round(file.size_bytes/(1024*1024), -2)}
+        </span>
+        <span className="info__info-field info__info-field--uploaddate">
+          {file.created_on}
+        </span>
+        <span className="info__info-field info__info-field--username">
+          {file.username}
+        </span>
+        <span className="info__info-field info__info-field--comment">
+          {file.comment}
+        </span>
+      </div>
+    </div>);
+    this.setState({
+      "existing": data
+    });
+  }
+
+  drawList(){
+    console.log(this.state.uploads);
+    let uploadList = this.state.uploads;
+    let active = uploadList.filter((item)=>{return item.class != '--unfinished'});
+    let unfinished = uploadList.filter((item)=>{return item.class == '--unfinished'});
+    let pending = active.filter((item)=>{return item.ready == false});
+    let ready = active.filter((item)=>{return item.ready == true && item.uploading == false});
+    let uploading = active.filter((item)=>{return item.uploading == true});
+
+    let uploadListMarkup = [pending.length>0?<h4>Обрабатываются...</h4>:""];
+    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(pending));
+    uploadListMarkup.push(ready.length>0?<h4>Загрузки</h4>:"");
+    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(ready));
+    uploadListMarkup.push(uploading.length>0?<h4>Загружаются...</h4>:"");
+    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(uploading));
+    uploadListMarkup.push(unfinished.length>0?<h4>Незаконченные</h4>:"");
+    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(unfinished));
+    this.setState({
+      "upload_list":uploadListMarkup
+    });
+  }
+
+  drawSegment(list){
+    return list.map((upload)=>
+      <span key={upload.filename+upload.filehash} className={"file-list__file-item file-item file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing")}>
+        F: {upload.filename}
+        <span className="file-item__delete-upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span>
+        <span className="file-item__progress-bar" id={"progress_bar"+upload.filehash}>
+        <span></span>
+        </span>
+      </span>);
   }
 
   render() {
@@ -227,7 +290,7 @@ export class ItemSection extends React.Component{
         <button type="button" onClick={()=>{this.setState({"open":!this.state.open})}}>{this.state.open?"Скрыть":"Показать"}</button>
         <div className={this.state.open?"item-view__inner item-view__inner--open":"item-view__inner"}>
           <h4>Файлы товара</h4>
-        <div className="item-view__file-list existing-files">{this.state.existing}</div>
+          <div className="item-view__file-list existing-files">{this.state.existing}</div>
           <h4>Загрузки</h4>
           <div className="item-view__file-list file-list" id={"file_list" + this.props.item_id}>{this.state.upload_list}</div>
           <div className="file-list__drop-target" id={"drop_target" + this.props.item_id}></div>
