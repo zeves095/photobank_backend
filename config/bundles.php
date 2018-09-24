@@ -15,7 +15,4 @@ return [
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Symfony\Bundle\WebServerBundle\WebServerBundle::class => ['dev' => true],
     App\PhotoBank\FileUploaderBundle\FileUploaderBundle::class => ['all' => true],
-
-    // https://github.com/whiteoctober/WhiteOctoberPagerfantaBundle
-    // WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle::class => ['all' => true],
 ];

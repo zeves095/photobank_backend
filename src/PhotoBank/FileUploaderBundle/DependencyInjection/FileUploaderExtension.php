@@ -24,6 +24,7 @@ class FileUploaderExtension extends Extension
     $container->setParameter('fileuploader.chunksize', $config['front']['chunk_size']);
     $container->setParameter('fileuploader.simultaneousuploads', $config['front']['simultaneous_uploads']);
     $container->setParameter('fileuploader.allowedfiletypes', $config['front']['allowed_filetypes']);
+    $container->setParameter('fileuploader.uploaddirectory', $config['back']['upload_directory']);
     $this->addAnnotatedClassesToCompile(array(
         '@FileUploaderBundle\\Controller',
     ));

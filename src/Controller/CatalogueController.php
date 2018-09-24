@@ -18,9 +18,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use App\Entity\CatalogueNode;
 use App\Entity\CatalogueNodeItem;
 use App\Entity\Resource;
-
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use App\Service\ResourceService;
-
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 class CatalogueController extends AbstractController
 {
     /**
@@ -208,12 +209,22 @@ class CatalogueController extends AbstractController
      *      }
      * )
      */
-    public function patchResource(Resource $resource, Request $request, AppSerializer $serializer)
+    public function patchResource(Resource $resource, Request $request, AppSerializer $serializer, ContainerInterface $container, EntityManagerInterface $entityManager)
     {
         $data = json_decode(
             $request->getContent(),
             true
         );
+
+        //Validation for limited resource types
+        $maxMain = $container->getParameter('max_main_resources');
+        $maxAdd = $container->getParameter('max_additional_resources');
+        $currMain = sizeof($entityManager->getRepository(Resource::class)->findBy(['type'=>1]));
+        $currAdd = sizeof($entityManager->getRepository(Resource::class)->findBy(['type'=>2]));
+        if(($maxMain==$currMain && $data['type']==1)||($maxAdd==$currAdd && $data['type']==2)){
+          throw new \Exception('Bad data');
+          return new Response();
+        }
 
         $priority = $data['priority']??$resource->getPriority();
         $resource->setPriority(intval($priority));
