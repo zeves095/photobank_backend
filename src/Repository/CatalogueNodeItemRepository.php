@@ -19,6 +19,7 @@ class CatalogueNodeItemRepository extends ServiceEntityRepository
         parent::__construct($registry, CatalogueNodeItem::class);
     }
 
+
 //    /**
 //     * @return CatalogueNodeItem[] Returns an array of CatalogueNodeItem objects
 //     */

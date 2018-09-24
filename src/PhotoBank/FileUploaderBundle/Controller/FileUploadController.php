@@ -42,7 +42,7 @@ class FileUploadController extends AbstractController
           'extension'=>$uploadParams['extension'],
           'username'=>$this->username,
           'item_id'=>$itemId,
-          'preset'=>1,
+          'preset'=>0,
           'type'=>3,
           'total_chunks'=> $totalChunks,
           'gid'=>NULL,

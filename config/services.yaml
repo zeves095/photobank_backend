@@ -1,16 +1,9 @@
 parameters:
     locale: 'ru'
-    upload_directory: '%kernel.project_dir%/public/uploads'
-    upload_target_url: '/api/upload/'
-    existing_uploads_url: '/catalogue/node/item/resources/'
-    unfinished_uploads_url: '/api/upload/unfinished/'
-    commit_upload_url: '/api/upload/commit'
-    remove_upload_url: '/api/upload/remove'
-    update_resource_url: '/catalogue/node/item/resource/'
-    get_nodes_url: '/catalogue/nodes/'
-    get_items_url: '/catalogue/node/items/'
-    max_main_resources: 1
-    max_additional_resources: 7
+
+imports:
+    - { resource: presets.yaml }
+    - { resource: fileuploader.yaml }
 
 services:
     _defaults:

@@ -22,9 +22,9 @@ export class ItemSection extends React.Component{
       "unfinished":[],
       "main": null,
       "additional": [],
-      "viewType": 0
+      "viewType": 0,
+      "finished_presets": []
     };
-
     this.viewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
 
     this.buildList = this.buildList.bind(this);
@@ -40,6 +40,7 @@ export class ItemSection extends React.Component{
     this.sortList = this.sortList.bind(this);
     this.cleanUpDone = this.cleanUpDone.bind(this);
     this.handleViewChoice = this.handleViewChoice.bind(this);
+    this.getFinishedPresets = this.getFinishedPresets.bind(this);
   }
 
   buildList() {
@@ -56,7 +57,6 @@ export class ItemSection extends React.Component{
       for (var i = 0; i < this.resumable.files.length; i++) {
         let file = this.resumable.files[i];
         let className = file.isComplete()?"--completed":"--pending";
-        console.warn(file.isUploading());
         this.state.uploads.push({"filename": file.fileName, "filehash": file.uniqueIdentifier, "class": className, "ready": file.ready, "uploading":file.isUploading()});
       }
       this.cleanUpDone();
@@ -87,8 +87,26 @@ export class ItemSection extends React.Component{
     });
   }
 
+  getFinishedPresets(resource){
+    for(var preset in window.config['presets']){
+      let presetId = window.config['presets'][preset]['id'];
+      let resId = resource.id;
+      let url = window.config.update_resource_url + resource.id + "/preset/" + presetId;
+      this.state.finished_presets = [];
+      $.ajax({url: url, method: 'GET', }).done(function(){
+        this.state.finished_presets.push({
+          'resource' : resId,
+          'preset' : presetId,
+        });
+      }.bind(this));
+    }
+  }
+
   fetchExisting(){
     $.getJSON(window.config.existing_uploads_url+this.state.item_id, (data)=>{
+      for(var datum in data){
+        this.getFinishedPresets(data[datum]);
+      }
       this.buildExisting(data);
     });
   }
@@ -253,41 +271,53 @@ export class ItemSection extends React.Component{
     let currAdd = data.filter((file)=>{return file.type == 2}).length;
     let mainStatus = currMain+"/"+maxMain;
     let addStatus = currAdd+"/"+maxAdd;
-    data = data.map((file)=>
-    <div className="existing-files__file file" key={file.src_filename+file.filename}><a href={window.config.update_resource_url+file.id+".jpg"}>{file.src_filename}</a>
-      <span className="file__edit-fields edit-fields">
-        <span className="edit-fields__edit-input">
-          <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
-            <option disabled={currMain>=maxMain?true:false} value="1">Основноe{mainStatus}</option>
-          <option disabled={currAdd>=maxAdd?true:false} value="2">Дополнительное{addStatus}</option>
-            <option value="3">Исходник</option>
-          </select>
-          <label htmlFor="type">Тип ресурса</label>
+    let markupData = [];
+    for(var datum in data){
+      let file = data[datum];
+      let presets = [];
+      for(var preset in window.config['presets']){
+        let presetId = window.config['presets'][preset]['id'];
+        console.log(this.state.finished_presets);
+        //let finished = this.state.finished_presets.filter((preset)=>{return (preset.resource==file.id && preset.preset == presetId)}).length;
+        //presets.push(<span key={file.id+"-"+presetId} className={"info__info-field info__info-field--preset "+finished?"info__info-field--preset-done":"info__info-field--preset-not-done"}>{window.config['presets'][preset]['name']} - {finished?"Обработан":"Не обработан"}</span>);
+      }
+      markupData.push(
+        <div className="existing-files__file file" key={file.src_filename+file.filename}><a href={window.config.update_resource_url+file.id+".jpg"}>{file.src_filename}</a>
+        <span className="file__edit-fields edit-fields">
+          <span className="edit-fields__edit-input">
+            <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
+              <option disabled={currMain>=maxMain?true:false} value="1">Основноe{mainStatus}</option>
+            <option disabled={currAdd>=maxAdd?true:false} value="2">Дополнительное{addStatus}</option>
+              <option value="3">Исходник</option>
+            </select>
+            <label htmlFor="type">Тип ресурса</label>
+          </span>
+          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
+          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
+          <input type="hidden" name="id" value={file.id}/>
         </span>
-        <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
-        <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
-        <input type="hidden" name="id" value={file.id}/>
-      </span>
-      <div className="file__info info">
-        <span className="info__info-field info__info-field--sizepx">
-          {file.size_px}
-        </span>
-        <span className="info__info-field info__info-field--sizemb">
-          {Math.round(file.size_bytes/(1024*1024), -2)}
-        </span>
-        <span className="info__info-field info__info-field--uploaddate">
-          {file.created_on}
-        </span>
-        <span className="info__info-field info__info-field--username">
-          {file.username}
-        </span>
-        <span className="info__info-field info__info-field--comment">
-          {file.comment}
-        </span>
-      </div>
-    </div>);
+        <div className="file__info info">
+          <span className="info__info-field info__info-field--sizepx">
+            {file.size_px}
+          </span>
+          <span className="info__info-field info__info-field--sizemb">
+            {Math.round(file.size_bytes/(1024*1024), -2)}
+          </span>
+          <span className="info__info-field info__info-field--uploaddate">
+            {file.created_on}
+          </span>
+          <span className="info__info-field info__info-field--username">
+            {file.username}
+          </span>
+          <span className="info__info-field info__info-field--comment">
+            {file.comment}
+          </span>
+          {presets}
+        </div>
+      </div>)
+    }
     this.setState({
-      "existing": data
+      "existing": markupData
     });
   }
 
