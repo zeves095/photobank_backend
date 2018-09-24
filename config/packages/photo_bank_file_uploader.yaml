@@ -4,5 +4,6 @@ file_uploader:
         chunk_size: 1048576
         simultaneous_uploads: 3
     back:
-        destination_dir: 'uploads/'
-        temp_dir: 'uploads/temp/'
+        destination_dir: ''
+        temp_dir: 'temp/'
+        upload_directory: '%kernel.project_dir%/public/uploads'
