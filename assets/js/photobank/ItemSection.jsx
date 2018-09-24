@@ -21,8 +21,12 @@ export class ItemSection extends React.Component{
       "existing": [],
       "unfinished":[],
       "main": null,
-      "additional": []
+      "additional": [],
+      "viewType": 0
     };
+
+    this.viewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
+
     this.buildList = this.buildList.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -35,6 +39,7 @@ export class ItemSection extends React.Component{
     this.buildExisting = this.buildExisting.bind(this);
     this.sortList = this.sortList.bind(this);
     this.cleanUpDone = this.cleanUpDone.bind(this);
+    this.handleViewChoice = this.handleViewChoice.bind(this);
   }
 
   buildList() {
@@ -207,6 +212,12 @@ export class ItemSection extends React.Component{
     this.fetchExisting();
   }
 
+  handleViewChoice(e){
+    let viewBtn = $(e.target).is("button")?$(e.target):$(e.target).parent();
+    let view = viewBtn.data("view");
+    this.setState({"viewType":view});
+  }
+
   componentDidMount(){
     this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id));
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
@@ -293,9 +304,12 @@ export class ItemSection extends React.Component{
 
   render() {
     return (
-      <div className="item-view">
+      <div className={"item-view"}>
         <button type="button" onClick={()=>{this.setState({"open":!this.state.open})}}>{this.state.open?"Скрыть":"Показать"}</button>
-        <div className={this.state.open?"item-view__inner item-view__inner--open":"item-view__inner"}>
+        <button type="button" data-view="0" onClick={this.handleViewChoice}><i className="fas fa-th-large"></i></button>
+        <button type="button" data-view="1" onClick={this.handleViewChoice}><i className="fas fa-th"></i></button>
+        <button type="button" data-view="2" onClick={this.handleViewChoice}><i className="fas fa-list-ul"></i></button>
+      <div className={"item-view__inner " + (this.state.open?"item-view__inner--open ":"item-view__inner--closed ") + this.viewClasses[this.state.viewType]}>
           <h4>Файлы товара</h4>
           <div className="item-view__file-list existing-files">{this.state.existing}</div>
           <h4>Загрузки</h4>
