@@ -93,12 +93,15 @@ export class ItemSection extends React.Component{
       let resId = resource.id;
       let url = window.config.update_resource_url + resource.id + "/preset/" + presetId;
       this.state.finished_presets = [];
-      $.ajax({url: url, method: 'GET', }).done(function(){
+      $.ajax({url: url, method: 'GET'}).done((data)=>{
         this.state.finished_presets.push({
-          'resource' : resId,
-          'preset' : presetId,
+         'resource' : resId,
+         'preset' : presetId
         });
-      }.bind(this));
+        this.setState({
+          'finished_presets': this.state.finished_presets,
+        });
+      });
     }
   }
 
@@ -277,7 +280,7 @@ export class ItemSection extends React.Component{
       let presets = [];
       for(var preset in window.config['presets']){
         let presetId = window.config['presets'][preset]['id'];
-        console.log(this.state.finished_presets);
+        console.log(this.state.finished_presets.length);
         //let finished = this.state.finished_presets.filter((preset)=>{return (preset.resource==file.id && preset.preset == presetId)}).length;
         //presets.push(<span key={file.id+"-"+presetId} className={"info__info-field info__info-field--preset "+finished?"info__info-field--preset-done":"info__info-field--preset-not-done"}>{window.config['presets'][preset]['name']} - {finished?"Обработан":"Не обработан"}</span>);
       }
