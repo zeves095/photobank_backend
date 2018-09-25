@@ -254,8 +254,8 @@ class CatalogueController extends AbstractController
         //Validation for limited resource types
         $maxMain = $container->getParameter('max_main_resources');
         $maxAdd = $container->getParameter('max_additional_resources');
-        $currMain = sizeof($entityManager->getRepository(Resource::class)->findBy(['type'=>1]));
-        $currAdd = sizeof($entityManager->getRepository(Resource::class)->findBy(['type'=>2]));
+        $currMain = sizeof($entityManager->getRepository(Resource::class)->findBy(['type'=>1, 'gid'=>$resource->getGid()]));
+        $currAdd = sizeof($entityManager->getRepository(Resource::class)->findBy(['type'=>2, 'gid'=>$resource->getGid()]));
         if(($maxMain==$currMain && $data['type']==1)||($maxAdd==$currAdd && $data['type']==2)){
           throw new \Exception('Bad data');
           return new Response();

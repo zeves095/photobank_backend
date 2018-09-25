@@ -252,7 +252,6 @@ export class ItemSection extends React.Component{
       file.itemId = this.state.item_id;
       file.itemCode = this.state.item_code;
       file.ready = false;
-      //this.hashPool.push(file);
       this.getHash(file);
       if(window.resumableContainer[this.state.item_id] == undefined){
         window.resumableContainer[this.props.item_id] = this.resumable;
