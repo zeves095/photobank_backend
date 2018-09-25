@@ -5,12 +5,7 @@ import { hex_md5 } from '../vendor/md5';
 export class ItemSection extends React.Component{
   constructor(props) {
     super(props);
-    if(typeof window.resumableContainer[this.props.item_id] == 'undefined'){
-      this.resumable = new Resumable({target: window.config.upload_target_url});
-    } else {
-      this.resumable = window.resumableContainer[this.props.item_id];
-    }
-    this.state={
+    this.state = {
       "resumable":this.resumable,
       "item_id":this.props.item_id,
       "item_code":this.props.item_code,
@@ -42,6 +37,56 @@ export class ItemSection extends React.Component{
     this.cleanUpDone = this.cleanUpDone.bind(this);
     this.handleViewChoice = this.handleViewChoice.bind(this);
     this.getFinishedPresets = this.getFinishedPresets.bind(this);
+    this.init = this.init.bind(this);
+  }
+
+  init(){
+    if(typeof window.resumableContainer[this.props.item_id] == 'undefined'){
+      this.resumable = new Resumable({target: window.config.upload_target_url});
+    } else {
+      this.resumable = window.resumableContainer[this.props.item_id];
+    }
+    this.setState({
+      "resumable":this.resumable,
+      "item_id":this.props.item_id,
+      "item_code":this.props.item_code,
+      "open":this.props.open_by_default,
+      "ready":false,
+      "uploads":[],
+      "upload_list":[],
+      "existing": [],
+      "existingList": [],
+      "unfinished":[],
+      "main": null,
+      "additional": [],
+      "viewType": 0,
+      "finished_presets": []
+    });
+    this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id));
+    this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
+    this.resumable.on('fileAdded', function(file, event) {
+      file.itemId = this.state.item_id;
+      file.itemCode = this.state.item_code;
+      file.ready = false;
+      //this.hashPool.push(file);
+      this.getHash(file);
+      if(window.resumableContainer[this.state.item_id] == undefined){
+        window.resumableContainer[this.props.item_id] = this.resumable;
+      }
+    }.bind(this));
+    this.resumable.on('fileSuccess', function(file,event){
+      this.fetchExisting();
+      this.buildList();
+    }.bind(this));
+    this.resumable.on('fileProgress', function(file,event){
+      $("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
+    }.bind(this));
+    this.resumable.on('uploadStart', function(file,event){
+      this.buildList();
+    }.bind(this));
+    this.fetchUnfinished();
+    this.fetchExisting();
+    this.buildList();
   }
 
   buildList() {
@@ -111,7 +156,7 @@ export class ItemSection extends React.Component{
   }
 
   fetchExisting(){
-    $.getJSON(window.config.existing_uploads_url+this.state.item_id, (data)=>{
+    $.getJSON(window.config.existing_uploads_url+this.props.item_id, (data)=>{
       for(var datum in data){
         this.getFinishedPresets(data[datum]);
       }
@@ -246,31 +291,13 @@ export class ItemSection extends React.Component{
   }
 
   componentDidMount(){
-    this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id));
-    this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
-    this.resumable.on('fileAdded', function(file, event) {
-      file.itemId = this.state.item_id;
-      file.itemCode = this.state.item_code;
-      file.ready = false;
-      //this.hashPool.push(file);
-      this.getHash(file);
-      if(window.resumableContainer[this.state.item_id] == undefined){
-        window.resumableContainer[this.props.item_id] = this.resumable;
-      }
-    }.bind(this));
-    this.resumable.on('fileSuccess', function(file,event){
-      this.fetchExisting();
-      this.buildList();
-    }.bind(this));
-    this.resumable.on('fileProgress', function(file,event){
-      $("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
-    }.bind(this));
-    this.resumable.on('uploadStart', function(file,event){
-      this.buildList();
-    }.bind(this));
-    this.fetchUnfinished();
-    this.fetchExisting();
-    this.buildList();
+    this.init();
+  }
+
+  componentDidUpdate(prevProps){
+    if(this.props != prevProps){
+      this.init();
+    }
   }
 
   buildExisting(){
