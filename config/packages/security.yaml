@@ -41,6 +41,9 @@ security:
                 path:   /logout
                 target: /
             provider: database_user_provider
+            # deprecated advanceduserinterface https://symfony.com/blog/new-in-symfony-4-1-deprecated-the-advanceduserinterface
+            # so -> https://symfony.com/doc/current/security/user_checkers.html
+            user_checker: App\Security\UserChecker
     
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }

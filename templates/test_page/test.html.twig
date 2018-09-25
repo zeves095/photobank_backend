@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>test</title>
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+</head>
+<body>
+    {# <div class="existing-files__file file" key='{file.src_filename+file.filename}'>
+        <a href='{window.config.update_resource_url+file.id+".jpg"}'>{file.src_filename}</a>
+        <div class="file__edit-fields edit-fields">
+          <div class="edit-fields__edit-input">
+            <select onChange='{this.handleResourceUpdate}'' name="type" defaultValue='{file.type}'>
+              <option disabled='{currMain>=maxMain?true:false}'' value="1">Основноe{mainStatus}</option>
+            <option disabled='{currAdd>=maxAdd?true:false}' value="2">Дополнительное{addStatus}</option>
+              <option value="3">Исходник</option>
+            </select>
+            <label htmlFor="type">Тип ресурса</label>
+          </div>
+          <div class="edit-fields__edit-input"><input onClick='{this.handleResourceUpdate}' type="checkbox" defaultChecked='{file.is1c}' name="1c"/><label htmlFor="1c">Использовать в 1С</label></div>
+          <div class="edit-fields__edit-input"><input onClick='{this.handleResourceUpdate}' type="checkbox" defaultChecked='{file.isDeleted}' name="deleted"/><label htmlFor="deleted">Удален</label></div>
+          <input type="hidden" name="id" value='{file.id}'/>
+        </div>
+        <div class="file__info info">
+          <div class="info__info-field info__info-field--sizepx">
+            {file.size_px}
+          </div>
+          <div class="info__info-field info__info-field--sizemb">
+            {Math.round(file.size_bytes/(1024*1024), -2)}
+          </div>
+          <div class="info__info-field info__info-field--uploaddate">
+            {file.created_on}
+          </div>
+          <div class="info__info-field info__info-field--username">
+            {file.username}
+          </div>
+          <div class="info__info-field info__info-field--comment">
+            {file.comment}
+          </div>
+        </div>
+      </div> #}
+
+
+    <div class="resource-list">
+        <div class="resource resource--header">
+          <div class="resource__name">{filename}</div>
+          <div class="resource__controls">
+              <div class="resource__control">
+                <label htmlFor="type">Тип ресурса</label>
+              </div>
+              <div class="resource__control">
+                  <label htmlFor="1c">Использовать в 1С</label>
+              </div>
+              <div class="resource__control">
+                  <label htmlFor="deleted">Удален</label>
+              </div>
+          </div>
+          <div class="resource__info-list">
+              <div class="resource__info">
+                  размер (px)
+              </div>
+              <div class="resource__info">
+                  размер (Mb)
+              </div>
+              <div class="resource__info">
+                  Дата создания
+              </div>
+              <div class="resource__info">
+                  Создатель
+              </div>
+              <div class="resource__info">
+                  Комментарий
+              </div>
+          </div>
+        </div>
+
+        <div class="resource">
+          <div class="resource__name">{filename}</div>
+          <div class="resource__controls">
+              <div class="resource__control">
+                  <select onChange='{this.handleResourceUpdate}' name="type" defaultValue='{file.type}'>
+                      <option disabled='{currMain>=maxMain?true:false}' value="1">Основноe{mainStatus}</option>
+                      <option disabled='{currAdd>=maxAdd?true:false}' value="2">Дополнительное{addStatus}</option>
+                      <option value="3">Исходник</option>
+                </select>
+                <label htmlFor="type">Тип ресурса</label>
+              </div>
+              <div class="resource__control">
+                  <input onClick='{this.handleResourceUpdate}' type="checkbox" defaultChecked='{file.is1c}' name="1c"/>
+                  <label htmlFor="1c">Использовать в 1С</label>
+              </div>
+              <div class="resource__control">
+                  <input onClick='{this.handleResourceUpdate}' type="checkbox" defaultChecked='{file.isDeleted}' name="deleted"/>
+                  <label htmlFor="deleted">Удален</label>
+              </div>
+          </div>
+          <div class="resource__info-list">
+              <div class="resource__info">
+                  {file.size_px}
+              </div>
+              <div class="resource__info">
+                  {Math.round(file.size_bytes/(1024*1024), -2)}
+              </div>
+              <div class="resource__info">
+                  {file.created_on}
+              </div>
+              <div class="resource__info">
+                  {file.username}
+              </div>
+              <div class="resource__info">
+                  {file.comment}
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="{{ asset('build/app.js') }}"></script>
+</body>
+</html>
