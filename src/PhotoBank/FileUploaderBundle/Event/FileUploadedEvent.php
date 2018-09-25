@@ -19,4 +19,9 @@ class FileUploadedEvent extends Event
     {
         return $this->params;
     }
+
+    public function setParam($param, $value)
+    {
+      $this->params[$param] = $value;
+    }
 }
