@@ -27,16 +27,34 @@ class ImageProcessorService{
     return true;
   }
 
-  public function process($resourceId, $presetName){
+  public function process($resourceId, $presetId){
 
     $repository = $this->entityManager->getRepository(Resource::class);
+    $processed = $repository->findBy(['gid'=>$resourceId]);
     $resource = $repository->findOneBy(['id'=>$resourceId]);
+
+    $processedPresets = array();
+    foreach($processed as $p){
+      array_push($processedPresets, $p->getPreset());
+    }
+    if(!in_array($presetId, $processedPresets)){
+      $this->_savePreset($resource,$presetId);
+    }
+
+    return true;
+  }
+
+  private function _savePreset($resource, $presetId){
     $extension = $resource->getExtension();
-    $preset = $this->container->getParameter('presets')[$presetName];
+    foreach($this->container->getParameter('presets') as $p){
+      if($p['id'] == $presetId){
+        $preset = $p;
+      }
+    }
     $imageProcessor = new Imagine();
     $size = new Box($preset['width'],$preset['height']);
     $mode = ImageInterface::THUMBNAIL_INSET;
-    $targetPath = $this->container->getParameter('upload_directory').'/imgproc/'.$resourceId.'_'.$preset['name'].'.'.$extension;
+    $targetPath = $this->container->getParameter('upload_directory').'/imgproc/'.$resource->getId().'_'.$preset['name'].'.'.$extension;
     $imageProcessor->open($resource->getPath())
     ->thumbnail($size, $mode)
     ->save($targetPath);
@@ -59,8 +77,6 @@ class ImageProcessorService{
     ];
 
     $this->resourceService->processCompletedUpload($resourceParameters);
-
-    return $targetPath;
   }
 
 }
