@@ -22,6 +22,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use App\Service\ResourceService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+
+use Symfony\Component\Messenger\MessageBusInterface;
+use App\Message\ResourcePresetNotification;
 class CatalogueController extends AbstractController
 {
     /**
@@ -230,12 +233,23 @@ class CatalogueController extends AbstractController
      *      }
      * )
      */
-    public function patchResource(Resource $resource, Request $request, AppSerializer $serializer, ContainerInterface $container, EntityManagerInterface $entityManager)
+    public function patchResource(Resource $resource, Request $request, AppSerializer $serializer, ContainerInterface $container, EntityManagerInterface $entityManager,MessageBusInterface $bus)
     {
         $data = json_decode(
             $request->getContent(),
             true
         );
+
+        $presetCollections = $container->getParameter('preset_collections');
+        $presetCollection = array();
+        foreach($presetCollections as $collection){
+          if($collection['id'] == $data['type']){
+            $presetCollection = $collection['presets'];
+          }
+        }
+        foreach($presetCollection as $preset){
+          $bus->dispatch(new ResourcePresetNotification(array($resource->getId(), $preset)));
+        }
 
         //Validation for limited resource types
         $maxMain = $container->getParameter('max_main_resources');

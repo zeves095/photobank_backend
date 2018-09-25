@@ -5,7 +5,7 @@ class ResourcePresetNotification
 {
     public $data = '';
 
-    public function __cunstruct($data)
+    public function __construct($data)
     {
         $this->data = $data;
     }
