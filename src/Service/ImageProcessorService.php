@@ -23,19 +23,20 @@ class ImageProcessorService{
     $this->resourceService = $resourceService;
   }
 
-  public function queue($resourceId, $presetId){
+  public function queue($resourceId, $preset){
     return true;
   }
 
-  public function process($resourceId, $presetId){
+  public function process($resourceId, $presetName){
 
     $repository = $this->entityManager->getRepository(Resource::class);
     $resource = $repository->findOneBy(['id'=>$resourceId]);
     $extension = $resource->getExtension();
+    $preset = $this->container->getParameter('presets')[$presetName];
     $imageProcessor = new Imagine();
-    $size = new Box(100,100);
+    $size = new Box($preset['width'],$preset['height']);
     $mode = ImageInterface::THUMBNAIL_INSET;
-    $targetPath = $this->container->getParameter('upload_directory').'/imgproc/'.$resourceId.'_'.$presetId.'.'.$extension;
+    $targetPath = $this->container->getParameter('upload_directory').'/imgproc/'.$resourceId.'_'.$preset['name'].'.'.$extension;
     $imageProcessor->open($resource->getPath())
     ->thumbnail($size, $mode)
     ->save($targetPath);
@@ -48,7 +49,7 @@ class ImageProcessorService{
       'path' => $targetPath,
       'username' => $resource->getUsername(),
       'filesize' => filesize($targetPath),
-      'preset' => $presetId,
+      'preset' => $preset['id'],
       'chunkPath' => $resource->getChunkPath(),
       'filename' => $filename,
       'src_filename' => $resource->getSrcFilename(),

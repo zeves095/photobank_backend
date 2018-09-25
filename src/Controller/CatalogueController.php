@@ -155,11 +155,12 @@ class CatalogueController extends AbstractController
      *      name="catalogue_node_item_resources"
      * )
      */
-    public function getResources(CatalogueNodeItem $citem, AppSerializer $serializer)
+    public function getResources(CatalogueNodeItem $citem, AppSerializer $serializer, EntityManagerInterface $entityManager)
     {
         $response = new JsonResponse();
 
-        $resources = $citem->getResources();
+        //$resources = $citem->getResources();
+        $resources = $entityManager->getRepository(Resource::class)->findOriginalResources($citem);
         $resourcesArray = $serializer->normalize($resources, 'json', array());
 
         $response->setData($resourcesArray);
@@ -187,7 +188,6 @@ class CatalogueController extends AbstractController
             );
         }
 
-
         $upload_directory = $this->getParameter('upload_directory');
         // @TODO: DELETE and use service|utils methods to get $fileDirectory
         $item_code = $resource->getItem()->getItemCode();
@@ -198,6 +198,27 @@ class CatalogueController extends AbstractController
 
         return $this->file($fullFilePath, $src_filename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
+
+    /**
+     * @Route(
+     *      "/catalogue/node/item/resource/{rid}/preset/{pid}",
+     *      methods={"GET"},
+     *      name="catalogue_node_item_resource_preset",
+     *      requirements={"pid"="\d+","rid"="\d+"}
+     * )
+     */
+     public function getResourcePreset($rid, $pid, AppSerializer $serializer, EntityManagerInterface $entityManager)
+     {
+       $response = new JsonResponse();
+       $resourceGroup = $entityManager->getRepository(Resource::class)->findBy(['gid'=>$rid]);
+       foreach($resourceGroup as $resource){
+         if($resource->getPreset() == $pid){
+           $resourceArray = $serializer->normalize($resource, null, array());
+           $response->setData($resourceArray);
+         }
+       }
+       return $response;
+     }
 
     /**
      * @Route(

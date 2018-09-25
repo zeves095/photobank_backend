@@ -12,7 +12,6 @@ class FileUploadedEvent extends Event
 
     public function __construct($params)
     {
-
         $this->params = $params;
     }
 

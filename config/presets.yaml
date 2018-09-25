@@ -1,0 +1,17 @@
+parameters:
+    presets:
+        thumbnail:
+            id: 1
+            name: 'thumbnail'
+            width: 100
+            height: 100
+        large:
+            id: 2
+            name: 'large'
+            width: 1920
+            height: 1080
+        medium:
+            id: 3
+            name: 'medium'
+            width: 1280
+            height: 720

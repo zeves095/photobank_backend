@@ -8,5 +8,6 @@ global.resumableContainer = resumableContainer;
 
 var wrapper = document.getElementById('photobank-wrapper');
 global.config = JSON.parse(wrapper.dataset.config);
+wrapper.dataset.config="";
 
 if(typeof PhotoBank != 'undefined') ReactDOM.render(<PhotoBank />, document.getElementById('photobank-wrapper'));
