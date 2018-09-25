@@ -16,6 +16,7 @@ class ResourceNormalizer extends CustomNormalizer implements NormalizerInterface
     {
         return [
             'id'     => $object->getId(),
+            'gid'     => $object->getGid(),
             'path'     => $object->getPath(),
             'username'   => $object->getUsername(),
             'preset' => $object->getPreset(),

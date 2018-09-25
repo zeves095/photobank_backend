@@ -19,7 +19,7 @@ class ResourcePresetNotificationHandler implements MessageSubscriberInterface
     {
         echo 'p1';
         var_dump($message);
-        sleep(10);
+        //sleep(10);
         echo 'end 1-----';
     }
 }

@@ -19,6 +19,7 @@ export class ItemSection extends React.Component{
       "uploads":[],
       "upload_list":[],
       "existing": [],
+      "existingList": [],
       "unfinished":[],
       "main": null,
       "additional": [],
@@ -66,7 +67,6 @@ export class ItemSection extends React.Component{
   }
 
   sortList(){
-    console.log(this.state.uploads);
     let uploadList = this.state.uploads;
     let active = uploadList.filter((item)=>{return item.class != '--unfinished'});
     let unfinished = uploadList.filter((item)=>{return item.class == '--unfinished'});
@@ -94,13 +94,18 @@ export class ItemSection extends React.Component{
       let url = window.config.update_resource_url + resource.id + "/preset/" + presetId;
       this.state.finished_presets = [];
       $.ajax({url: url, method: 'GET'}).done((data)=>{
-        this.state.finished_presets.push({
-         'resource' : resId,
-         'preset' : presetId
-        });
-        this.setState({
-          'finished_presets': this.state.finished_presets,
-        });
+        if(typeof data.id != "undefined"){
+          this.state.finished_presets.push({
+            'resource' : data.gid,
+            'preset' : data.preset
+          });
+          if (typeof this.finishedFilesTimer != 'undefined') {
+            clearTimeout(this.finishedFilesTimer);
+          }
+          this.finishedFilesTimer = setTimeout(function() {
+            this.buildExisting();
+          }.bind(this), 100);
+        }
       });
     }
   }
@@ -110,7 +115,8 @@ export class ItemSection extends React.Component{
       for(var datum in data){
         this.getFinishedPresets(data[datum]);
       }
-      this.buildExisting(data);
+      this.state.existing = data;
+      this.buildExisting();
     });
   }
 
@@ -267,22 +273,21 @@ export class ItemSection extends React.Component{
     this.buildList();
   }
 
-  buildExisting(data){
+  buildExisting(){
     let maxMain = window.config.max_main_resources;
     let maxAdd = window.config.max_additional_resources;
-    let currMain = data.filter((file)=>{return file.type == 1}).length;
-    let currAdd = data.filter((file)=>{return file.type == 2}).length;
+    let currMain = this.state.existing.filter((file)=>{return file.type == 1}).length;
+    let currAdd = this.state.existing.filter((file)=>{return file.type == 2}).length;
     let mainStatus = currMain+"/"+maxMain;
     let addStatus = currAdd+"/"+maxAdd;
     let markupData = [];
-    for(var datum in data){
-      let file = data[datum];
+    for(var existingFile in this.state.existing){
+      let file = this.state.existing[existingFile];
       let presets = [];
       for(var preset in window.config['presets']){
         let presetId = window.config['presets'][preset]['id'];
-        console.log(this.state.finished_presets.length);
-        //let finished = this.state.finished_presets.filter((preset)=>{return (preset.resource==file.id && preset.preset == presetId)}).length;
-        //presets.push(<span key={file.id+"-"+presetId} className={"info__info-field info__info-field--preset "+finished?"info__info-field--preset-done":"info__info-field--preset-not-done"}>{window.config['presets'][preset]['name']} - {finished?"Обработан":"Не обработан"}</span>);
+        let finished = this.state.finished_presets.filter((preset)=>{return (preset.resource==file.id && preset.preset == presetId)}).length>0;
+        presets.push(<span key={file.id+"-"+presetId} className={"info__info-field info__info-field--preset "+finished?"info__info-field--preset-done":"info__info-field--preset-not-done"}>{window.config['presets'][preset]['name']} - {finished?"Обработан":"Не обработан"}</span>);
       }
       markupData.push(
         <div className="existing-files__file file" key={file.src_filename+file.filename}><a href={window.config.update_resource_url+file.id+".jpg"}>{file.src_filename}</a>
@@ -300,27 +305,32 @@ export class ItemSection extends React.Component{
           <input type="hidden" name="id" value={file.id}/>
         </span>
         <div className="file__info info">
-          <span className="info__info-field info__info-field--sizepx">
+          <span className="info__info-field info-field info__info-field--sizepx">
+            <span className="info-field__title">Размер изображения</span>
             {file.size_px}
           </span>
-          <span className="info__info-field info__info-field--sizemb">
-            {Math.round(file.size_bytes/(1024*1024), -2)}
+          <span className="info__info-field info-field info__info-field--sizemb">
+            <span className="info-field__title">Размер файла</span>
+            {Math.round((file.size_bytes/(1024*1024))*100)/100 + "MB"}
           </span>
-          <span className="info__info-field info__info-field--uploaddate">
+          <span className="info__info-field info-field info__info-field--uploaddate">
+            <span className="info-field__title">Дата создания</span>
             {file.created_on}
           </span>
-          <span className="info__info-field info__info-field--username">
+          <span className="info__info-field info-field info__info-field--username">
+            <span className="info-field__title">Пользователь</span>
             {file.username}
           </span>
-          <span className="info__info-field info__info-field--comment">
+          <span className="info__info-field info-field info__info-field--comment">
+            <span className="info-field__title">Комментарий</span>
             {file.comment}
           </span>
-          {presets}
+            {presets}
         </div>
       </div>)
     }
     this.setState({
-      "existing": markupData
+      "existingList": markupData
     });
   }
 
@@ -344,7 +354,7 @@ export class ItemSection extends React.Component{
         <button type="button" data-view="2" onClick={this.handleViewChoice}><i className="fas fa-list-ul"></i></button>
       <div className={"item-view__inner " + (this.state.open?"item-view__inner--open ":"item-view__inner--closed ") + this.viewClasses[this.state.viewType]}>
           <h4>Файлы товара</h4>
-          <div className="item-view__file-list existing-files">{this.state.existing}</div>
+          <div className="item-view__file-list existing-files">{this.state.existingList}</div>
           <h4>Загрузки</h4>
           <div className="item-view__file-list file-list" id={"file_list" + this.props.item_id}>{this.state.upload_list}</div>
           <div className="file-list__drop-target" id={"drop_target" + this.props.item_id}></div>
