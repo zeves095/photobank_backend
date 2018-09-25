@@ -27,8 +27,6 @@ services:
         tags: ['controller.service_arguments']
 
 
-
-
     # JSON Encoder
     app.encoder.json:
         class: 'Symfony\Component\Serializer\Encoder\JsonEncoder'

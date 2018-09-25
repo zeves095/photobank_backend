@@ -10,6 +10,9 @@ class AppExtension extends Extension
 {
   public function load(array $configs, ContainerBuilder $container)
   {
+
+    var_dump($configs);exit;
+
     $loader = new YamlFileLoader(
       $container,
       new FileLocator(__DIR__.'/../../config')
