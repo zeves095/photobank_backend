@@ -9,7 +9,7 @@ export class NodeViewer extends React.Component{
     this.state ={
       "node": this.props.node,
       "node_items": [],
-      "opened_items": []
+      "current_item": null
     }
     this.getItems = this.getItems.bind(this);
     this.itemClickHandler = this.itemClickHandler.bind(this);
@@ -30,27 +30,25 @@ export class NodeViewer extends React.Component{
 
   getItems(nodeId = this.props.node){
     $.getJSON(window.config.get_items_url+nodeId, (data)=>{
-      let node_items = data.map((item)=>
+      let nodeItemList = data.map((item)=>
         <div key={item.id}>
           <h4 data-item={item.id} onClick={this.itemClickHandler}>{item.name}</h4>
-        {this.state.opened_items.indexOf(item.id.toString())!=-1?<ItemSection item_code={item.itemCode} item_id={item.id} name={item.name} open_by_default={true}/>:""}
         </div>
       );
       this.setState({
-        "node_items": node_items
+        "node_items" : data,
+        "node_items_list": nodeItemList
       });
     });
   }
 
   itemClickHandler(e){
-    let item = $(e.target).attr("data-item");
-    if(this.state.opened_items.indexOf(item) == -1){
-      this.state.opened_items.push(item);
-      this.setState({
-        'opened_items':this.state.opened_items
-      });
-      this.getItems();
-    }
+    let itemId = $(e.target).attr("data-item");
+    let currItem = this.state.node_items.filter((item)=>{return item.id == itemId})[0];
+    this.setState({
+      'current_item': currItem
+    });
+    this.getItems();
   }
 
   render() {
@@ -58,7 +56,12 @@ export class NodeViewer extends React.Component{
       <div className="node-viewer">
         <h2 className="node-viewer__component-title component-title">Просмотр категории</h2>
         <div className="node-viewer__view-inner view-inner">
-          {this.state.node_items}
+          <div className="view-inner__item-list">
+            {this.state.node_items_list}
+          </div>
+          <div className="view-inner_item-section">
+            {this.state.current_item!=null?<ItemSection item_code={this.state.current_item.code} item_id={this.state.current_item.id} name={this.state.current_item.name} open_by_default={true}/>:""}
+          </div>
         </div>
       </div>
     );
