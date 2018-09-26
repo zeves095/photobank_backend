@@ -62,7 +62,7 @@ export class NodeViewer extends React.Component{
     if(this.state.filter_query == ""){
       filtered = items;
     } else {
-      filtered = items.filter((item)=>{return item.id == this.state.filter_query || item.itemCode == this.state.filter_query});
+      filtered = items.filter((item)=>{return item.id == this.state.filter_query || item.itemCode == this.state.filter_query || item.name == this.state.filter_query});
       console.warn(filtered);
     }
     this.state.node_items_filtered = filtered;

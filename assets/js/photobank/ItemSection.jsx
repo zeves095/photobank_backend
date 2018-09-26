@@ -13,7 +13,7 @@ export class ItemSection extends React.Component{
     this.state={
       "resumable":this.resumable,
       "item_id":this.props.item_id,
-      "item_code":this.props.item_code,
+      "item":{},
       "open":this.props.open_by_default,
       "ready":false,
       "uploads":[],
@@ -249,6 +249,16 @@ export class ItemSection extends React.Component{
     this.buildExisting();
   }
 
+  componentWillMount(){
+    console.log("PROPS");
+    $.ajax({url: window.config['item_url']+this.props.item_id, method: 'GET'}).done((data)=>{
+      this.setState({
+        "item":data
+      });
+      this.props.identityHandler(data.id,data.name,data.itemCode);
+    });
+  }
+
   componentDidMount(){
     let presets = [];
     for(var preset in window.config['presets']){
@@ -261,7 +271,7 @@ export class ItemSection extends React.Component{
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
     this.resumable.on('fileAdded', function(file, event) {
       file.itemId = this.state.item_id;
-      file.itemCode = this.state.item_code;
+      file.itemCode = this.state.item.itemCode;
       file.ready = false;
       this.getHash(file);
       if(window.resumableContainer[this.state.item_id] == undefined){

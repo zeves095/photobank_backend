@@ -6,6 +6,7 @@ parameters:
   commit_upload_url: '/api/upload/commit'
   remove_upload_url: '/api/upload/remove'
   resource_url: '/catalogue/node/item/resource/'
+  item_url: '/catalogue/node/item/'
   get_nodes_url: '/catalogue/nodes/'
   get_items_url: '/catalogue/node/items/'
   max_main_resources: 1
