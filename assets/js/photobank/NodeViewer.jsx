@@ -14,7 +14,6 @@ export class NodeViewer extends React.Component{
     }
     this.getItems = this.getItems.bind(this);
     this.itemClickHandler = this.itemClickHandler.bind(this);
-    this.makeItemSection = this.makeItemSection.bind(this);
   }
 
   componentDidUpdate(prevProps){
@@ -48,21 +47,15 @@ export class NodeViewer extends React.Component{
     let itemId = $(e.target).attr("data-item");
     let currItem = this.state.node_items.filter((item)=>{return item.id == itemId})[0];
     this.setState({
-      'current_item': currItem
+      'current_item': currItem,
+      'item_section': this.makeItemSection(currItem)
     });
-    this.makeItemSection();
-    this.getItems();
   }
 
-  makeItemSection(){
-    this.setState({
-      'item_section': ""
-    });
-    let itemSection = "";
-    itemSection = <ItemSection item_code={this.state.current_item.code} item_id={this.state.current_item.id} name={this.state.current_item.name} open_by_default={true}/>;
-    this.setState({
-      'item_section': itemSection
-    });
+  makeItemSection(currItem){
+    let itemSection = null;
+    itemSection = <ItemSection item_code={currItem.code} item_id={currItem.id} name={currItem.name} open_by_default={true}/>;
+    return itemSection;
   }
 
   render() {
@@ -73,7 +66,7 @@ export class NodeViewer extends React.Component{
           <div className="view-inner__item-list">
             {this.state.node_items_list}
           </div>
-          <div className="view-inner_item-section">
+          <div className="view-inner_item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
             {this.state.item_section}
           </div>
         </div>

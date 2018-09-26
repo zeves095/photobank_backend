@@ -204,7 +204,7 @@ class CatalogueController extends AbstractController
 
     /**
      * @Route(
-     *      "/catalogue/node/item/resource/{rid}/preset/{pid}",
+     *      "/catalogue/node/item/resource/{rid}/{pid}",
      *      methods={"GET"},
      *      name="catalogue_node_item_resource_preset",
      *      requirements={"pid"="\d+","rid"="\d+"}
