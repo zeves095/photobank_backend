@@ -309,7 +309,6 @@ export class ItemSection extends React.Component{
             </select>
             <label htmlFor="type">Тип ресурса</label>
           </span>
-          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
           <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
           <input type="hidden" name="id" value={file.id}/>
         </span>
