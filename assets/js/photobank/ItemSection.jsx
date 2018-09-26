@@ -26,7 +26,8 @@ export class ItemSection extends React.Component{
       "viewType": 0,
       "finished_presets": []
     };
-    this.viewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
+    this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
+    this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
 
     this.buildList = this.buildList.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -244,10 +245,11 @@ export class ItemSection extends React.Component{
     let viewBtn = $(e.target).is("button")?$(e.target):$(e.target).parent();
     let view = viewBtn.data("view");
     this.setState({"viewType":view});
+    this.buildExisting();
   }
 
   componentDidMount(){
-    this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id));
+    this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id+this.props.section_type));
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
     this.resumable.on('fileAdded', function(file, event) {
       file.itemId = this.state.item_id;
@@ -297,7 +299,7 @@ export class ItemSection extends React.Component{
           </span>);
       }
       markupData.push(
-        <div className="existing-files__file file" key={file.src_filename+file.filename}><a href={window.config.resource_url+file.id+".jpg"}>{file.src_filename}</a>
+        <div className={"existing-files__file file "+this.fileViewClasses[this.state.viewType]} key={file.src_filename+file.filename}><a href={window.config.resource_url+file.id+".jpg"}>{file.src_filename}</a>
         <span className="file__edit-fields edit-fields">
           <span className="edit-fields__edit-input">
             <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
@@ -307,29 +309,23 @@ export class ItemSection extends React.Component{
             </select>
             <label htmlFor="type">Тип ресурса</label>
           </span>
-          <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.is1c} name="1c"/><label htmlFor="1c">Использовать в 1С</label></span>
           <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
           <input type="hidden" name="id" value={file.id}/>
         </span>
         <div className="file__info info">
           <span className="info__info-field info-field info__info-field--sizepx">
-            <span className="info-field__title">Размер изображения</span>
             {file.size_px}
           </span>
           <span className="info__info-field info-field info__info-field--sizemb">
-            <span className="info-field__title">Размер файла</span>
             {Math.round((file.size_bytes/(1024*1024))*100)/100 + "MB"}
           </span>
           <span className="info__info-field info-field info__info-field--uploaddate">
-            <span className="info-field__title">Дата создания</span>
             {file.created_on}
           </span>
           <span className="info__info-field info-field info__info-field--username">
-            <span className="info-field__title">Пользователь</span>
             {file.username}
           </span>
           <span className="info__info-field info-field info__info-field--comment">
-            <span className="info-field__title">Комментарий</span>
             {file.comment}
           </span>
             {presets}
@@ -359,14 +355,25 @@ export class ItemSection extends React.Component{
         <button type="button" data-view="0" onClick={this.handleViewChoice}><i className="fas fa-th-large"></i></button>
         <button type="button" data-view="1" onClick={this.handleViewChoice}><i className="fas fa-th"></i></button>
         <button type="button" data-view="2" onClick={this.handleViewChoice}><i className="fas fa-list-ul"></i></button>
-      <div className={"item-view__inner " + (this.state.open?"item-view__inner--open ":"item-view__inner--closed ") + this.viewClasses[this.state.viewType]}>
+      <div className={"item-view__inner " + (this.state.open?"item-view__inner--open ":"item-view__inner--closed ") + this.containerViewClasses[this.state.viewType]}>
+          {this.props.render_existing
+            ?<div className="item-view__existing">
           <h4>Файлы товара</h4>
+          <div className="item-view__table-header">
+            <span className="info-field__title info__info-field--sizepx">Размер изображения</span>
+            <span className="info-field__title info__info-field--sizemb">Размер файла</span>
+            <span className="info-field__title info__info-field--uploaddate">Дата создания</span>
+            <span className="info-field__title info__info-field--username">Пользователь</span>
+            <span className="info-field__title info__info-field--comment">Комментарий</span>
+          </div>
           <div className="item-view__file-list existing-files">{this.state.existingList}</div>
+          </div>
+            :null}
           <h4>Загрузки</h4>
           <div className="item-view__file-list file-list" id={"file_list" + this.props.item_id}>{this.state.upload_list}</div>
           <div className="file-list__drop-target" id={"drop_target" + this.props.item_id}></div>
           <div className="file-list__button-block">
-            <button type="button" id={"browse" + this.props.item_id}>Выбрать</button>
+            <button type="button" id={"browse" + this.props.item_id + this.props.section_type}>Выбрать</button>
             <button type="button" onClick={this.handleSubmit} id={"submit" + this.props.item_id}>Загрузить</button>
           </div>
         </div>
