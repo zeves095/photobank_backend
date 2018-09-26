@@ -22,6 +22,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use App\Service\ResourceService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+
+use Symfony\Component\Messenger\MessageBusInterface;
+use App\Message\ResourcePresetNotification;
 class CatalogueController extends AbstractController
 {
     /**
@@ -201,7 +204,7 @@ class CatalogueController extends AbstractController
 
     /**
      * @Route(
-     *      "/catalogue/node/item/resource/{rid}/preset/{pid}",
+     *      "/catalogue/node/item/resource/{rid}/{pid}",
      *      methods={"GET"},
      *      name="catalogue_node_item_resource_preset",
      *      requirements={"pid"="\d+","rid"="\d+"}
@@ -230,18 +233,29 @@ class CatalogueController extends AbstractController
      *      }
      * )
      */
-    public function patchResource(Resource $resource, Request $request, AppSerializer $serializer, ContainerInterface $container, EntityManagerInterface $entityManager)
+    public function patchResource(Resource $resource, Request $request, AppSerializer $serializer, ContainerInterface $container, EntityManagerInterface $entityManager,MessageBusInterface $bus)
     {
         $data = json_decode(
             $request->getContent(),
             true
         );
 
+        $presetCollections = $container->getParameter('preset_collections');
+        $presetCollection = array();
+        foreach($presetCollections as $collection){
+          if($collection['id'] == $data['type']){
+            $presetCollection = $collection['presets'];
+          }
+        }
+        foreach($presetCollection as $preset){
+          $bus->dispatch(new ResourcePresetNotification(array($resource->getId(), $preset)));
+        }
+
         //Validation for limited resource types
         $maxMain = $container->getParameter('max_main_resources');
         $maxAdd = $container->getParameter('max_additional_resources');
-        $currMain = sizeof($entityManager->getRepository(Resource::class)->findBy(['type'=>1]));
-        $currAdd = sizeof($entityManager->getRepository(Resource::class)->findBy(['type'=>2]));
+        $currMain = sizeof($entityManager->getRepository(Resource::class)->findBy(['type'=>1, 'gid'=>$resource->getGid()]));
+        $currAdd = sizeof($entityManager->getRepository(Resource::class)->findBy(['type'=>2, 'gid'=>$resource->getGid()]));
         if(($maxMain==$currMain && $data['type']==1)||($maxAdd==$currAdd && $data['type']==2)){
           throw new \Exception('Bad data');
           return new Response();

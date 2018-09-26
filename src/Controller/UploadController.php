@@ -21,7 +21,7 @@ class UploadController extends AbstractController
         'unfinished_uploads_url' => $container->getParameter('unfinished_uploads_url'),
         'commit_upload_url' => $container->getParameter('commit_upload_url'),
         'remove_upload_url' => $container->getParameter('remove_upload_url'),
-        'update_resource_url' => $container->getParameter('update_resource_url'),
+        'resource_url' => $container->getParameter('resource_url'),
         'get_nodes_url' => $container->getParameter('get_nodes_url'),
         'get_items_url' => $container->getParameter('get_items_url'),
         'max_main_resources' => $container->getParameter('max_main_resources'),

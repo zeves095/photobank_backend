@@ -6,8 +6,16 @@ use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
 use App\Message\ResourcePresetNotification;
 
+use App\Service\ImageProcessorService;
+
 class ResourcePresetNotificationHandler implements MessageSubscriberInterface
 {
+    private $imageProcessor;
+
+    public function __construct(ImageProcessorService $imageProcessor){
+      $this->imageProcessor = $imageProcessor;
+    }
+
     public static function getHandledMessages(): iterable
     {
         return array(
@@ -17,9 +25,6 @@ class ResourcePresetNotificationHandler implements MessageSubscriberInterface
 
     public function process(ResourcePresetNotification $message)
     {
-        echo 'p1';
-        var_dump($message);
-        //sleep(10);
-        echo 'end 1-----';
+        $this->imageProcessor->process($message->data[0], $message->data[1]);
     }
 }

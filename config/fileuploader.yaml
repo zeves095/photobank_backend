@@ -5,7 +5,7 @@ parameters:
   unfinished_uploads_url: '/api/upload/unfinished/'
   commit_upload_url: '/api/upload/commit'
   remove_upload_url: '/api/upload/remove'
-  update_resource_url: '/catalogue/node/item/resource/'
+  resource_url: '/catalogue/node/item/resource/'
   get_nodes_url: '/catalogue/nodes/'
   get_items_url: '/catalogue/node/items/'
   max_main_resources: 1

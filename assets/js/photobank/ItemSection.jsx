@@ -91,11 +91,12 @@ export class ItemSection extends React.Component{
     for(var preset in window.config['presets']){
       let presetId = window.config['presets'][preset]['id'];
       let resId = resource.id;
-      let url = window.config.update_resource_url + resource.id + "/preset/" + presetId;
+      let url = window.config.resource_url + resource.id + "/" + presetId;
       this.state.finished_presets = [];
       $.ajax({url: url, method: 'GET'}).done((data)=>{
         if(typeof data.id != "undefined"){
           this.state.finished_presets.push({
+            'id': data.id,
             'resource' : data.gid,
             'preset' : data.preset
           });
@@ -230,7 +231,7 @@ export class ItemSection extends React.Component{
     });
     let dataJson = JSON.stringify(data);
     $.ajax({
-      url: window.config.update_resource_url+data.id,
+      url: window.config.resource_url+data.id,
       method: 'PATCH',
       data: dataJson,
       contentType: "application/json; charset=utf-8",
@@ -252,7 +253,6 @@ export class ItemSection extends React.Component{
       file.itemId = this.state.item_id;
       file.itemCode = this.state.item_code;
       file.ready = false;
-      //this.hashPool.push(file);
       this.getHash(file);
       if(window.resumableContainer[this.state.item_id] == undefined){
         window.resumableContainer[this.props.item_id] = this.resumable;
@@ -286,11 +286,18 @@ export class ItemSection extends React.Component{
       let presets = [];
       for(var preset in window.config['presets']){
         let presetId = window.config['presets'][preset]['id'];
-        let finished = this.state.finished_presets.filter((preset)=>{return (preset.resource==file.id && preset.preset == presetId)}).length>0;
-        presets.push(<span key={file.id+"-"+presetId} className={"info__info-field info__info-field--preset "+finished?"info__info-field--preset-done":"info__info-field--preset-not-done"}>{window.config['presets'][preset]['name']} - {finished?"Обработан":"Не обработан"}</span>);
+        let finishedPreset = this.state.finished_presets.filter((preset)=>{return (preset.resource==file.id && preset.preset == presetId)})[0];
+        let finished = typeof finishedPreset != "undefined";
+        presets.push(
+          <span key={file.id+"-"+presetId} className={"info__info-field info__info-field--preset "+finished?"info__info-field--preset-done":"info__info-field--preset-not-done"}>
+            {finished
+              ?<a href={window.config['resource_url']+finishedPreset.id+".jpg"} target="_blank">{window.config['presets'][preset]['width']+'/'+window.config['presets'][preset]['height']}</a>
+              :"Не обработан"
+            }
+          </span>);
       }
       markupData.push(
-        <div className="existing-files__file file" key={file.src_filename+file.filename}><a href={window.config.update_resource_url+file.id+".jpg"}>{file.src_filename}</a>
+        <div className="existing-files__file file" key={file.src_filename+file.filename}><a href={window.config.resource_url+file.id+".jpg"}>{file.src_filename}</a>
         <span className="file__edit-fields edit-fields">
           <span className="edit-fields__edit-input">
             <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
