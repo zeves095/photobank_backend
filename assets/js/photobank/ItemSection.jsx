@@ -249,7 +249,7 @@ export class ItemSection extends React.Component{
   }
 
   componentDidMount(){
-    this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id));
+    this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id+this.props.section_type));
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
     this.resumable.on('fileAdded', function(file, event) {
       file.itemId = this.state.item_id;
@@ -374,7 +374,7 @@ export class ItemSection extends React.Component{
           <div className="item-view__file-list file-list" id={"file_list" + this.props.item_id}>{this.state.upload_list}</div>
           <div className="file-list__drop-target" id={"drop_target" + this.props.item_id}></div>
           <div className="file-list__button-block">
-            <button type="button" id={"browse" + this.props.item_id}>Выбрать</button>
+            <button type="button" id={"browse" + this.props.item_id + this.props.section_type}>Выбрать</button>
             <button type="button" onClick={this.handleSubmit} id={"submit" + this.props.item_id}>Загрузить</button>
           </div>
         </div>

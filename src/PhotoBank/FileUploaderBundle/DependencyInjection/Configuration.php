@@ -27,7 +27,7 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue('/api/upload/')
                         ->end()
                         ->scalarNode('allowed_filetypes')
-                            ->defaultValue('jpg,jpeg,png,tiff,ari,dpx,arw,srf,sr2,bay,crw,cr2,dng,dcr,kdc,erf,3fr,mef,mrw,nef,nrw,orf,ptx,pef,raf,raw,rwl,dng,raw,rw2,r3d,srw,x3f')
+                            ->defaultValue('jpg,jpeg,png,tiff,tif,ari,dpx,arw,srf,sr2,bay,crw,cr2,dng,dcr,kdc,erf,3fr,mef,mrw,nef,nrw,orf,ptx,pef,raf,raw,rwl,dng,raw,rw2,r3d,srw,x3f')
                         ->end()
                     ->end()
                 ->end()

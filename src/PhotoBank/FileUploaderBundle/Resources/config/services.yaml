@@ -4,7 +4,7 @@ parameters:
     fileuploader.targeturl: '/api/upload/'
     fileuploader.chunksize: '1*1024*1024'
     fileuploader.simultaneousuploads: 3
-    fileuploader.allowedfiletypes: 'jpg,jpeg,png,tiff,ari,dpx,arw,srf,sr2,bay,crw,cr2,dng,dcr,kdc,erf,3fr,mef,mrw,nef,nrw,orf,ptx,pef,raf,raw,rwl,dng,raw,rw2,r3d,srw,x3f'
+    fileuploader.allowedfiletypes: 'jpg,jpeg,png,tiff,tif,ari,dpx,arw,srf,sr2,bay,crw,cr2,dng,dcr,kdc,erf,3fr,mef,mrw,nef,nrw,orf,ptx,pef,raf,raw,rwl,dng,raw,rw2,r3d,srw,x3f'
 
 services:
     App\PhotoBank\FileUploaderBundle\Controller\:
