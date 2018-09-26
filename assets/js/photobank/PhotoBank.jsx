@@ -12,10 +12,12 @@ export class PhotoBank extends React.Component {
     super(props);
     this.state ={
       "catalogue_data": {},
+      "catalogue_data_filtered": {},
       "view_pool": false
     }
     this.fetchUnfinished();
     this.handleNodeChoice = this.handleNodeChoice.bind(this);
+    this.handleDataChange = this.handleDataChange.bind(this);
   }
 
   fetchUnfinished(){
@@ -35,6 +37,16 @@ export class PhotoBank extends React.Component {
     });
   }
 
+  handleDataChange(data, filteredData){
+    if(this.state.catalogue_data != data || this.state.catalogue_data_filtered != filteredData){
+      console.log("setting state");
+      this.setState({
+        "catalogue_data": data,
+        "catalogue_data_filtered": filteredData
+      });
+    }
+  }
+
   componentWillMount(){
     //$.getJSON("/assets/js/components/photobank/dummy_data1.json", (data)=>{
     $.getJSON(window.config.get_nodes_url, (data)=>{
@@ -50,8 +62,8 @@ export class PhotoBank extends React.Component {
     return (
       <div className="photobank-main">
       <div className="photobank-main__main-block">
-        <CatalogueTree catalogue_data={this.state.catalogue_data} nodeChoiceHandler={this.handleNodeChoice} />
-        <NodeViewer catalogue_data={this.state.catalogue_data} node={this.state.selected_node} />
+        <CatalogueTree catalogue_data={this.state.catalogue_data} nodeChoiceHandler={this.handleNodeChoice} dataChangeHandler={this.handleDataChange}/>
+      <NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} />
         </div>
         {this.state.view_pool?<UploadPool />:""}
         <div className="photobank-main__butt-wrapper">

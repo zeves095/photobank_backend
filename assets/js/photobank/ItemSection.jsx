@@ -24,7 +24,8 @@ export class ItemSection extends React.Component{
       "main": null,
       "additional": [],
       "viewType": 0,
-      "finished_presets": []
+      "finished_presets": [],
+      "preset_headers": []
     };
     this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
@@ -249,6 +250,13 @@ export class ItemSection extends React.Component{
   }
 
   componentDidMount(){
+    let presets = [];
+    for(var preset in window.config['presets']){
+      presets.push(<span className="info-field__title info__info-field--preset">{preset}</span>);
+    }
+    this.setState({
+      "preset_headers":presets
+    });
     this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id+this.props.section_type));
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
     this.resumable.on('fileAdded', function(file, event) {
@@ -307,7 +315,6 @@ export class ItemSection extends React.Component{
             <option disabled={currAdd>=maxAdd?true:false} value="2">Дополнительное{addStatus}</option>
               <option value="3">Исходник</option>
             </select>
-            <label htmlFor="type">Тип ресурса</label>
           </span>
           <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
           <input type="hidden" name="id" value={file.id}/>
@@ -339,8 +346,8 @@ export class ItemSection extends React.Component{
 
   drawSegment(list){
     return list.map((upload)=>
-      <span key={upload.filename+upload.filehash} className={"file-list__file-item file-item file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing")}>
-        F: {upload.filename}
+      <span key={upload.filename+upload.filehash} className={"file-list__file-item file-item " + "file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing ")+ this.fileViewClasses[this.state.viewType]}>
+        {upload.filename}
         <span className="file-item__delete-upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span>
         <span className="file-item__progress-bar" id={"progress_bar"+upload.filehash}>
         <span></span>
@@ -360,11 +367,14 @@ export class ItemSection extends React.Component{
             ?<div className="item-view__existing">
           <h4>Файлы товара</h4>
           <div className="item-view__table-header">
+            <span className="info-field__title info__info-field--sizepx">Имя файла</span>
+          <span className="info-field__title info__info-field--sizepx">Тип ресурса</span>
             <span className="info-field__title info__info-field--sizepx">Размер изображения</span>
             <span className="info-field__title info__info-field--sizemb">Размер файла</span>
             <span className="info-field__title info__info-field--uploaddate">Дата создания</span>
             <span className="info-field__title info__info-field--username">Пользователь</span>
             <span className="info-field__title info__info-field--comment">Комментарий</span>
+          {this.state.preset_headers}
           </div>
           <div className="item-view__file-list existing-files">{this.state.existingList}</div>
           </div>
