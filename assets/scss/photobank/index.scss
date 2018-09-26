@@ -1,21 +1,21 @@
 body {
-  margin: 0;
-  padding: 0;
+  margin: 25px;
+  padding: 25px;
   font-family: sans-serif;
 }
 
 .userblock {
-  width: 100%;
-  height: 20px;
-  margin: 0;
-  padding: 10px;
-  border: none;
-  background-color: #333;
-  border-radius: 0;
-  color: white;
-  font-weight: bold;
-  font-size: 13pt;
-  border-bottom: 2px solid #00c1fb;
+  width: 100% !important;
+  height: 20px !important;
+  margin: 0 !important;
+  padding: 10px !important;
+  border: none !important;
+  background-color: #333 !important;
+  border-radius: 0 !important;
+  color: white !important;
+  font-weight: bold !important;
+  font-size: 13pt !important;
+  border-bottom: 2px solid #00c1fb !important;
 }
 
 .userblock p {
