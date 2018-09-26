@@ -248,7 +248,12 @@ class CatalogueController extends AbstractController
           }
         }
         foreach($presetCollection as $preset){
-          $bus->dispatch(new ResourcePresetNotification(array($resource->getId(), $preset)));
+          $data = [
+            'resourceId'=>$resource->getId(),
+            'presetId'=>$preset,
+            'createdOn'=>date('d-m-Y H:i:s')
+          ];
+          $bus->dispatch(new ResourcePresetNotification($data));
         }
 
         //Validation for limited resource types
