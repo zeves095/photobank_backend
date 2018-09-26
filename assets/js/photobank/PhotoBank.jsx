@@ -12,7 +12,6 @@ export class PhotoBank extends React.Component {
     super(props);
     this.state ={
       "catalogue_data": {},
-      "catalogue_data_filtered": {},
       "view_pool": false
     }
     this.fetchUnfinished();
@@ -39,11 +38,11 @@ export class PhotoBank extends React.Component {
 
   handleDataChange(data, filteredData){
     if(this.state.catalogue_data != data || this.state.catalogue_data_filtered != filteredData){
-      console.log("setting state");
-      this.setState({
-        "catalogue_data": data,
-        "catalogue_data_filtered": filteredData
-      });
+      // this.setState({
+      //   "catalogue_data": data,
+      //   "catalogue_data_filtered": filteredData
+      // });
+      this.state.catalogue_data = data;
     }
   }
 

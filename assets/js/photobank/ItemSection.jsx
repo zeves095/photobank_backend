@@ -265,7 +265,11 @@ export class ItemSection extends React.Component{
       file.ready = false;
       this.getHash(file);
       if(window.resumableContainer[this.state.item_id] == undefined){
-        window.resumableContainer[this.props.item_id] = this.resumable;
+        window.resumableContainer[this.props.item_id] = {
+          "resumable" : this.resumable,
+          "id": file.itemId,
+          "code": file.itemCode
+        };
       }
     }.bind(this));
     this.resumable.on('fileSuccess', function(file,event){
@@ -359,12 +363,12 @@ export class ItemSection extends React.Component{
     return (
       <div className={"item-view"}>
         <button type="button" onClick={()=>{this.setState({"open":!this.state.open})}}>{this.state.open?"Скрыть":"Показать"}</button>
-        <button type="button" data-view="0" onClick={this.handleViewChoice}><i className="fas fa-th-large"></i></button>
-        <button type="button" data-view="1" onClick={this.handleViewChoice}><i className="fas fa-th"></i></button>
-        <button type="button" data-view="2" onClick={this.handleViewChoice}><i className="fas fa-list-ul"></i></button>
       <div className={"item-view__inner " + (this.state.open?"item-view__inner--open ":"item-view__inner--closed ") + this.containerViewClasses[this.state.viewType]}>
           {this.props.render_existing
             ?<div className="item-view__existing">
+              <button type="button" data-view="0" onClick={this.handleViewChoice}><i className="fas fa-th-large"></i></button>
+              <button type="button" data-view="1" onClick={this.handleViewChoice}><i className="fas fa-th"></i></button>
+              <button type="button" data-view="2" onClick={this.handleViewChoice}><i className="fas fa-list-ul"></i></button>
           <h4>Файлы товара</h4>
           <div className="item-view__table-header">
             <span className="info-field__title info__info-field--sizepx">Имя файла</span>
