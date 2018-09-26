@@ -19,7 +19,7 @@ export class UploadPool extends React.Component{
     let resumables = [];
     let res_container = this.state.resumable_container;
     for(var itemId in res_container){
-      resumables.push(<ItemSection key={itemId} item_id={itemId} open_by_default={true} />);
+      resumables.push(<ItemSection key={"pool" + itemId} item_id={itemId} render_existing={false} open_by_default={true} />);
     }
     this.setState({
       "pool":resumables
