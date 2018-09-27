@@ -248,12 +248,12 @@ class CatalogueController extends AbstractController
           }
         }
         foreach($presetCollection as $preset){
-          $data = [
+          $presetData = [
             'resourceId'=>$resource->getId(),
             'presetId'=>$preset,
             'createdOn'=>date('d-m-Y H:i:s')
           ];
-          $bus->dispatch(new ResourcePresetNotification($data));
+          $bus->dispatch(new ResourcePresetNotification($presetData));
         }
 
         //Validation for limited resource types
@@ -269,6 +269,7 @@ class CatalogueController extends AbstractController
         $priority = $data['priority']??$resource->getPriority();
         $resource->setPriority(intval($priority));
 
+        var_dump($data);
         $type = $data['type']??$resource->getType();
         $resource->setType(intval($type));
 
