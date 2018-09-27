@@ -63,7 +63,7 @@ export class UploadPool extends React.Component{
     if(this.state.filter_query == ""){
       filtered = items;
     } else {
-      filtered = items.filter((item)=>{return item.id == this.state.filter_query || item.code == this.state.filter_query || item.name == this.state.filter_query});
+      filtered = items.filter((item)=>{return item.code == this.state.filter_query || item.name == this.state.filter_query});
     }
     this.state.item_list_filtered = filtered;
     console.warn(filtered);
