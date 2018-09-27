@@ -404,13 +404,13 @@ export class ItemSection extends React.Component{
         {
           this.props.render_existing
             ? <div className="item-view__existing">
-                <button type="button" data-view="0" onClick={this.handleViewChoice}>
+                <button type="button" data-view="0" className={this.state.viewType==0?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
                   <i className="fas fa-th-large"></i>
                 </button>
-                <button type="button" data-view="1" onClick={this.handleViewChoice}>
+                <button type="button" data-view="1" className={this.state.viewType==1?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
                   <i className="fas fa-th"></i>
                 </button>
-                <button type="button" data-view="2" onClick={this.handleViewChoice}>
+                <button type="button" data-view="2" className={this.state.viewType==2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
                   <i className="fas fa-list-ul"></i>
                 </button>
                 <h4>Файлы товара</h4>
