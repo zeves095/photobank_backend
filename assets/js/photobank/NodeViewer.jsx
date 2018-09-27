@@ -91,14 +91,19 @@ export class NodeViewer extends React.Component{
   render() {
     return (
       <div className="node-viewer">
-        <h2 className="node-viewer__component-title component-title">Просмотр категории</h2>
         <div className="node-viewer__view-inner view-inner">
           <div className="view-inner__item-list">
+            <h2 className="node-viewer__component-title component-title">Товары</h2>
+          <div className="view-inner__container">
             <ListFilter filterHandler={this.filterQueryHandler} />
             {this.state.node_items_list}
           </div>
-          <div className="view-inner_item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
+          </div>
+          <div className="view-inner__item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
+            <h2 className="node-viewer__component-title component-title">Файлы</h2>
+          <div className="view-inner__container">
             {this.state.item_section}
+          </div>
           </div>
         </div>
       </div>
