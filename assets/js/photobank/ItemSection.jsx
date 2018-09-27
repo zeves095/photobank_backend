@@ -65,7 +65,7 @@ export class ItemSection extends React.Component{
       this.cleanUpDone();
       this.resolveResumedUploads();
       this.sortList();
-    }.bind(this), 300);
+    }.bind(this), 30);
   }
 
   sortList(){
@@ -90,37 +90,41 @@ export class ItemSection extends React.Component{
   }
 
   getFinishedPresets(resource){
-    for(var preset in window.config['presets']){
-      let presetId = window.config['presets'][preset]['id'];
-      let resId = resource.id;
-      let url = window.config.resource_url + resource.id + "/" + presetId;
-      this.state.finished_presets = [];
-      $.ajax({url: url, method: 'GET'}).done((data)=>{
-        if(typeof data.id != "undefined"){
-          this.state.finished_presets.push({
-            'id': data.id,
-            'resource' : data.gid,
-            'preset' : data.preset
-          });
-          if (typeof this.finishedFilesTimer != 'undefined') {
-            clearTimeout(this.finishedFilesTimer);
+    if(this.props.render_existing){
+      for(var preset in window.config['presets']){
+        let presetId = window.config['presets'][preset]['id'];
+        let resId = resource.id;
+        let url = window.config.resource_url + resource.id + "/" + presetId;
+        this.state.finished_presets = [];
+        $.ajax({url: url, method: 'GET'}).done((data)=>{
+          if(typeof data.id != "undefined"){
+            this.state.finished_presets.push({
+              'id': data.id,
+              'resource' : data.gid,
+              'preset' : data.preset
+            });
+            if (typeof this.finishedFilesTimer != 'undefined') {
+              clearTimeout(this.finishedFilesTimer);
+            }
+            this.finishedFilesTimer = setTimeout(function() {
+              this.buildExisting();
+            }.bind(this), 100);
           }
-          this.finishedFilesTimer = setTimeout(function() {
-            this.buildExisting();
-          }.bind(this), 100);
-        }
-      });
+        });
+      }
     }
   }
 
   fetchExisting(){
-    $.getJSON(window.config.existing_uploads_url+this.state.item_id, (data)=>{
-      for(var datum in data){
-        this.getFinishedPresets(data[datum]);
-      }
-      this.state.existing = data;
-      this.buildExisting();
-    });
+    if(this.props.render_existing){
+      $.getJSON(window.config.existing_uploads_url+this.state.item_id, (data)=>{
+        for(var datum in data){
+          this.getFinishedPresets(data[datum]);
+        }
+        this.state.existing = data;
+        this.buildExisting();
+      });
+    }
   }
 
   fetchUnfinished(){
@@ -132,9 +136,10 @@ export class ItemSection extends React.Component{
           unfinished.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true});
         }
       }
-    });
-    this.setState({
-      "unfinished":unfinished
+      this.setState({
+        "unfinished":unfinished
+      });
+      this.buildList();
     });
   }
 
@@ -255,7 +260,7 @@ export class ItemSection extends React.Component{
       this.setState({
         "item":data
       });
-      this.props.identityHandler(data.id,data.name,data.itemCode);
+      if(typeof this.props.identityHandler != "undefined"){this.props.identityHandler(data.id,data.name,data.itemCode)};
     });
   }
 
@@ -275,11 +280,7 @@ export class ItemSection extends React.Component{
       file.ready = false;
       this.getHash(file);
       if(window.resumableContainer[this.state.item_id] == undefined){
-        window.resumableContainer[this.props.item_id] = {
-          "resumable" : this.resumable,
-          "id": file.itemId,
-          "code": file.itemCode
-        };
+        window.resumableContainer[this.props.item_id] = this.resumable;
       }
     }.bind(this));
     this.resumable.on('fileSuccess', function(file,event){

@@ -12,6 +12,7 @@ export class UploadPool extends React.Component{
       "resumable_container": window.resumableContainer,
       "item_sections": [],
       "item_list": [],
+      "item_list_filtered": [],
       "pool":[],
       "view_type":1,
       "filter_query": ""
@@ -25,23 +26,31 @@ export class UploadPool extends React.Component{
   };
 
   getResumableList(){
-    let resumables = [];
-    let rendered = [];
-    let res_container = this.state.resumable_container;
-    for(var itemId in res_container){
-      this.state.item_sections.push(<ItemSection key={"pool" + itemId} item_id={itemId} default_view={this.state.view_type} render_existing={false} open_by_default={true} identityHandler={this.handleItemIdentity} section_type="up" />);
+    if (typeof this.updateListTimer != 'undefined') {
+      clearTimeout(this.updateListTimer);
     }
-    this.filterData();
-    this.buildPool();
+    this.updateListTimer = setTimeout(()=> {
+      let resumables = [];
+      let rendered = [];
+      let res_container = this.state.resumable_container;
+      this.state.item_sections = [];
+      for(var itemId in res_container){
+        this.state.item_sections[itemId] = <ItemSection key={"pool" + itemId} item_id={itemId} default_view={this.state.view_type} render_existing={false} open_by_default={true} identityHandler={this.handleItemIdentity} section_type="up" />;
+      }
+      this.filterData();
+      this.buildPool();
+    }, 30);
   }
 
   buildPool(){
-    let items = this.state.item_list;
-    let pool = items.map(item=>
-      <div>
-        <h4>{item.name}</h4>
-      {this.state.item_sections[item.id]}
+    let items = this.state.item_list_filtered;
+    let pool = items.map(item=>{
+      return(
+      <div key={"pool-item" + item.id}>
+        <h4 key={"pool-item-header" + item.id}>{item.name}</h4>
+        {this.state.item_sections[item.id]}
       </div>
+    )}
     );
     this.setState({
       "pool":pool
@@ -56,14 +65,16 @@ export class UploadPool extends React.Component{
     } else {
       filtered = items.filter((item)=>{return item.id == this.state.filter_query || item.code == this.state.filter_query || item.name == this.state.filter_query});
     }
-    this.state.item_list = filtered;
+    this.state.item_list_filtered = filtered;
+    console.warn(filtered);
   }
 
   getInitialList(){
     let pool = [];
     for(var itemId in this.state.resumable_container){
       if(typeof this.state.resumable_container[itemId] != "undefined"){
-        pool.push(<ItemSection key={"pool" + itemId} item_id={itemId} default_view={this.state.view_type} render_existing={false} open_by_default={true} identityHandler={this.handleItemIdentity} section_type="up" />);
+        console.log(this.state.resumable_container[itemId]);
+        pool.push(<ItemSection key={"query" + itemId} item_id={itemId} default_view={this.state.view_type} render_existing={false} open_by_default={true} identityHandler={this.handleItemIdentity} section_type="up" />);
       }
     }
     this.setState({
@@ -90,13 +101,12 @@ export class UploadPool extends React.Component{
   }
 
   handleItemIdentity(id, name, code){
-    console.log("id");
     this.state.item_list[id] = {
       "id": id,
       "name": name,
       "code": code
     };
-    //this.getResumableList();
+    this.getResumableList();
   }
 
   filterQueryHandler(query){

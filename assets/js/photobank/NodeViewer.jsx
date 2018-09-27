@@ -84,7 +84,7 @@ export class NodeViewer extends React.Component{
 
   makeItemSection(currItem){
     let itemSection = null;
-    itemSection = <ItemSection render_existing={true} item_code={currItem.code} item_id={currItem.id} name={currItem.name} open_by_default={true} section_type="nv" />;
+    itemSection = <ItemSection render_existing={true} item_id={currItem.id} name={currItem.name} open_by_default={true} section_type="nv" />;
     return itemSection;
   }
 
