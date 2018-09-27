@@ -13,7 +13,7 @@ export class ItemSection extends React.Component{
     this.state={
       "resumable":this.resumable,
       "item_id":this.props.item_id,
-      "item_code":this.props.item_code,
+      "item":{},
       "open":this.props.open_by_default,
       "ready":false,
       "uploads":[],
@@ -24,7 +24,8 @@ export class ItemSection extends React.Component{
       "main": null,
       "additional": [],
       "viewType": 0,
-      "finished_presets": []
+      "finished_presets": [],
+      "preset_headers": []
     };
     this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
@@ -64,7 +65,7 @@ export class ItemSection extends React.Component{
       this.cleanUpDone();
       this.resolveResumedUploads();
       this.sortList();
-    }.bind(this), 300);
+    }.bind(this), 30);
   }
 
   sortList(){
@@ -89,37 +90,41 @@ export class ItemSection extends React.Component{
   }
 
   getFinishedPresets(resource){
-    for(var preset in window.config['presets']){
-      let presetId = window.config['presets'][preset]['id'];
-      let resId = resource.id;
-      let url = window.config.resource_url + resource.id + "/" + presetId;
-      this.state.finished_presets = [];
-      $.ajax({url: url, method: 'GET'}).done((data)=>{
-        if(typeof data.id != "undefined"){
-          this.state.finished_presets.push({
-            'id': data.id,
-            'resource' : data.gid,
-            'preset' : data.preset
-          });
-          if (typeof this.finishedFilesTimer != 'undefined') {
-            clearTimeout(this.finishedFilesTimer);
+    if(this.props.render_existing){
+      for(var preset in window.config['presets']){
+        let presetId = window.config['presets'][preset]['id'];
+        let resId = resource.id;
+        let url = window.config.resource_url + resource.id + "/" + presetId;
+        this.state.finished_presets = [];
+        $.ajax({url: url, method: 'GET'}).done((data)=>{
+          if(typeof data.id != "undefined"){
+            this.state.finished_presets.push({
+              'id': data.id,
+              'resource' : data.gid,
+              'preset' : data.preset
+            });
+            if (typeof this.finishedFilesTimer != 'undefined') {
+              clearTimeout(this.finishedFilesTimer);
+            }
+            this.finishedFilesTimer = setTimeout(function() {
+              this.buildExisting();
+            }.bind(this), 100);
           }
-          this.finishedFilesTimer = setTimeout(function() {
-            this.buildExisting();
-          }.bind(this), 100);
-        }
-      });
+        });
+      }
     }
   }
 
   fetchExisting(){
-    $.getJSON(window.config.existing_uploads_url+this.state.item_id, (data)=>{
-      for(var datum in data){
-        this.getFinishedPresets(data[datum]);
-      }
-      this.state.existing = data;
-      this.buildExisting();
-    });
+    if(this.props.render_existing){
+      $.getJSON(window.config.existing_uploads_url+this.state.item_id, (data)=>{
+        for(var datum in data){
+          this.getFinishedPresets(data[datum]);
+        }
+        this.state.existing = data;
+        this.buildExisting();
+      });
+    }
   }
 
   fetchUnfinished(){
@@ -131,9 +136,10 @@ export class ItemSection extends React.Component{
           unfinished.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true});
         }
       }
-    });
-    this.setState({
-      "unfinished":unfinished
+      this.setState({
+        "unfinished":unfinished
+      });
+      this.buildList();
     });
   }
 
@@ -248,12 +254,29 @@ export class ItemSection extends React.Component{
     this.buildExisting();
   }
 
+  componentWillMount(){
+    console.log("PROPS");
+    $.ajax({url: window.config['item_url']+this.props.item_id, method: 'GET'}).done((data)=>{
+      this.setState({
+        "item":data
+      });
+      if(typeof this.props.identityHandler != "undefined"){this.props.identityHandler(data.id,data.name,data.itemCode)};
+    });
+  }
+
   componentDidMount(){
+    let presets = [];
+    for(var preset in window.config['presets']){
+      presets.push(<span className="info-field__title info__info-field--preset">{preset}</span>);
+    }
+    this.setState({
+      "preset_headers":presets
+    });
     this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id+this.props.section_type));
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
     this.resumable.on('fileAdded', function(file, event) {
       file.itemId = this.state.item_id;
-      file.itemCode = this.state.item_code;
+      file.itemCode = this.state.item.itemCode;
       file.ready = false;
       this.getHash(file);
       if(window.resumableContainer[this.state.item_id] == undefined){
@@ -307,7 +330,6 @@ export class ItemSection extends React.Component{
             <option disabled={currAdd>=maxAdd?true:false} value="2">Дополнительное{addStatus}</option>
               <option value="3">Исходник</option>
             </select>
-            <label htmlFor="type">Тип ресурса</label>
           </span>
           <span className="edit-fields__edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span>
           <input type="hidden" name="id" value={file.id}/>
@@ -339,8 +361,8 @@ export class ItemSection extends React.Component{
 
   drawSegment(list){
     return list.map((upload)=>
-      <span key={upload.filename+upload.filehash} className={"file-list__file-item file-item file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing")}>
-        F: {upload.filename}
+      <span key={upload.filename+upload.filehash} className={"file-list__file-item file-item " + "file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing ")+ this.fileViewClasses[this.state.viewType]}>
+        {upload.filename}
         <span className="file-item__delete-upload" data-item={upload.filehash} onClick={this.handleDelete}>X</span>
         <span className="file-item__progress-bar" id={"progress_bar"+upload.filehash}>
         <span></span>
@@ -352,19 +374,22 @@ export class ItemSection extends React.Component{
     return (
       <div className={"item-view"}>
         <button type="button" onClick={()=>{this.setState({"open":!this.state.open})}}>{this.state.open?"Скрыть":"Показать"}</button>
-        <button type="button" data-view="0" onClick={this.handleViewChoice}><i className="fas fa-th-large"></i></button>
-        <button type="button" data-view="1" onClick={this.handleViewChoice}><i className="fas fa-th"></i></button>
-        <button type="button" data-view="2" onClick={this.handleViewChoice}><i className="fas fa-list-ul"></i></button>
       <div className={"item-view__inner " + (this.state.open?"item-view__inner--open ":"item-view__inner--closed ") + this.containerViewClasses[this.state.viewType]}>
           {this.props.render_existing
             ?<div className="item-view__existing">
+              <button type="button" data-view="0" onClick={this.handleViewChoice}><i className="fas fa-th-large"></i></button>
+              <button type="button" data-view="1" onClick={this.handleViewChoice}><i className="fas fa-th"></i></button>
+              <button type="button" data-view="2" onClick={this.handleViewChoice}><i className="fas fa-list-ul"></i></button>
           <h4>Файлы товара</h4>
           <div className="item-view__table-header">
+            <span className="info-field__title info__info-field--sizepx">Имя файла</span>
+          <span className="info-field__title info__info-field--sizepx">Тип ресурса</span>
             <span className="info-field__title info__info-field--sizepx">Размер изображения</span>
             <span className="info-field__title info__info-field--sizemb">Размер файла</span>
             <span className="info-field__title info__info-field--uploaddate">Дата создания</span>
             <span className="info-field__title info__info-field--username">Пользователь</span>
             <span className="info-field__title info__info-field--comment">Комментарий</span>
+          {this.state.preset_headers}
           </div>
           <div className="item-view__file-list existing-files">{this.state.existingList}</div>
           </div>
