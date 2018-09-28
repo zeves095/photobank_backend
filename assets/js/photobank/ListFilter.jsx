@@ -24,7 +24,7 @@ export class ListFilter extends React.Component{
   render(){
     return(
       <div className="list-filter">
-        <input type="text" name="filter-query" onBlur={this.handleChange}></input>
+        <input type="text" name="filter-query" placeholder="Фильтр" onBlur={this.handleChange}></input>
       <button type="button" onClick={this.handleSubmit}><i className="fas fa-arrow-alt-circle-right"></i></button>
       </div>
     );

@@ -21,7 +21,7 @@ parameters:
           presets: [1,2,3]
         additional:
           id: 2
-          presets: [2,3]
+          presets: [1,2,3]
         original:
           id: 3
-          presets: []
+          presets: [1]

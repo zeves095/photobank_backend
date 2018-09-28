@@ -47,8 +47,8 @@ export class NodeViewer extends React.Component{
   buildList(){
     this.filterData();
     let nodeItemList = this.state.node_items_filtered.map((item)=>
-      <div key={item.id}>
-        <h4 data-item={item.id} onClick={this.itemClickHandler}>{item.name}</h4>
+      <div className="list-item" key={item.id}>
+        <h4 data-item={item.id} onClick={this.itemClickHandler}><i class="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
       </div>
     );
     this.setState({

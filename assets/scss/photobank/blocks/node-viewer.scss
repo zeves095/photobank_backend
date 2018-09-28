@@ -1,0 +1,32 @@
+.node-viewer {
+  order: 2;
+  flex-grow: 4;
+  height: 85vh;
+  display: inline-block;
+
+  .view-inner__container{
+    @extend %component-inner;
+  }
+
+  .view-inner {
+    display: flex;
+    align-items: flex-start;
+
+    &__item-list {
+      flex-grow: 1;
+      @extend %component-section;
+      .list-item{
+        @extend %list-item;
+      }
+    }
+
+    &__item-section {
+      flex-grow: 0;
+      min-width: 50vw;
+      max-width: 60vw;
+      overflow-x:hidden;
+      overflow-y:scroll;
+      @extend %component-section;
+    }
+  }
+}

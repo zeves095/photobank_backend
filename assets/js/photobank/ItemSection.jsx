@@ -79,13 +79,13 @@ export class ItemSection extends React.Component{
     let ready = active.filter((item)=>{return item.ready == true && item.uploading == false});
     let uploading = active.filter((item)=>{return item.uploading == true});
 
-    let uploadListMarkup = [pending.length>0?<h4>Обрабатываются...</h4>:""];
+    let uploadListMarkup = [pending.length>0?<h4 className="item-view__subheader">Обрабатываются...</h4>:""];
     uploadListMarkup = uploadListMarkup.concat(this.drawSegment(pending));
-    uploadListMarkup.push(ready.length>0?<h4>Загрузки</h4>:"");
+    uploadListMarkup.push(ready.length>0?<h4 className="item-view__subheader">Загрузки</h4>:"");
     uploadListMarkup = uploadListMarkup.concat(this.drawSegment(ready));
-    uploadListMarkup.push(uploading.length>0?<h4>Загружаются...</h4>:"");
+    uploadListMarkup.push(uploading.length>0?<h4 className="item-view__subheader">Загружаются...</h4>:"");
     uploadListMarkup = uploadListMarkup.concat(this.drawSegment(uploading));
-    uploadListMarkup.push(unfinished.length>0?<h4>Незаконченные</h4>:"");
+    uploadListMarkup.push(unfinished.length>0?<h4 className="item-view__subheader">Незаконченные</h4>:"");
     uploadListMarkup = uploadListMarkup.concat(this.drawSegment(unfinished));
     this.setState({
       "upload_list":uploadListMarkup
@@ -275,6 +275,19 @@ export class ItemSection extends React.Component{
     });
     this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id+this.props.section_type));
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
+    var dragTimer;
+    $(".item-view").on('dragover', (e)=>{
+      var dt = e.originalEvent.dataTransfer;
+      if (dt.types && (dt.types.indexOf ? dt.types.indexOf('Files') != -1 : dt.types.contains('Files'))) {
+        $("#drop_target" + this.props.item_id).addClass('file-list__drop-target--active');
+        window.clearTimeout(dragTimer);
+      }
+    });
+    $("#drop_target" + this.props.item_id).on('dragleave', (e)=>{
+      dragTimer = window.setTimeout(()=>{
+        $("#drop_target" + this.props.item_id).removeClass('file-list__drop-target--active');
+      }, 100);
+    });
     this.resumable.on('fileAdded', function(file, event) {
       file.itemId = this.state.item_id;
       file.itemCode = this.state.item.itemCode;
@@ -283,6 +296,8 @@ export class ItemSection extends React.Component{
       if(window.resumableContainer[this.state.item_id] == undefined){
         window.resumableContainer[this.props.item_id] = this.resumable;
       }
+      console.log("removing");
+      $("#drop_target" + this.props.item_id).removeClass('file-list__drop-target--active');
     }.bind(this));
     this.resumable.on('fileSuccess', function(file,event){
       this.fetchExisting();
@@ -297,6 +312,14 @@ export class ItemSection extends React.Component{
     this.fetchUnfinished();
     this.fetchExisting();
     this.buildList();
+  }
+
+  componentDidUpdate(prevProps){
+    if(this.props != prevProps){
+      this.setState({
+        "viewType": this.props.default_view
+      });
+    }
   }
 
   buildExisting(){
@@ -380,7 +403,9 @@ export class ItemSection extends React.Component{
     return (
       <div className = {
         "item-view"
-      } > {
+      } >
+      <div className="file-list__drop-target" id={"drop_target" + this.props.item_id}></div>
+      {
         this.state.render_existing
           ? <button type="button" onClick={() => {
                 this.setState({
@@ -394,7 +419,7 @@ export class ItemSection extends React.Component{
           : ""
       } {
         typeof this.state.item != "undefined"
-          ? <div className="item-view__item-title">Товар #{this.state.item.itemCode}
+          ? <div className="item-view__item-title"><i class="fas fa-sitemap"></i>Товар #{this.state.item.itemCode}
               "{this.state.item.name}"</div>
           : null
       }<div className={"item-view__inner " + (
@@ -413,7 +438,7 @@ export class ItemSection extends React.Component{
                 <button type="button" data-view="2" className={this.state.viewType==2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
                   <i className="fas fa-list-ul"></i>
                 </button>
-                <h4>Файлы товара</h4>
+                <h4 className="item-view__subheader">Файлы товара</h4>
                 <div className="item-resources">
                   <div className="item-view__file-list existing-files">
                     <div className="item-view__table-header">
@@ -432,11 +457,11 @@ export class ItemSection extends React.Component{
               </div>
             : null
         }
-        <h4>Загрузки</h4>
+        <h4 className="item-view__subheader">Загрузки</h4>
         <div className="item-view__file-list file-list" id={"file_list" + this.props.item_id}>
           <div className="file-list__button-block">
-            <button type="button" id={"browse" + this.props.item_id + this.props.section_type}>Выбрать</button>
-            <button type="button" onClick={this.handleSubmit} id={"submit" + this.props.item_id}>Загрузить</button>
+            <button type="button" id={"browse" + this.props.item_id + this.props.section_type}><i class="fas fa-folder-open"></i>Выбрать</button>
+            <button type="button" onClick={this.handleSubmit} id={"submit" + this.props.item_id}><i class="fas fa-file-upload"></i>Загрузить</button>
 
           </div>
           <div className="item-uploads">
@@ -448,7 +473,6 @@ export class ItemSection extends React.Component{
           {this.state.upload_list}
         </div>
       </div>
-        <div className="file-list__drop-target" id={"drop_target" + this.props.item_id}></div>
       </div> < /div>
     );
   }

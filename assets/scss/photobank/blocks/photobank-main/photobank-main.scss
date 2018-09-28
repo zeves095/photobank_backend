@@ -1,0 +1,40 @@
+.photobank-main {
+
+  &__butt-wrapper{
+    position: fixed;
+    bottom: 50px;
+    left: 50vw;
+    z-index: 999;
+    button{
+      margin-left: -50%;
+      border: none;
+      border-radius: 20px;
+      padding:15px 20px;
+      font-size: 15pt;
+    }
+  }
+
+  &__main-block {
+    display: flex;
+    align-items: flex-start;
+
+    .component-title {
+      margin: 0;
+      padding: 10px 25px;
+      font-weight: 100;
+      //text-transform: uppercase;
+      width:auto;
+      display: block;
+      border-radius: 3px 3px 0 0;
+      &__view-icons {
+        font-size: 12pt;
+        float:right;
+        i{
+          padding:2px;
+        }
+      }
+    }
+  }
+}
+
+@import "./photobank-main__upload-pool.scss";

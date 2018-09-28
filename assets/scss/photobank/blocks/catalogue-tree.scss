@@ -1,0 +1,29 @@
+.catalogue-tree {
+  order: 1;
+  flex-grow: 1;
+  height: 85vh;
+  display: inline-block;
+  @extend %component-section;
+
+  .view-inner__list-view{
+    margin-top:10px;
+    .list-view__cat_item{
+      @extend %list-item;
+    }
+  }
+
+  &__crumbs{
+    .crumbs__crumb{
+      padding:5px;
+      display:inline;
+      bottom: -5px;
+      position: relative;
+      &--active{
+        border-radius: 0 0 3px 0;
+      }
+      &::after{
+        content:" >";
+      }
+    }
+  }
+}

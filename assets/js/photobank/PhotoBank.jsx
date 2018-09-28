@@ -68,7 +68,7 @@ export class PhotoBank extends React.Component {
         {this.state.view_pool?<UploadPool />:null}
         </div>
         <div className="photobank-main__butt-wrapper">
-        <button type="button" className="photobank-main__large-btn" onClick={()=>{this.setState({"view_pool":!this.state.view_pool})}}>{this.state.view_pool?"Скрыть":"Загрузки"}</button>
+        <button type="button" className="photobank-main__large-btn" onClick={()=>{this.setState({"view_pool":!this.state.view_pool})}}><i class="fas fa-copy"></i>{this.state.view_pool?"Скрыть":"Загрузки"}</button>
         </div>
       </div>
     );
