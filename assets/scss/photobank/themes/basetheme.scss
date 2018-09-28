@@ -1,18 +1,22 @@
 %component-section-color{
-  border-right: 2px solid $color-main-fade;
+//border-right: 2px solid $color-tertiary;
   background-color:$color-main;
 }
 
 %list-item-color{
-  background-color: $color-main-fade;
-  border-bottom:2px solid $color-secondary;
+  background-color: $color-secondary;
+  color: $color-text;
+  //border-bottom:1px solid $color-tertiary;
 }
 
 %table-cell-color{
-  background-color: $color-main-fade;
+  background-color: $color-tertiary;
   color: $color-text;
-  border-bottom: 1px solid $color-secondary;
-  border-right: 1px dashed $color-secondary;
+  //border-bottom: 1px solid $color-secondary;
+  //border-right: 1px solid $color-accent-fade;
+  &:nth-child(even){
+    background-color: $color-tertiary-fade;
+  }
 }
 
 %button-color{
@@ -29,14 +33,15 @@
 }
 
 body {
-  background-color: $color-background
+  background-color: $color-background;
+  font-size: 12px;
 }
 
 .userblock {
   a {
     color:$color-text;
   }
-  background-color: $color-main !important;
+  background-color: $color-tertiary !important;
   color:$color-text !important;
 }
 
@@ -68,15 +73,15 @@ body {
 
     .component-title {
       color:$color-text;
-      background-color: $color-main-fade;
-      border-bottom: 2px solid $color-secondary;
+      background-color: $color-main;
+      //border-bottom: 2px solid $color-secondary;
     }
   }
 }
 
 .catalogue-tree {
-  @extend %component-section-color;
-
+  background-color: $color-secondary;
+  //border-right: 2px solid $color-tertiary;
   .view-inner__list-view{
     .list-view__cat_item{
       @extend %list-item-color;
@@ -85,10 +90,11 @@ body {
 
   &__crumbs{
     .crumbs__crumb{
-      background-color: $color-main;
+      background-color: $color-main-fade;
       border-right:1px solid $color-secondary;
       &--active{
-        background-color:$color-secondary;
+        background-color:$color-accent;
+        color:$color-text-alt;
       }
     }
   }
@@ -105,6 +111,10 @@ body {
 
     &__item-section {
       @extend %component-section-color;
+      background-color: $color-tertiary;
+      .component-title{
+        background-color: $color-tertiary-fade;
+      }
     }
   }
 }
@@ -120,14 +130,18 @@ body {
   .file-list__button-block{
     button{
       @extend %button-color;
+      color:$color-text;
     }
   }
   &__existing>button.item-view__view-button{
     @extend %button-view-color;
+    &--active{
+      background-color: $color-accent;
+    }
   }
   &__item-title{
-    background-color: $color-accent;
-    color:$color-text-alt;
+    background-color: $color-main-fade;
+    color:$color-text;
   }
   &__subheader{
     background-color: $color-main-fade;
@@ -154,13 +168,19 @@ body {
     }
     &--detailed{
       .item-resources{
-        border: 2px solid $color-accent;
+        //border: 2px solid $color-accent;
+        .item-view__table-header{
+          .info__info-field{
+            background-color: $color-accent;
+            color:$color-text-alt;
+          }
+        }
         .info__info-field, .file>a, select, span, .edit-input{
           @extend %table-cell-color;
         }
       }
       .item-uploads{
-        border: 2px solid $color-accent;
+        //border: 2px solid $color-accent;
         .info__info-field, .file>a, select, span, .edit-input{
           @extend %table-cell-color;
         }
