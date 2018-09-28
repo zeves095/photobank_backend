@@ -21,7 +21,9 @@ Encore
     // .addEntry('crc32', './assets/js/vendor/crc32.js')
     // .addEntry('md5', './assets/js/vendor/md5.js')
     // .addEntry('resumable', './assets/js/vendor/resumable.js')
-    // .addStyleEntry('main_style', './assets/scss/app.scss')
+    .addStyleEntry('main_style', './assets/scss/app.scss')
+    .addStyleEntry('color_theme_default', './assets/scss/photobank/themes/default.scss')
+
 
     /*
      * FEATURE CONFIG

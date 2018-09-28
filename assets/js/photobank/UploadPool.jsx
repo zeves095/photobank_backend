@@ -47,7 +47,6 @@ export class UploadPool extends React.Component{
     let pool = items.map(item=>{
       return(
       <div key={"pool-item" + item.id}>
-        <h4 key={"pool-item-header" + item.id}>{item.name}</h4>
         {this.state.item_sections[item.id]}
       </div>
     )}
@@ -98,6 +97,7 @@ export class UploadPool extends React.Component{
     let viewBtn = $(e.target).is("button")?$(e.target):$(e.target).parent();
     let view = viewBtn.data("view");
     this.setState({"view_type":view});
+    this.getResumableList();
   }
 
   handleItemIdentity(id, name, code){

@@ -51,7 +51,7 @@ export class CatalogueTree extends React.Component {
     for(var i = 0; i<children.length; i++){
       let child = children[i];
       element.push(
-        <span key={child.id} className="list-view__cat_item list-view__cat_item--parent" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></span>
+        <div key={child.id} className="list-view__cat_item list-view__cat_item--parent" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></div>
       );
     }
     let catalogueList = element;

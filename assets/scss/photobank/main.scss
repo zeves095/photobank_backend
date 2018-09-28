@@ -1,8 +1,12 @@
+
 $bordrad:3px;
 
 %component-section {
+  border-right: 3px solid $color-main-fade;
+  border-bottom: 3px solid $color-main-fade;
   height: 85vh;
   margin:5px;
+  background-color:$color-main;
   border-radius:$bordrad;
 }
 
@@ -22,7 +26,9 @@ $bordrad:3px;
 }
 
 %list-item{
+  background-color: $color-main-fade;
   padding:7px 15px;
+  border-bottom:2px solid $color-secondary;
   h4{
     margin:0;
   }
@@ -31,10 +37,16 @@ $bordrad:3px;
 %table-cell{
   display:table-cell;
   text-align: center;
+  background-color: $color-main-fade;
+  color: $color-text;
   padding:5px;
+  border-bottom: 1px solid $color-secondary;
+  border-right: 1px dashed $color-secondary;
 }
 
 %button{
+  background-color: $color-secondary;
+  color: $color-text-alt;
   border:none;
   border-radius:$bordrad;
   padding:10px 20px;
@@ -43,11 +55,16 @@ $bordrad:3px;
 }
 
 %button-view{
+  background-color: $color-secondary;
+  color: $color-text-alt;
   border:none;
   padding:10px;
   margin:2px;
   border-radius: 3px;
   font-size: 12pt;
+  &--active{
+    background-color: $color-accent;
+  }
 }
 
 body {
@@ -55,6 +72,7 @@ body {
   padding: 0;
   border: 0;
   font-family: Roboto, sans-serif;
+  background-color: $color-background
 }
 
 i.fas{

@@ -1,0 +1,170 @@
+%component-section-color{
+  border-right: 2px solid $color-main-fade;
+  background-color:$color-main;
+}
+
+%list-item-color{
+  background-color: $color-main-fade;
+  border-bottom:2px solid $color-secondary;
+}
+
+%table-cell-color{
+  background-color: $color-main-fade;
+  color: $color-text;
+  border-bottom: 1px solid $color-secondary;
+  border-right: 1px dashed $color-secondary;
+}
+
+%button-color{
+  background-color: $color-secondary;
+  color: $color-text-alt;
+}
+
+%button-view-color{
+  background-color: $color-secondary;
+  color: $color-text-alt;
+  &--active{
+    background-color: $color-accent;
+  }
+}
+
+body {
+  background-color: $color-background
+}
+
+.userblock {
+  a {
+    color:$color-text;
+  }
+  background-color: $color-main !important;
+  color:$color-text !important;
+}
+
+.photobank-main {
+
+  &__butt-wrapper{
+    button{
+      background-color: $color-accent;
+      color:$color-text-alt;
+    }
+  }
+
+  &__upload-pool-wrapper{
+    color:$color-text;
+    .upload-pool{
+      background-color: $color-main;
+      >button{
+        @extend %button-view-color;
+      }
+      &__view-inner>button{
+        @extend %button-color;
+      }
+    }
+  }
+
+  &__main-block {
+    color:$color-text;
+    background-color: $color-background;
+
+    .component-title {
+      color:$color-text;
+      background-color: $color-main-fade;
+      border-bottom: 2px solid $color-secondary;
+    }
+  }
+}
+
+.catalogue-tree {
+  @extend %component-section-color;
+
+  .view-inner__list-view{
+    .list-view__cat_item{
+      @extend %list-item-color;
+    }
+  }
+
+  &__crumbs{
+    .crumbs__crumb{
+      background-color: $color-main;
+      border-right:1px solid $color-secondary;
+      &--active{
+        background-color:$color-secondary;
+      }
+    }
+  }
+}
+
+.node-viewer {
+  .view-inner {
+    &__item-list {
+      @extend %component-section-color;
+      .list-item{
+        @extend %list-item-color;
+      }
+    }
+
+    &__item-section {
+      @extend %component-section-color;
+    }
+  }
+}
+
+.list-filter{
+  button{
+    background-color: $color-accent;
+    color: white;
+  }
+}
+
+.item-view {
+  .file-list__button-block{
+    button{
+      @extend %button-color;
+    }
+  }
+  &__existing>button.item-view__view-button{
+    @extend %button-view-color;
+  }
+  &__item-title{
+    background-color: $color-accent;
+    color:$color-text-alt;
+  }
+  &__subheader{
+    background-color: $color-main-fade;
+  }
+  .item-view__inner {
+    a{
+      color:$color-text;
+    }
+    &--icons-lg{
+      .item-uploads{
+        .file-list__file-item{
+          background-color:$color-secondary;
+          color: $color-text-alt;
+        }
+      }
+    }
+    &--icons-sm{
+      .item-uploads{
+        .file-list__file-item{
+          background-color:$color-secondary;
+          color:$color-text-alt;
+        }
+      }
+    }
+    &--detailed{
+      .item-resources{
+        border: 2px solid $color-accent;
+        .info__info-field, .file>a, select, span, .edit-input{
+          @extend %table-cell-color;
+        }
+      }
+      .item-uploads{
+        border: 2px solid $color-accent;
+        .info__info-field, .file>a, select, span, .edit-input{
+          @extend %table-cell-color;
+        }
+      }
+    }
+  }
+}
