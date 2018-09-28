@@ -1,6 +1,6 @@
 .node-viewer {
   order: 2;
-  flex-grow: 4;
+  flex-grow: 1;
   height: 85vh;
   display: inline-block;
 
@@ -13,7 +13,8 @@
     align-items: flex-start;
 
     &__item-list {
-      flex-grow: 1;
+      flex-grow: 0;
+      flex-shrink: 0;
       @extend %component-section;
       .list-item{
         @extend %list-item;
@@ -21,9 +22,9 @@
     }
 
     &__item-section {
-      flex-grow: 0;
+      flex-grow: 1;
       min-width: 50vw;
-      max-width: 60vw;
+      //max-width: 60vw;
       overflow-x:hidden;
       overflow-y:scroll;
       @extend %component-section;

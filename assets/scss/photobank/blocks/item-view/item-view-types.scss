@@ -26,7 +26,7 @@
         .file-list__file-item{
           width:150px;
           height:150px;
-          border-radius:3px;
+          border-radius:$bordrad;
           text-align: center;
           display:inline-block;
           margin:10px;
@@ -46,7 +46,7 @@
       .item-view__table-header{
         display:none;
       }
-      .item-resources{
+      .existing-files{
         display:table;
         .info__info-field, .edit-input, .info__info-field--preset-done{
           display:none;
@@ -68,7 +68,7 @@
         .file-list__file-item{
           width:100px;
           height:100px;
-          border-radius:3px;
+          border-radius:$bordrad;
           text-align: center;
           display:inline-block;
           margin:10px;
@@ -82,8 +82,9 @@
       }
     }
     &--detailed{
-      .item-resources{
+      .existing-files{
         display:table;
+        width:100%;
         .item-view__table-header{
           display:table-header-group;
         }

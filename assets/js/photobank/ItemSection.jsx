@@ -419,7 +419,7 @@ export class ItemSection extends React.Component{
           : ""
       } {
         typeof this.state.item != "undefined"
-          ? <div className="item-view__item-title"><i class="fas fa-sitemap"></i>Товар #{this.state.item.itemCode}
+          ? <div className="item-view__item-title">Товар #{this.state.item.itemCode}
               "{this.state.item.name}"</div>
           : null
       }<div className={"item-view__inner " + (
@@ -460,8 +460,8 @@ export class ItemSection extends React.Component{
         <h4 className="item-view__subheader">Загрузки</h4>
         <div className="item-view__file-list file-list" id={"file_list" + this.props.item_id}>
           <div className="file-list__button-block">
-            <button type="button" id={"browse" + this.props.item_id + this.props.section_type}><i class="fas fa-folder-open"></i>Выбрать</button>
-            <button type="button" onClick={this.handleSubmit} id={"submit" + this.props.item_id}><i class="fas fa-file-upload"></i>Загрузить</button>
+            <button type="button" id={"browse" + this.props.item_id + this.props.section_type}><i className="fas fa-folder-open"></i>Выбрать</button>
+          <button type="button" onClick={this.handleSubmit} id={"submit" + this.props.item_id}><i className="fas fa-file-upload"></i>Загрузить</button>
 
           </div>
           <div className="item-uploads">

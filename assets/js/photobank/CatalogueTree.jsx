@@ -78,9 +78,14 @@ export class CatalogueTree extends React.Component {
         tree['selected'] = [item.id];
         treeNode['state']['selected'] = true;
         let nodeToOpen = item;
-        while(nodeToOpen.parent != null && nodeToOpen.parent != 1){
+        let bugCounter = 0;
+        while(nodeToOpen.parent != null && nodeToOpen.parent != 1 && nodeToOpen.parent != "#"){
           treeNode['state']['opened'] = true;
-          nodeToOpen = this.state.catalogue_data[nodeToOpen.parent];
+          nodeToOpen = this.state.catalogue_data.filter((datum)=>{return datum.id == nodeToOpen.parent})[0];
+          if(bugCounter++ >= 200){
+            alert('AHTUNG!!!!');
+            break;
+          }
         }
       }
       treeNode.text = item.name;
@@ -102,6 +107,7 @@ export class CatalogueTree extends React.Component {
     cur_node.active = true;
     crumbs.push(cur_node);
     while(this.getNodeParent(cur_node) != cur_node && this.getNodeParent(cur_node)!= null){
+      console.log("looping");
       let parent = this.getNodeParent(cur_node);
       parent.active = false;
       crumbs.push(parent);
@@ -109,9 +115,8 @@ export class CatalogueTree extends React.Component {
     }
     crumbs = crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"crumbs__crumb crumbs__crumb--active":"crumbs__crumb"} onClick={this.nodeChoiceHandler}>{crumb.name}</span>);
     crumbs.reverse();
-    this.setState({
-      "crumbs":crumbs
-    });
+    console.log("setting crumbs");
+    this.state.crumbs = crumbs;
   }
 
   getNodeParent(node){
