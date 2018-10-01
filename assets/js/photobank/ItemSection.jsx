@@ -44,31 +44,41 @@ export class ItemSection extends React.Component{
     this.cleanUpDone = this.cleanUpDone.bind(this);
     this.handleViewChoice = this.handleViewChoice.bind(this);
     this.getFinishedPresets = this.getFinishedPresets.bind(this);
+    this.assignResumableEvents = this.assignResumableEvents.bind(this);
   }
 
   buildList() {
     if (typeof this.updateListTimer != 'undefined') {
       clearTimeout(this.updateListTimer);
     }
-    this.updateListTimer = setTimeout(function() {
+    this.updateListTimer = setTimeout(()=>{
       this.state.uploads = [];
       for(var i = 0; i < this.state.unfinished.length; i++){
         let file = this.state.unfinished[i];
         let className = "--unfinished";
         let status = "Прерван";
-        this.state.uploads.push({"filename": file.filename, "filehash": file.filehash, "class": className, "status":status, "ready": true, "uploading": false});
+        this.state.uploads.push({"filename": file.filename, "filehash": file.filehash, "class": className, "status":status, "ready": true, "uploading": false, "resumablekey": null});
       }
       for (var i = 0; i < this.resumable.files.length; i++) {
         let file = this.resumable.files[i];
         let className = file.isComplete()?"--completed":"--pending";
-        let status = file.isComplete()?"Загружен":"Готов";
+        let status = "";
+        if(file.isComplete()){
+          status = "Загружен";
+        }else{
+          if(file.isUploading()){
+            status = "Загружается..."
+          }else{
+            status = "Готов к загрузке";
+          }
+        }
         if(!file.ready){status = "Обрабатывается";}
-        this.state.uploads.push({"filename": file.fileName, "filehash": file.uniqueIdentifier, "class": className, "status":status, "ready": file.ready, "uploading":file.isUploading()});
+        this.state.uploads.push({"filename": file.fileName, "filehash": file.uniqueIdentifier, "class": className, "status":status, "ready": file.ready, "uploading":file.isUploading(),"resumablekey": i});
       }
-      this.cleanUpDone();
       this.resolveResumedUploads();
+      this.cleanUpDone();
       this.sortList();
-    }.bind(this), 30);
+    }, 30);
   }
 
   sortList(){
@@ -130,7 +140,7 @@ export class ItemSection extends React.Component{
     }
   }
 
-  fetchUnfinished(){
+  fetchUnfinished(callback = ()=>{}){
     let unfinished = [];
     $.getJSON(window.config.unfinished_uploads_url, (data)=>{
       for (var i = 0; i < data.length; i++) {
@@ -139,22 +149,27 @@ export class ItemSection extends React.Component{
           unfinished.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true});
         }
       }
-      this.setState({
-        "unfinished":unfinished
-      });
-      this.buildList();
+      this.state.unfinished = unfinished;
+      callback();
     });
   }
 
   resolveResumedUploads(){
-    for (var i = 0; i < this.state.uploads.length; i++) {
-      for (var j = 0; j < this.state.uploads.length; j++) {
-        if (this.state.uploads[i]["class"] == "--unfinished" && i != j && this.state.uploads[i]["filename"] == this.state.uploads[j]["filename"] && this.state.uploads[i]["filehash"] == this.state.uploads[j]["filehash"]) {
-          this.state.uploads.splice(i, 1);
-          this.resolveResumedUploads();
+    this.state.uploads = this.state.uploads.filter(
+      (upload)=>{
+        for (var i = 0; i < this.state.uploads.length; i++) {
+          if(
+            upload.class != this.state.uploads[i]["class"] &&
+            upload.class == "--unfinished" &&
+            upload.filename == this.state.uploads[i]["filename"] &&
+            upload.filehash == this.state.uploads[i]["filehash"]){
+              this.state.unfinished = this.state.unfinished.filter((upload)=>{return this.state.uploads[i].filehash != upload.filehash});
+              return false;
+            }
         }
+        return true;
       }
-    }
+    );
   }
 
   cleanUpDone(){
@@ -162,7 +177,9 @@ export class ItemSection extends React.Component{
       let file = this.state.uploads[i];
       if(file.class=="--completed"){
         this.state.uploads.splice(i,1);
+        this.state.resumable.files.splice(file.resumablekey, 1);
         this.removeUpload(file);
+        i--;
       }
     }
   }
@@ -174,10 +191,23 @@ export class ItemSection extends React.Component{
       let hashable = e.target.result;
       hashable = new Uint8Array(hashable);
       hashable = CRC32.buf(hashable).toString();
-      file.uniqueIdentifier = hex_md5(hashable+file.itemId + file.file.size);
-      file.ready = true;
-      this.commitUpload(file);
-      this.buildList();
+      let identifier = hex_md5(hashable+file.itemId + file.file.size)
+      file.uniqueIdentifier = identifier;
+      let allowed = true;
+      let self = this.resumable.files.indexOf(file);
+      for(var existingUpload in this.state.resumable.files){
+        console.log(existingUpload + " " +  self);
+        if(this.state.resumable.files[existingUpload].uniqueIdentifier == identifier && existingUpload != self){
+          allowed = false;
+          this.state.resumable.files.splice(self, 1);
+          console.log("caught");
+        }
+      }
+      if(allowed){
+        file.ready = true;
+        this.commitUpload(file);
+        this.buildList();
+      }
     }.bind(this);
     reader.readAsArrayBuffer(fileObj);
     this.buildList();
@@ -210,8 +240,7 @@ export class ItemSection extends React.Component{
         this.resumable.files.splice(i,1);
       }
     }
-    this.fetchUnfinished();
-    this.buildList();
+    this.fetchUnfinished(this.buildList);
   }
 
   handleSubmit(){
@@ -256,7 +285,6 @@ export class ItemSection extends React.Component{
   }
 
   componentWillMount(){
-    console.log("PROPS");
     $.ajax({url: window.config['item_url']+this.props.item_id, method: 'GET'}).done((data)=>{
       this.setState({
         "item":data
@@ -273,6 +301,7 @@ export class ItemSection extends React.Component{
     this.setState({
       "preset_headers":presets
     });
+
     this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id+this.props.section_type));
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
     var dragTimer;
@@ -288,30 +317,10 @@ export class ItemSection extends React.Component{
         $("#drop_target" + this.props.item_id).removeClass('file-list__drop-target--active');
       }, 100);
     });
-    this.resumable.on('fileAdded', function(file, event) {
-      file.itemId = this.state.item_id;
-      file.itemCode = this.state.item.itemCode;
-      file.ready = false;
-      this.getHash(file);
-      if(window.resumableContainer[this.state.item_id] == undefined){
-        window.resumableContainer[this.props.item_id] = this.resumable;
-      }
-      console.log("removing");
-      $("#drop_target" + this.props.item_id).removeClass('file-list__drop-target--active');
-    }.bind(this));
-    this.resumable.on('fileSuccess', function(file,event){
-      this.fetchExisting();
-      this.buildList();
-    }.bind(this));
-    this.resumable.on('fileProgress', function(file,event){
-      $("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
-    }.bind(this));
-    this.resumable.on('uploadStart', function(file,event){
-      this.buildList();
-    }.bind(this));
-    this.fetchUnfinished();
+
+    this.assignResumableEvents();
     this.fetchExisting();
-    this.buildList();
+    this.fetchUnfinished(this.buildList);
   }
 
   componentDidUpdate(prevProps){
@@ -320,6 +329,32 @@ export class ItemSection extends React.Component{
         "viewType": this.props.default_view
       });
     }
+  }
+
+  assignResumableEvents(){
+    this.resumable.on('fileAdded', (file, event)=>{
+      file.itemId = this.state.item_id;
+      file.itemCode = this.state.item.itemCode;
+      file.ready = false;
+      this.getHash(file);
+      if(window.resumableContainer[this.state.item_id] == undefined){
+        window.resumableContainer[this.props.item_id] = this.resumable;
+      }
+      $("#drop_target" + this.props.item_id).removeClass('file-list__drop-target--active');
+    });
+    this.resumable.on('fileSuccess', (file,event)=>{
+      this.fetchExisting();
+      this.buildList();
+    });
+    this.resumable.on('fileProgress', (file,event)=>{
+      $("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
+    });
+    this.resumable.on('uploadStart', (file,event)=>{
+      this.buildList();
+    });
+    this.resumable.on('complete', ()=>{
+      this.buildList();
+    });
   }
 
   buildExisting(){
