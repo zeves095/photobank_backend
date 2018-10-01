@@ -155,27 +155,30 @@ export class ItemSection extends React.Component{
   }
 
   resolveResumedUploads(){
-    // for (var i = 0; i < this.state.uploads.length; i++) {
-    //   for (var j = 0; j < this.state.uploads.length; j++) {
-    //     if (this.state.uploads[i]["class"] == "--unfinished" && i != j && this.state.uploads[i]["filename"] == this.state.uploads[j]["filename"] && this.state.uploads[i]["filehash"] == this.state.uploads[j]["filehash"]) {
-    //       console.log("cleanup" + i + " " + j);
-    //       this.state.uploads.splice(i, 1);
-    //       this.resolveResumedUploads();
-    //     }
-    //   }
-    // }
-    console.log("CLNP" + this.state.unfinished.length);
-    this.state.unfinished = this.state.unfinished.map((upload)=>{
-      for (var i = 0; i < this.state.uploads.length; i++) {
-        let resolved = this.state.uploads[i];
-        if(resolved.class!= "--unfinished" && upload.filename == resolved.filename && upload.filehash == resolved.filehash){
+    for (var i = 0; i < this.state.uploads.length; i++) {
+      for (var j = 0; j < this.state.uploads.length; j++) {
+        if (this.state.uploads[i]["class"] == "--unfinished" && i != j && this.state.uploads[i]["filename"] == this.state.uploads[j]["filename"] && this.state.uploads[i]["filehash"] == this.state.uploads[j]["filehash"]) {
+          this.state.unfinished = this.state.unfinished.filter((upload)=>{console.log(this.state.uploads[i].filehash != upload.filehash);return this.state.uploads[i].filehash != upload.filehash});
           this.state.uploads.splice(i, 1);
-          this.fetchUnfinished();
-          return null;
+          j--;
         }
       }
-      return upload;
-    })
+    }
+    // console.log("CLNP" + this.state.unfinished.length);
+    // this.state.unfinished = this.state.unfinished.map((upload)=>{
+    //   for (var i = 0; i < this.state.uploads.length; i++) {
+    //     let resolved = this.state.uploads[i];
+    //     if(resolved.class != "--unfinished" && upload.filename == resolved.filename && upload.filehash == resolved.filehash){
+    //       console.log(this.state.uploads.indexOf(upload));
+    //       this.state.uploads.splice(this.state.uploads.indexOf(upload), 1);
+    //       console.log("resolve case 1");
+    //       return null;
+    //     }
+    //   }
+    //   console.log("resolve case 2");
+    //   return upload;
+    // })
+    // this.fetchUnfinished();
   }
 
   cleanUpDone(){
@@ -198,9 +201,18 @@ export class ItemSection extends React.Component{
       hashable = new Uint8Array(hashable);
       hashable = CRC32.buf(hashable).toString();
       file.uniqueIdentifier = hex_md5(hashable+file.itemId + file.file.size);
-      file.ready = true;
-      this.commitUpload(file);
-      this.buildList();
+      let allowed = true;
+      for(var existingUpload in this.state.resumable.files){
+        if(this.state.resumable.files[existingUpload].uniqueIdentifier == hashable){
+          allowed = false;
+          this.state.resumable.files.splice(existingUpload, 1);
+        }
+      }
+      if(allowed){
+        file.ready = true;
+        this.commitUpload(file);
+        this.buildList();
+      }
     }.bind(this);
     reader.readAsArrayBuffer(fileObj);
     this.buildList();
@@ -294,21 +306,7 @@ export class ItemSection extends React.Component{
     this.setState({
       "preset_headers":presets
     });
-    this.assignResumableEvents();
-    this.fetchUnfinished(this.buildList);
-    this.fetchExisting();
-    this.buildList();
-  }
 
-  componentDidUpdate(prevProps){
-    if(this.props != prevProps){
-      this.setState({
-        "viewType": this.props.default_view
-      });
-    }
-  }
-
-  assignResumableEvents(){
     this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id+this.props.section_type));
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
     var dragTimer;
@@ -324,6 +322,22 @@ export class ItemSection extends React.Component{
         $("#drop_target" + this.props.item_id).removeClass('file-list__drop-target--active');
       }, 100);
     });
+
+    this.assignResumableEvents();
+    this.fetchUnfinished(this.buildList);
+    this.fetchExisting();
+    this.buildList();
+  }
+
+  componentDidUpdate(prevProps){
+    if(this.props != prevProps){
+      this.setState({
+        "viewType": this.props.default_view
+      });
+    }
+  }
+
+  assignResumableEvents(){
     this.resumable.on('fileAdded', (file, event)=>{
       file.itemId = this.state.item_id;
       file.itemCode = this.state.item.itemCode;
