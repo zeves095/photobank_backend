@@ -51,7 +51,7 @@ export class NodeViewer extends React.Component{
     this.filterData();
     let nodeItemList = this.state.node_items_filtered.map((item)=>
       <div className="list-item" key={item.id}>
-        <h4 data-item={item.id} onClick={this.itemClickHandler}><i class="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
+        <h4 data-item={item.id} onClick={this.itemClickHandler}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
       </div>
     );
     this.setState({
@@ -100,7 +100,7 @@ export class NodeViewer extends React.Component{
   render() {
     return (
       <div className="node-viewer">
-        <button type="button" className="item-section-switcher" onClick={this.handlePoolClick}>{this.state.view_pool?"Один товар":"Все товары"}</button>
+        <button type="button" className="item-section-switcher" onClick={this.handlePoolClick}>{this.state.view_pool?"К последнему товару":"Корзина товаров"}</button>
         <div className="node-viewer__view-inner view-inner">
           <div className="view-inner__item-list">
             <h2 className="node-viewer__component-title component-title">Товары</h2>
