@@ -23,9 +23,8 @@ export class ItemSection extends React.Component{
       "unfinished":[],
       "main": null,
       "additional": [],
-      "viewType": 0,
+      "viewType": this.props.default_view,
       "finished_presets": [],
-      "preset_headers": []
     };
     this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
@@ -89,13 +88,13 @@ export class ItemSection extends React.Component{
     let ready = active.filter((item)=>{return item.ready == true && item.uploading == false});
     let uploading = active.filter((item)=>{return item.uploading == true});
 
-    let uploadListMarkup = [pending.length>0?<h4 className="item-view__subheader">Обрабатываются...</h4>:""];
+    let uploadListMarkup = [pending.length>0?<div className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Обрабатываются...</h4></div>:""];
     uploadListMarkup = uploadListMarkup.concat(this.drawSegment(pending));
-    uploadListMarkup.push(ready.length>0?<h4 className="item-view__subheader">Загрузки</h4>:"");
+    uploadListMarkup.push(ready.length>0?<div className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загрузки</h4></div>:"");
     uploadListMarkup = uploadListMarkup.concat(this.drawSegment(ready));
-    uploadListMarkup.push(uploading.length>0?<h4 className="item-view__subheader">Загружаются...</h4>:"");
+    uploadListMarkup.push(uploading.length>0?<div className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загружаются...</h4></div>:"");
     uploadListMarkup = uploadListMarkup.concat(this.drawSegment(uploading));
-    uploadListMarkup.push(unfinished.length>0?<h4 className="item-view__subheader">Незаконченные</h4>:"");
+    uploadListMarkup.push(unfinished.length>0?<div className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Незаконченные</h4></div>:"");
     uploadListMarkup = uploadListMarkup.concat(this.drawSegment(unfinished));
     this.setState({
       "upload_list":uploadListMarkup
@@ -347,8 +346,10 @@ export class ItemSection extends React.Component{
     this.resumable.on('fileProgress', (file,event)=>{
       //$("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
       let resumableKey = this.state.resumable.files.indexOf(file);
-      let upload = this.state.uploads.filter((upload)=>{return upload.resumablekey == resumableKey})[0];
-      upload.progress = Math.round(file.progress() * 100);
+      let upload = this.state.uploads.filter((upload)=>{return upload.resumablekey == resumableKey});
+      if(upload.length>0){
+        upload[0].progress = Math.round(file.progress() * 100);
+      }
       this.sortList();
     });
     this.resumable.on('uploadStart', (file,event)=>{
