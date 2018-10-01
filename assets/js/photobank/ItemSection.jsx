@@ -155,30 +155,21 @@ export class ItemSection extends React.Component{
   }
 
   resolveResumedUploads(){
-    for (var i = 0; i < this.state.uploads.length; i++) {
-      for (var j = 0; j < this.state.uploads.length; j++) {
-        if (this.state.uploads[i]["class"] == "--unfinished" && i != j && this.state.uploads[i]["filename"] == this.state.uploads[j]["filename"] && this.state.uploads[i]["filehash"] == this.state.uploads[j]["filehash"]) {
-          this.state.unfinished = this.state.unfinished.filter((upload)=>{console.log(this.state.uploads[i].filehash != upload.filehash);return this.state.uploads[i].filehash != upload.filehash});
-          this.state.uploads.splice(i, 1);
-          j--;
+    this.state.uploads = this.state.uploads.filter(
+      (upload)=>{
+        for (var i = 0; i < this.state.uploads.length; i++) {
+          if(
+            upload.class != this.state.uploads[i]["class"] &&
+            upload.class == "--unfinished" &&
+            upload.filename == this.state.uploads[i]["filename"] &&
+            upload.filehash == this.state.uploads[i]["filehash"]){
+              this.state.unfinished = this.state.unfinished.filter((upload)=>{return this.state.uploads[i].filehash != upload.filehash});
+              return false;
+            }
         }
+        return true;
       }
-    }
-    // console.log("CLNP" + this.state.unfinished.length);
-    // this.state.unfinished = this.state.unfinished.map((upload)=>{
-    //   for (var i = 0; i < this.state.uploads.length; i++) {
-    //     let resolved = this.state.uploads[i];
-    //     if(resolved.class != "--unfinished" && upload.filename == resolved.filename && upload.filehash == resolved.filehash){
-    //       console.log(this.state.uploads.indexOf(upload));
-    //       this.state.uploads.splice(this.state.uploads.indexOf(upload), 1);
-    //       console.log("resolve case 1");
-    //       return null;
-    //     }
-    //   }
-    //   console.log("resolve case 2");
-    //   return upload;
-    // })
-    // this.fetchUnfinished();
+    );
   }
 
   cleanUpDone(){
@@ -200,12 +191,16 @@ export class ItemSection extends React.Component{
       let hashable = e.target.result;
       hashable = new Uint8Array(hashable);
       hashable = CRC32.buf(hashable).toString();
-      file.uniqueIdentifier = hex_md5(hashable+file.itemId + file.file.size);
+      let identifier = hex_md5(hashable+file.itemId + file.file.size)
+      file.uniqueIdentifier = identifier;
       let allowed = true;
+      let self = this.resumable.files.indexOf(file);
       for(var existingUpload in this.state.resumable.files){
-        if(this.state.resumable.files[existingUpload].uniqueIdentifier == hashable){
+        console.log(existingUpload + " " +  self);
+        if(this.state.resumable.files[existingUpload].uniqueIdentifier == identifier && existingUpload != self){
           allowed = false;
-          this.state.resumable.files.splice(existingUpload, 1);
+          this.state.resumable.files.splice(self, 1);
+          console.log("caught");
         }
       }
       if(allowed){
@@ -324,9 +319,8 @@ export class ItemSection extends React.Component{
     });
 
     this.assignResumableEvents();
-    this.fetchUnfinished(this.buildList);
     this.fetchExisting();
-    this.buildList();
+    this.fetchUnfinished(this.buildList);
   }
 
   componentDidUpdate(prevProps){
