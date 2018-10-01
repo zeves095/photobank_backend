@@ -3,7 +3,6 @@ import React from 'react';
 
 import { CatalogueTree } from './CatalogueTree';
 import { NodeViewer } from './NodeViewer';
-import { UploadPool } from './UploadPool';
 
 
 export class PhotoBank extends React.Component {
@@ -11,8 +10,7 @@ export class PhotoBank extends React.Component {
   constructor(props) {
     super(props);
     this.state ={
-      "catalogue_data": {},
-      "view_pool": false
+      "catalogue_data": {}
     }
     this.fetchUnfinished();
     this.handleNodeChoice = this.handleNodeChoice.bind(this);
@@ -64,11 +62,7 @@ export class PhotoBank extends React.Component {
         <CatalogueTree catalogue_data={this.state.catalogue_data} nodeChoiceHandler={this.handleNodeChoice} dataChangeHandler={this.handleDataChange} default_view="2" />
       <NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} />
         </div>
-        <div className={this.state.view_pool?"photobank-main__upload-pool-wrapper photobank-main__upload-pool-wrapper--open ":"photobank-main__upload-pool-wrapper "}>
-        {this.state.view_pool?<UploadPool />:null}
-        </div>
         <div className="photobank-main__butt-wrapper">
-        <button type="button" className="photobank-main__large-btn" onClick={()=>{this.setState({"view_pool":!this.state.view_pool})}}><i class="fas fa-copy"></i>{this.state.view_pool?"Скрыть":"Загрузки"}</button>
         </div>
       </div>
     );

@@ -1,0 +1,16 @@
+.upload-pool {
+  height: 100vh;
+  width: 100%;
+  display: block;
+  padding: 10px;
+  overflow-y: scroll;
+  > button {
+    @extend %button-view;
+  }
+  &__view-inner{
+    display: block;
+    button {
+      @extend %button;
+    }
+  }
+}

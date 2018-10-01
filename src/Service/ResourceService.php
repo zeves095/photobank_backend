@@ -10,22 +10,28 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Service\ResourceService;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+
+use Symfony\Component\Messenger\MessageBusInterface;
+use App\Message\ResourcePresetNotification;
 class ResourceService{
 
   private $entityManager;
   private $recordManager;
   private $container;
+  private $messageBus;
 
   public function __construct(
       EntityManagerInterface $entityManager,
       TranslatorInterface $translator,
       Filesystem $fileSystem,
-      ContainerInterface $container)
+      ContainerInterface $container,
+      MessageBusInterface $messageBus)
   {
     $this->entityManager = $entityManager;
     $this->translator = $translator;
     $this->fileSystem = $fileSystem;
     $this->container = $container;
+    $this->messageBus = $messageBus;
   }
 
   public function generatePath($item_code){
@@ -45,7 +51,10 @@ class ResourceService{
     var_dump($this->container->getParameter('fileuploader.uploaddirectory'));
     $this->fileSystem->copy($filepath, $destinationDir);
     $resourceParameters['path'] = $destinationDir;
-    $this->persistResource($resourceParameters);
+    $resourceEntity = $this->persistResource($resourceParameters);
+    if($resourceEntity->getType() != NULL){
+      $this->dispatchPresetMessages($resourceEntity->getId(), $resourceEntity->getType());
+    }
   }
 
   public function persistResource($resourceParameters){
@@ -85,12 +94,32 @@ class ResourceService{
 
     $this->entityManager->persist($resource);
     $this->entityManager->flush($resource);
+
+    return $resource;
   }
 
   public function getUniqueIdentifier($file, $itemId, $filesize){
     $fileHash = crc32($file);
     $identifier = md5($fileHash.$itemId.$filesize);
     return $identifier;
+  }
+
+  public function dispatchPresetMessages($resource, $type){
+    $presetCollections = $this->container->getParameter('preset_collections');
+    $presetCollection = array();
+    foreach($presetCollections as $collection){
+      if($collection['id'] == $type){
+        $presetCollection = $collection['presets'];
+      }
+    }
+    foreach($presetCollection as $preset){
+      $presetData = [
+        'resourceId'=>$resource,
+        'presetId'=>$preset,
+        'createdOn'=>date('d-m-Y H:i:s')
+      ];
+      $this->messageBus->dispatch(new ResourcePresetNotification($presetData));
+    }
   }
 
   private function _getItemCode($itemId){
