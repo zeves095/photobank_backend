@@ -1,6 +1,7 @@
 import React from 'react';
 import { ItemSection } from './ItemSection';
 import { ListFilter } from './ListFilter';
+import { UploadPool } from './UploadPool';
 
 export class NodeViewer extends React.Component{
   constructor(props) {
@@ -12,13 +13,15 @@ export class NodeViewer extends React.Component{
       "node_items_filtered": [],
       "filter_query": "",
       "current_item": null,
-      "item_section": ""
+      "item_section": "",
+      "view_pool": false
     }
     this.getItems = this.getItems.bind(this);
     this.itemClickHandler = this.itemClickHandler.bind(this);
     this.filterData = this.filterData.bind(this);
     this.buildList = this.buildList.bind(this);
     this.filterQueryHandler = this.filterQueryHandler.bind(this);
+    this.handlePoolClick = this.handlePoolClick.bind(this);
   }
 
   componentDidUpdate(prevProps){
@@ -82,6 +85,12 @@ export class NodeViewer extends React.Component{
     });
   }
 
+  handlePoolClick(){
+    this.setState({
+      "view_pool" : !this.state.view_pool
+    })
+  }
+
   makeItemSection(currItem){
     let itemSection = null;
     itemSection = <ItemSection render_existing={true} item_id={currItem.id} name={currItem.name} open_by_default={true} section_type="nv" />;
@@ -91,6 +100,7 @@ export class NodeViewer extends React.Component{
   render() {
     return (
       <div className="node-viewer">
+        <button type="button" className="item-section-switcher" onClick={this.handlePoolClick}>{this.state.view_pool?"Один товар":"Все товары"}</button>
         <div className="node-viewer__view-inner view-inner">
           <div className="view-inner__item-list">
             <h2 className="node-viewer__component-title component-title">Товары</h2>
@@ -102,7 +112,9 @@ export class NodeViewer extends React.Component{
           <div className="view-inner__item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
             <h2 className="node-viewer__component-title component-title">Файлы</h2>
           <div className="view-inner__container">
-            {this.state.item_section}
+            {this.state.view_pool?
+            <UploadPool />
+            :this.state.item_section}
           </div>
           </div>
         </div>
