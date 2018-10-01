@@ -75,6 +75,10 @@ body {
       color:$color-text;
       background-color: $color-main;
       //border-bottom: 2px solid $color-main;
+      .crumb-string{
+        font-size:15px;
+        color: $color-accent;
+      }
     }
   }
 }

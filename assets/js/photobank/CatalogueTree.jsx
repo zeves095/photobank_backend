@@ -59,6 +59,7 @@ export class CatalogueTree extends React.Component {
       "catalogue_list": catalogueList
     });
     this.getCrumbs();
+    this.props.crumb_handler(this.state.crumbs);
     this.makeTree();
   }
 
@@ -113,10 +114,11 @@ export class CatalogueTree extends React.Component {
       crumbs.push(parent);
       cur_node = this.getNodeById(parent.id);
     }
+    this.state.crumbs = crumbs;
     crumbs = crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"crumbs__crumb crumbs__crumb--active":"crumbs__crumb"} onClick={this.nodeChoiceHandler}>{crumb.name}</span>);
     crumbs.reverse();
     console.log("setting crumbs");
-    this.state.crumbs = crumbs;
+    this.state.crumbs_list = crumbs;
   }
 
   getNodeParent(node){
@@ -188,7 +190,7 @@ export class CatalogueTree extends React.Component {
         <h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-stream" data-view="2" onClick={this.handleViewChoice}></i><i className="fas fa-list" data-view="1" onClick={this.handleViewChoice}></i></span></h2>
         <div>
           <div className="catalogue-tree__crumbs crumbs">
-            {this.state.crumbs}
+            {this.state.crumbs_list}
           </div>
           <div className="catalogue-tree__view-inner view-inner">
             <div className="view-inner__list-view list-view">
