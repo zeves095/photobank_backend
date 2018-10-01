@@ -30,4 +30,10 @@
       @extend %component-section;
     }
   }
+
+  .item-section-switcher{
+    position: absolute;
+    top: 60px;
+    right: 40px;
+  }
 }

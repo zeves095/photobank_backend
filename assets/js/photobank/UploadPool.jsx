@@ -122,7 +122,7 @@ export class UploadPool extends React.Component{
         <button type="button" data-view="2" onClick={this.handleViewChoice}><i className="fas fa-list-ul"></i></button>
         <h2 className="upload-pool__component-title component-title">Загрузки</h2>
       <ListFilter filterHandler={this.filterQueryHandler} />
-        <div className="upload-pool__view-inner view-inner">
+        <div className="upload-pool__view-inner">
           {this.state.pool}
           <button type="button" onClick={this.handleSubmit}>Загрузить</button>
         </div>
