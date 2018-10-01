@@ -11,8 +11,8 @@ class ResourcePresetNotification
     public function __construct($data)
     {
         $this->data = $data;
-        $this->resourceId = $data['resourceId'];
-        $this->presetId = $data['presetId'];
-        $this->createdOn = $data['createdOn'];
+        $this->resourceId = $data['resourceId']??null;
+        $this->presetId = $data['presetId']??null;
+        $this->createdOn = $data['createdOn']??null;
     }
 }
