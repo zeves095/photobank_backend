@@ -61,7 +61,7 @@ export class PhotoBank extends React.Component {
     return (
       <div className="photobank-main">
       <div className="photobank-main__main-block">
-        <CatalogueTree catalogue_data={this.state.catalogue_data} nodeChoiceHandler={this.handleNodeChoice} dataChangeHandler={this.handleDataChange}/>
+        <CatalogueTree catalogue_data={this.state.catalogue_data} nodeChoiceHandler={this.handleNodeChoice} dataChangeHandler={this.handleDataChange} default_view="2" />
       <NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} />
         </div>
         <div className={this.state.view_pool?"photobank-main__upload-pool-wrapper photobank-main__upload-pool-wrapper--open ":"photobank-main__upload-pool-wrapper "}>

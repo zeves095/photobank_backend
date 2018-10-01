@@ -12,7 +12,7 @@ export class CatalogueTree extends React.Component {
       "tracked_nodes": [],
       "current_node": 1,
       "crumbs": [],
-      "view": 1
+      "view": this.props.default_view
     }
     this.getCatalogueNodes = this.getCatalogueNodes.bind(this);
     this.getNodeById = this.getNodeById.bind(this);
