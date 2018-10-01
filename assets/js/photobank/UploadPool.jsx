@@ -14,7 +14,7 @@ export class UploadPool extends React.Component{
       "item_list": [],
       "item_list_filtered": [],
       "pool":[],
-      "view_type":1,
+      "view_type":this.props.default_view,
       "filter_query": ""
     }
     this.getResumableList = this.getResumableList.bind(this);

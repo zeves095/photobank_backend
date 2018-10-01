@@ -14,7 +14,9 @@ export class NodeViewer extends React.Component{
       "filter_query": "",
       "current_item": null,
       "item_section": "",
-      "view_pool": false
+      "view_pool": false,
+      "view_type": 1,
+      "product_crumbs": this.props.crumb_string
     }
     this.getItems = this.getItems.bind(this);
     this.itemClickHandler = this.itemClickHandler.bind(this);
@@ -81,7 +83,8 @@ export class NodeViewer extends React.Component{
     let currItem = this.state.node_items.filter((item)=>{return item.id == itemId})[0];
     this.setState({
       'current_item': currItem,
-      'item_section': this.makeItemSection(currItem)
+      'item_section': this.makeItemSection(currItem),
+      'product_crumbs': this.props.crumb_string
     });
   }
 
@@ -93,7 +96,7 @@ export class NodeViewer extends React.Component{
 
   makeItemSection(currItem){
     let itemSection = null;
-    itemSection = <ItemSection render_existing={true} item_id={currItem.id} name={currItem.name} open_by_default={true} section_type="nv" />;
+    itemSection = <ItemSection render_existing={true} item_id={currItem.id} name={currItem.name} open_by_default={true} section_type="nv" crumb_string={this.props.crumb_string}  default_view={this.state.view_type} />;
     return itemSection;
   }
 
@@ -106,14 +109,15 @@ export class NodeViewer extends React.Component{
             <h2 className="node-viewer__component-title component-title">Товары</h2>
           <div className="view-inner__container">
             <ListFilter filterHandler={this.filterQueryHandler} />
+          {this.state.node_items.length>0?null:"Нет товаров в выбранной категории"}
             {this.state.node_items_list}
           </div>
           </div>
           <div className="view-inner__item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
-            <h2 className="node-viewer__component-title component-title">Файлы</h2>
+            <h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.state.product_crumbs}</i></h2>
           <div className="view-inner__container">
             {this.state.view_pool?
-            <UploadPool />
+            <UploadPool default_view={this.state.view_type} />
             :this.state.item_section}
           </div>
           </div>

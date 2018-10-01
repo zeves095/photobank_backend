@@ -10,11 +10,13 @@ export class PhotoBank extends React.Component {
   constructor(props) {
     super(props);
     this.state ={
-      "catalogue_data": {}
+      "catalogue_data": {},
+      "crumb_string": ""
     }
     this.fetchUnfinished();
     this.handleNodeChoice = this.handleNodeChoice.bind(this);
     this.handleDataChange = this.handleDataChange.bind(this);
+    this.handleCrumbUpdate = this.handleCrumbUpdate.bind(this);
   }
 
   fetchUnfinished(){
@@ -44,6 +46,15 @@ export class PhotoBank extends React.Component {
     }
   }
 
+  handleCrumbUpdate(crumbs){
+    let needElipsis = false;
+    if(crumbs.length>3){crumbs = crumbs.slice(0,3); needElipsis = true;}
+    let crumb_string = crumbs.reverse().reduce((accumulator,currentValue)=>accumulator+"/"+currentValue.name, "");
+    this.setState({
+      "crumb_string":(needElipsis?"...":"")+crumb_string
+    })
+  }
+
   componentWillMount(){
     //$.getJSON("/assets/js/components/photobank/dummy_data1.json", (data)=>{
     $.getJSON(window.config.get_nodes_url, (data)=>{
@@ -59,8 +70,8 @@ export class PhotoBank extends React.Component {
     return (
       <div className="photobank-main">
       <div className="photobank-main__main-block">
-        <CatalogueTree catalogue_data={this.state.catalogue_data} nodeChoiceHandler={this.handleNodeChoice} dataChangeHandler={this.handleDataChange} default_view="2" />
-      <NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} />
+        <CatalogueTree catalogue_data={this.state.catalogue_data} nodeChoiceHandler={this.handleNodeChoice} dataChangeHandler={this.handleDataChange} default_view="2" crumb_handler={this.handleCrumbUpdate} />
+      <NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} crumb_string={this.state.crumb_string} />
         </div>
         <div className="photobank-main__butt-wrapper">
         </div>
