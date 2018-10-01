@@ -35,7 +35,18 @@
             font-size: 15pt;
             bottom: -55px;
             position: relative;
+            z-index:100;
           }
+        }
+      }
+      .progress-bar{
+        &__percentage{
+          display: none;
+        }
+        &__bar{
+          position: relative;
+          height: 100%;
+          top: -28px;
         }
       }
     }
@@ -73,11 +84,22 @@
           display:inline-block;
           margin:10px;
           .file-item__file-name{
+            z-index:100;
             vertical-align: middle;
             font-size: 10pt;
             position: relative;
             bottom: -35px;
           }
+        }
+      }
+      .progress-bar{
+        &__percentage{
+          display: none;
+        }
+        &__bar{
+          position: relative;
+          height: 100%;
+          top: -28px;
         }
       }
     }
@@ -110,6 +132,16 @@
         }
         .info__info-field, .file>a, select, span, .edit-input{
           @extend %table-cell;
+        }
+      }
+      .progress-bar{
+        &__percentage{
+          display: block;
+        }
+        &__bar{
+          position: relative;
+          height: 5px;
+          top: 0;
         }
       }
     }

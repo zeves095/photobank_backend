@@ -57,7 +57,7 @@ export class ItemSection extends React.Component{
         let file = this.state.unfinished[i];
         let className = "--unfinished";
         let status = "Прерван";
-        this.state.uploads.push({"filename": file.filename, "filehash": file.filehash, "class": className, "status":status, "ready": true, "uploading": false, "resumablekey": null});
+        this.state.uploads.push({"filename": file.filename, "filehash": file.filehash, "class": className, "status":status, "ready": true, "uploading": false, "resumablekey": null, "progress": 0});
       }
       for (var i = 0; i < this.resumable.files.length; i++) {
         let file = this.resumable.files[i];
@@ -73,7 +73,7 @@ export class ItemSection extends React.Component{
           }
         }
         if(!file.ready){status = "Обрабатывается";}
-        this.state.uploads.push({"filename": file.fileName, "filehash": file.uniqueIdentifier, "class": className, "status":status, "ready": file.ready, "uploading":file.isUploading(),"resumablekey": i});
+        this.state.uploads.push({"filename": file.fileName, "filehash": file.uniqueIdentifier, "class": className, "status":status, "ready": file.ready, "uploading":file.isUploading(),"resumablekey": i, "progress": 0});
       }
       this.resolveResumedUploads();
       this.cleanUpDone();
@@ -196,11 +196,9 @@ export class ItemSection extends React.Component{
       let allowed = true;
       let self = this.resumable.files.indexOf(file);
       for(var existingUpload in this.state.resumable.files){
-        console.log(existingUpload + " " +  self);
         if(this.state.resumable.files[existingUpload].uniqueIdentifier == identifier && existingUpload != self){
           allowed = false;
           this.state.resumable.files.splice(self, 1);
-          console.log("caught");
         }
       }
       if(allowed){
@@ -296,7 +294,7 @@ export class ItemSection extends React.Component{
   componentDidMount(){
     let presets = [];
     for(var preset in window.config['presets']){
-      presets.push(<span className="info__info-field info__info-field--title info__info-field--preset">{preset}</span>);
+      presets.push(<span key={this.state.item_id + preset} className="info__info-field info__info-field--title info__info-field--preset">{preset}</span>);
     }
     this.setState({
       "preset_headers":presets
@@ -347,7 +345,11 @@ export class ItemSection extends React.Component{
       this.buildList();
     });
     this.resumable.on('fileProgress', (file,event)=>{
-      $("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
+      //$("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
+      let resumableKey = this.state.resumable.files.indexOf(file);
+      let upload = this.state.uploads.filter((upload)=>{return upload.resumablekey == resumableKey})[0];
+      upload.progress = Math.round(file.progress() * 100);
+      this.sortList();
     });
     this.resumable.on('uploadStart', (file,event)=>{
       this.buildList();
@@ -428,8 +430,9 @@ export class ItemSection extends React.Component{
       <div key={upload.filename+upload.filehash} className={"file-list__file-item file-item " + "file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing ")+ this.fileViewClasses[this.state.viewType]}>
         <span className="file-item__file-name">{upload.filename}<i data-item={upload.filehash} onClick={this.handleDelete} className="fas fa-trash-alt file-item__delete-upload"></i></span>
       <span className="file-item__upload-status">{upload.status}</span>
-      <span className="file-item__progress-bar" id={"progress_bar"+upload.filehash}>
-        <span></span>
+      <span className="progress-bar" id={"progress_bar"+upload.filehash}>
+        <div className="progress-bar__percentage">{upload.progress + "%"}</div>
+      <div className="progress-bar__bar" style={{"width":upload.progress+"%"}}></div>
         </span>
       </div>);
   }

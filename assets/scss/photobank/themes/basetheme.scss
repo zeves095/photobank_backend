@@ -4,7 +4,7 @@
 }
 
 %list-item-color{
-  background-color: $color-secondary;
+  background-color: $color-main;
   color: $color-text;
   //border-bottom:1px solid $color-tertiary;
 }
@@ -12,7 +12,7 @@
 %table-cell-color{
   background-color: $color-tertiary;
   color: $color-text;
-  //border-bottom: 1px solid $color-secondary;
+  //border-bottom: 1px solid $color-main;
   //border-right: 1px solid $color-accent-fade;
   &:nth-child(even){
     background-color: $color-tertiary-fade;
@@ -20,12 +20,12 @@
 }
 
 %button-color{
-  background-color: $color-secondary;
+  background-color: $color-main;
   color: $color-text-alt;
 }
 
 %button-view-color{
-  background-color: $color-secondary;
+  background-color: $color-main;
   color: $color-text-alt;
   &--active{
     background-color: $color-accent;
@@ -74,13 +74,13 @@ body {
     .component-title {
       color:$color-text;
       background-color: $color-main;
-      //border-bottom: 2px solid $color-secondary;
+      //border-bottom: 2px solid $color-main;
     }
   }
 }
 
 .catalogue-tree {
-  background-color: $color-secondary;
+  background-color: $color-main;
   //border-right: 2px solid $color-tertiary;
   .view-inner__list-view{
     .list-view__cat_item{
@@ -91,7 +91,7 @@ body {
   &__crumbs{
     .crumbs__crumb{
       background-color: $color-main-fade;
-      border-right:1px solid $color-secondary;
+      border-right:1px solid $color-main;
       &--active{
         background-color:$color-accent;
         color:$color-text-alt;
@@ -153,16 +153,16 @@ body {
     &--icons-lg{
       .item-uploads{
         .file-list__file-item{
-          background-color:$color-secondary;
-          color: $color-text-alt;
+          background-color:$color-main;
+          color: $color-text;
         }
       }
     }
     &--icons-sm{
       .item-uploads{
         .file-list__file-item{
-          background-color:$color-secondary;
-          color:$color-text-alt;
+          background-color:$color-main;
+          color:$color-text;
         }
       }
     }
@@ -185,6 +185,12 @@ body {
           @extend %table-cell-color;
         }
       }
+    }
+  }
+
+  .progress-bar{
+    &__bar{
+      background-color: $color-secondary;
     }
   }
 }
