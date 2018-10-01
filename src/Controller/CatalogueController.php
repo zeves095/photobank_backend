@@ -233,28 +233,14 @@ class CatalogueController extends AbstractController
      *      }
      * )
      */
-    public function patchResource(Resource $resource, Request $request, AppSerializer $serializer, ContainerInterface $container, EntityManagerInterface $entityManager,MessageBusInterface $bus)
+    public function patchResource(Resource $resource, Request $request, AppSerializer $serializer, ContainerInterface $container, EntityManagerInterface $entityManager,MessageBusInterface $bus, ResourceService $resourceService)
     {
         $data = json_decode(
             $request->getContent(),
             true
         );
 
-        $presetCollections = $container->getParameter('preset_collections');
-        $presetCollection = array();
-        foreach($presetCollections as $collection){
-          if($collection['id'] == $data['type']){
-            $presetCollection = $collection['presets'];
-          }
-        }
-        foreach($presetCollection as $preset){
-          $presetData = [
-            'resourceId'=>$resource->getId(),
-            'presetId'=>$preset,
-            'createdOn'=>date('d-m-Y H:i:s')
-          ];
-          $bus->dispatch(new ResourcePresetNotification($presetData));
-        }
+        $resourceService->dispatchPresetMessages($data['id'], $data['type']);
 
         //Validation for limited resource types
         $maxMain = $container->getParameter('max_main_resources');

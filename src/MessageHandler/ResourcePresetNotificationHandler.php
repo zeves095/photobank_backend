@@ -24,6 +24,8 @@ class ResourcePresetNotificationHandler implements MessageSubscriberInterface
 
     public function process(ResourcePresetNotification $message)
     {
+      if($message->resourceId){
         $this->imageProcessor->process($message->resourceId, $message->presetId, $message->createdOn);
+      }
     }
 }
