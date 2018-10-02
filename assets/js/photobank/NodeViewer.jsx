@@ -2,6 +2,7 @@ import React from 'react';
 import { ItemSection } from './ItemSection';
 import { ListFilter } from './ListFilter';
 import { UploadPool } from './UploadPool';
+import { Draggable } from './Draggable';
 
 export class NodeViewer extends React.Component{
   constructor(props) {
@@ -119,6 +120,7 @@ export class NodeViewer extends React.Component{
             {this.state.node_items_list}
           </div>
           </div>
+          {$(".view-inner__item-section").length>0?<Draggable box1={$(".view-inner__item-list")} box2={$(".view-inner__item-section")} id="2" />:null}
           <div className="view-inner__item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
             <h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.state.product_crumbs}</i></h2>
           <div className="view-inner__container">

@@ -112,24 +112,22 @@ export class ItemSection extends React.Component{
     //   clearTimeout(this.renderPresetsTimer);
     // }
     // this.renderPresetsTimer = setTimeout(()=>{
-    if(this.state.busy){return}
-    if(this.props.render_existing){
-      for(var preset in window.config['presets']){
-        let presetId = window.config['presets'][preset]['id'];
-        let resId = resource.id;
-        let url = window.config.resource_url + resource.id + "/" + presetId;
-        this.state.finished_presets = [];
-        $.ajax({url: url, method: 'GET'}).done((data)=>{
-          if(typeof data.id != "undefined"){
-            this.state.finished_presets.push({
-              'id': data.id,
-              'resource' : data.gid,
-              'preset' : data.preset
-            });
-            this.buildExisting();
-          }
-        });
-      }
+    if(this.state.busy || !this.props.render_existing){console.log("fook"); return}
+    for(var preset in window.config['presets']){
+      let presetId = window.config['presets'][preset]['id'];
+      let resId = resource.id;
+      let url = window.config.resource_url + resource.id + "/" + presetId;
+      this.state.finished_presets = [];
+      $.ajax({url: url, method: 'GET'}).done((data)=>{
+        if(typeof data.id != "undefined"){
+          this.state.finished_presets.push({
+            'id': data.id,
+            'resource' : data.gid,
+            'preset' : data.preset
+          });
+          this.buildExisting();
+        }
+      });
     }
     // }, 300);
   }
