@@ -81,6 +81,11 @@ body {
       }
     }
   }
+  .draggable{
+    border-left: 2px solid $color-tertiary-fade;
+    border-right: 2px solid $color-tertiary-fade;
+    background-color: $color-main;
+  }
 }
 
 .catalogue-tree {
@@ -135,6 +140,10 @@ body {
     button{
       @extend %button-color;
       color:$color-text;
+      &:disabled{
+        color: $color-text-fade;
+        background-color: $color-tertiary-fade;
+      }
     }
   }
   &__existing>button.item-view__view-button{

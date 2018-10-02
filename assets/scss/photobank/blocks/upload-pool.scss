@@ -1,5 +1,8 @@
 .upload-pool {
-  height: 100vh;
+  &__collapse-all{
+    float:right;
+  }
+  height: 90vh;
   width: 100%;
   display: block;
   padding: 10px;

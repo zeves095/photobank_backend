@@ -2,6 +2,7 @@ import React from 'react';
 import { ItemSection } from './ItemSection';
 import { ListFilter } from './ListFilter';
 import { UploadPool } from './UploadPool';
+import { Draggable } from './Draggable';
 
 export class NodeViewer extends React.Component{
   constructor(props) {
@@ -24,6 +25,7 @@ export class NodeViewer extends React.Component{
     this.buildList = this.buildList.bind(this);
     this.filterQueryHandler = this.filterQueryHandler.bind(this);
     this.handlePoolClick = this.handlePoolClick.bind(this);
+    this.handleViewChoice = this.handleViewChoice.bind(this);
   }
 
   componentDidUpdate(prevProps){
@@ -67,8 +69,7 @@ export class NodeViewer extends React.Component{
     if(this.state.filter_query == ""){
       filtered = items;
     } else {
-      filtered = items.filter((item)=>{return item.itemCode == this.state.filter_query || item.name == this.state.filter_query});
-      console.warn(filtered);
+      filtered = items.filter((item)=>{return item.itemCode.toLowerCase().includes(this.state.filter_query.toLowerCase()) || item.name.toLowerCase().includes(this.state.filter_query.toLowerCase())});
     }
     this.state.node_items_filtered = filtered;
   }
@@ -96,8 +97,14 @@ export class NodeViewer extends React.Component{
 
   makeItemSection(currItem){
     let itemSection = null;
-    itemSection = <ItemSection render_existing={true} item_id={currItem.id} name={currItem.name} open_by_default={true} section_type="nv" crumb_string={this.props.crumb_string}  default_view={this.state.view_type} />;
+    itemSection = <ItemSection viewChoiceHandler={this.handleViewChoice} render_existing={true} item_id={currItem.id} name={currItem.name} open_by_default={true} section_type="nv" crumb_string={this.props.crumb_string} default_view={this.state.view_type} />;
     return itemSection;
+  }
+
+  handleViewChoice(view){
+    this.setState({
+      "view_type":view
+    });
   }
 
   render() {
@@ -108,16 +115,17 @@ export class NodeViewer extends React.Component{
           <div className="view-inner__item-list">
             <h2 className="node-viewer__component-title component-title">Товары</h2>
           <div className="view-inner__container">
-            <ListFilter filterHandler={this.filterQueryHandler} />
+            <ListFilter filterHandler={this.filterQueryHandler} filterid="nodesearch" placeholder="Фильтр по выбранному" />
           {this.state.node_items.length>0?null:"Нет товаров в выбранной категории"}
             {this.state.node_items_list}
           </div>
           </div>
+          {$(".view-inner__item-section").length>0?<Draggable box1={$(".view-inner__item-list")} box2={$(".view-inner__item-section")} id="2" />:null}
           <div className="view-inner__item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
             <h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.state.product_crumbs}</i></h2>
           <div className="view-inner__container">
             {this.state.view_pool?
-            <UploadPool default_view={this.state.view_type} />
+            <UploadPool viewChoiceHandler={this.handleViewChoice} default_view={this.state.view_type} />
             :this.state.item_section}
           </div>
           </div>

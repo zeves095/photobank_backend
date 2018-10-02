@@ -1,9 +1,13 @@
 .catalogue-tree {
+  min-width: 10vw;
+  max-width: 60vw;
   order: 1;
   flex-grow: 0;
-  flex-shrink: 0;
+  flex-shrink: 1;
   height: 90vh;
   display: inline-block;
+  overflow: hidden;
+  overflow-x: scroll;
   @extend %component-section;
 
   .view-inner__list-view{
