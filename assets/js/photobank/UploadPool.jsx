@@ -15,7 +15,8 @@ export class UploadPool extends React.Component{
       "item_list_filtered": [],
       "pool":[],
       "view_type":this.props.default_view,
-      "filter_query": ""
+      "filter_query": "",
+      "collapse_all": false,
     }
     this.getResumableList = this.getResumableList.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -23,6 +24,7 @@ export class UploadPool extends React.Component{
     this.filterQueryHandler = this.filterQueryHandler.bind(this);
     this.handleItemIdentity = this.handleItemIdentity.bind(this);
     this.getInitialList = this.getInitialList.bind(this);
+    this.handleCollapseAll = this.handleCollapseAll.bind(this);
   };
 
   getResumableList(){
@@ -35,7 +37,7 @@ export class UploadPool extends React.Component{
       let res_container = this.state.resumable_container;
       this.state.item_sections = [];
       for(var itemId in res_container){
-        this.state.item_sections[itemId] = <ItemSection key={"pool" + itemId} item_id={itemId} default_view={this.state.view_type} render_existing={false} open_by_default={true} identityHandler={this.handleItemIdentity} section_type="up" />;
+        this.state.item_sections[itemId] = <ItemSection key={"pool" + itemId} item_id={itemId} default_view={this.state.view_type} render_existing={false} open_by_default={!this.state.collapse_all} identityHandler={this.handleItemIdentity} section_type="up" />;
       }
       this.filterData();
       this.buildPool();
@@ -62,18 +64,16 @@ export class UploadPool extends React.Component{
     if(this.state.filter_query == ""){
       filtered = items;
     } else {
-      filtered = items.filter((item)=>{return item.code == this.state.filter_query || item.name == this.state.filter_query});
+      filtered = items.filter((item)=>{return item.code.toLowerCase().includes(this.state.filter_query) || item.name.toLowerCase().includes(this.state.filter_query)});
     }
     this.state.item_list_filtered = filtered;
-    console.warn(filtered);
   }
 
   getInitialList(){
     let pool = [];
     for(var itemId in this.state.resumable_container){
       if(typeof this.state.resumable_container[itemId] != "undefined"){
-        console.log(this.state.resumable_container[itemId]);
-        pool.push(<ItemSection key={"query" + itemId} item_id={itemId} default_view={this.state.view_type} render_existing={false} open_by_default={true} identityHandler={this.handleItemIdentity} section_type="up" />);
+        pool.push(<ItemSection key={"query" + itemId} item_id={itemId} default_view={this.state.view_type} render_existing={false} open_by_default={this.state.collapse_all} identityHandler={this.handleItemIdentity} section_type="up" />);
       }
     }
     this.setState({
@@ -96,7 +96,8 @@ export class UploadPool extends React.Component{
   handleViewChoice(e){
     let viewBtn = $(e.target).is("button")?$(e.target):$(e.target).parent();
     let view = viewBtn.data("view");
-    this.setState({"view_type":view});
+    this.state.view_type = view;
+    this.props.viewChoiceHandler(view);
     this.getResumableList();
   }
 
@@ -114,14 +115,19 @@ export class UploadPool extends React.Component{
     this.getResumableList();
   }
 
+  handleCollapseAll(){
+    this.state.collapse_all = !this.state.collapse_all;
+    this.getResumableList();
+  }
+
   render(){
     return(
       <div className="upload-pool">
         <button type="button" data-view="0" onClick={this.handleViewChoice}><i className="fas fa-th-large"></i></button>
         <button type="button" data-view="1" onClick={this.handleViewChoice}><i className="fas fa-th"></i></button>
         <button type="button" data-view="2" onClick={this.handleViewChoice}><i className="fas fa-list-ul"></i></button>
-        <h2 className="upload-pool__component-title component-title">Загрузки</h2>
-      <ListFilter filterHandler={this.filterQueryHandler} />
+      <h2 className="upload-pool__component-title component-title">Загрузки<button type="button" onClick={this.handleCollapseAll} className="upload-pool__collapse-all">{this.state.collapse_all?"Показать все":"Скрыть все"}</button></h2>
+      <ListFilter filterHandler={this.filterQueryHandler} filterid="poolsearch" placeholder="Фильтр по товару" />
         <div className="upload-pool__view-inner">
           {this.state.pool}
           <button type="button" onClick={this.handleSubmit}>Загрузить</button>

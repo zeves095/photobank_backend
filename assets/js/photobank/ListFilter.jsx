@@ -21,11 +21,21 @@ export class ListFilter extends React.Component{
     this.props.filterHandler(this.state.query);
   }
 
+  componentDidMount(){
+    let input = document.getElementById(this.props.filterid+"inpt");
+    input.addEventListener("keyup", (event)=> {
+      event.preventDefault();
+      if (event.keyCode === 13) {
+        document.getElementById(this.props.filterid+"btn").click();
+      }
+    });
+  }
+
   render(){
     return(
       <div className="list-filter">
-        <input type="text" name="filter-query" placeholder="Фильтр" onBlur={this.handleChange}></input>
-      <button type="button" onClick={this.handleSubmit}><i className="fas fa-arrow-alt-circle-right"></i></button>
+        <input type="text" id={this.props.filterid+"inpt"} name="filter-query" placeholder={this.props.placeholder} onChange={this.handleChange}></input>
+      <button type="button" id={this.props.filterid+"btn"} onClick={this.handleSubmit}><i className="fas fa-search"></i></button>
       </div>
     );
   }
