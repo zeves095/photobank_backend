@@ -108,7 +108,6 @@ export class CatalogueTree extends React.Component {
     cur_node.active = true;
     crumbs.push(cur_node);
     while(this.getNodeParent(cur_node) != cur_node && this.getNodeParent(cur_node)!= null){
-      console.log("looping");
       let parent = this.getNodeParent(cur_node);
       parent.active = false;
       crumbs.push(parent);
@@ -117,7 +116,6 @@ export class CatalogueTree extends React.Component {
     this.state.crumbs = crumbs;
     crumbs = crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"crumbs__crumb crumbs__crumb--active":"crumbs__crumb"} onClick={this.nodeChoiceHandler}>{crumb.name}</span>);
     crumbs.reverse();
-    console.log("setting crumbs");
     this.state.crumbs_list = crumbs;
   }
 
@@ -187,7 +185,7 @@ export class CatalogueTree extends React.Component {
   render() {
     return (
       <div className="catalogue-tree">
-        <h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-stream" data-view="2" onClick={this.handleViewChoice}></i><i className="fas fa-list" data-view="1" onClick={this.handleViewChoice}></i></span></h2>
+        <h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-sitemap" data-view="2" onClick={this.handleViewChoice}></i><i className="fas fa-list" data-view="1" onClick={this.handleViewChoice}></i></span></h2>
         <div>
           <div className="catalogue-tree__crumbs crumbs">
             {this.state.crumbs_list}

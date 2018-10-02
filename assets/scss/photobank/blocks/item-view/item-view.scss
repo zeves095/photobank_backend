@@ -41,6 +41,19 @@
   }
   .item-view__inner {
     @extend %component-inner;
+    transition: 0.5s;
+    max-height: auto;
+    overflow: hidden;
+    &--closed{
+      max-height: 0;
+      .item-view__subheader{
+        position: relative;
+      }
+    }
+  }
+  .item-view__collapse-button{
+    position: absolute;
+    right: 15px;
   }
 }
 

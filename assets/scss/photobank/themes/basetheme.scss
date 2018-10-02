@@ -135,6 +135,10 @@ body {
     button{
       @extend %button-color;
       color:$color-text;
+      &:disabled{
+        color: $color-text-fade;
+        background-color: $color-tertiary-fade;
+      }
     }
   }
   &__existing>button.item-view__view-button{

@@ -81,7 +81,7 @@ class FileUploadController extends AbstractController
 
     private function _validateUpload($uploadParams){
       $allowedFiletypes = explode(',',$this->container->getParameter('fileuploader.allowedfiletypes'));
-      if(in_array($uploadParams['extension'], $allowedFiletypes)){
+      if(in_array(strtolower($uploadParams['extension']), $allowedFiletypes)){
         return true;
       }
       return false;
