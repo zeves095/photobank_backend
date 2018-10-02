@@ -37,7 +37,9 @@
 
   .item-section-switcher{
     position: absolute;
-    top: 60px;
-    right: 40px;
+    top: 50px;
+    right: 0px;
+    @extend %button;
+    margin: 0;
   }
 }
