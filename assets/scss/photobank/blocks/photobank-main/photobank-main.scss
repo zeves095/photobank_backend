@@ -1,5 +1,7 @@
 .photobank-main {
 
+  max-width: 100vw;
+
   &__butt-wrapper{
     position: fixed;
     bottom: 50px;
@@ -25,7 +27,7 @@
       //text-transform: uppercase;
       width:auto;
       display: block;
-      border-radius: 3px 3px 0 0;
+      border-radius: $bordrad $bordrad 0 0;
       &__view-icons {
         font-size: 12pt;
         float:right;

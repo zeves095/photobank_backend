@@ -55,6 +55,11 @@
     position: absolute;
     right: 15px;
   }
+  .existing-files{
+    &__file{
+      vertical-align: top;
+    }
+  }
 }
 
 @import "./item-view-types.scss";
