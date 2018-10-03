@@ -7,10 +7,8 @@ export class Draggable extends React.Component{
     this.state={
       "id": this.props.id,
       "draggable":"",
-      "box1": this.props.box1,
-      "box2": this.props.box2,
-      "box1width": null,
-      "box2width": null,
+      "box1": null,
+      "box2": null,
       "parent": null,
       "boundrect": null,
       "mouseX": null,
@@ -23,6 +21,9 @@ export class Draggable extends React.Component{
   };
 
   handleDrag(e){
+    this.state.box1 = $(this.props.box1);
+    this.state.box2 = $(this.props.box2);
+    console.log(this.state.box2);
     e.preventDefault();
     this.state.dragging = true;
   }
@@ -34,14 +35,14 @@ export class Draggable extends React.Component{
   calc(){
     this.state.boundrect = this.state.parent.get(0).getBoundingClientRect();
     let b1w = 100/(this.state.boundrect.width/(this.state.mouseX - this.state.boundrect.left));
-    console.log(b1w);
-    this.state.box1width = b1w;
-    this.state.box2width = 100-b1w;
+    let b2w = 100-b1w;
     this.state.box1.css('width', b1w+'%');
     this.state.box2.css('width', b2w+'%');
   }
 
   componentDidMount(){
+    this.state.box1 = $(this.props.box1);
+    this.state.box2 = $(this.props.box2);
     this.state.parent = this.state.box1.parent();
     this.state.boundrect = this.state.parent.get(0).getBoundingClientRect();
     $(document).mousemove((e)=>{

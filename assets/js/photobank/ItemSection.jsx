@@ -25,7 +25,9 @@ export class ItemSection extends React.Component{
       "additional": [],
       "view_type": this.props.default_view,
       "finished_presets": [],
-      "busy" : false
+      "busy" : false,
+      "loading_existing" : false,
+      "loading_uploads" : false
     };
     this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
@@ -103,16 +105,17 @@ export class ItemSection extends React.Component{
     uploadListMarkup.push(unfinished.length>0?<div key={this.state.item_id + "unfinished"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Незаконченные</h4></div>:"");
     uploadListMarkup = uploadListMarkup.concat(this.drawSegment(unfinished));
     this.setState({
+      "loading_uploads": false,
       "upload_list":uploadListMarkup
     });
   }
 
-  getFinishedPresets(resource){
+  getFinishedPresets(resource, id, total){
     // if (typeof this.renderPresetsTimer != 'undefined') {
     //   clearTimeout(this.renderPresetsTimer);
     // }
     // this.renderPresetsTimer = setTimeout(()=>{
-    if(this.state.busy || !this.props.render_existing){console.log("fook"); return}
+    if(this.state.busy || !this.props.render_existing){return}
     for(var preset in window.config['presets']){
       let presetId = window.config['presets'][preset]['id'];
       let resId = resource.id;
@@ -127,6 +130,7 @@ export class ItemSection extends React.Component{
           });
           this.buildExisting();
         }
+        if(id == total-1){this.setState({"loading_existing" : false})}
       });
     }
     // }, 300);
@@ -134,17 +138,20 @@ export class ItemSection extends React.Component{
 
   fetchExisting(){
     if(this.props.render_existing){
+      this.setState({"loading_existing" : true});
       $.getJSON(window.config.existing_uploads_url+this.state.item_id, (data)=>{
         for(var datum in data){
-          this.getFinishedPresets(data[datum]);
+          this.getFinishedPresets(data[datum], datum, data.length);
         }
         this.state.existing = data;
+        if(this.state.existing.length==0){this.setState({"loading_existing" : false})}
         this.buildExisting();
       });
     }
   }
 
   fetchUnfinished(callback = ()=>{}){
+    this.setState({"loading_uploads" : true});
     let unfinished = [];
     $.getJSON(window.config.unfinished_uploads_url, (data)=>{
       for (var i = 0; i < data.length; i++) {
@@ -322,8 +329,8 @@ export class ItemSection extends React.Component{
     });
 
     this.assignResumableEvents();
-    this.fetchExisting();
     this.fetchUnfinished(this.buildList);
+    this.fetchExisting();
   }
 
   componentDidUpdate(prevProps){
@@ -337,6 +344,7 @@ export class ItemSection extends React.Component{
 
   assignResumableEvents(){
     this.resumable.on('fileAdded', (file, event)=>{
+      this.setState({"loading_uploads" : true});
       file.itemId = this.state.item_id;
       file.itemCode = this.state.item.itemCode;
       file.ready = false;
@@ -364,9 +372,14 @@ export class ItemSection extends React.Component{
       this.buildList();
     });
     this.resumable.on('complete', ()=>{
+      this.setState({"loading_uploads" : true});
       this.state.busy = false;
       this.buildList();
     });
+  }
+
+  componentWillUnmount(){
+    this.state.resumable.events = [];
   }
 
   buildExisting(){
@@ -487,7 +500,8 @@ export class ItemSection extends React.Component{
                   <i className="fas fa-list-ul"></i>
                 </button>
                 <h4 className="item-view__subheader">Файлы товара</h4>
-                <div className="item-resources">
+              {this.state.existingList.length==0?"Нет загруженных файлов":null}
+              <div className={(this.state.loading_existing?"loading ":"") + "item-resources"}>
                   <div className="item-view__file-list existing-files">
                     <div className="item-view__table-header">
                       <span className="info__info-field info__info-field--title info__info-field--sizepx">Имя файла</span>
@@ -506,7 +520,7 @@ export class ItemSection extends React.Component{
             : null
         }
         <h4 className="item-view__subheader">Загрузки</h4>
-        <div className="item-view__file-list file-list" id={"file_list" + this.props.item_id}>
+      <div className={(this.state.loading_uploads?"loading ":"") + "item-view__file-list file-list"} id={"file_list" + this.props.item_id}>
           <div className="file-list__button-block">
             <button type="button" id={"browse" + this.props.item_id + this.props.section_type}><i className="fas fa-folder-open"></i>Выбрать файлы</button>
           <button type="button" disabled={!this.state.ready} onClick={this.handleSubmit} id={"submit" + this.props.item_id}><i className="fas fa-file-upload"></i>Загрузить выбранное</button>
