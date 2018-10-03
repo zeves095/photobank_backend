@@ -27,11 +27,15 @@ export class ItemSection extends React.Component{
       "finished_presets": [],
       "busy" : false,
       "loading_existing" : false,
-      "loading_uploads" : false
+      "loading_uploads" : false,
+      "existing_list_start": 0,
+      "existing_list_limit": 20
     };
     this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
     this.timers = [];
+    this.finishedPresetRequestStack = [];
+    this.fileHashStack = [];
     this.uploadStatus = {
       "unfinished": "Прерван",
       "uploading": "Загружается",
@@ -63,7 +67,6 @@ export class ItemSection extends React.Component{
     console.log("bl");
       this.state.uploads = [];
       for(var i = 0; i < this.state.unfinished.length; i++){
-        console.log(this.state.unfinished);
         let file = this.state.unfinished[i];
         let className = "--unfinished";
         let status = "unfinished";
@@ -135,9 +138,12 @@ export class ItemSection extends React.Component{
             'resource' : data.gid,
             'preset' : data.preset
           });
-          this.buildExisting();
         }
         if(id == total-1){this.setState({"loading_existing" : false})}
+        this.finishedPresetRequestStack.splice(this.finishedPresetRequestStack.indexOf(id), 1);
+        if(this.finishedPresetRequestStack.length == 0){
+          this.buildExisting();
+        }
       });
     }
   }
@@ -146,6 +152,10 @@ export class ItemSection extends React.Component{
     if(this.props.render_existing){
       this.setState({"loading_existing" : true});
       $.getJSON(window.config.existing_uploads_url+this.state.item_id, (data)=>{
+        for(var datum in data){
+          this.finishedPresetRequestStack.push(datum);
+        }
+        console.log(this.finishedPresetRequestStack);
         for(var datum in data){
           this.getFinishedPresets(data[datum], datum, data.length);
         }
@@ -160,7 +170,6 @@ export class ItemSection extends React.Component{
       this.setState({"loading_uploads" : true});
       let unfinished = [];
       $.getJSON(window.config.unfinished_uploads_url, (data)=>{
-        console.warn(data);
         for (var i = 0; i < data.length; i++) {
           let unfinishedUpload = data[i];
           if(unfinishedUpload[[0]]==this.state.item_id){
@@ -173,7 +182,6 @@ export class ItemSection extends React.Component{
   }
 
   resolveResumedUploads(){
-    console.log(this.state.uploads);
     this.state.uploads = this.state.uploads.filter(
       (upload)=>{
         for (var i = 0; i < this.state.uploads.length; i++) {
@@ -192,7 +200,6 @@ export class ItemSection extends React.Component{
         return true;
       }
     );
-    console.log(this.state.uploads);
   }
 
   cleanUpDone(){
@@ -234,7 +241,7 @@ export class ItemSection extends React.Component{
       }
     }.bind(this);
     reader.readAsArrayBuffer(fileObj);
-    this.delayExecution(this.buildList, 200);
+    this.buildList();
   }
 
   commitUpload(file){
@@ -371,7 +378,7 @@ export class ItemSection extends React.Component{
     });
     this.resumable.on('fileSuccess', (file,event)=>{
       this.fetchExisting();
-      this.delayExecution(this.buildList, 200);
+      this.buildList();
     });
     this.resumable.on('fileProgress', (file,event)=>{
       //$("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
@@ -384,7 +391,7 @@ export class ItemSection extends React.Component{
     });
     this.resumable.on('uploadStart', (file,event)=>{
       this.state.busy = true;
-      this.delayExecution(this.buildList, 200);
+      this.buildList();
     });
     this.resumable.on('complete', ()=>{
       this.setState({"loading_uploads" : true});
