@@ -14,10 +14,11 @@ export class NodeViewer extends React.Component{
       "node_items_filtered": [],
       "filter_query": "",
       "current_item": null,
-      "item_section": "",
+      "item_section": "Не выбран товар",
       "view_pool": false,
       "view_type": 1,
-      "product_crumbs": this.props.crumb_string
+      "product_crumbs": this.props.crumb_string,
+      "loading": false
     }
     this.getItems = this.getItems.bind(this);
     this.itemClickHandler = this.itemClickHandler.bind(this);
@@ -42,6 +43,7 @@ export class NodeViewer extends React.Component{
   }
 
   getItems(nodeId = this.props.node){
+    this.setState({"loading":true});
     $.getJSON(window.config.get_items_url+nodeId, (data)=>{
       let nodeItems = data;
       this.setState({
@@ -59,6 +61,7 @@ export class NodeViewer extends React.Component{
       </div>
     );
     this.setState({
+      "loading": false,
       "node_items_list": nodeItemList
     });
   }
@@ -112,7 +115,7 @@ export class NodeViewer extends React.Component{
       <div className="node-viewer">
         <button type="button" className="item-section-switcher" onClick={this.handlePoolClick}>{this.state.view_pool?"К последнему товару":"Корзина товаров"}</button>
         <div className="node-viewer__view-inner view-inner">
-          <div className="view-inner__item-list">
+          <div className={(this.state.loading?"loading ":"")+"view-inner__item-list"}>
             <h2 className="node-viewer__component-title component-title">Товары</h2>
           <div className="view-inner__container">
             <ListFilter filterHandler={this.filterQueryHandler} filterid="nodesearch" placeholder="Фильтр по выбранному" />
@@ -120,7 +123,7 @@ export class NodeViewer extends React.Component{
             {this.state.node_items_list}
           </div>
           </div>
-          {$(".view-inner__item-section").length>0?<Draggable box1={$(".view-inner__item-list")} box2={$(".view-inner__item-section")} id="2" />:null}
+          {$(".view-inner__item-section").length>0?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
           <div className="view-inner__item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
             <h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.state.product_crumbs}</i></h2>
           <div className="view-inner__container">

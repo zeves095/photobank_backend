@@ -63,6 +63,28 @@ i.fas{
   padding:4px;
 }
 
+.loading{
+  position: relative;
+  // width:100%;
+  // height:100%;
+  &::before{
+    position: absolute;
+    content: "";
+    background-color: rgba(220,220,220,.85);
+    width: 100%;
+    height: 100%;
+  }
+  &::after{
+    position: absolute;
+    content: "Загрузка...";
+    color: #666;
+    top:45%;
+    left:42%;
+    font-size: 20px;
+    font-weight: bold;
+  }
+}
+
 @import "./blocks/userblock.scss";
 @import "./blocks/photobank-main/photobank-main.scss";
 @import "./blocks/upload-pool.scss";

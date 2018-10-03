@@ -41,6 +41,7 @@
       height: 90vh;
       cursor:col-resize;
       display: block;
+      flex-shrink: 0;
     }
     #draggable-1{
       order:2;

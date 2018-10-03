@@ -12,7 +12,8 @@ export class CatalogueTree extends React.Component {
       "tracked_nodes": [],
       "current_node": 1,
       "crumbs": [],
-      "view": this.props.default_view
+      "view": this.props.default_view,
+      "loading": false
     }
     this.getCatalogueNodes = this.getCatalogueNodes.bind(this);
     this.getNodeById = this.getNodeById.bind(this);
@@ -27,6 +28,7 @@ export class CatalogueTree extends React.Component {
   }
 
   getCatalogueNodes(data){
+    this.setState({"loading":true});
     $.getJSON(window.config.get_nodes_url+this.state.current_node, (data)=>{
       let cat_data = [];
       for(var node in data){
@@ -98,6 +100,7 @@ export class CatalogueTree extends React.Component {
       tree['core']['data'].push(treeNode);
     }
     this.setState({
+      'loading':false,
       'catalogue_tree': tree
     });
   }
@@ -184,7 +187,7 @@ export class CatalogueTree extends React.Component {
 
   render() {
     return (
-      <div className="catalogue-tree">
+      <div className={(this.state.loading?"loading ":"")+"catalogue-tree"}>
         <h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-sitemap" data-view="2" onClick={this.handleViewChoice}></i><i className="fas fa-list" data-view="1" onClick={this.handleViewChoice}></i></span></h2>
         <div>
           <div className="catalogue-tree__crumbs crumbs">
