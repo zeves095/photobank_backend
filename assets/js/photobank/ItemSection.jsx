@@ -68,7 +68,6 @@ export class ItemSection extends React.Component{
   }
 
   buildList() {
-    console.log("bl");
       this.state.uploads = [];
       for(var i = 0; i < this.state.unfinished.length; i++){
         let file = this.state.unfinished[i];
@@ -323,7 +322,6 @@ export class ItemSection extends React.Component{
         changed = true;
       }
     }
-    console.log(start+" "+limit+" "+(start+limit));
     if(changed){
       this.setState({
         "existing_list_start": start,
