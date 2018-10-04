@@ -32,13 +32,15 @@ export class ItemSection extends React.Component{
       "existing_list_limit": 20,
       "existing_list_end": 20,
       "existing_list_current_page": 1,
-      "existing_list_total_pages": 0
+      "existing_list_total_pages": 0,
+      "unfinished_hidden":false
     };
     this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
     this.timers = [];
     this.finishedPresetRequestStack = [];
     this.fileHashStack = [];
+    this.removeUploadStack = [];
     this.uploadCommitQueue = [];
     this.paginationControls = "";
     this.uploadStatus = {
@@ -65,10 +67,11 @@ export class ItemSection extends React.Component{
     this.getFinishedPresets = this.getFinishedPresets.bind(this);
     this.assignResumableEvents = this.assignResumableEvents.bind(this);
     this.fetchPresets = this.fetchPresets.bind(this);
+    this.clearAllUnfinished = this.clearAllUnfinished.bind(this);
+    this.hideUnfinished = this.hideUnfinished.bind(this);
   }
 
   buildList() {
-    console.log("bl");
       this.state.uploads = [];
       for(var i = 0; i < this.state.unfinished.length; i++){
         let file = this.state.unfinished[i];
@@ -244,7 +247,13 @@ export class ItemSection extends React.Component{
       'filename': upload.filename,
       'itemid': this.state.item_id
     }
-    $.ajax({url: window.config.remove_upload_url, method: 'POST', data: obj});
+    $.ajax({url: window.config.remove_upload_url, method: 'POST', data: obj}).done(()=>{
+      console.log(this.removeUploadStack.length+"remaining");
+      this.removeUploadStack.splice(this.removeUploadStack.indexOf(upload.filehash));
+      if(this.removeUploadStack.length == 0){
+        this.fetchUnfinished();
+      }
+    });
   }
 
   handleDelete(e){
@@ -323,7 +332,6 @@ export class ItemSection extends React.Component{
         changed = true;
       }
     }
-    console.log(start+" "+limit+" "+(start+limit));
     if(changed){
       this.setState({
         "existing_list_start": start,
@@ -426,15 +434,35 @@ export class ItemSection extends React.Component{
   }
 
   drawSegment(list, listid){
+    let hide = listid==2&&this.state.unfinished_hidden?true:false;
     return list.map((upload)=>
-      <div key={upload.filename+upload.filehash+listid} className={"file-list__file-item file-item " + "file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing ")+ this.fileViewClasses[this.state.view_type]}>
-        <span className="file-item__file-name">{upload.filename}<i data-item={upload.filehash} onClick={this.handleDelete} className="fas fa-trash-alt file-item__delete-upload"></i></span>
+      <div key={upload.filename+upload.filehash+listid} className={"file-list__file-item file-item " + "file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing ")+ this.fileViewClasses[this.state.view_type] + (hide?"file-item--hidden":"")}>
+        <i data-item={upload.filehash} onClick={this.handleDelete} className="fas fa-trash-alt file-item__delete-upload"></i><br />
+      <span className="file-item__file-name">{upload.filename}</span>
       <span className="file-item__upload-status">{this.uploadStatus[upload.status]}</span>
       <span className="progress-bar" id={"progress_bar"+upload.filehash}>
         <div className="progress-bar__percentage">{upload.progress + "%"}</div>
       <div className="progress-bar__bar" style={{"width":upload.progress+"%"}}></div>
         </span>
       </div>);
+  }
+
+  clearAllUnfinished(){
+    for(var id in this.state.unfinished){
+      this.removeUploadStack.push(this.state.unfinished[id].filehash);
+    }
+    for(var id in this.state.unfinished){
+      let unfinished = this.state.unfinished[id];
+      let upload = this.state.uploads.filter((upload)=>{return upload.filehash == unfinished.filehash})[0];
+      this.removeUpload(upload);
+    }
+  }
+
+  hideUnfinished(){
+    console.log("hidin");
+    this.setState({
+      "unfinished_hidden" : !this.state.unfinished_hidden
+    });
   }
 
   render() {
@@ -468,7 +496,7 @@ export class ItemSection extends React.Component{
 
         <div className={"existing-files__file file "+this.fileViewClasses[this.state.view_type]} key={file.src_filename+file.filename}>
           <div className="file__thumbnail" style={{"backgroundImage":"url("+presetLinks[0]+")"}}></div>
-        <a href={window.config.resource_url+file.id+".jpg"}>{file.src_filename}</a>
+        <a className="file__file-name" href={window.config.resource_url+file.id+".jpg"}>{file.src_filename}</a>
       {/* <div className="file__edit-fields edit-fields"> */}
           <div className="edit-input">
             <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
@@ -504,9 +532,9 @@ export class ItemSection extends React.Component{
     let paginationControls = this.state.existing.length!=0?(
       <div className="item-view__pagination-controls pagination-controls">
           <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="0" type="button" disabled={this.state.existing_list_start==0}><i className="fas fa-arrow-left"></i></button>
-        <input onKeyUp={this.handlePagination} type="text" defaultValue={this.state.existing_list_limit}></input>
+        <p>{this.state.existing_list_current_page}/{this.state.existing_list_total_pages}</p>
       <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="1" type="button" disabled={this.state.existing_list_end>=this.state.existing.length}><i className="fas fa-arrow-right"></i></button>
-    <p>{this.state.existing_list_current_page}/{this.state.existing_list_total_pages}</p>
+    <p>На странице:</p><input onKeyUp={this.handlePagination} type="text" defaultValue={this.state.existing_list_limit}></input>
         </div>
     ):null;
 
@@ -515,7 +543,13 @@ export class ItemSection extends React.Component{
     let unfinished = uploadList.filter((item)=>{return item.status == 'unfinished' || item.status == 'resolved'});
     let uploadListMarkup = [active.length>0?<div key={this.state.item_id + "uploads"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загрузки</h4></div>:""];
     uploadListMarkup = uploadListMarkup.concat(this.drawSegment(active, 1));
-    uploadListMarkup.push(unfinished.length>0?<div key={this.state.item_id + "unfinished"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Незаконченные</h4></div>:"");
+    uploadListMarkup.push(unfinished.length>0?<div key={this.state.item_id + "unfinished"} className="item-view__subheader-wrapper">
+      <h4 className="item-view__subheader">Незаконченные</h4>
+      <div className="button-block">
+        <button onClick={this.clearAllUnfinished} className="button-block__btn button-block__btn--clear"><i className="fas fa-trash-alt"></i>Очистить</button>
+      <button onClick={this.hideUnfinished} className="button-block__btn button-block__btn--clear">{this.state.unfinished_hidden?<i className='fas fa-eye'></i>:<i className='fas fa-eye-slash'></i>}{this.state.unfinished_hidden?"Показать":"Скрыть"}</button>
+      </div>
+    </div>:"");
     uploadListMarkup = uploadListMarkup.concat(this.drawSegment(unfinished, 2));
 
     return (

@@ -1,5 +1,6 @@
 .upload-pool {
   &__collapse-all{
+    @extend %button;
     float:right;
   }
   height: 90vh;
