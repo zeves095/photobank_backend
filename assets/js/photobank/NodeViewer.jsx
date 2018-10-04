@@ -113,7 +113,6 @@ export class NodeViewer extends React.Component{
   render() {
     return (
       <div className="node-viewer">
-        <button type="button" className="item-section-switcher" onClick={this.handlePoolClick}>{this.state.view_pool?"К последнему товару":"Корзина товаров"}</button>
         <div className="node-viewer__view-inner view-inner">
           <div className={(this.state.loading?"loading ":"")+"view-inner__item-list"}>
             <h2 className="node-viewer__component-title component-title">Товары</h2>
@@ -126,6 +125,7 @@ export class NodeViewer extends React.Component{
           {$(".view-inner__item-section").length>0?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
           <div className="view-inner__item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
             <h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.state.product_crumbs}</i></h2>
+          <button type="button" className="item-section-switcher" onClick={this.handlePoolClick}>{this.state.view_pool?"К последнему товару":"Корзина товаров"}</button>
           <div className="view-inner__container">
             {this.state.view_pool?
             <UploadPool viewChoiceHandler={this.handleViewChoice} default_view={this.state.view_type} />

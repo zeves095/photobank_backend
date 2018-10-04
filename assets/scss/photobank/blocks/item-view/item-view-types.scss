@@ -1,3 +1,26 @@
+%icon-upload{
+  overflow: hidden;
+  vertical-align: top;
+  position: relative;
+  border-radius:$bordrad;
+  text-align: center;
+  display:inline-block;
+  margin:10px;
+  .file-item__file-name{
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    z-index:100;
+    vertical-align: middle;
+    position: relative;
+  }
+  .file-item__delete-upload{
+    position: relative;
+  }
+}
+
 .item-view {
   .item-view__inner {
     &--icons-lg{
@@ -28,19 +51,18 @@
           display:none;
         }
         .file-list__file-item{
-
+          @extend %icon-upload;
           width:150px;
           height:150px;
-          border-radius:$bordrad;
-          text-align: center;
-          display:inline-block;
-          margin:10px;
           .file-item__file-name{
-            vertical-align: middle;
             font-size: 15pt;
-            bottom: -55px;
-            position: relative;
-            z-index:100;
+            bottom: -40px;
+            display: block;
+          }
+          .file-item__delete-upload{
+            top: 120px;
+            left: 55px;
+            font-size: 17px;
           }
         }
       }
@@ -51,7 +73,7 @@
         &__bar{
           position: relative;
           height: 100%;
-          top: -28px;
+          top: -49px;
         }
       }
     }
@@ -83,23 +105,21 @@
       }
       .item-uploads{
         display:block;
+        position: relative;
         .file-item__upload-status{
           display:none;
         }
         .file-list__file-item{
-          vertical-align: top;
+          @extend %icon-upload;
           width:100px;
           height:100px;
-          border-radius:$bordrad;
-          text-align: center;
-          display:inline-block;
-          margin:10px;
           .file-item__file-name{
-            z-index:100;
-            vertical-align: middle;
             font-size: 10pt;
-            position: relative;
-            bottom: -35px;
+            bottom: -23px;
+          }
+          .file-item__delete-upload{
+            top: 75px;
+            left: 35px;
           }
         }
       }
@@ -110,7 +130,7 @@
         &__bar{
           position: relative;
           height: 100%;
-          top: -28px;
+          top: -40px;
         }
       }
     }
@@ -132,6 +152,7 @@
         }
       }
       .item-uploads{
+        position: relative;
         display:table;
         width: 100%;
         text-align: center;
@@ -140,6 +161,11 @@
         }
         .file-list__file-item{
           display:table-row;
+          .file-item__file-name{
+            max-width: 20%;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
         }
         .info__info-field, .file>a, select, span, .edit-input{
           @extend %table-cell;

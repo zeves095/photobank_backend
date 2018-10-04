@@ -82,8 +82,8 @@ body {
     }
   }
   .draggable{
-    border-left: 2px solid $color-tertiary-fade;
-    border-right: 2px solid $color-tertiary-fade;
+    border-left: 1px solid $color-tertiary-fade;
+    border-right: 1px solid $color-tertiary-fade;
     background-color: $color-main;
   }
 }
@@ -146,18 +146,38 @@ body {
       }
     }
   }
-  &__existing>button.item-view__view-button{
-    @extend %button-view-color;
-    &--active{
-      background-color: $color-accent;
+  &__existing{
+    .pagination-controls{
+      button{
+        color:$color-text-alt;
+        background-color: $color-accent;
+        &:disabled{
+          background-color: $color-main-fade;
+        }
+      }
+      p{
+        background-color: $color-accent-fade;
+        color:$color-text-alt;
+      }
+      input{
+        border:none;
+        background-color: $color-main-fade;
+      }
+    }
+    &>button.item-view__view-button{
+      @extend %button-view-color;
+      &--active{
+        background-color: $color-accent;
+      }
     }
   }
   &__item-title{
-    background-color: $color-main-fade;
-    color:$color-text;
+    background-color: $color-accent-fade;
+    color:$color-text-alt;
   }
   &__subheader{
-    background-color: $color-main-fade;
+    //background-color: $color-main-fade;
+    border-bottom: 1px solid $color-accent;
   }
   .item-view__inner {
     a{
