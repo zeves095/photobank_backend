@@ -27,11 +27,20 @@ export class ItemSection extends React.Component{
       "finished_presets": [],
       "busy" : false,
       "loading_existing" : false,
-      "loading_uploads" : false
+      "loading_uploads" : false,
+      "existing_list_start": 0,
+      "existing_list_limit": 20,
+      "existing_list_end": 20,
+      "existing_list_current_page": 1,
+      "existing_list_total_pages": 0
     };
     this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
     this.timers = [];
+    this.finishedPresetRequestStack = [];
+    this.fileHashStack = [];
+    this.uploadCommitQueue = [];
+    this.paginationControls = "";
     this.uploadStatus = {
       "unfinished": "Прерван",
       "uploading": "Загружается",
@@ -42,7 +51,6 @@ export class ItemSection extends React.Component{
       "completed": "Загружен"
     };
     this.buildList = this.buildList.bind(this);
-    this.delayExecution = this.delayExecution.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.getHash = this.getHash.bind(this);
@@ -51,19 +59,18 @@ export class ItemSection extends React.Component{
     this.fetchUnfinished = this.fetchUnfinished.bind(this);
     this.handleResourceUpdate = this.handleResourceUpdate.bind(this);
     this.removeUpload = this.removeUpload.bind(this);
-    this.buildExisting = this.buildExisting.bind(this);
-    this.sortList = this.sortList.bind(this);
     this.cleanUpDone = this.cleanUpDone.bind(this);
     this.handleViewChoice = this.handleViewChoice.bind(this);
+    this.handlePagination = this.handlePagination.bind(this);
     this.getFinishedPresets = this.getFinishedPresets.bind(this);
     this.assignResumableEvents = this.assignResumableEvents.bind(this);
+    this.fetchPresets = this.fetchPresets.bind(this);
   }
 
   buildList() {
     console.log("bl");
       this.state.uploads = [];
       for(var i = 0; i < this.state.unfinished.length; i++){
-        console.log(this.state.unfinished);
         let file = this.state.unfinished[i];
         let className = "--unfinished";
         let status = "unfinished";
@@ -92,38 +99,15 @@ export class ItemSection extends React.Component{
       }
       this.resolveResumedUploads();
       this.cleanUpDone();
-      this.sortList();
+      this.setState({
+        "loading_uploads": false,
+      });
   }
 
-  sortList(){
-    let uploadList = this.state.uploads;
-    let active = uploadList.filter((item)=>{return item.status != 'unfinished'});
-    let unfinished = uploadList.filter((item)=>{return item.status == 'unfinished' || item.status == 'resolved'});
-    // let pending = active.filter((item)=>{return item.ready == false});
-    // let ready = active.filter((item)=>{return item.ready == true && item.uploading == false});
-    // let uploading = active.filter((item)=>{return item.uploading == true});
-
-    // let uploadListMarkup = [pending.length>0?<div key={this.state.item_id + "pending"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Обрабатываются...</h4></div>:""];
-    // uploadListMarkup = uploadListMarkup.concat(this.drawSegment(pending));
-    // uploadListMarkup.push(uploading.length>0?<div key={this.state.item_id + "uploading"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загружаются...</h4></div>:"");
-    // uploadListMarkup = uploadListMarkup.concat(this.drawSegment(uploading));
-    // uploadListMarkup.push(ready.length>0?<div key={this.state.item_id + "ready"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загрузки</h4></div>:"");
-    // uploadListMarkup = uploadListMarkup.concat(this.drawSegment(ready));
-    // uploadListMarkup.push(unfinished.length>0?<div key={this.state.item_id + "unfinished"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Незаконченные</h4></div>:"");
-    // uploadListMarkup = uploadListMarkup.concat(this.drawSegment(unfinished));
-    let uploadListMarkup = [active.length>0?<div key={this.state.item_id + "uploads"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загрузки</h4></div>:""];
-    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(active, 1));
-    uploadListMarkup.push(unfinished.length>0?<div key={this.state.item_id + "unfinished"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Незаконченные</h4></div>:"");
-    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(unfinished, 2));
-    this.state.upload_list = uploadListMarkup;
-    this.setState({
-      "loading_uploads": false,
-    });
-  }
-
-  getFinishedPresets(resource, id, total){
-    if(this.state.busy || !this.props.render_existing){return}
+  getFinishedPresets(resource, id){
+    if(this.state.busy || !this.props.render_existing || typeof this.state.existing[id] == 'undefined'){return}
     for(var preset in window.config['presets']){
+      this.finishedPresetRequestStack.push(id+"-"+preset);
       let presetId = window.config['presets'][preset]['id'];
       let resId = resource.id;
       let url = window.config.resource_url + resource.id + "/" + presetId;
@@ -135,9 +119,11 @@ export class ItemSection extends React.Component{
             'resource' : data.gid,
             'preset' : data.preset
           });
-          this.buildExisting();
         }
-        if(id == total-1){this.setState({"loading_existing" : false})}
+        this.finishedPresetRequestStack.splice(this.finishedPresetRequestStack.indexOf(id+"-"+preset), 1);
+        if(this.finishedPresetRequestStack.length == 0){
+          this.setState({"loading_existing" : false})
+        }
       });
     }
   }
@@ -146,13 +132,19 @@ export class ItemSection extends React.Component{
     if(this.props.render_existing){
       this.setState({"loading_existing" : true});
       $.getJSON(window.config.existing_uploads_url+this.state.item_id, (data)=>{
-        for(var datum in data){
-          this.getFinishedPresets(data[datum], datum, data.length);
-        }
         this.state.existing = data;
-        if(this.state.existing.length==0){this.setState({"loading_existing" : false})}
-        this.buildExisting();
+        this.setState({
+          "existing_list_total_pages": Math.ceil(this.state.existing.length/this.state.existing_list_limit),
+        });
+        this.fetchPresets();
       });
+    }
+  }
+
+  fetchPresets(){
+    if(this.state.existing.length==0){this.setState({"loading_existing" : false}); return;}
+    for(var i = this.state.existing_list_start; i<this.state.existing_list_end; i++){
+      this.getFinishedPresets(this.state.existing[i], i);
     }
   }
 
@@ -160,7 +152,6 @@ export class ItemSection extends React.Component{
       this.setState({"loading_uploads" : true});
       let unfinished = [];
       $.getJSON(window.config.unfinished_uploads_url, (data)=>{
-        console.warn(data);
         for (var i = 0; i < data.length; i++) {
           let unfinishedUpload = data[i];
           if(unfinishedUpload[[0]]==this.state.item_id){
@@ -173,7 +164,6 @@ export class ItemSection extends React.Component{
   }
 
   resolveResumedUploads(){
-    console.log(this.state.uploads);
     this.state.uploads = this.state.uploads.filter(
       (upload)=>{
         for (var i = 0; i < this.state.uploads.length; i++) {
@@ -184,7 +174,6 @@ export class ItemSection extends React.Component{
             upload.filename == this.state.uploads[i]["filename"] &&
             upload.filehash == this.state.uploads[i]["filehash"]){
               this.state.unfinished = this.state.unfinished.map((upload)=>{if(this.state.uploads[i].filehash != upload.filehash){upload.completed = true;} return upload});
-              console.error(this.state.unfinished);
               this.state.uploads[i]["status"] = "resolved";
               return false;
             }
@@ -192,7 +181,6 @@ export class ItemSection extends React.Component{
         return true;
       }
     );
-    console.log(this.state.uploads);
   }
 
   cleanUpDone(){
@@ -207,12 +195,13 @@ export class ItemSection extends React.Component{
         cleanedUp = true;
       }
     }
-    if(cleanedUp){this.delayExecution(this.fetchUnfinished,50)};
+    if(cleanedUp){this.fetchUnfinished()};
   }
 
   getHash(file) {
     let fileObj = file.file;
     let reader = new FileReader();
+    this.fileHashStack.push(file);
     reader.onload = function(e) {
       let hashable = e.target.result;
       hashable = new Uint8Array(hashable);
@@ -230,11 +219,13 @@ export class ItemSection extends React.Component{
       if(allowed){
         file.ready = true;
         this.commitUpload(file);
-        this.delayExecution(this.buildList, 200);
+      }
+      this.fileHashStack.splice(this.fileHashStack.indexOf(file), 1);
+      if(this.fileHashStack.length == 0){
+        this.buildList();
       }
     }.bind(this);
     reader.readAsArrayBuffer(fileObj);
-    this.delayExecution(this.buildList, 200);
   }
 
   commitUpload(file){
@@ -264,7 +255,7 @@ export class ItemSection extends React.Component{
         this.resumable.files.splice(i,1);
       }
     }
-    this.delayExecution(this.fetchUnfinished,100);
+    this.fetchUnfinished();
   }
 
   handleSubmit(){
@@ -304,9 +295,45 @@ export class ItemSection extends React.Component{
   handleViewChoice(e){
     let viewBtn = $(e.target).is("button")?$(e.target):$(e.target).parent();
     let view = viewBtn.data("view");
-    this.state.view_type = view;
+    this.setState({"view_type": view});
     this.props.viewChoiceHandler(view);
-    this.buildExisting();
+  }
+
+  handlePagination(e){
+    e.preventDefault();
+    let changed = false;
+    let target = e.target;
+    if(target.tagName != "BUTTON" && target.tagName != "INPUT"){
+      target = target.parentNode;
+    }
+    let start = this.state.existing_list_start;
+    let limit = this.state.existing_list_limit;
+    if(e.type == "click"){
+      if(target.dataset.direction == 0){
+        if((start-=limit)<0){start=0};
+        changed = true;
+      }else{
+        if(!(start+limit>this.state.existing.length)){start = parseInt(start+limit)};
+        changed = true;
+      }
+    }else if(e.type = "keyUp"){
+      if(e.key=='Enter'){
+        limit = parseInt(target.value);
+        start = start-(start%limit);
+        changed = true;
+      }
+    }
+    console.log(start+" "+limit+" "+(start+limit));
+    if(changed){
+      this.setState({
+        "existing_list_start": start,
+        "existing_list_limit": limit,
+        "existing_list_end": start+limit,
+        "loading_existing": true,
+        "existing_list_current_page": Math.floor(start/limit)+1,
+        "existing_list_total_pages": Math.ceil(this.state.existing.length/limit)
+      });
+    }
   }
 
   componentWillMount(){
@@ -342,18 +369,20 @@ export class ItemSection extends React.Component{
         $("#drop_target" + this.props.item_id).removeClass('file-list__drop-target--active');
       }, 100);
     });
-
     this.assignResumableEvents();
-    this.delayExecution(this.fetchUnfinished,100);
+    this.fetchUnfinished();
     this.fetchExisting();
   }
 
-  componentDidUpdate(prevProps){
+  componentDidUpdate(prevProps, prevState){
     if(this.props != prevProps){
       this.setState({
         "view_type": this.props.default_view,
         "open": this.props.open_by_default
       });
+    }
+    if(prevState.existing_list_start != this.state.existing_list_start || prevState.existing_list_limit != this.state.existing_list_limit){
+      this.fetchPresets();
     }
   }
 
@@ -371,7 +400,7 @@ export class ItemSection extends React.Component{
     });
     this.resumable.on('fileSuccess', (file,event)=>{
       this.fetchExisting();
-      this.delayExecution(this.buildList, 200);
+      this.buildList();
     });
     this.resumable.on('fileProgress', (file,event)=>{
       //$("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
@@ -380,16 +409,15 @@ export class ItemSection extends React.Component{
       if(upload.length>0){
         upload[0].progress = Math.round(file.progress() * 100);
       }
-      this.sortList();
     });
     this.resumable.on('uploadStart', (file,event)=>{
       this.state.busy = true;
-      this.delayExecution(this.buildList, 200);
+      this.buildList();
     });
     this.resumable.on('complete', ()=>{
       this.setState({"loading_uploads" : true});
       this.state.busy = false;
-      this.delayExecution(this.buildList, 200);
+      this.buildList();
     });
   }
 
@@ -397,25 +425,30 @@ export class ItemSection extends React.Component{
     this.state.resumable.events = [];
   }
 
-  delayExecution(func, time){
-    if (typeof this.timers[func] != 'undefined') {
-     clearTimeout(this.timers[func]);
-    }
-    this.timers[func] = setTimeout(()=>{
-      func();
-    }, time);
+  drawSegment(list, listid){
+    return list.map((upload)=>
+      <div key={upload.filename+upload.filehash+listid} className={"file-list__file-item file-item " + "file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing ")+ this.fileViewClasses[this.state.view_type]}>
+        <span className="file-item__file-name">{upload.filename}<i data-item={upload.filehash} onClick={this.handleDelete} className="fas fa-trash-alt file-item__delete-upload"></i></span>
+      <span className="file-item__upload-status">{this.uploadStatus[upload.status]}</span>
+      <span className="progress-bar" id={"progress_bar"+upload.filehash}>
+        <div className="progress-bar__percentage">{upload.progress + "%"}</div>
+      <div className="progress-bar__bar" style={{"width":upload.progress+"%"}}></div>
+        </span>
+      </div>);
   }
 
-  buildExisting(){
+  render() {
+
     let maxMain = window.config.max_main_resources;
     let maxAdd = window.config.max_additional_resources;
     let currMain = this.state.existing.filter((file)=>{return file.type == 1}).length;
     let currAdd = this.state.existing.filter((file)=>{return file.type == 2}).length;
     let mainStatus = currMain+"/"+maxMain;
     let addStatus = currAdd+"/"+maxAdd;
-    let markupData = [];
-    for(var existingFile in this.state.existing){
-      let file = this.state.existing[existingFile];
+    let existingListMarkupData = [];
+    for(var i = this.state.existing_list_start; i<this.state.existing_list_end; i++){
+      if(typeof this.state.existing[i]=='undefined'){break};
+      let file = this.state.existing[i];
       let presets = [];
       let presetLinks = [];
       for(var preset in window.config['presets']){
@@ -431,7 +464,7 @@ export class ItemSection extends React.Component{
             }
           </span>);
       }
-      markupData.push(
+      existingListMarkupData.push(
 
         <div className={"existing-files__file file "+this.fileViewClasses[this.state.view_type]} key={file.src_filename+file.filename}>
           <div className="file__thumbnail" style={{"backgroundImage":"url("+presetLinks[0]+")"}}></div>
@@ -467,24 +500,24 @@ export class ItemSection extends React.Component{
         {/* </div> */}
       </div>)
     }
-    this.setState({
-      "existingList": markupData
-    });
-  }
 
-  drawSegment(list, listid){
-    return list.map((upload)=>
-      <div key={upload.filename+upload.filehash+listid} className={"file-list__file-item file-item " + "file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing ")+ this.fileViewClasses[this.state.view_type]}>
-        <span className="file-item__file-name">{upload.filename}<i data-item={upload.filehash} onClick={this.handleDelete} className="fas fa-trash-alt file-item__delete-upload"></i></span>
-      <span className="file-item__upload-status">{this.uploadStatus[upload.status]}</span>
-      <span className="progress-bar" id={"progress_bar"+upload.filehash}>
-        <div className="progress-bar__percentage">{upload.progress + "%"}</div>
-      <div className="progress-bar__bar" style={{"width":upload.progress+"%"}}></div>
-        </span>
-      </div>);
-  }
+    let paginationControls = this.state.existing.length!=0?(
+      <div className="item-view__pagination-controls pagination-controls">
+          <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="0" type="button" disabled={this.state.existing_list_start==0}><i className="fas fa-arrow-left"></i></button>
+        <input onKeyUp={this.handlePagination} type="text" defaultValue={this.state.existing_list_limit}></input>
+      <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="1" type="button" disabled={this.state.existing_list_end>=this.state.existing.length}><i className="fas fa-arrow-right"></i></button>
+    <p>{this.state.existing_list_current_page}/{this.state.existing_list_total_pages}</p>
+        </div>
+    ):null;
 
-  render() {
+    let uploadList = this.state.uploads;
+    let active = uploadList.filter((item)=>{return item.status != 'unfinished'});
+    let unfinished = uploadList.filter((item)=>{return item.status == 'unfinished' || item.status == 'resolved'});
+    let uploadListMarkup = [active.length>0?<div key={this.state.item_id + "uploads"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загрузки</h4></div>:""];
+    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(active, 1));
+    uploadListMarkup.push(unfinished.length>0?<div key={this.state.item_id + "unfinished"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Незаконченные</h4></div>:"");
+    uploadListMarkup = uploadListMarkup.concat(this.drawSegment(unfinished, 2));
+
     return (
       <div className = {
         "item-view"
@@ -524,7 +557,8 @@ export class ItemSection extends React.Component{
                   <i className="fas fa-list-ul"></i>
                 </button>
                 <h4 className="item-view__subheader">Файлы товара</h4>
-              {this.state.existingList.length==0?"Нет загруженных файлов":null}
+              {paginationControls}
+              {this.state.existing.length==0?"Нет загруженных файлов":null}
               <div className={(this.state.loading_existing?"loading ":"") + "item-resources"}>
                   <div className="item-view__file-list existing-files">
                     <div className="item-view__table-header">
@@ -537,7 +571,7 @@ export class ItemSection extends React.Component{
           <span className="info__info-field info__info-field--title info__info-field--comment">Комментарий</span>
                       {this.state.preset_headers}
                     </div>
-                    {this.state.existingList}
+                    {existingListMarkupData}
                   </div>
                 </div>
               </div>
@@ -556,7 +590,7 @@ export class ItemSection extends React.Component{
           <span className="info__info-field info__info-field--title info__info-field--type">Статус</span>
         <span className="info__info-field info__info-field--title info__info-field--sizebytes">Прогресс</span>
       </div>
-          {this.state.upload_list}
+          {uploadListMarkup}
         </div>
       </div>
       </div> < /div>
