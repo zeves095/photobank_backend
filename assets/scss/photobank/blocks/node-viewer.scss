@@ -14,9 +14,9 @@
 
     &__item-list {
       overflow: hidden;
-      min-width: 10vw;
+      min-width: 210px;
       flex-grow: 0;
-      flex-shrink: 1;
+      flex-shrink: 2;
       @extend %component-section;
       .list-item{
         @extend %list-item;
@@ -25,8 +25,8 @@
 
     &__item-section {
       overflow: hidden;
-      min-width: 20vw;
-      flex-grow: 1;
+      min-width: 440px;
+      flex-grow: 2;
       flex-shrink: 1;
       //max-width: 60vw;
       overflow-x:hidden;
