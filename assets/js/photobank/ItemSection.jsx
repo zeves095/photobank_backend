@@ -158,7 +158,9 @@ export class ItemSection extends React.Component{
         for (var i = 0; i < data.length; i++) {
           let unfinishedUpload = data[i];
           if(unfinishedUpload[[0]]==this.state.item_id){
-            unfinished.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true, "completed":false});
+            if(this.state.uploads.filter((upload)=>{return upload.filehash == unfinishedUpload[2]}).length == 0){
+              unfinished.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true, "completed":false});
+            }
           }
         }
         this.state.unfinished = unfinished;
@@ -428,6 +430,9 @@ export class ItemSection extends React.Component{
       if(upload.length>0){
         upload[0].progress = Math.round(file.progress() * 100);
       }
+      this.setState({
+        "uploads":this.state.uploads,
+      });
     });
     this.resumable.on('uploadStart', (file,event)=>{
       this.state.busy = true;
