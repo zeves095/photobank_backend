@@ -65,6 +65,8 @@
       }
       .item-uploads{
         display:block;
+
+        position: relative;
         .file-item__upload-status{
           display:none;
         }

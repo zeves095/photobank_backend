@@ -89,7 +89,7 @@ body {
 
 .photobank-main {
 
-    .upload-pool{
+  .upload-pool{
     background-color: $color-main;
     button{
       @include button-color();
@@ -98,6 +98,8 @@ body {
       @include button-view-color();
     }
     .item-view__item-title{
+      background-color: $color-accent-fade;
+      color: $color-text-alt;
       border-bottom: 1px solid $color-text-fade;
     }
     .item-view__subheader{
@@ -255,6 +257,9 @@ body {
     &--detailed{
       .item-resources{
         //border: 2px solid $color-accent;
+        animation-name: foldout;
+        animation-duration: 3s;
+        overflow: hidden;
         .item-view__table-header{
           .info__info-field{
             background-color: $color-accent;
@@ -264,6 +269,29 @@ body {
         .existing-files__file{
           .info__info-field, .file>a, select, span, .edit-input{
               @include table-cell-color();
+              padding: 4px 2px;
+          }
+          select{
+            border: none;
+            background-color: transparent;
+          }
+          &:hover{
+            box-shadow: none;
+            .info__info-field, .file>a, select, span, .edit-input{
+              transition: 0.3s;
+              background-color: $color-accent-fade;
+              color: $color-text-alt;
+            }
+            select{
+              outline: 1px solid $color-main-fade;
+              background-color: $color-background;
+              color:$color-text;
+            }
+            a{
+              color: $color-text-alt;
+            }
+            background-color: $color-accent-fade;
+            color: $color-text-alt;
           }
         }
       }
@@ -285,4 +313,13 @@ body {
 
 .progress-bar{
   transition: 0.5s;
+}
+
+@keyframes foldout {
+  from {
+		max-height: 0;
+  	}
+	to {
+		max-height: 10000px;
+  	}
 }

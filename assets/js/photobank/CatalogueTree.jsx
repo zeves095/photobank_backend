@@ -25,6 +25,7 @@ export class CatalogueTree extends React.Component {
     this.makeTree = this.makeTree.bind(this);
     this.handleTreeClick = this.handleTreeClick.bind(this);
     this.handleViewChoice = this.handleViewChoice.bind(this);
+    this.traverseUp = this.traverseUp.bind(this);
   }
 
   getCatalogueNodes(data){
@@ -173,10 +174,13 @@ export class CatalogueTree extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps){
+  componentDidUpdate(prevProps,prevState){
     if(this.props.catalogue_data != prevProps.catalogue_data){
       this.state.catalogue_data = this.props.catalogue_data;
       this.getCatalogueNodes();
+    }
+    if(this.state.current_node != prevState.current_node){
+      this.populateCatalogue();
     }
   }
 
@@ -185,16 +189,26 @@ export class CatalogueTree extends React.Component {
     this.setState({'view':view});
   }
 
+  traverseUp(){
+    let curNode = this.state.catalogue_data.filter((node)=>{return parseInt(node.id)==parseInt(this.state.current_node)})[0];
+    if(typeof curNode!= "undefined"&&curNode.parent != null){
+      this.state.current_node = curNode.parent;
+      this.getCatalogueNodes(this.props.catalogue_data);
+      this.props.nodeChoiceHandler(curNode.parent);
+    }
+  }
+
   render() {
     return (
       <div className={(this.state.loading?"loading ":"")+"catalogue-tree"}>
         <h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-sitemap" data-view="2" onClick={this.handleViewChoice}></i><i className="fas fa-list" data-view="1" onClick={this.handleViewChoice}></i></span></h2>
         <div>
           <div className="catalogue-tree__crumbs crumbs">
-            {this.state.crumbs_list}
+            {this.state.view==1?this.state.crumbs_list:null}
           </div>
           <div className="catalogue-tree__view-inner view-inner">
             <div className="view-inner__list-view list-view">
+              {this.state.view==1?<div onClick={this.traverseUp} className="list-view__cat_item list-view__cat_item--parent">../</div>:null}
               {this.state.view==1?this.state.catalogue_list:""}
             </div>
             <div className="view-inner__tree-view">

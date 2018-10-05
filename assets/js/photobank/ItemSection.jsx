@@ -309,7 +309,6 @@ export class ItemSection extends React.Component{
   }
 
   handlePagination(e){
-    e.preventDefault();
     let changed = false;
     let target = e.target;
     if(target.tagName != "BUTTON" && target.tagName != "INPUT"){
@@ -326,12 +325,21 @@ export class ItemSection extends React.Component{
         changed = true;
       }
     }else if(e.type = "keyUp"){
-      if(e.key=='Enter'){
-        limit = parseInt(target.value);
-        start = start-(start%limit);
-        changed = true;
+      switch(e.keyCode){
+        case 13:
+          limit = parseInt(target.value);
+          start = start-(start%limit);
+          changed = true;
+          break;
+        case 37:
+          if((start-=limit)<0){start=0;}else{changed = true;};
+          break;
+        case 39:
+          if(!(start+limit>this.state.existing.length)){start = parseInt(start+limit);changed = true;};
+          break;
       }
     }
+    console.log("changed");
     if(changed){
       this.setState({
         "existing_list_start": start,
@@ -376,6 +384,9 @@ export class ItemSection extends React.Component{
       dragTimer = window.setTimeout(()=>{
         $("#drop_target" + this.props.item_id).removeClass('file-list__drop-target--active');
       }, 100);
+    });
+    $(document).keydown((e)=>{
+      this.handlePagination(e);
     });
     this.assignResumableEvents();
     this.fetchUnfinished();
