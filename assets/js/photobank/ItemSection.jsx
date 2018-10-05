@@ -495,8 +495,7 @@ export class ItemSection extends React.Component{
       existingListMarkupData.push(
 
         <div className={"existing-files__file file "+this.fileViewClasses[this.state.view_type]} key={file.src_filename+file.filename}>
-          <div className="file__thumbnail" style={{"backgroundImage":"url("+presetLinks[0]+")"}}></div>
-        <a className="file__file-name" href={window.config.resource_url+file.id+".jpg"}>{file.src_filename}</a>
+        <a className="file__file-name" href={window.config.resource_url+file.id+".jpg"} target="_blank"><div className="file__thumbnail" style={{"backgroundImage":"url("+presetLinks[0]+")"}}></div>{file.src_filename}</a>
       {/* <div className="file__edit-fields edit-fields"> */}
           <div className="edit-input">
             <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
