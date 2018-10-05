@@ -40,7 +40,7 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue('/assets/uploads/temp/')
                         ->end()
                         ->scalarNode('upload_directory')
-                            ->defaultValue('%kernel.project_dir%/public/uploads')
+                            ->defaultValue('%kernel.project_dir%/%env(resolve:UPLOADS_PARENT)%/uploads')
                         ->end()
                     ->end()
                 ->end()

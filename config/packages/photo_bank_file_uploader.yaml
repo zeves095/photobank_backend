@@ -6,4 +6,4 @@ file_uploader:
     back:
         destination_dir: ''
         temp_dir: 'temp/'
-        upload_directory: '%kernel.project_dir%/public/uploads'
+        upload_directory: '%kernel.project_dir%/%env(resolve:UPLOADS_PARENT)%/uploads'
