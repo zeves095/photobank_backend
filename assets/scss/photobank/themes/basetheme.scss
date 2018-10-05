@@ -1,15 +1,19 @@
-%component-section-color{
+@mixin component-section-color(){
 //border-right: 2px solid $color-tertiary;
   background-color:$color-main;
 }
 
-%list-item-color{
+@mixin list-item-color(){
   background-color: $color-main;
   color: $color-text;
   //border-bottom:1px solid $color-tertiary;
+  &:hover{
+    background-color: $color-accent-fade;
+    color:$color-text-alt;
+  }
 }
 
-%table-cell-color{
+@mixin table-cell-color(){
   background-color: $color-tertiary;
   color: $color-text;
   //border-bottom: 1px solid $color-main;
@@ -19,22 +23,60 @@
   }
 }
 
-%button-color{
-  background-color: $color-main;
-  color: $color-text-alt;
+@mixin button-color(){
+  background-color: transparent;
+  color: $color-text;
+  &:hover{
+    background-color: $color-accent-fade;
+    color: $color-text-alt;
+    @include hover-shadow();
+  }
 }
 
-%button-view-color{
-  background-color: $color-main;
-  color: $color-text-alt;
-  &--active{
+@mixin button-view-color(){
+  background-color: transparent;
+  color: $color-accent-fade;
+  &--active {
     background-color: $color-accent;
+    color: $color-text-alt;
   }
+  &:hover{
+    background-color: $color-accent-fade;
+    color: $color-text-alt;
+  }
+}
+
+@mixin button-accent-color(){
+  color:$color-text-alt;
+  background-color: $color-accent;
+  &:disabled{
+    background-color: $color-main-fade;
+    &:hover{
+      background-color: $color-main-fade;
+    }
+  }
+  &:hover{
+    background-color: $color-accent-fade;
+    color: $color-text-alt;
+    @include hover-shadow();
+  }
+}
+
+@mixin hover-shadow(){
+  -webkit-box-shadow: 0px 17px 46px -10px rgba(0,0,0,0.47);
+-moz-box-shadow: 0px 17px 46px -10px rgba(0,0,0,0.47);
+box-shadow: 0px 17px 46px -10px rgba(0,0,0,0.47);
 }
 
 body {
   background-color: $color-background;
   font-size: 12px;
+  button{
+    transition: 0.3s;
+  }
+  div{
+    transition: 0.2s;
+  }
 }
 
 .userblock {
@@ -47,23 +89,24 @@ body {
 
 .photobank-main {
 
-  &__butt-wrapper{
+  .upload-pool{
+    background-color: $color-main;
     button{
-      background-color: $color-accent;
-      color:$color-text-alt;
+      @include button-color();
     }
-  }
-
-  &__upload-pool-wrapper{
-    color:$color-text;
-    .upload-pool{
-      background-color: $color-main;
-      >button{
-        @extend %button-view-color;
-      }
-      &__view-inner>button{
-        @extend %button-color;
-      }
+    >button{
+      @include button-view-color();
+    }
+    .item-view__item-title{
+      background-color: $color-accent-fade;
+      color: $color-text-alt;
+      border-bottom: 1px solid $color-text-fade;
+    }
+    .item-view__subheader{
+      border-bottom: 1px solid $color-text-fade;
+    }
+    .file-list__file-item{
+      background-color: $color-tertiary-fade !important;
     }
   }
 
@@ -93,7 +136,7 @@ body {
   //border-right: 2px solid $color-tertiary;
   .view-inner__list-view{
     .list-view__cat_item{
-      @extend %list-item-color;
+      @include list-item-color();
     }
   }
 
@@ -112,48 +155,52 @@ body {
 .node-viewer {
   .view-inner {
     &__item-list {
-      @extend %component-section-color;
+      @include component-section-color();
       .list-item{
-        @extend %list-item-color;
+        @include list-item-color();
       }
     }
 
     &__item-section {
-      @extend %component-section-color;
+      @include component-section-color();
       background-color: $color-tertiary;
       .component-title{
         background-color: $color-tertiary-fade;
       }
+    }
+    .item-section-switcher{
+      @include button-color();
     }
   }
 }
 
 .list-filter{
   button{
-    background-color: $color-accent;
-    color: white;
+    @include button-accent-color();
   }
 }
 
 .item-view {
   .file-list__button-block{
     button{
-      @extend %button-color;
+      @include button-color();
       color:$color-text;
       &:disabled{
-        color: $color-text-fade;
-        background-color: $color-tertiary-fade;
+        color: $color-main-fade;
+        background-color: transparent;
+        box-shadow: none;
       }
     }
   }
   &__existing{
+    .file{
+      &:hover{
+        @include hover-shadow();
+      }
+    }
     .pagination-controls{
       button{
-        color:$color-text-alt;
-        background-color: $color-accent;
-        &:disabled{
-          background-color: $color-main-fade;
-        }
+        @include button-accent-color();
       }
       p{
         background-color: $color-accent-fade;
@@ -165,21 +212,29 @@ body {
       }
     }
     &>button.item-view__view-button{
-      @extend %button-view-color;
-      &--active{
-        background-color: $color-accent;
-      }
+      @include button-view-color();
     }
   }
   &__item-title{
-    background-color: $color-accent-fade;
-    color:$color-text-alt;
+    background-color: transparent;
+    color:$color-text;
+    border-bottom: 2px solid $color-main-fade;
   }
   &__subheader{
     //background-color: $color-main-fade;
-    border-bottom: 1px solid $color-accent;
+    border-bottom: 2px solid $color-main-fade;
+    font-size: 17px;
+    font-weight: 100;
+    color: #24495e;
   }
   .item-view__inner {
+    .item-uploads{
+      .button-block{
+        &__btn{
+          @include button-color();
+        }
+      }
+    }
     a{
       color:$color-text;
     }
@@ -202,20 +257,48 @@ body {
     &--detailed{
       .item-resources{
         //border: 2px solid $color-accent;
+        animation-name: foldout;
+        animation-duration: 3s;
+        overflow: hidden;
         .item-view__table-header{
           .info__info-field{
             background-color: $color-accent;
             color:$color-text-alt;
           }
         }
-        .info__info-field, .file>a, select, span, .edit-input{
-          @extend %table-cell-color;
+        .existing-files__file{
+          .info__info-field, .file>a, select, span, .edit-input{
+              @include table-cell-color();
+              padding: 4px 2px;
+          }
+          select{
+            border: none;
+            background-color: transparent;
+          }
+          &:hover{
+            box-shadow: none;
+            .info__info-field, .file>a, select, span, .edit-input{
+              transition: 0.3s;
+              background-color: $color-accent-fade;
+              color: $color-text-alt;
+            }
+            select{
+              outline: 1px solid $color-main-fade;
+              background-color: $color-background;
+              color:$color-text;
+            }
+            a{
+              color: $color-text-alt;
+            }
+            background-color: $color-accent-fade;
+            color: $color-text-alt;
+          }
         }
       }
       .item-uploads{
         //border: 2px solid $color-accent;
         .info__info-field, .file>a, select, span, .edit-input{
-          @extend %table-cell-color;
+          @include table-cell-color();
         }
       }
     }
@@ -230,4 +313,13 @@ body {
 
 .progress-bar{
   transition: 0.5s;
+}
+
+@keyframes foldout {
+  from {
+		max-height: 0;
+  	}
+	to {
+		max-height: 10000px;
+  	}
 }

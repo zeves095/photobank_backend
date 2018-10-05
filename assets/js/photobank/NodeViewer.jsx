@@ -56,7 +56,7 @@ export class NodeViewer extends React.Component{
   buildList(){
     this.filterData();
     let nodeItemList = this.state.node_items_filtered.map((item)=>
-      <div className="list-item" key={item.id}>
+      <div className="list-item" key={item.id} data-item={item.id} onClick={this.itemClickHandler}>
         <h4 data-item={item.id} onClick={this.itemClickHandler}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
       </div>
     );
@@ -86,6 +86,7 @@ export class NodeViewer extends React.Component{
     let itemId = $(e.target).attr("data-item");
     let currItem = this.state.node_items.filter((item)=>{return item.id == itemId})[0];
     this.setState({
+      'view_pool':false,
       'current_item': currItem,
       'item_section': this.makeItemSection(currItem),
       'product_crumbs': this.props.crumb_string

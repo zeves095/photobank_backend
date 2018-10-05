@@ -1,6 +1,6 @@
 .upload-pool {
   &__collapse-all{
-    @extend %button;
+    @include button();
     float:right;
   }
   height: 90vh;
@@ -9,12 +9,22 @@
   padding: 10px;
   overflow-y: scroll;
   > button {
-    @extend %button-view;
+    @include button-view();
   }
   &__view-inner{
     display: block;
     button {
-      @extend %button;
+      @include button();
     }
+  }
+  &__component-title{
+    button{
+      margin-top: -8px;
+    }
+  }
+  .list-filter{
+    padding: 10px;
+    margin-bottom: 0;
+    width: 300px;
   }
 }

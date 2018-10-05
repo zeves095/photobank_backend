@@ -5,7 +5,7 @@
   display: inline-block;
 
   .view-inner__container{
-    @extend %component-inner;
+    @include component-inner();
   }
 
   .view-inner {
@@ -17,9 +17,9 @@
       min-width: 210px;
       flex-grow: 0;
       flex-shrink: 2;
-      @extend %component-section;
+      @include component-section();
       .list-item{
-        @extend %list-item;
+        @include list-item();
       }
     }
 
@@ -31,7 +31,7 @@
       //max-width: 60vw;
       overflow-x:hidden;
       overflow-y:scroll;
-      @extend %component-section;
+      @include component-section();
     }
   }
 
@@ -39,7 +39,7 @@
     position: absolute;
     top: 2px;
     right: 0px;
-    @extend %button;
+    @include button();
     margin: 0;
   }
 }

@@ -1,4 +1,4 @@
-%icon-upload{
+@mixin icon-upload(){
   overflow: hidden;
   vertical-align: top;
   position: relative;
@@ -17,7 +17,25 @@
     position: relative;
   }
   .file-item__delete-upload{
-    position: relative;
+    position: initial;
+    cursor: pointer;
+    &::after{
+      content: '';
+      position: relative;
+      background-color: transparent;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      transition: background-color 0.3s;
+    }
+    &:hover{
+      &::after{
+        position: absolute;
+        background-color: rgba(255,0,0,0.2);
+      }
+    }
   }
 }
 
@@ -34,7 +52,7 @@
         }
         .existing-files__file{
           width: 150px;
-          @extend %icon-view;
+          @include icon-view();
           .file__thumbnail{
             width:150px;
             height:150px;
@@ -47,11 +65,13 @@
       }
       .item-uploads{
         display:block;
+
+        position: relative;
         .file-item__upload-status{
           display:none;
         }
         .file-list__file-item{
-          @extend %icon-upload;
+          @include icon-upload();
           width:150px;
           height:150px;
           .file-item__file-name{
@@ -60,8 +80,8 @@
             display: block;
           }
           .file-item__delete-upload{
-            top: 120px;
-            left: 55px;
+            margin-top: 5px;
+            margin-left: 115px;
             font-size: 17px;
           }
         }
@@ -92,7 +112,7 @@
       }
       .existing-files__file{
         width: 100px;
-        @extend %icon-view;
+        @include icon-view();
         .file__thumbnail{
           width:100px;
           height:100px;
@@ -110,16 +130,16 @@
           display:none;
         }
         .file-list__file-item{
-          @extend %icon-upload;
+          @include icon-upload();
           width:100px;
           height:100px;
           .file-item__file-name{
             font-size: 10pt;
-            bottom: -23px;
+            bottom: -15px;
           }
           .file-item__delete-upload{
-            top: 75px;
-            left: 35px;
+            margin-top: 5px;
+            margin-left: 75px;
           }
         }
       }
@@ -146,9 +166,15 @@
           .file__thumbnail{
             display:none;
           }
+          .file__file-name{
+            max-width: 256px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
         }
         .info__info-field, .file>a, select, span, .edit-input{
-          @extend %table-cell;
+          @include table-cell();
         }
       }
       .item-uploads{
@@ -162,13 +188,14 @@
         .file-list__file-item{
           display:table-row;
           .file-item__file-name{
-            max-width: 20%;
+            max-width: 100px;
             white-space: nowrap;
             text-overflow: ellipsis;
+            overflow: hidden;
           }
         }
         .info__info-field, .file>a, select, span, .edit-input{
-          @extend %table-cell;
+          @include table-cell();
         }
       }
       .progress-bar{

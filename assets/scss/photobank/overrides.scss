@@ -14,3 +14,20 @@
 .info__info-field--comment{
   display: none !important;
 }
+
+.jstree-anchor .jstree-icon{
+  background:none;
+  &::before{
+    font-weight: bold;
+    color: #36647d;
+    font-size: 15px;
+    font-family: "Font Awesome 5 Free";
+    content:"\f07b";
+  }
+}
+
+.jstree-open>a.jstree-anchor .jstree-icon{
+  &:before{
+    content: "\f07c";
+  }
+}

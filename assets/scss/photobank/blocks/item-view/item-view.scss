@@ -1,6 +1,6 @@
 .item-view {
   position: relative;
-  @extend %component-inner;
+  @include component-inner();
   &__pagination-controls{
     position: relative;
     //margin-top: -47px;
@@ -20,7 +20,7 @@
           vertical-align: middle;
     }
     .pagination-controls__btn{
-      @extend %button;
+      @include button();
       padding: 2px 4px;
       margin: 0;
           vertical-align: middle;
@@ -31,7 +31,7 @@
   }
   .file-list__button-block{
     button{
-      @extend %button;
+      @include button();
     }
   }
   .file-list__drop-target{
@@ -47,7 +47,7 @@
     }
   }
   &__existing>button.item-view__view-button{
-    @extend %button-view;
+    @include button-view();
   }
   &__item-title{
     padding: 10px 20px;
@@ -71,7 +71,7 @@
 
   }
   .item-view__inner {
-    @extend %component-inner;
+    @include component-inner();
     transition: 0.5s;
     max-height: auto;
     overflow: hidden;
@@ -85,6 +85,7 @@
   .item-view__collapse-button{
     position: absolute;
     right: 15px;
+    margin:3px;
   }
   .existing-files{
     &__file{
@@ -94,9 +95,12 @@
   .item-uploads{
     .button-block{
       position: absolute;
-      right: 15px;
+      top: 18px;
+      right: 0;
       button{
-        @extend %button;
+        @include button();
+        margin: 0;
+        font-size: 12px;
       }
     }
   }

@@ -127,10 +127,9 @@ export class UploadPool extends React.Component{
         <button type="button" data-view="1" onClick={this.handleViewChoice}><i className="fas fa-th"></i></button>
         <button type="button" data-view="2" onClick={this.handleViewChoice}><i className="fas fa-list-ul"></i></button>
       <h2 className="upload-pool__component-title component-title">Загрузки<button type="button" onClick={this.handleCollapseAll} className="upload-pool__collapse-all">{this.state.collapse_all?"Показать все":"Скрыть все"}</button></h2>
-      <ListFilter filterHandler={this.filterQueryHandler} filterid="poolsearch" placeholder="Фильтр по товару" />
+    <ListFilter filterHandler={this.filterQueryHandler} filterid="poolsearch" placeholder="Фильтр по товару" /><button type="button" onClick={this.handleSubmit}>Загрузить все</button>
         <div className="upload-pool__view-inner">
           {this.state.pool}
-          <button type="button" onClick={this.handleSubmit}>Загрузить</button>
         </div>
       </div>
     );

@@ -8,12 +8,20 @@
   display: inline-block;
   overflow: hidden;
   overflow-x: scroll;
-  @extend %component-section;
+  @include component-section();
 
   .view-inner__list-view{
     margin-top:10px;
     .list-view__cat_item{
-      @extend %list-item;
+      @include list-item();
+      b::before{
+          font-weight: bold;
+          color: #36647d;
+          font-size: 15px;
+          font-family: "Font Awesome 5 Free";
+          padding: 5px;
+          content:"\f07b";
+      }
     }
   }
 position:relative;
