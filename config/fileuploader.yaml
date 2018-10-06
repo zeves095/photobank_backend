@@ -1,5 +1,5 @@
 parameters:
-  upload_directory: '%kernel.project_dir%/public/uploads'
+  upload_directory: '%kernel.project_dir%/%env(resolve:UPLOADS_PARENT)%/uploads'
   upload_target_url: '/api/upload/'
   existing_uploads_url: '/catalogue/node/item/resources/'
   unfinished_uploads_url: '/api/upload/unfinished/'
