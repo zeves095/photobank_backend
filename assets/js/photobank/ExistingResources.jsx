@@ -6,6 +6,7 @@ export class ExistingResources extends React.Component{
   constructor(props) {
     super(props);
     this.state={
+      "existing": [],
       "view_type": this.props.default_view,
       "finished_presets": [],
       "busy" : false,
@@ -25,10 +26,19 @@ export class ExistingResources extends React.Component{
     this.handleResourceUpdate = this.handleResourceUpdate.bind(this);
     this.handlePagination = this.handlePagination.bind(this);
     this.getFinishedPresets = this.getFinishedPresets.bind(this);
+    this.fetchExisting = this.fetchExisting.bind(this);
+  }
+
+  fetchExisting(){
+    $.getJSON(window.config.existing_uploads_url+this.props.item_id, (data)=>{
+      this.setState({
+        "existing": data,
+      });
+    });
   }
 
   getFinishedPresets(resource, id){
-    if(this.state.busy || typeof this.props.resources[id] == 'undefined'){return}
+    if(this.state.busy || typeof this.state.existing[id] == 'undefined'){return}
     for(var preset in window.config['presets']){
       this.finishedPresetRequestStack.push(id+"-"+preset);
       let presetId = window.config['presets'][preset]['id'];
@@ -52,9 +62,9 @@ export class ExistingResources extends React.Component{
   }
 
   fetchPresets(){
-    if(this.props.resources.length==0){console.log("nothing to fetch");this.setState({"loading_existing":false});return;}
+    if(this.state.existing.length==0){console.log("nothing to fetch");this.setState({"loading_existing":false});return;}
     for(var i = this.state.list_start; i<this.state.list_end; i++){
-      this.getFinishedPresets(this.props.resources[i], i);
+      this.getFinishedPresets(this.state.existing[i], i);
     }
   }
 
@@ -76,7 +86,7 @@ export class ExistingResources extends React.Component{
       data: dataJson,
       contentType: "application/json; charset=utf-8",
       dataType: "json"
-    });
+    }).done(()=>{this.forceUpdate()});
   }
 
   handlePagination(e){
@@ -92,7 +102,7 @@ export class ExistingResources extends React.Component{
         if((start-=limit)<0){start=0};
         changed = true;
       }else{
-        if(!(start+limit>this.props.resources.length)){start = parseInt(start+limit)};
+        if(!(start+limit>this.state.existing.length)){start = parseInt(start+limit)};
         changed = true;
       }
     }else if(e.type = "keyUp"){
@@ -107,7 +117,7 @@ export class ExistingResources extends React.Component{
           if((start-=limit)<0){start=0;}else{changed = true;};
           break;
         case 39:
-          if(!(start+limit>this.props.resources.length)){start = parseInt(start+limit);changed = true;};
+          if(!(start+limit>this.state.existing.length)){start = parseInt(start+limit);changed = true;};
           break;
       }
     }
@@ -118,7 +128,7 @@ export class ExistingResources extends React.Component{
         "list_end": start+limit,
         "loading_existing": true,
         "list_current_page": Math.floor(this.state.list_start/this.state.list_limit)+1,
-        "list_total_pages": Math.ceil(this.props.resources.length/this.state.list_limit)
+        "list_total_pages": Math.ceil(this.state.existing.length/this.state.list_limit)
       });
     }
   }
@@ -132,9 +142,7 @@ export class ExistingResources extends React.Component{
     $(document).on("keyup.pagination", (e)=>{
       this.handlePagination(e);
     });
-    if(this.props.resources.length != 0){
-      this.fetchPresets();
-    }
+    this.fetchExisting();
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -142,17 +150,22 @@ export class ExistingResources extends React.Component{
       this.setState({
         "view_type": this.props.default_view,
       });
-      if(this.props.resources != prevProps.resources){
-        this.setState({
-          "loading_existing": true,
-          "list_total_pages": Math.ceil(this.props.resources.length/this.state.list_limit),
-          "list_current_page": Math.floor(this.state.list_start/this.state.list_limit)+1,
-          "list_total_pages": Math.ceil(this.props.resources.length/this.state.list_limit)
-        });
-        this.fetchPresets();
+      if(this.props.need_refresh){
+        this.fetchExisting();
       }
     }
+    if(this.state.existing != prevState.existing){
+      console.log("changed existing" + this.state.existing.length);
+      this.setState({
+        "loading_existing": true,
+        "list_total_pages": Math.ceil(this.state.existing.length/this.state.list_limit),
+        "list_current_page": Math.floor(this.state.list_start/this.state.list_limit)+1,
+        "list_total_pages": Math.ceil(this.state.existing.length/this.state.list_limit)
+      });
+      this.fetchPresets();
+    }
     if(prevState.list_start != this.state.list_start || prevState.list_limit != this.state.list_limit){
+      console.log("changed pagination");
       this.fetchPresets();
       this.setState({
         "loading_existing": true,
@@ -168,14 +181,14 @@ export class ExistingResources extends React.Component{
   render() {
     let maxMain = window.config.max_main_resources;
     let maxAdd = window.config.max_additional_resources;
-    let currMain = this.props.resources.filter((file)=>{return file.type == 1}).length;
-    let currAdd = this.props.resources.filter((file)=>{return file.type == 2}).length;
+    let currMain = this.state.existing.filter((file)=>{return file.type == 1}).length;
+    let currAdd = this.state.existing.filter((file)=>{return file.type == 2}).length;
     let mainStatus = currMain+"/"+maxMain;
     let addStatus = currAdd+"/"+maxAdd;
     let existingListMarkupData = [];
     for(var i = this.state.list_start; i<this.state.list_end; i++){
-      if(typeof this.props.resources[i]=='undefined'){break};
-      let file = this.props.resources[i];
+      if(typeof this.state.existing[i]=='undefined'){break};
+      let file = this.state.existing[i];
       let presets = [];
       let presetLinks = [];
       for(var preset in window.config['presets']){
@@ -227,11 +240,11 @@ export class ExistingResources extends React.Component{
       </div>)
     }
 
-    let paginationControls = this.props.resources.length!=0?(
+    let paginationControls = this.state.existing.length!=0?(
       <div className="item-view__pagination-controls pagination-controls">
           <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="0" type="button" disabled={this.state.list_start==0}><i className="fas fa-arrow-left"></i></button>
         <p>{this.state.list_current_page}/{this.state.list_total_pages}</p>
-      <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="1" type="button" disabled={this.state.list_end>=this.props.resources.length}><i className="fas fa-arrow-right"></i></button>
+      <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="1" type="button" disabled={this.state.list_end>=this.state.existing.length}><i className="fas fa-arrow-right"></i></button>
     <p>На странице:</p><input onKeyUp={this.handlePagination} type="text" name="pagination_limit" defaultValue={this.state.list_limit}></input>
         </div>
     ):null;
@@ -240,7 +253,7 @@ export class ExistingResources extends React.Component{
       <div className="item-view__existing">
         <h4 className="item-view__subheader">Файлы товара</h4>
         {paginationControls}
-        {this.props.resources.length==0?"Нет загруженных файлов":null}
+        {this.state.existing.length==0?"Нет загруженных файлов":null}
         <div className={(this.state.loading_existing?"loading ":"") + "item-resources"}>
           <div className="item-view__file-list existing-files">
             <div className="item-view__table-header">
