@@ -23,6 +23,8 @@ export class ExistingResources extends React.Component{
     this.paginationControls = "";
     this.preset_headers = [];
 
+    this.presetCache = [];
+
     this.handleResourceUpdate = this.handleResourceUpdate.bind(this);
     this.handlePagination = this.handlePagination.bind(this);
     this.getFinishedPresets = this.getFinishedPresets.bind(this);
@@ -30,6 +32,7 @@ export class ExistingResources extends React.Component{
   }
 
   fetchExisting(){
+    console.log("fetching ex");
     $.getJSON(window.config.existing_uploads_url+this.props.item_id, (data)=>{
       this.setState({
         "existing": data,
@@ -40,24 +43,27 @@ export class ExistingResources extends React.Component{
   getFinishedPresets(resource, id){
     if(this.state.busy || typeof this.state.existing[id] == 'undefined'){return}
     for(var preset in window.config['presets']){
-      this.finishedPresetRequestStack.push(id+"-"+preset);
-      let presetId = window.config['presets'][preset]['id'];
-      let resId = resource.id;
-      let url = window.config.resource_url + resource.id + "/" + presetId;
-      this.state.finished_presets = [];
-      $.ajax({url: url, method: 'GET'}).done((data)=>{
-        if(typeof data.id != "undefined"){
-          this.state.finished_presets.push({
-            'id': data.id,
-            'resource' : data.gid,
-            'preset' : data.preset
-          });
-        }
-        this.finishedPresetRequestStack.splice(this.finishedPresetRequestStack.indexOf(id+"-"+preset), 1);
-        if(this.finishedPresetRequestStack.length == 0){
-          this.setState({"loading_existing" : false})
-        }
-      });
+      if(this.state.finished_presets.filter((fin_preset)=>{return fin_preset.resource==resource.id&&window.config['presets'][preset]['id']==fin_preset.preset}).length == 0){
+        console.log("preset not found");
+        this.finishedPresetRequestStack.push(id+"-"+preset);
+        let presetId = window.config['presets'][preset]['id'];
+        let resId = resource.id;
+        let url = window.config.resource_url + resource.id + "/" + presetId;
+        // this.state.finished_presets = [];
+        $.ajax({url: url, method: 'GET'}).done((data)=>{
+          if(typeof data.id != "undefined"){
+            this.state.finished_presets.push({
+              'id': data.id,
+              'resource' : data.gid,
+              'preset' : data.preset
+            });
+          }
+          this.finishedPresetRequestStack.splice(this.finishedPresetRequestStack.indexOf(id+"-"+preset), 1);
+          if(this.finishedPresetRequestStack.length == 0){
+            this.setState({"loading_existing" : false})
+          }
+        });
+      }
     }
   }
 
@@ -86,7 +92,8 @@ export class ExistingResources extends React.Component{
       data: dataJson,
       contentType: "application/json; charset=utf-8",
       dataType: "json"
-    }).done(()=>{this.forceUpdate()});
+    });
+    this.fetchExisting();
   }
 
   handlePagination(e){

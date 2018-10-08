@@ -314,7 +314,6 @@ export class Uploads extends React.Component{
 
   componentWillUnmount(){
     this.props.resumable.events = [];
-    $(document).off(".pagination");
   }
 
   render() {
