@@ -16,11 +16,13 @@ class ImageProcessorService{
   private $entityManager;
   private $container;
   private $resourceService;
+  private $fileSystem;
 
-  public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container, ResourceService $resourceService){
+  public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container, ResourceService $resourceService, Filesystem $fileSystem){
     $this->entityManager = $entityManager;
     $this->container = $container;
     $this->resourceService = $resourceService;
+    $this->fileSystem = $fileSystem;
   }
 
   public function queue($resourceId, $preset){
@@ -54,7 +56,9 @@ class ImageProcessorService{
     $imageProcessor = new Imagine();
     $size = new Box($preset['width'],$preset['height']);
     $mode = ImageInterface::THUMBNAIL_INSET;
-    $targetPath = $this->container->getParameter('upload_directory').'/imgproc/'.$resource->getId().'_'.$preset['name'].'.'.$extension;
+    $processorDirectory = $this->container->getParameter('upload_directory').'/imgproc/';
+    if(!$this->fileSystem->exists($processorDirectory)){$this->fileSystem->mkDir($processorDirectory);}
+    $targetPath = $processorDirectory.$resource->getId().'_'.$preset['name'].'.'.$extension;
     $imageProcessor->open($resource->getPath())
     ->thumbnail($size, $mode)
     ->save($targetPath);
@@ -78,6 +82,7 @@ class ImageProcessorService{
     ];
 
     $this->resourceService->processCompletedUpload($resourceParameters);
+    $this->fileSystem->remove($targetPath);
   }
 
 }

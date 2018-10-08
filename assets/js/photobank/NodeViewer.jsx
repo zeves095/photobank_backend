@@ -57,7 +57,6 @@ export class NodeViewer extends React.Component{
   }
 
   buildList(){
-    console.log(this.state.current_item);
     this.filterData();
     let nodeItemList = this.state.node_items_filtered.map((item)=>
       <div className={"list-item"+((this.state.current_item!=null&&item.id==this.state.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={this.itemClickHandler}>
