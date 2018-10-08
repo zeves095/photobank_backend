@@ -1,6 +1,7 @@
 import React from 'react';
 // import $ from 'jquery';
 import { hex_md5 } from '../vendor/md5';
+import { ExistingResources } from './ExistingResources';
 
 export class ItemSection extends React.Component{
   constructor(props) {
@@ -63,10 +64,7 @@ export class ItemSection extends React.Component{
     this.removeUpload = this.removeUpload.bind(this);
     this.cleanUpDone = this.cleanUpDone.bind(this);
     this.handleViewChoice = this.handleViewChoice.bind(this);
-    this.handlePagination = this.handlePagination.bind(this);
-    this.getFinishedPresets = this.getFinishedPresets.bind(this);
     this.assignResumableEvents = this.assignResumableEvents.bind(this);
-    this.fetchPresets = this.fetchPresets.bind(this);
     this.clearAllUnfinished = this.clearAllUnfinished.bind(this);
     this.hideUnfinished = this.hideUnfinished.bind(this);
   }
@@ -107,47 +105,13 @@ export class ItemSection extends React.Component{
       });
   }
 
-  getFinishedPresets(resource, id){
-    if(this.state.busy || !this.props.render_existing || typeof this.state.existing[id] == 'undefined'){return}
-    for(var preset in window.config['presets']){
-      this.finishedPresetRequestStack.push(id+"-"+preset);
-      let presetId = window.config['presets'][preset]['id'];
-      let resId = resource.id;
-      let url = window.config.resource_url + resource.id + "/" + presetId;
-      this.state.finished_presets = [];
-      $.ajax({url: url, method: 'GET'}).done((data)=>{
-        if(typeof data.id != "undefined"){
-          this.state.finished_presets.push({
-            'id': data.id,
-            'resource' : data.gid,
-            'preset' : data.preset
-          });
-        }
-        this.finishedPresetRequestStack.splice(this.finishedPresetRequestStack.indexOf(id+"-"+preset), 1);
-        if(this.finishedPresetRequestStack.length == 0){
-          this.setState({"loading_existing" : false})
-        }
-      });
-    }
-  }
-
   fetchExisting(){
     if(this.props.render_existing){
-      this.setState({"loading_existing" : true});
       $.getJSON(window.config.existing_uploads_url+this.state.item_id, (data)=>{
-        this.state.existing = data;
         this.setState({
-          "existing_list_total_pages": Math.ceil(this.state.existing.length/this.state.existing_list_limit),
+          "existing": data,
         });
-        this.fetchPresets();
       });
-    }
-  }
-
-  fetchPresets(){
-    if(this.state.existing.length==0){this.setState({"loading_existing" : false}); return;}
-    for(var i = this.state.existing_list_start; i<this.state.existing_list_end; i++){
-      this.getFinishedPresets(this.state.existing[i], i);
     }
   }
 
@@ -309,50 +273,6 @@ export class ItemSection extends React.Component{
     this.props.viewChoiceHandler(view);
   }
 
-  handlePagination(e){
-    let changed = false;
-    let start = this.state.existing_list_start;
-    let limit = this.state.existing_list_limit;
-    let target = e.target;
-    if(e.type == "click"){
-      if(target.tagName != "BUTTON"){
-        target = target.parentNode;
-      }
-      if(target.dataset.direction == 0){
-        if((start-=limit)<0){start=0};
-        changed = true;
-      }else{
-        if(!(start+limit>this.state.existing.length)){start = parseInt(start+limit)};
-        changed = true;
-      }
-    }else if(e.type = "keyUp"){
-      switch(e.keyCode){
-        case 13:
-          if(target.name != "pagination_limit"){break;}
-          limit = parseInt(target.value);
-          start = start-(start%limit);
-          if(limit!=this.state.existing_list_limit){changed = true;}
-          break;
-        case 37:
-          if((start-=limit)<0){start=0;}else{changed = true;};
-          break;
-        case 39:
-          if(!(start+limit>this.state.existing.length)){start = parseInt(start+limit);changed = true;};
-          break;
-      }
-    }
-    if(changed){
-      this.setState({
-        "existing_list_start": start,
-        "existing_list_limit": limit,
-        "existing_list_end": start+limit,
-        "loading_existing": true,
-        "existing_list_current_page": Math.floor(start/limit)+1,
-        "existing_list_total_pages": Math.ceil(this.state.existing.length/limit)
-      });
-    }
-  }
-
   componentWillMount(){
     $.ajax({url: window.config['item_url']+this.props.item_id, method: 'GET'}).done((data)=>{
       this.setState({
@@ -363,14 +283,6 @@ export class ItemSection extends React.Component{
   }
 
   componentDidMount(){
-    let presets = [];
-    for(var preset in window.config['presets']){
-      presets.push(<span key={this.state.item_id + preset} className="info__info-field info__info-field--title info__info-field--preset">{preset}</span>);
-    }
-    this.setState({
-      "preset_headers":presets
-    });
-
     this.resumable.assignBrowse(document.getElementById("browse" + this.props.item_id+this.props.section_type));
     this.resumable.assignDrop(document.getElementById("drop_target" + this.props.item_id));
     var dragTimer;
@@ -385,9 +297,6 @@ export class ItemSection extends React.Component{
       dragTimer = window.setTimeout(()=>{
         $("#drop_target" + this.props.item_id).removeClass('file-list__drop-target--active');
       }, 100);
-    });
-    $(document).on("keyup.pagination", (e)=>{
-      this.handlePagination(e);
     });
     this.assignResumableEvents();
     this.fetchUnfinished();
@@ -481,77 +390,6 @@ export class ItemSection extends React.Component{
   }
 
   render() {
-
-    let maxMain = window.config.max_main_resources;
-    let maxAdd = window.config.max_additional_resources;
-    let currMain = this.state.existing.filter((file)=>{return file.type == 1}).length;
-    let currAdd = this.state.existing.filter((file)=>{return file.type == 2}).length;
-    let mainStatus = currMain+"/"+maxMain;
-    let addStatus = currAdd+"/"+maxAdd;
-    let existingListMarkupData = [];
-    for(var i = this.state.existing_list_start; i<this.state.existing_list_end; i++){
-      if(typeof this.state.existing[i]=='undefined'){break};
-      let file = this.state.existing[i];
-      let presets = [];
-      let presetLinks = [];
-      for(var preset in window.config['presets']){
-        let presetId = window.config['presets'][preset]['id'];
-        let finishedPreset = this.state.finished_presets.filter((preset)=>{return (preset.resource==file.id && preset.preset == presetId)})[0];
-        let finished = typeof finishedPreset != "undefined";
-        presetLinks.push(window.config['resource_url']+ (finished?finishedPreset.id:"0")+".jpg");
-        presets.push(
-          <span key={file.id+"-"+presetId} className={"info__info-field info__info-field--preset "+finished?"info__info-field--preset-done":"info__info-field--preset-not-done"}>
-            {finished
-              ?<a href={window.config['resource_url']+finishedPreset.id+".jpg"} target="_blank">{window.config['presets'][preset]['width']+'/'+window.config['presets'][preset]['height']}</a>
-              :"Не обработан"
-            }
-          </span>);
-      }
-      existingListMarkupData.push(
-
-        <div className={"existing-files__file file "+this.fileViewClasses[this.state.view_type]} key={file.src_filename+file.filename}>
-        <a className="file__file-name" href={window.config.resource_url+file.id+".jpg"} target="_blank"><div className="file__thumbnail" style={{"backgroundImage":"url("+presetLinks[0]+")"}}></div>{file.src_filename}</a>
-      {/* <div className="file__edit-fields edit-fields"> */}
-          <div className="edit-input">
-            <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
-              <option disabled={currMain>=maxMain?true:false} value="1">Основноe{mainStatus}</option>
-            <option disabled={currAdd>=maxAdd?true:false} value="2">Дополнительное{addStatus}</option>
-              <option value="3">Исходник</option>
-            </select>
-          </div>
-          {/* <span className="edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span> */}
-          <input type="hidden" name="id" value={file.id}/>
-      {/* </div> */}
-        {/* <div className="file__info info"> */}
-          <span className="info__info-field info-field info__info-field--sizepx">
-            {file.size_px}
-          </span>
-          <span className="info__info-field info-field info__info-field--sizemb">
-            {Math.round((file.size_bytes/(1024*1024))*100)/100 + "MB"}
-          </span>
-          <span className="info__info-field info-field info__info-field--uploaddate">
-            {file.created_on}
-          </span>
-          <span className="info__info-field info-field info__info-field--username">
-            {file.username}
-          </span>
-          <span className="info__info-field info-field info__info-field--comment">
-            {file.comment}
-          </span>
-            {presets}
-        {/* </div> */}
-      </div>)
-    }
-
-    let paginationControls = this.state.existing.length!=0?(
-      <div className="item-view__pagination-controls pagination-controls">
-          <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="0" type="button" disabled={this.state.existing_list_start==0}><i className="fas fa-arrow-left"></i></button>
-        <p>{this.state.existing_list_current_page}/{this.state.existing_list_total_pages}</p>
-      <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="1" type="button" disabled={this.state.existing_list_end>=this.state.existing.length}><i className="fas fa-arrow-right"></i></button>
-    <p>На странице:</p><input onKeyUp={this.handlePagination} type="text" name="pagination_limit" defaultValue={this.state.existing_list_limit}></input>
-        </div>
-    ):null;
-
     let uploadList = this.state.uploads;
     let active = uploadList.filter((item)=>{return item.status != 'unfinished'});
     let unfinished = uploadList.filter((item)=>{return item.status == 'unfinished' || item.status == 'resolved'});
@@ -567,9 +405,7 @@ export class ItemSection extends React.Component{
     uploadListMarkup = uploadListMarkup.concat(this.drawSegment(unfinished, 2));
 
     return (
-      <div className = {
-        "item-view"
-      } >
+      <div className = {"item-view"} >
       <div className="file-list__drop-target" id={"drop_target" + this.props.item_id}></div>
       {
         !this.props.render_existing
@@ -592,39 +428,16 @@ export class ItemSection extends React.Component{
           this.state.open
           ? "item-view__inner--open "
           : "item-view__inner--closed ") + this.containerViewClasses[this.state.view_type]}>
-        {
-          this.props.render_existing
-            ? <div className="item-view__existing">
-                <button type="button" data-view="0" className={this.state.view_type==0?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
-                  <i className="fas fa-th-large"></i>
-                </button>
-                <button type="button" data-view="1" className={this.state.view_type==1?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
-                  <i className="fas fa-th"></i>
-                </button>
-                <button type="button" data-view="2" className={this.state.view_type==2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
-                  <i className="fas fa-list-ul"></i>
-                </button>
-                <h4 className="item-view__subheader">Файлы товара</h4>
-              {paginationControls}
-              {this.state.existing.length==0?"Нет загруженных файлов":null}
-              <div className={(this.state.loading_existing?"loading ":"") + "item-resources"}>
-                  <div className="item-view__file-list existing-files">
-                    <div className="item-view__table-header">
-                      <span className="info__info-field info__info-field--title info__info-field--sizepx">Имя файла</span>
-                    <span className="info__info-field info__info-field--title info__info-field--type">Тип ресурса</span>
-                  <span className="info__info-field info__info-field--title info__info-field--sizebytes">Размер изображения</span>
-                <span className="info__info-field info__info-field--title info__info-field--sizemb">Размер файла</span>
-              <span className="info__info-field info__info-field--title info__info-field--uploaddate">Дата создания</span>
-            <span className="info__info-field info__info-field--title info__info-field--username">Пользователь</span>
-          <span className="info__info-field info__info-field--title info__info-field--comment">Комментарий</span>
-                      {this.state.preset_headers}
-                    </div>
-                    {existingListMarkupData}
-                  </div>
-                </div>
-              </div>
-            : null
-        }
+          <button type="button" data-view="0" className={this.state.view_type==0?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
+            <i className="fas fa-th-large"></i>
+          </button>
+          <button type="button" data-view="1" className={this.state.view_type==1?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
+            <i className="fas fa-th"></i>
+          </button>
+          <button type="button" data-view="2" className={this.state.view_type==2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
+            <i className="fas fa-list-ul"></i>
+          </button>
+          {this.props.render_existing?<ExistingResources resources={this.state.existing} />:null}
         <h4 className="item-view__subheader">Загрузки</h4>
       <div className={(this.state.loading_uploads?"loading ":"") + "item-view__file-list file-list"} id={"file_list" + this.props.item_id}>
           <div className="file-list__button-block">
