@@ -17,6 +17,7 @@
       min-width: 210px;
       flex-grow: 0;
       flex-shrink: 2;
+      overflow: scroll;
       @include component-section();
       .list-item{
         @include list-item();

@@ -250,7 +250,6 @@ export class ItemSection extends React.Component{
       'itemid': this.state.item_id
     }
     $.ajax({url: window.config.remove_upload_url, method: 'POST', data: obj}).done(()=>{
-      console.log(this.removeUploadStack.length+"remaining");
       this.removeUploadStack.splice(this.removeUploadStack.indexOf(upload.filehash));
       if(this.removeUploadStack.length == 0){
         this.fetchUnfinished();
@@ -341,7 +340,6 @@ export class ItemSection extends React.Component{
           break;
       }
     }
-    console.log("changed");
     if(changed){
       this.setState({
         "existing_list_start": start,
@@ -475,7 +473,6 @@ export class ItemSection extends React.Component{
   }
 
   hideUnfinished(){
-    console.log("hidin");
     this.setState({
       "unfinished_hidden" : !this.state.unfinished_hidden
     });

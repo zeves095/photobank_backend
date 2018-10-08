@@ -123,9 +123,9 @@ export class UploadPool extends React.Component{
   render(){
     return(
       <div className="upload-pool">
-        <button type="button" data-view="0" onClick={this.handleViewChoice}><i className="fas fa-th-large"></i></button>
-        <button type="button" data-view="1" onClick={this.handleViewChoice}><i className="fas fa-th"></i></button>
-        <button type="button" data-view="2" onClick={this.handleViewChoice}><i className="fas fa-list-ul"></i></button>
+        <button type="button" className={"view-button"+(this.state.view_type==0?" view-button--active":"")} data-view="0" onClick={this.handleViewChoice}><i className="fas fa-th-large"></i></button>
+      <button type="button" className={"view-button"+(this.state.view_type==1?" view-button--active":"")} data-view="1" onClick={this.handleViewChoice}><i className="fas fa-th"></i></button>
+    <button type="button" className={"view-button"+(this.state.view_type==2?" view-button--active":"")} data-view="2" onClick={this.handleViewChoice}><i className="fas fa-list-ul"></i></button>
       <h2 className="upload-pool__component-title component-title">Загрузки<button type="button" onClick={this.handleCollapseAll} className="upload-pool__collapse-all">{this.state.collapse_all?"Показать все":"Скрыть все"}</button></h2>
     <ListFilter filterHandler={this.filterQueryHandler} filterid="poolsearch" placeholder="Фильтр по товару" /><button type="button" onClick={this.handleSubmit}>Загрузить все</button>
         <div className="upload-pool__view-inner">

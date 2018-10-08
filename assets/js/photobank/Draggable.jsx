@@ -23,7 +23,6 @@ export class Draggable extends React.Component{
   handleDrag(e){
     this.state.box1 = $(this.props.box1);
     this.state.box2 = $(this.props.box2);
-    console.log(this.state.box2);
     e.preventDefault();
     this.state.dragging = true;
   }
