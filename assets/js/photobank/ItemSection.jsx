@@ -33,7 +33,7 @@ export class ItemSection extends React.Component{
       "existing_list_end": 20,
       "existing_list_current_page": 1,
       "existing_list_total_pages": 0,
-      "unfinished_hidden":false
+      "unfinished_hidden":false,
     };
     this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
@@ -311,13 +311,13 @@ export class ItemSection extends React.Component{
 
   handlePagination(e){
     let changed = false;
-    let target = e.target;
-    if(target.tagName != "BUTTON" && target.tagName != "INPUT"){
-      target = target.parentNode;
-    }
     let start = this.state.existing_list_start;
     let limit = this.state.existing_list_limit;
+    let target = e.target;
     if(e.type == "click"){
+      if(target.tagName != "BUTTON"){
+        target = target.parentNode;
+      }
       if(target.dataset.direction == 0){
         if((start-=limit)<0){start=0};
         changed = true;
@@ -328,9 +328,10 @@ export class ItemSection extends React.Component{
     }else if(e.type = "keyUp"){
       switch(e.keyCode){
         case 13:
+          if(target.name != "pagination_limit"){break;}
           limit = parseInt(target.value);
           start = start-(start%limit);
-          changed = true;
+          if(limit!=this.state.existing_list_limit){changed = true;}
           break;
         case 37:
           if((start-=limit)<0){start=0;}else{changed = true;};
@@ -385,7 +386,7 @@ export class ItemSection extends React.Component{
         $("#drop_target" + this.props.item_id).removeClass('file-list__drop-target--active');
       }, 100);
     });
-    $(document).keydown((e)=>{
+    $(document).on("keyup.pagination", (e)=>{
       this.handlePagination(e);
     });
     this.assignResumableEvents();
@@ -445,6 +446,7 @@ export class ItemSection extends React.Component{
 
   componentWillUnmount(){
     this.state.resumable.events = [];
+    $(document).off(".pagination");
   }
 
   drawSegment(list, listid){
@@ -546,7 +548,7 @@ export class ItemSection extends React.Component{
           <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="0" type="button" disabled={this.state.existing_list_start==0}><i className="fas fa-arrow-left"></i></button>
         <p>{this.state.existing_list_current_page}/{this.state.existing_list_total_pages}</p>
       <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="1" type="button" disabled={this.state.existing_list_end>=this.state.existing.length}><i className="fas fa-arrow-right"></i></button>
-    <p>На странице:</p><input onKeyUp={this.handlePagination} type="text" defaultValue={this.state.existing_list_limit}></input>
+    <p>На странице:</p><input onKeyUp={this.handlePagination} type="text" name="pagination_limit" defaultValue={this.state.existing_list_limit}></input>
         </div>
     ):null;
 
