@@ -75,12 +75,13 @@ export class CatalogueTree extends React.Component {
         'parent':"",
         'state':{
           'selected':false,
-          'opened':true
+          'opened':false
         }
       };
       if(item.id == this.state.current_node){
         tree['selected'] = [item.id];
         treeNode['state']['selected'] = true;
+        treeNode['state']['opened'] = true;
         let nodeToOpen = item;
         let bugCounter = 0;
         while(nodeToOpen.parent != null && nodeToOpen.parent != 1 && nodeToOpen.parent != "#"){

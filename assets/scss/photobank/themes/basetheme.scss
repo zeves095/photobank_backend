@@ -11,6 +11,10 @@
     background-color: $color-accent-fade;
     color:$color-text-alt;
   }
+  &--active{
+    background-color: $color-accent;
+    color:$color-text-alt;
+  }
 }
 
 @mixin table-cell-color(){
@@ -77,6 +81,9 @@ body {
   div{
     transition: 0.2s;
   }
+  .catalogue-tree, .node-viewer, .view-inner__item-list, .view-inner__item-section{
+    transition: 0s;
+  }
 }
 
 .userblock {
@@ -94,7 +101,7 @@ body {
     button{
       @include button-color();
     }
-    >button{
+    .view-button{
       @include button-view-color();
     }
     .item-view__item-title{

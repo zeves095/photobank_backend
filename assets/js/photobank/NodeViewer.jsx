@@ -29,12 +29,15 @@ export class NodeViewer extends React.Component{
     this.handleViewChoice = this.handleViewChoice.bind(this);
   }
 
-  componentDidUpdate(prevProps){
+  componentDidUpdate(prevProps, prevState){
     if(this.props.node !== prevProps.node){
       this.setState({
         "node": this.props.node
       });
       this.getItems();
+    }
+    if(this.state.current_item != prevState.current_item){
+      this.buildList();
     }
   }
 
@@ -54,9 +57,10 @@ export class NodeViewer extends React.Component{
   }
 
   buildList(){
+    console.log(this.state.current_item);
     this.filterData();
     let nodeItemList = this.state.node_items_filtered.map((item)=>
-      <div className="list-item" key={item.id} data-item={item.id} onClick={this.itemClickHandler}>
+      <div className={"list-item"+((this.state.current_item!=null&&item.id==this.state.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={this.itemClickHandler}>
         <h4 data-item={item.id} onClick={this.itemClickHandler}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
       </div>
     );
