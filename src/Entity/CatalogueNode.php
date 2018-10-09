@@ -39,9 +39,10 @@ class CatalogueNode
     private $items;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="string", length=11, nullable=true)
      */
     private $catalogue_code;
+
 
     public function __construct()
     {
@@ -140,12 +141,12 @@ class CatalogueNode
         return $this;
     }
 
-    public function getCatalogueCode(): ?int
+    public function getCatalogueCode(): ?string
     {
         return $this->catalogue_code;
     }
 
-    public function setCatalogueCode(?int $catalogue_code): self
+    public function setCatalogueCode(?string $catalogue_code): self
     {
         $this->catalogue_code = $catalogue_code;
 
