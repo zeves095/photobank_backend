@@ -12,12 +12,8 @@ export class UnfinishedUploads extends React.Component{
       "loading_uploads" : false,
       "unfinished_hidden":false
     };
-    this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
-    this.fileHashStack = [];
     this.removeUploadStack = [];
-    this.uploadCommitQueue = [];
-    this.paginationControls = "";
     this.uploadStatus = {
       "unfinished": "Прерван",
       "uploading": "Загружается",
@@ -32,7 +28,6 @@ export class UnfinishedUploads extends React.Component{
   }
 
   buildList() {
-    console.log("bl");
       this.state.uploads = [];
       for(var i = 0; i < this.state.unfinished.length; i++){
         let file = this.state.unfinished[i];
@@ -47,7 +42,6 @@ export class UnfinishedUploads extends React.Component{
   }
 
   fetchUnfinished(){
-    console.log("fu");
       this.setState({"loading_uploads" : true});
       let unfinished = [];
       $.getJSON(window.config.unfinished_uploads_url, (data)=>{
@@ -67,13 +61,12 @@ export class UnfinishedUploads extends React.Component{
 
   resolveResumedUploads(){
     for (var i = 0; i < this.state.uploads.length; i++) {
-        for (var j = 0; j < this.props.uploads.length; j++) {
-          if(
-            this.state.uploads[i].filename == this.props.uploads[j]["filename"] &&
-            this.state.uploads[i].filehash == this.props.uploads[j]["filehash"]){
-              this.state.uploads.splice(i,1);
-            }
+      for (var j = 0; j < this.props.uploads.length; j++) {
+        if(this.state.uploads[i].filename == this.props.uploads[j]["filename"] &&
+        this.state.uploads[i].filehash == this.props.uploads[j]["filehash"]){
+          this.state.uploads.splice(i,1);
         }
+      }
     }
   }
 
@@ -87,18 +80,10 @@ export class UnfinishedUploads extends React.Component{
   }
 
   componentDidUpdate(prevProps, prevState){
-    if(this.props != prevProps){
-      this.setState({
-        "view_type": this.props.default_view,
-        "open": this.props.open_by_default
-      });
-      this.buildList();
-    }
-    if(this.state.unfinished != prevState.unfinished){
+    if(this.props != prevProps || this.state.unfinished != prevState.unfinished){
       this.buildList();
     }
     if(this.props.need_refresh){
-      console.log("need refresh");
       this.fetchUnfinished();
     }
   }
@@ -133,13 +118,14 @@ export class UnfinishedUploads extends React.Component{
 
     return (
       <div className="item-uploads__unfinished">
-        <div key={this.props.item.id + "unfinished"} className="item-view__subheader-wrapper">
+        {this.state.unfinished.length>0?<div key={this.props.item.id + "unfinished"} className="item-view__subheader-wrapper">
           <h4 className="item-view__subheader">Незаконченные</h4>
           <div className="button-block">
             <button onClick={this.clearAllUnfinished} className="button-block__btn button-block__btn--clear"><i className="fas fa-trash-alt"></i>Очистить</button>
           <button onClick={this.hideUnfinished} className="button-block__btn button-block__btn--clear">{this.state.unfinished_hidden?<i className='fas fa-eye'></i>:<i className='fas fa-eye-slash'></i>}{this.state.unfinished_hidden?"Показать":"Скрыть"}</button>
           </div>
         </div>
+        :null}
         {unfinished_uploads}
       </div>
     );

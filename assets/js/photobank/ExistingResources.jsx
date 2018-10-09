@@ -32,7 +32,6 @@ export class ExistingResources extends React.Component{
   }
 
   fetchExisting(){
-    console.log("fetching ex");
     $.getJSON(window.config.existing_uploads_url+this.props.item_id, (data)=>{
       this.setState({
         "existing": data,
@@ -44,7 +43,6 @@ export class ExistingResources extends React.Component{
     if(this.state.busy || typeof this.state.existing[id] == 'undefined'){return}
     for(var preset in window.config['presets']){
       if(this.state.finished_presets.filter((fin_preset)=>{return fin_preset.resource==resource.id&&window.config['presets'][preset]['id']==fin_preset.preset}).length == 0){
-        console.log("preset not found");
         this.finishedPresetRequestStack.push(id+"-"+preset);
         let presetId = window.config['presets'][preset]['id'];
         let resId = resource.id;
@@ -68,7 +66,7 @@ export class ExistingResources extends React.Component{
   }
 
   fetchPresets(){
-    if(this.state.existing.length==0){console.log("nothing to fetch");this.setState({"loading_existing":false});return;}
+    if(this.state.existing.length==0){this.setState({"loading_existing":false});return;}
     for(var i = this.state.list_start; i<this.state.list_end; i++){
       this.getFinishedPresets(this.state.existing[i], i);
     }
@@ -162,7 +160,6 @@ export class ExistingResources extends React.Component{
       }
     }
     if(this.state.existing != prevState.existing){
-      console.log("changed existing" + this.state.existing.length);
       this.setState({
         "loading_existing": true,
         "list_total_pages": Math.ceil(this.state.existing.length/this.state.list_limit),
@@ -172,7 +169,6 @@ export class ExistingResources extends React.Component{
       this.fetchPresets();
     }
     if(prevState.list_start != this.state.list_start || prevState.list_limit != this.state.list_limit){
-      console.log("changed pagination");
       this.fetchPresets();
       this.setState({
         "loading_existing": true,

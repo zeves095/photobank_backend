@@ -8,19 +8,14 @@ export class Uploads extends React.Component{
     super(props);
     this.state={
       "uploads":[],
-      "upload_list":[],
-      "unfinished":[],
       "busy" : false,
       "loading_uploads" : false,
-      "unfinished_hidden":false,
       "unfinished_need_refresh":false
     };
-    this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
     this.fileHashStack = [];
     this.removeUploadStack = [];
     this.uploadCommitQueue = [];
-    this.paginationControls = "";
     this.uploadStatus = {
       "unfinished": "Прерван",
       "uploading": "Загружается",
@@ -55,13 +50,9 @@ export class Uploads extends React.Component{
         if(!file.ready){status = "processing";}
         this.state.uploads.push({"filename": file.fileName, "filehash": file.uniqueIdentifier, "class": className, "status":status, "ready": file.ready, "uploading":file.isUploading(),"resumablekey": i, "progress": 0});
       }
-      if(this.state.uploads.length >0 && this.state.uploads.filter((upload)=>{return upload.status!="unfinished" || upload.ready==false}).length>0){
-        this.state.ready = true;
-      } else {
-        this.state.ready = false;
-      }
       this.cleanUpDone();
       this.setState({
+        "unfinished_need_refresh": true,
         "loading_uploads": false,
       });
   }
@@ -126,7 +117,6 @@ export class Uploads extends React.Component{
   handleDelete(e){
     let filehash = "";
     if(e.target){filehash = $(e.target).data("item");}else{filehash = e}
-    console.log(filehash);
     let obj = {
       'filehash': filehash,
       'itemid': this.props.item.id
@@ -223,12 +213,20 @@ export class Uploads extends React.Component{
         "view_type": this.props.default_view,
         "open": this.props.open_by_default
       });
-      this.buildList();
     }
     if(this.state.unfinished_need_refresh){
       this.setState({
         "unfinished_need_refresh": false,
       });
+    }
+    if(this.state.uploads.length >0 && this.state.uploads.filter((upload)=>{return upload.ready==false}).length==0){
+      console.log(this.state.uploads.filter((upload)=>{return upload.ready==false}));
+      console.log("TRU");
+      this.state.ready = true;
+    } else {
+      console.log(this.state.uploads.filter((upload)=>{return upload.ready==false}));
+      console.log("NAT TRU");
+      this.state.ready = false;
     }
   }
 

@@ -39,10 +39,6 @@ export class PhotoBank extends React.Component {
 
   handleDataChange(data, filteredData){
     if(this.state.catalogue_data != data || this.state.catalogue_data_filtered != filteredData){
-      // this.setState({
-      //   "catalogue_data": data,
-      //   "catalogue_data_filtered": filteredData
-      // });
       this.state.catalogue_data = data;
     }
   }
@@ -57,7 +53,6 @@ export class PhotoBank extends React.Component {
   }
 
   componentWillMount(){
-    //$.getJSON("/assets/js/components/photobank/dummy_data1.json", (data)=>{
     $.getJSON(window.config.get_nodes_url, (data)=>{
       this.setState({
         "catalogue_data":data,
