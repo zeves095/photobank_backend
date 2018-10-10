@@ -39,7 +39,9 @@ export class PhotoBank extends React.Component {
 
   handleDataChange(data, filteredData){
     if(this.state.catalogue_data != data || this.state.catalogue_data_filtered != filteredData){
-      this.state.catalogue_data = data;
+      this.setState({
+        "catalogue_data": data
+      });
     }
   }
 

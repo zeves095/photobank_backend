@@ -23,7 +23,6 @@ export class NodeViewer extends React.Component{
     this.getItems = this.getItems.bind(this);
     this.itemClickHandler = this.itemClickHandler.bind(this);
     this.filterData = this.filterData.bind(this);
-    this.buildList = this.buildList.bind(this);
     this.filterQueryHandler = this.filterQueryHandler.bind(this);
     this.handlePoolClick = this.handlePoolClick.bind(this);
     this.handleViewChoice = this.handleViewChoice.bind(this);
@@ -37,7 +36,10 @@ export class NodeViewer extends React.Component{
       this.getItems();
     }
     if(this.state.current_item != prevState.current_item){
-      this.buildList();
+      this.getItems();
+    }
+    if(this.state.filter_query != prevState.filter_query){
+      this.getItems();
     }
   }
 
@@ -49,49 +51,39 @@ export class NodeViewer extends React.Component{
     this.setState({"loading":true});
     $.getJSON(window.config.get_items_url+nodeId, (data)=>{
       let nodeItems = data;
-      this.setState({
-        "node_items" : nodeItems
-      });
-      this.buildList();
+      this.filterData(data);
+      // this.setState({
+      //   "node_items" : nodeItems
+      // });
     });
   }
 
-  buildList(){
-    this.filterData();
-    let nodeItemList = this.state.node_items_filtered.map((item)=>
-      <div className={"list-item"+((this.state.current_item!=null&&item.id==this.state.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={this.itemClickHandler}>
-        <h4 data-item={item.id} onClick={this.itemClickHandler}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
-      </div>
-    );
-    this.setState({
-      "loading": false,
-      "node_items_list": nodeItemList
-    });
-  }
-
-  filterData(){
-    let items = this.state.node_items;
+  filterData(items){
+    //let items = this.state.node_items;
     let filtered = [];
     if(this.state.filter_query == ""){
       filtered = items;
     } else {
       filtered = items.filter((item)=>{return item.itemCode.toLowerCase().includes(this.state.filter_query.toLowerCase()) || item.name.toLowerCase().includes(this.state.filter_query.toLowerCase())});
     }
-    this.state.node_items_filtered = filtered;
+    this.setState({
+      "node_items_filtered" : filtered,
+      "loading": false
+    });
   }
 
   filterQueryHandler(query){
-    this.state.filter_query = query;
-    this.buildList();
+    this.setState({
+      "filter_query" : query
+    });
   }
 
   itemClickHandler(e){
     let itemId = $(e.target).attr("data-item");
-    let currItem = this.state.node_items.filter((item)=>{return item.id == itemId})[0];
+    let currItem = this.state.node_items_filtered.filter((item)=>{return item.id == itemId})[0];
     this.setState({
       'view_pool':false,
       'current_item': currItem,
-      'item_section': this.makeItemSection(currItem),
       'product_crumbs': this.props.crumb_string
     });
   }
@@ -102,12 +94,6 @@ export class NodeViewer extends React.Component{
     })
   }
 
-  makeItemSection(currItem){
-    let itemSection = null;
-    itemSection = <ItemSection viewChoiceHandler={this.handleViewChoice} render_existing={true} item_id={currItem.id} name={currItem.name} open_by_default={true} section_type="nv" crumb_string={this.props.crumb_string} default_view={this.state.view_type} />;
-    return itemSection;
-  }
-
   handleViewChoice(view){
     this.setState({
       "view_type":view
@@ -115,15 +101,25 @@ export class NodeViewer extends React.Component{
   }
 
   render() {
+
+    let nodeItemList = this.state.node_items_filtered.map((item)=>
+      <div className={"list-item"+((this.state.current_item!=null&&item.id==this.state.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={this.itemClickHandler}>
+        <h4 data-item={item.id} onClick={this.itemClickHandler}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
+      </div>
+    );
+
+    let itemSection = this.state.current_item!=null?(<ItemSection viewChoiceHandler={this.handleViewChoice} render_existing={true} item_id={this.state.current_item.id} open_by_default={true} section_type="nv" crumb_string={this.props.crumb_string} default_view={this.state.view_type} />):null;
+
     return (
+
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
           <div className={(this.state.loading?"loading ":"")+"view-inner__item-list"}>
             <h2 className="node-viewer__component-title component-title">Товары</h2>
           <div className="view-inner__container">
             <ListFilter filterHandler={this.filterQueryHandler} filterid="nodesearch" placeholder="Фильтр по выбранному" />
-          {this.state.node_items.length>0?null:"Нет товаров в выбранной категории"}
-            {this.state.node_items_list}
+          {this.state.node_items_filtered.length>0?null:"Нет товаров в выбранной категории"}
+            {nodeItemList}
           </div>
           </div>
           {$(".view-inner__item-section").length>0?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
@@ -133,7 +129,7 @@ export class NodeViewer extends React.Component{
           <div className="view-inner__container">
             {this.state.view_pool?
             <UploadPool viewChoiceHandler={this.handleViewChoice} default_view={this.state.view_type} />
-            :this.state.item_section}
+            :itemSection}
           </div>
           </div>
         </div>

@@ -41,34 +41,33 @@ export class ExistingResources extends React.Component{
 
   getFinishedPresets(resource, id){
     if(this.state.busy || typeof this.state.existing[id] == 'undefined'){return}
-    if(this.state.finished_presets.length == this.state.existing.length*Object.keys(window.config['presets']).length){this.setState({"loading" : false}); return}
+    if(this.state.finished_presets.filter((fin_preset)=>{return fin_preset.resource == resource.id}).length >= Object.keys(window.config['presets']).length){this.setState({"loading" : false}); return}
     for(var preset in window.config['presets']){
-      if(this.state.finished_presets.filter((fin_preset)=>{return fin_preset.resource==resource.id&&window.config['presets'][preset]['id']==fin_preset.preset}).length == 0){
-        this.finishedPresetRequestStack.push(id+"-"+preset);
-        let presetId = window.config['presets'][preset]['id'];
-        let resId = resource.id;
-        let url = window.config.resource_url + resource.id + "/" + presetId;
-        // this.state.finished_presets = [];
-        $.ajax({url: url, method: 'GET'}).done((data)=>{
-          if(typeof data.id != "undefined"){
-            this.state.finished_presets.push({
-              'id': data.id,
-              'resource' : data.gid,
-              'preset' : data.preset
-            });
-          }
-          this.finishedPresetRequestStack.splice(this.finishedPresetRequestStack.indexOf(id+"-"+preset), 1);
-          if(this.finishedPresetRequestStack.length == 0){
-            this.setState({"loading" : false})
-          }
-        });
-      }
+      this.finishedPresetRequestStack.push(id+"-"+preset);
+      let presetId = window.config['presets'][preset]['id'];
+      let resId = resource.id;
+      let url = window.config.resource_url + resource.id + "/" + presetId;
+      // this.state.finished_presets = [];
+      $.ajax({url: url, method: 'GET'}).done((data)=>{
+        if(typeof data.id != "undefined"&&this.state.finished_presets.filter((preset)=>{return preset.preset==data.preset&&preset.resource==data.gid}).length==0){
+          this.state.finished_presets.push({
+            'id': data.id,
+            'resource' : data.gid,
+            'preset' : data.preset
+          });
+        }
+        this.finishedPresetRequestStack.splice(this.finishedPresetRequestStack.indexOf(id+"-"+preset), 1);
+        if(this.finishedPresetRequestStack.length == 0){
+          this.setState({"loading" : false})
+        }
+      });
     }
   }
 
   fetchPresets(){
     if(this.state.existing.length==0){this.setState({"loading":false});return;}
     for(var i = this.state.list_start; i<this.state.list_end; i++){
+      if(this.state.loading == false){this.setState({"loading":true})};
       this.getFinishedPresets(this.state.existing[i], i);
     }
   }
@@ -172,7 +171,6 @@ export class ExistingResources extends React.Component{
     if(prevState.list_start != this.state.list_start || prevState.list_limit != this.state.list_limit){
       this.fetchPresets();
       this.setState({
-        "loading": true,
         "list_current_page": Math.floor(this.state.list_start/this.state.list_limit)+1,
       });
     }
@@ -255,7 +253,7 @@ export class ExistingResources extends React.Component{
 
     return (
       <div className="item-view__existing">
-        <h4 className="item-view__subheader">Файлы товара<div className="button-block"><button type="button" onClick={this.fetchExisting}><i className="fas fa-redo-alt"></i>Обновить</button></div></h4>
+        <h4 className="item-view__subheader">Файлы товара<div className="button-block"><button type="button" onClick={()=>{this.fetchExisting();this.fetchPresets();}}><i className="fas fa-redo-alt"></i>Обновить</button></div></h4>
         {paginationControls}
         {this.state.existing.length==0?"Нет загруженных файлов":null}
         <div className={(this.state.loading?"loading ":"") + "item-resources"}>

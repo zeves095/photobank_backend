@@ -30,6 +30,7 @@ export class Uploads extends React.Component{
     this.getHash = this.getHash.bind(this);
     this.cleanUpDone = this.cleanUpDone.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleClearUnfinished = this.handleClearUnfinished.bind(this);
   }
 
   cleanUpDone(){
@@ -68,6 +69,7 @@ export class Uploads extends React.Component{
       }
       this.fileHashStack.splice(this.fileHashStack.indexOf(file), 1);
       if(this.fileHashStack.length == 0){
+        console.log("hash refresh");
         this.setState({
           "need_refresh": true,
           "unfinished_need_refresh": true
@@ -90,6 +92,9 @@ export class Uploads extends React.Component{
   handleDelete(e){
     let filehash = "";
     if(e.target){filehash = $(e.target).data("item");}else{filehash = e}
+    if(typeof this.removeUploadStack[filehash] == 'undefined'){
+      this.removeUploadStack.push(filehash);
+    }
     let obj = {
       'filehash': filehash,
       'itemid': this.props.item.id
@@ -122,6 +127,13 @@ export class Uploads extends React.Component{
     }
   }
 
+  handleClearUnfinished(){
+    if(this.state.uploads.length == 0){
+      delete window.resumableContainer[this.props.item_id];
+      window.resumableContainer.splice(this.props.item_id,1);
+    }
+  }
+
   assignResumableEvents(){
     this.props.resumable.on('fileAdded', (file, event)=>{
       //this.fileAddQueue.push(file);
@@ -135,16 +147,18 @@ export class Uploads extends React.Component{
       }
       $("#drop_target" + this.props.item.id).removeClass('file-list__drop-target--active');
     });
-    this.props.resumable.on('fileSuccess', (file,event)=>{
-      this.setState({"loading" : true});
-      this.cleanUpDone();
+    this.props.resumable.on('fileProgress', (file,event)=>{
+      this.setState({
+          "need_refresh":true
+      });
     });
     this.props.resumable.on('uploadStart', (file,event)=>{
       this.state.busy = true;
-      //NEED REFRESH??
     });
     this.props.resumable.on('complete', ()=>{
       this.state.busy = false;
+      this.cleanUpDone();
+      delete window.resumableContainer[this.props.item_id];
       window.resumableContainer.splice(this.props.item.id, 1);
       this.props.uploadCompleteHandler();
     });
@@ -177,7 +191,6 @@ export class Uploads extends React.Component{
       });
     }
     if(this.state.unfinished_need_refresh || this.state.need_refresh){
-      console.log("need refresh");
       this.setState({
         "need_refresh": false,
         "unfinished_need_refresh": false,
@@ -205,7 +218,9 @@ export class Uploads extends React.Component{
         status = "completed";
       }else{
         if(uploads[i].isUploading()){
-          status = "uploading"
+          status = "uploading";
+        }else if(!uploads[i].ready){
+          status = "processing";
         }else{
           status = "pending";
         }
@@ -241,7 +256,7 @@ export class Uploads extends React.Component{
         </div>
         {uploadsMarkup}
       </div>:null}
-        <UnfinishedUploads item={this.props.item} uploads={uploads} deleteHandler={this.handleDelete} need_refresh={this.state.unfinished_need_refresh}/>
+        <UnfinishedUploads item={this.props.item} uploads={uploads} deleteHandler={this.handleDelete} clearAllHandler={this.handleClearUnfinished} need_refresh={this.state.unfinished_need_refresh}/>
       </div>
     </div>
     );

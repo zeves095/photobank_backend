@@ -83,6 +83,7 @@ export class UnfinishedUploads extends React.Component{
     for(var id in this.state.unfinished){
       let unfinished = this.state.unfinished[id];
       this.props.deleteHandler(unfinished.filehash);
+      this.props.clearAllHandler();
     }
   }
 
