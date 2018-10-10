@@ -27,14 +27,13 @@ export class UnfinishedUploads extends React.Component{
   }
 
   fetchUnfinished(){
-    console.log("ftchn");
       this.setState({"loading" : true});
       let unfinished = [];
       $.getJSON(window.config.unfinished_uploads_url, (data)=>{
         for (var i = 0; i < data.length; i++) {
           let unfinishedUpload = data[i];
           if(unfinishedUpload[[0]]==this.props.item.id){
-            if(this.props.uploads.filter((upload)=>{return upload.filehash == unfinishedUpload[2]}).length == 0){
+            if(this.props.uploads.filter((upload)=>{return upload.uniqueIdentifier == unfinishedUpload[2]}).length == 0){
               unfinished.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true, "completed":unfinishedUpload[3],"total":unfinishedUpload[4]});
             }
           }
@@ -51,8 +50,8 @@ export class UnfinishedUploads extends React.Component{
     let resolved = [];
     for (var i = 0; i < this.state.unfinished.length; i++) {
       for (var j = 0; j < this.props.uploads.length; j++) {
-        if(this.state.unfinished[i].filename == this.props.uploads[j]["filename"] &&
-        this.state.unfinished[i].filehash == this.props.uploads[j]["filehash"]){
+        if(this.state.unfinished[i].filename == this.props.uploads[j].fileName &&
+        this.state.unfinished[i].filehash == this.props.uploads[j].uniqueIdentifier){
           resolved.push(i);
         }
       }
@@ -94,8 +93,6 @@ export class UnfinishedUploads extends React.Component{
   }
 
   render() {
-    //if(this.props.uploads.length==0){return null}
-    console.log("unfinished refresh");
     let unfinished_uploads = this.state.unfinished.map((upload)=>
       <div key={upload.filename+upload.filehash+"unfinished"} className={"file-list__file-item file-item " + "file-item--unfinished " + (this.state.unfinished_hidden?"file-item--hidden":"")}>
         <i data-item={upload.filehash} onClick={this.handleDelete} className="fas fa-trash-alt file-item__delete-upload"></i><br />

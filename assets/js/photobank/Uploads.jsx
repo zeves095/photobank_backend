@@ -9,7 +9,8 @@ export class Uploads extends React.Component{
     this.state={
       "uploads":[],
       "busy" : false,
-      "loading" : true,
+      "loading" : false,
+      "need_refresh": false,
       "unfinished_need_refresh":false
     };
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
@@ -25,48 +26,21 @@ export class Uploads extends React.Component{
       "processing": "Обрабатывается",
       "completed": "Загружен"
     };
-    this.buildList = this.buildList.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.getHash = this.getHash.bind(this);
     this.cleanUpDone = this.cleanUpDone.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  buildList() {
-      this.state.uploads = [];
-      for (var i = 0; i < this.props.resumable.files.length; i++) {
-        let file = this.props.resumable.files[i];
-        let className = file.isComplete()?"--completed":"--pending";
-        let status = "";
-        if(file.isComplete()){
-          status = "completed";
-        }else{
-          if(file.isUploading()){
-            status = "uploading"
-          }else{
-            status = "pending";
-          }
-        }
-        if(!file.ready){status = "processing";}
-        this.state.uploads.push({"filename": file.fileName, "filehash": file.uniqueIdentifier, "class": className, "status":status, "ready": file.ready, "uploading":file.isUploading(),"resumablekey": i, "progress": 0});
-      }
-      this.cleanUpDone();
-      this.setState({
-        "loading": false,
-      });
-  }
-
   cleanUpDone(){
-    let cleanedUp = false;
-    for (var i = 0; i < this.state.uploads.length; i++) {
-      let file = this.state.uploads[i];
-      if(file.status=="completed"){
-        this.state.uploads.splice(i,1);
-        this.props.resumable.files.splice(file.resumablekey, 1);
-        this.handleDelete(file.filehash);
+    for (var i = 0; i < this.props.resumable.files.length; i++) {
+      let file = this.props.resumable.files[i];
+      if(file.isComplete()){
+        this.props.resumable.files.splice(i,1);
+        this.handleDelete(file.uniqueIdentifier);
         i--;
-        cleanedUp = true;
       }
+      this.setState({"loading" : false});
     }
   }
 
@@ -94,8 +68,8 @@ export class Uploads extends React.Component{
       }
       this.fileHashStack.splice(this.fileHashStack.indexOf(file), 1);
       if(this.fileHashStack.length == 0){
-        this.buildList();
         this.setState({
+          "need_refresh": true,
           "unfinished_need_refresh": true
         });
       }
@@ -129,9 +103,9 @@ export class Uploads extends React.Component{
       this.removeUploadStack.splice(this.removeUploadStack.indexOf(filehash),1);
       if(this.removeUploadStack.length == 0){
         this.setState({
+          "need_refresh": true,
           "unfinished_need_refresh": true
         });
-        this.buildList();
       }
     });
   }
@@ -151,7 +125,7 @@ export class Uploads extends React.Component{
   assignResumableEvents(){
     this.props.resumable.on('fileAdded', (file, event)=>{
       //this.fileAddQueue.push(file);
-      // this.setState({"loading" : true});
+      this.setState({"loading" : true});
       file.itemId = this.props.item.id;
       file.itemCode = this.props.item.itemCode;
       file.ready = false;
@@ -162,27 +136,16 @@ export class Uploads extends React.Component{
       $("#drop_target" + this.props.item.id).removeClass('file-list__drop-target--active');
     });
     this.props.resumable.on('fileSuccess', (file,event)=>{
-      this.buildList();
-    });
-    this.props.resumable.on('fileProgress', (file,event)=>{
-      //$("#progress_bar"+file.uniqueIdentifier+">span").css('width', file.progress()*100+"%");
-      let resumableKey = this.props.resumable.files.indexOf(file);
-      let upload = this.state.uploads.filter((upload)=>{return upload.resumablekey == resumableKey});
-      if(upload.length>0){
-        upload[0].progress = Math.round(file.progress() * 100);
-      }
-      this.setState({
-        "uploads":this.state.uploads,
-      });
+      this.setState({"loading" : true});
+      this.cleanUpDone();
     });
     this.props.resumable.on('uploadStart', (file,event)=>{
       this.state.busy = true;
-      this.buildList();
+      //NEED REFRESH??
     });
     this.props.resumable.on('complete', ()=>{
-      this.setState({"loading" : true});
       this.state.busy = false;
-      this.buildList();
+      window.resumableContainer.splice(this.props.item.id, 1);
       this.props.uploadCompleteHandler();
     });
   }
@@ -213,13 +176,15 @@ export class Uploads extends React.Component{
         "open": this.props.open_by_default
       });
     }
-    if(this.state.unfinished_need_refresh){
+    if(this.state.unfinished_need_refresh || this.state.need_refresh){
       console.log("need refresh");
       this.setState({
+        "need_refresh": false,
         "unfinished_need_refresh": false,
+        "loading": false,
       });
     }
-    if(this.state.uploads.length >0 && this.state.uploads.filter((upload)=>{return upload.ready==false}).length==0){
+    if(this.props.resumable.files.length >0 && this.props.resumable.files.filter((upload)=>{return upload.ready==false}).length==0){
       this.state.ready = true;
     } else {
       this.state.ready = false;
@@ -232,19 +197,27 @@ export class Uploads extends React.Component{
 
   render() {
 
-    let uploadList = this.state.uploads;
-    let active = uploadList.filter((item)=>{return item.status != 'unfinished'});
-    let uploadListMarkup = [];
-    let hide = false;
-    for(var i = 0; i<active.length; i++){
-      uploadListMarkup.push(
-          <div key={active[i].filename+active[i].filehash+"pending"} className={"file-list__file-item file-item " + "file-item"+active[i].class +" "+ (active[i].ready? "": "file-item--processing ")+ this.fileViewClasses[this.state.view_type] + (hide?"file-item--hidden":"")}>
-            <i data-item={active[i].filehash} onClick={this.handleDelete} className="fas fa-trash-alt file-item__delete-upload"></i><br />
-          <span className="file-item__file-name">{active[i].filename}</span>
-        <span className="file-item__upload-status">{this.uploadStatus[active[i].status]}</span>
-      <span className="progress-bar" id={"progress_bar"+active[i].filehash}>
-            <div className="progress-bar__percentage">{active[i].progress + "%"}</div>
-          <div className="progress-bar__bar" style={{"width":active[i].progress+"%"}}></div>
+    let uploads = this.props.resumable.files;
+    let uploadsMarkup = [];
+    for(var i = 0; i<uploads.length; i++){
+      let status = "";
+      if(uploads[i].isComplete()){
+        status = "completed";
+      }else{
+        if(uploads[i].isUploading()){
+          status = "uploading"
+        }else{
+          status = "pending";
+        }
+      }
+      uploadsMarkup.push(
+          <div key={uploads[i].fileName+uploads[i].uniqueIdentifier+"pending"} className={"file-list__file-item file-item " + "file-item"+(uploads[i].isComplete()?"--completed":"--pending") +" "+ (uploads[i].ready? "": "file-item--processing ")+ this.fileViewClasses[this.state.view_type]}>
+            <i data-item={uploads[i].uniqueIdentifier} onClick={this.handleDelete} className="fas fa-trash-alt file-item__delete-upload"></i><br />
+          <span className="file-item__file-name">{uploads[i].fileName}</span>
+        <span className="file-item__upload-status">{this.uploadStatus[status]}</span>
+      <span className="progress-bar" id={"progress_bar"+uploads[i].uniqueIdentifier}>
+            <div className="progress-bar__percentage">{Math.round(uploads[i].progress() * 100) + "%"}</div>
+          <div className="progress-bar__bar" style={{"width":Math.round(uploads[i].progress() * 100) + "%"}}></div>
             </span>
           </div>
       );
@@ -258,17 +231,17 @@ export class Uploads extends React.Component{
 
           </div>
       <div className="item-uploads">
-        {active.length>0?<div key={this.props.item.id + "uploads"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загрузки</h4></div>:""}
-        {this.state.uploads.length>0?<div className={"item-uploads__upload-wrapper "+(this.state.loading?"loading ":"")}>
+        {uploads.length>0?<div key={this.props.item.id + "uploads"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загрузки</h4></div>:""}
+        {uploads.length>0?<div className={"item-uploads__upload-wrapper "+(this.state.loading?"loading ":"")}>
         <div className="item-view__table-header">
           <span className="info__info-field info__info-field--title info__info-field--blank"></span>
           <span className="info__info-field info__info-field--title info__info-field--sizepx">Имя файла</span>
           <span className="info__info-field info__info-field--title info__info-field--type">Статус</span>
           <span className="info__info-field info__info-field--title info__info-field--sizebytes">Прогресс</span>
         </div>
-        {uploadListMarkup}
+        {uploadsMarkup}
       </div>:null}
-        <UnfinishedUploads item={this.props.item} uploads={this.state.uploads} deleteHandler={this.handleDelete} need_refresh={this.state.unfinished_need_refresh}/>
+        <UnfinishedUploads item={this.props.item} uploads={uploads} deleteHandler={this.handleDelete} need_refresh={this.state.unfinished_need_refresh}/>
       </div>
     </div>
     );
