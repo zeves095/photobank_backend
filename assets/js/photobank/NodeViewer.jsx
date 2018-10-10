@@ -54,13 +54,13 @@ export class NodeViewer extends React.Component{
       </div>
     );
 
-    let itemSection = this.state.current_item!=null?(<ItemSection viewChoiceHandler={this.handleViewChoice} render_existing={true} item_id={this.state.current_item.id} open_by_default={true} section_type="nv" crumb_string={this.props.crumb_string} default_view={this.state.view_type} />):null;
+    let itemSection = this.state.current_item!=null?(<ItemSection viewChoiceHandler={this.handleViewChoice} render_existing={true} item_id={this.state.current_item.id} open_by_default={true} section_type="nv" crumb_string={this.props.crumb_string} default_view={this.state.view_type} />):"Не выбран товар";
 
     return (
 
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
-          <ItemList node={this.props.node} itemChoiceHandler={this.handleItemChoice} />
+          <ItemList node={this.props.node} query={this.props.query} itemChoiceHandler={this.handleItemChoice} />
           {$(".view-inner__item-section").length>0?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
           <div className="view-inner__item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
             <h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.state.product_crumbs}</i></h2>

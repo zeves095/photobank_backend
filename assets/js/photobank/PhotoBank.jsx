@@ -4,7 +4,7 @@ import React from 'react';
 import { CatalogueTree } from './CatalogueTree';
 import { NodeViewer } from './NodeViewer';
 import { Draggable } from './Draggable';
-
+import {ItemQueryObject} from './services/ItemQueryObject';
 
 export class PhotoBank extends React.Component {
 
@@ -12,7 +12,8 @@ export class PhotoBank extends React.Component {
     super(props);
     this.state ={
       "catalogue_data": {},
-      "crumb_string": ""
+      "crumb_string": "",
+      "item_query_object": new ItemQueryObject(1)
     }
     this.fetchUnfinished();
     this.handleNodeChoice = this.handleNodeChoice.bind(this);
@@ -31,9 +32,10 @@ export class PhotoBank extends React.Component {
     });
   }
 
-  handleNodeChoice(id){
+  handleNodeChoice(queryObject){
     this.setState({
-      "selected_node": id
+      "selected_node": queryObject.getNodeId(),
+      "item_query_object": queryObject
     });
   }
 
@@ -70,7 +72,7 @@ export class PhotoBank extends React.Component {
       <div className="photobank-main__main-block">
         <CatalogueTree catalogue_data={this.state.catalogue_data} nodeChoiceHandler={this.handleNodeChoice} dataChangeHandler={this.handleDataChange} default_view="2" crumb_handler={this.handleCrumbUpdate} />
       {$(".catalogue-tree").length>0?<Draggable box1=".catalogue-tree" box2=".node-viewer" id="1" />:null}
-      <NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} crumb_string={this.state.crumb_string} />
+      <NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} query={this.state.item_query_object} crumb_string={this.state.crumb_string} />
         </div>
         <div className="photobank-main__butt-wrapper">
         </div>

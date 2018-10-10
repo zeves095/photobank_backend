@@ -1,5 +1,6 @@
 import React from 'react';
 import { ListFilter } from './ListFilter';
+import {ItemService} from './services/ItemService';
 
 export class ItemList extends React.Component{
   constructor(props) {
@@ -14,7 +15,6 @@ export class ItemList extends React.Component{
     }
     this.getItems = this.getItems.bind(this);
     this.itemClickHandler = this.itemClickHandler.bind(this);
-    this.filterData = this.filterData.bind(this);
     this.filterQueryHandler = this.filterQueryHandler.bind(this);
   }
 
@@ -39,23 +39,12 @@ export class ItemList extends React.Component{
 
   getItems(nodeId = this.props.node){
     this.setState({"loading":true});
-    $.getJSON(window.config.get_items_url+nodeId, (data)=>{
-      let nodeItems = data;
-      this.filterData(data);
-    });
-  }
-
-  filterData(items){
-    //let items = this.state.node_items;
-    let filtered = [];
-    if(this.state.filter_query == ""){
-      filtered = items;
-    } else {
-      filtered = items.filter((item)=>{return item.itemCode.toLowerCase().includes(this.state.filter_query.toLowerCase()) || item.name.toLowerCase().includes(this.state.filter_query.toLowerCase())});
-    }
-    this.setState({
-      "node_items_filtered" : filtered,
-      "loading": false
+    let bulk = ItemService.fetchItems(this.props.query, this.state.filter_query);
+    bulk.then((data)=>{
+      this.setState({
+        "node_items_filtered" : data,
+        "loading": false
+      });
     });
   }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 // import $ from 'jquery';
 import TreeView from 'react-simple-jstree';
+import {ItemQueryObject} from './services/ItemQueryObject';
 export class CatalogueTree extends React.Component {
 
   constructor(props) {
@@ -21,7 +22,7 @@ export class CatalogueTree extends React.Component {
     this.populateCatalogue = this.populateCatalogue.bind(this);
     this.getNodeLevel = this.getNodeLevel.bind(this);
     this.getCrumbs = this.getCrumbs.bind(this);
-    this.nodeChoiceHandler = this.nodeChoiceHandler.bind(this);
+    this.listClickHandler = this.listClickHandler.bind(this);
     this.makeTree = this.makeTree.bind(this);
     this.handleTreeClick = this.handleTreeClick.bind(this);
     this.handleViewChoice = this.handleViewChoice.bind(this);
@@ -54,7 +55,7 @@ export class CatalogueTree extends React.Component {
     for(var i = 0; i<children.length; i++){
       let child = children[i];
       element.push(
-        <div key={child.id} className="list-view__cat_item list-view__cat_item--parent" onClick={this.nodeChoiceHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></div>
+        <div key={child.id} className="list-view__cat_item list-view__cat_item--parent" onClick={this.listClickHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></div>
       );
     }
     let catalogueList = element;
@@ -119,7 +120,7 @@ export class CatalogueTree extends React.Component {
       cur_node = this.getNodeById(parent.id);
     }
     this.state.crumbs = crumbs;
-    crumbs = crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"crumbs__crumb crumbs__crumb--active":"crumbs__crumb"} onClick={this.nodeChoiceHandler}>{crumb.name}</span>);
+    crumbs = crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"crumbs__crumb crumbs__crumb--active":"crumbs__crumb"} onClick={this.listClickHandler}>{crumb.name}</span>);
     crumbs.reverse();
     this.state.crumbs_list = crumbs;
   }
@@ -159,20 +160,26 @@ export class CatalogueTree extends React.Component {
     return 0;
   }
 
-  nodeChoiceHandler(e){
+  listClickHandler(e){
+    console.log("yup");
     e.stopPropagation();
     let curr_id = e.target.getAttribute('data-node');
-    this.state.current_node = curr_id;
-    this.getCatalogueNodes(this.props.catalogue_data);
-    this.props.nodeChoiceHandler(curr_id);
+    this.chooseNode(curr_id);
   }
 
   handleTreeClick(e,data){
     if(data.selected[0] != this.state.current_node && data.action == "select_node"){
-      this.state.current_node = data.selected[0];
-      this.getCatalogueNodes(this.props.catalogue_data);
-      this.props.nodeChoiceHandler(data.selected[0]);
+      this.chooseNode(data.selected[0]);
     }
+  }
+
+  chooseNode(id){
+    this.setState({
+      "current_node" : id
+    });
+    this.getCatalogueNodes(this.props.catalogue_data);
+    let queryObject = new ItemQueryObject(id);
+    this.props.nodeChoiceHandler(queryObject);
   }
 
   componentDidUpdate(prevProps,prevState){

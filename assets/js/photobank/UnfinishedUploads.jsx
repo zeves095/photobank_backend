@@ -1,6 +1,7 @@
 import React from 'react';
 // import $ from 'jquery';
 import { hex_md5 } from '../vendor/md5';
+import {ResourceService} from './services/ResourceService';
 
 export class UnfinishedUploads extends React.Component{
   constructor(props) {
@@ -28,17 +29,11 @@ export class UnfinishedUploads extends React.Component{
 
   fetchUnfinished(){
       this.setState({"loading" : true});
-      let unfinished = [];
-      $.getJSON(window.config.unfinished_uploads_url, (data)=>{
-        for (var i = 0; i < data.length; i++) {
-          let unfinishedUpload = data[i];
-          if(unfinishedUpload[[0]]==this.props.item.id){
-            if(this.props.uploads.filter((upload)=>{return upload.uniqueIdentifier == unfinishedUpload[2]}).length == 0){
-              unfinished.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true, "completed":unfinishedUpload[3],"total":unfinishedUpload[4]});
-            }
-          }
-        }
-        this.resolveResumedUploads();
+      let unfinishedResponse = ResourceService.fetchUnfinished(this.props.item.id);
+      unfinishedResponse.then((data)=>{
+        let unfinished = data.filter((unfinished)=>{
+          return this.props.uploads.filter((upload)=>{return upload.filehash == unfinished.filehash}).length == 0;
+        })
         this.setState({
           "unfinished" : unfinished,
           "loading": false
@@ -58,6 +53,7 @@ export class UnfinishedUploads extends React.Component{
     }
     for(var r in resolved){
       this.state.unfinished.splice(r,1);
+      this.forceUpdate();
     }
   }
 
@@ -73,6 +69,9 @@ export class UnfinishedUploads extends React.Component{
   componentDidUpdate(prevProps, prevState){
     if(this.props.need_refresh){
       this.fetchUnfinished();
+    }
+    if(this.state.unfinished != prevState.unfinished){
+      this.resolveResumedUploads();
     }
   }
 
