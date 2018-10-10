@@ -179,11 +179,14 @@
       }
       .item-uploads{
         position: relative;
-        display:table;
         width: 100%;
         text-align: center;
         .item-view__table-header{
           display:table-header-group;
+        }
+        .item-uploads__upload-wrapper, .item-uploads__unfinished-wrapper{
+          width: 100%;
+          display: table;
         }
         .file-list__file-item{
           display:table-row;

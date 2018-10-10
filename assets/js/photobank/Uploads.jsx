@@ -9,7 +9,7 @@ export class Uploads extends React.Component{
     this.state={
       "uploads":[],
       "busy" : false,
-      "loading_uploads" : false,
+      "loading" : true,
       "unfinished_need_refresh":false
     };
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
@@ -52,8 +52,7 @@ export class Uploads extends React.Component{
       }
       this.cleanUpDone();
       this.setState({
-        "unfinished_need_refresh": true,
-        "loading_uploads": false,
+        "loading": false,
       });
   }
 
@@ -151,7 +150,8 @@ export class Uploads extends React.Component{
 
   assignResumableEvents(){
     this.props.resumable.on('fileAdded', (file, event)=>{
-      this.setState({"loading_uploads" : true});
+      //this.fileAddQueue.push(file);
+      // this.setState({"loading" : true});
       file.itemId = this.props.item.id;
       file.itemCode = this.props.item.itemCode;
       file.ready = false;
@@ -160,7 +160,6 @@ export class Uploads extends React.Component{
         window.resumableContainer[this.props.item.id] = this.props.resumable;
       }
       $("#drop_target" + this.props.item.id).removeClass('file-list__drop-target--active');
-      this.buildList();
     });
     this.props.resumable.on('fileSuccess', (file,event)=>{
       this.buildList();
@@ -181,7 +180,7 @@ export class Uploads extends React.Component{
       this.buildList();
     });
     this.props.resumable.on('complete', ()=>{
-      this.setState({"loading_uploads" : true});
+      this.setState({"loading" : true});
       this.state.busy = false;
       this.buildList();
       this.props.uploadCompleteHandler();
@@ -215,17 +214,14 @@ export class Uploads extends React.Component{
       });
     }
     if(this.state.unfinished_need_refresh){
+      console.log("need refresh");
       this.setState({
         "unfinished_need_refresh": false,
       });
     }
     if(this.state.uploads.length >0 && this.state.uploads.filter((upload)=>{return upload.ready==false}).length==0){
-      console.log(this.state.uploads.filter((upload)=>{return upload.ready==false}));
-      console.log("TRU");
       this.state.ready = true;
     } else {
-      console.log(this.state.uploads.filter((upload)=>{return upload.ready==false}));
-      console.log("NAT TRU");
       this.state.ready = false;
     }
   }
@@ -238,7 +234,7 @@ export class Uploads extends React.Component{
 
     let uploadList = this.state.uploads;
     let active = uploadList.filter((item)=>{return item.status != 'unfinished'});
-    let uploadListMarkup = [active.length>0?<div key={this.props.item.id + "uploads"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загрузки</h4></div>:""];
+    let uploadListMarkup = [];
     let hide = false;
     for(var i = 0; i<active.length; i++){
       uploadListMarkup.push(
@@ -255,19 +251,23 @@ export class Uploads extends React.Component{
     }
 
     return (
-      <div className={(this.state.loading_uploads?"loading ":"") + "item-view__file-list file-list"} id={"file_list" + this.props.item.id}>
+      <div className={"item-view__file-list file-list"} id={"file_list" + this.props.item.id}>
           <div className="file-list__button-block">
             <button type="button" id={"browse" + this.props.item.id}><i className="fas fa-folder-open"></i>Выбрать файлы</button>
           <button type="button" disabled={!this.state.ready} onClick={this.handleSubmit} id={"submit" + this.props.item.id}><i className="fas fa-file-upload"></i>Загрузить выбранное</button>
 
           </div>
       <div className="item-uploads">
+        {active.length>0?<div key={this.props.item.id + "uploads"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загрузки</h4></div>:""}
+        {this.state.uploads.length>0?<div className={"item-uploads__upload-wrapper "+(this.state.loading?"loading ":"")}>
         <div className="item-view__table-header">
+          <span className="info__info-field info__info-field--title info__info-field--blank"></span>
           <span className="info__info-field info__info-field--title info__info-field--sizepx">Имя файла</span>
           <span className="info__info-field info__info-field--title info__info-field--type">Статус</span>
           <span className="info__info-field info__info-field--title info__info-field--sizebytes">Прогресс</span>
         </div>
         {uploadListMarkup}
+      </div>:null}
         <UnfinishedUploads item={this.props.item} uploads={this.state.uploads} deleteHandler={this.handleDelete} need_refresh={this.state.unfinished_need_refresh}/>
       </div>
     </div>

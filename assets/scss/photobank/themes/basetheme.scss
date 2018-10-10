@@ -188,7 +188,7 @@ body {
 }
 
 .item-view {
-  .file-list__button-block{
+  .file-list__button-block, .item-view__subheader>.button-block{
     button{
       @include button-color();
       color:$color-text;
@@ -198,6 +198,9 @@ body {
         box-shadow: none;
       }
     }
+  }
+  .item-view__view-button{
+    @include button-view-color();
   }
   &__existing{
     .file{
@@ -217,9 +220,6 @@ body {
         border:none;
         background-color: $color-main-fade;
       }
-    }
-    &>button.item-view__view-button{
-      @include button-view-color();
     }
   }
   &__item-title{
@@ -306,6 +306,10 @@ body {
         //border: 2px solid $color-accent;
         .info__info-field, .file>a, select, span, .edit-input{
           @include table-cell-color();
+        }
+        .item-view__table-header>span{
+          background-color: $color-accent !important;
+          color: $color-text-alt !important;
         }
       }
     }

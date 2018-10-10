@@ -10,7 +10,7 @@ export class ExistingResources extends React.Component{
       "view_type": this.props.default_view,
       "finished_presets": [],
       "busy" : false,
-      "loading_existing" : true,
+      "loading" : true,
       "list_start": 0,
       "list_limit": 20,
       "list_end": 20,
@@ -41,6 +41,7 @@ export class ExistingResources extends React.Component{
 
   getFinishedPresets(resource, id){
     if(this.state.busy || typeof this.state.existing[id] == 'undefined'){return}
+    if(this.state.finished_presets.length == this.state.existing.length*Object.keys(window.config['presets']).length){this.setState({"loading" : false}); return}
     for(var preset in window.config['presets']){
       if(this.state.finished_presets.filter((fin_preset)=>{return fin_preset.resource==resource.id&&window.config['presets'][preset]['id']==fin_preset.preset}).length == 0){
         this.finishedPresetRequestStack.push(id+"-"+preset);
@@ -58,7 +59,7 @@ export class ExistingResources extends React.Component{
           }
           this.finishedPresetRequestStack.splice(this.finishedPresetRequestStack.indexOf(id+"-"+preset), 1);
           if(this.finishedPresetRequestStack.length == 0){
-            this.setState({"loading_existing" : false})
+            this.setState({"loading" : false})
           }
         });
       }
@@ -66,7 +67,7 @@ export class ExistingResources extends React.Component{
   }
 
   fetchPresets(){
-    if(this.state.existing.length==0){this.setState({"loading_existing":false});return;}
+    if(this.state.existing.length==0){this.setState({"loading":false});return;}
     for(var i = this.state.list_start; i<this.state.list_end; i++){
       this.getFinishedPresets(this.state.existing[i], i);
     }
@@ -131,7 +132,7 @@ export class ExistingResources extends React.Component{
         "list_start": start,
         "list_limit": limit,
         "list_end": start+limit,
-        "loading_existing": true,
+        "loading": true,
         "list_current_page": Math.floor(this.state.list_start/this.state.list_limit)+1,
         "list_total_pages": Math.ceil(this.state.existing.length/this.state.list_limit)
       });
@@ -161,7 +162,7 @@ export class ExistingResources extends React.Component{
     }
     if(this.state.existing != prevState.existing){
       this.setState({
-        "loading_existing": true,
+        "loading": true,
         "list_total_pages": Math.ceil(this.state.existing.length/this.state.list_limit),
         "list_current_page": Math.floor(this.state.list_start/this.state.list_limit)+1,
         "list_total_pages": Math.ceil(this.state.existing.length/this.state.list_limit)
@@ -171,7 +172,7 @@ export class ExistingResources extends React.Component{
     if(prevState.list_start != this.state.list_start || prevState.list_limit != this.state.list_limit){
       this.fetchPresets();
       this.setState({
-        "loading_existing": true,
+        "loading": true,
         "list_current_page": Math.floor(this.state.list_start/this.state.list_limit)+1,
       });
     }
@@ -254,10 +255,10 @@ export class ExistingResources extends React.Component{
 
     return (
       <div className="item-view__existing">
-        <h4 className="item-view__subheader">Файлы товара</h4>
+        <h4 className="item-view__subheader">Файлы товара<div className="button-block"><button type="button" onClick={this.fetchExisting}><i className="fas fa-redo-alt"></i>Обновить</button></div></h4>
         {paginationControls}
         {this.state.existing.length==0?"Нет загруженных файлов":null}
-        <div className={(this.state.loading_existing?"loading ":"") + "item-resources"}>
+        <div className={(this.state.loading?"loading ":"") + "item-resources"}>
           <div className="item-view__file-list existing-files">
             <div className="item-view__table-header">
               <span className="info__info-field info__info-field--title info__info-field--sizepx">Имя файла</span>

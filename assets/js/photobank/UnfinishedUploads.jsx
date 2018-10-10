@@ -9,7 +9,7 @@ export class UnfinishedUploads extends React.Component{
       "uploads":[],
       "unfinished":[],
       "busy" : false,
-      "loading_uploads" : false,
+      "loading" : true,
       "unfinished_hidden":false
     };
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
@@ -19,7 +19,6 @@ export class UnfinishedUploads extends React.Component{
       "uploading": "Загружается",
       "resolved": "Готов к повторной загрузке"
     };
-    this.buildList = this.buildList.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.resolveResumedUploads = this.resolveResumedUploads.bind(this);
     this.fetchUnfinished = this.fetchUnfinished.bind(this);
@@ -27,46 +26,39 @@ export class UnfinishedUploads extends React.Component{
     this.hideUnfinished = this.hideUnfinished.bind(this);
   }
 
-  buildList() {
-      this.state.uploads = [];
-      for(var i = 0; i < this.state.unfinished.length; i++){
-        let file = this.state.unfinished[i];
-        let className = "--unfinished";
-        let status = "unfinished";
-        this.state.uploads.push({"filename": file.filename, "filehash": file.filehash, "class": className, "status":status, "ready": true, "uploading": false, "resumablekey": null, "progress": 0});
-      }
-      this.resolveResumedUploads();
-      this.setState({
-        "loading_uploads": false,
-      });
-  }
-
   fetchUnfinished(){
-      this.setState({"loading_uploads" : true});
+    console.log("ftchn");
+      this.setState({"loading" : true});
       let unfinished = [];
       $.getJSON(window.config.unfinished_uploads_url, (data)=>{
         for (var i = 0; i < data.length; i++) {
           let unfinishedUpload = data[i];
           if(unfinishedUpload[[0]]==this.props.item.id){
             if(this.props.uploads.filter((upload)=>{return upload.filehash == unfinishedUpload[2]}).length == 0){
-              unfinished.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true, "completed":false});
+              unfinished.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true, "completed":unfinishedUpload[3],"total":unfinishedUpload[4]});
             }
           }
         }
+        this.resolveResumedUploads();
         this.setState({
           "unfinished" : unfinished,
+          "loading": false
         });
       });
   }
 
   resolveResumedUploads(){
-    for (var i = 0; i < this.state.uploads.length; i++) {
+    let resolved = [];
+    for (var i = 0; i < this.state.unfinished.length; i++) {
       for (var j = 0; j < this.props.uploads.length; j++) {
-        if(this.state.uploads[i].filename == this.props.uploads[j]["filename"] &&
-        this.state.uploads[i].filehash == this.props.uploads[j]["filehash"]){
-          this.state.uploads.splice(i,1);
+        if(this.state.unfinished[i].filename == this.props.uploads[j]["filename"] &&
+        this.state.unfinished[i].filehash == this.props.uploads[j]["filehash"]){
+          resolved.push(i);
         }
       }
+    }
+    for(var r in resolved){
+      this.state.unfinished.splice(r,1);
     }
   }
 
@@ -80,9 +72,6 @@ export class UnfinishedUploads extends React.Component{
   }
 
   componentDidUpdate(prevProps, prevState){
-    if(this.props != prevProps || this.state.unfinished != prevState.unfinished){
-      this.buildList();
-    }
     if(this.props.need_refresh){
       this.fetchUnfinished();
     }
@@ -94,8 +83,7 @@ export class UnfinishedUploads extends React.Component{
     }
     for(var id in this.state.unfinished){
       let unfinished = this.state.unfinished[id];
-      let upload = this.state.uploads.filter((upload)=>{return upload.filehash == unfinished.filehash})[0];
-      this.props.deleteHandler(upload.filehash);
+      this.props.deleteHandler(unfinished.filehash);
     }
   }
 
@@ -106,27 +94,34 @@ export class UnfinishedUploads extends React.Component{
   }
 
   render() {
-    let unfinished_uploads = this.state.uploads.map((upload)=>
-      <div key={upload.filename+upload.filehash+"unfinished"} className={"file-list__file-item file-item " + "file-item"+upload.class +" "+ (upload.ready? "": "file-item--processing ")+ this.fileViewClasses[this.state.view_type] + (this.state.unfinished_hidden?"file-item--hidden":"")}>
+    //if(this.props.uploads.length==0){return null}
+    console.log("unfinished refresh");
+    let unfinished_uploads = this.state.unfinished.map((upload)=>
+      <div key={upload.filename+upload.filehash+"unfinished"} className={"file-list__file-item file-item " + "file-item--unfinished " + (this.state.unfinished_hidden?"file-item--hidden":"")}>
         <i data-item={upload.filehash} onClick={this.handleDelete} className="fas fa-trash-alt file-item__delete-upload"></i><br />
       <span className="file-item__file-name">{upload.filename}</span>
-      <span className="file-item__upload-status">{this.uploadStatus[upload.status]}</span>
+    <span className="file-item__upload-status">Прерван</span>
       <span className="progress-bar" id={"progress_bar"+upload.filehash}>
-        <div className="progress-bar__percentage">{upload.progress + "%"}</div>
+        <div className="progress-bar__percentage">{Math.round((upload.completed/upload.total)*100)}%</div>
         </span>
       </div>);
-
     return (
-      <div className="item-uploads__unfinished">
-        {this.state.unfinished.length>0?<div key={this.props.item.id + "unfinished"} className="item-view__subheader-wrapper">
-          <h4 className="item-view__subheader">Незаконченные</h4>
-          <div className="button-block">
-            <button onClick={this.clearAllUnfinished} className="button-block__btn button-block__btn--clear"><i className="fas fa-trash-alt"></i>Очистить</button>
-          <button onClick={this.hideUnfinished} className="button-block__btn button-block__btn--clear">{this.state.unfinished_hidden?<i className='fas fa-eye'></i>:<i className='fas fa-eye-slash'></i>}{this.state.unfinished_hidden?"Показать":"Скрыть"}</button>
-          </div>
+      <div className={"item-uploads__unfinished "+(this.state.loading?"loading":"")}>
+        <div key={this.props.item.id + "unfinished"} className="item-view__subheader-wrapper">
+          <h4 className="item-view__subheader">Незаконченные          <div className="button-block">
+                      <button onClick={this.clearAllUnfinished} className="button-block__btn button-block__btn--clear"><i className="fas fa-trash-alt"></i>Очистить</button>
+                    <button onClick={this.hideUnfinished} className="button-block__btn button-block__btn--clear">{this.state.unfinished_hidden?<i className='fas fa-eye'></i>:<i className='fas fa-eye-slash'></i>}{this.state.unfinished_hidden?"Показать":"Скрыть"}</button>
+                    </div></h4>
         </div>
-        :null}
+        <div className="item-uploads__unfinished-wrapper">
+        <div key="unfinished-header" className="item-view__table-header">
+          <span className="info__info-field info__info-field--title info__info-field--blank"></span>
+                    <span className="info__info-field info__info-field--title info__info-field--sizepx">Имя файла</span>
+                    <span className="info__info-field info__info-field--title info__info-field--type">Статус</span>
+                    <span className="info__info-field info__info-field--title info__info-field--sizebytes">Прогресс</span>
+                </div>
         {unfinished_uploads}
+      </div>
       </div>
     );
   }

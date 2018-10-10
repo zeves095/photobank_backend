@@ -58,14 +58,12 @@ export class ItemSection extends React.Component{
   }
 
   handleUpload(){
-    console.log("need refresh");
     this.setState({
       "need_refresh": true
     });
   }
 
   render() {
-    console.log(this.state.need_refresh);
 
     return (
       <div className = {"item-view"} >
