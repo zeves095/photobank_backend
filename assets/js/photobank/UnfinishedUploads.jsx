@@ -1,7 +1,7 @@
 import React from 'react';
 // import $ from 'jquery';
 import { hex_md5 } from '../vendor/md5';
-import {ResourceService} from './services/ResourceService';
+import {UploadService} from './services/UploadService';
 
 export class UnfinishedUploads extends React.Component{
   constructor(props) {
@@ -21,40 +21,25 @@ export class UnfinishedUploads extends React.Component{
       "resolved": "Готов к повторной загрузке"
     };
     this.handleDelete = this.handleDelete.bind(this);
-    this.resolveResumedUploads = this.resolveResumedUploads.bind(this);
     this.fetchUnfinished = this.fetchUnfinished.bind(this);
+    this.resolveResumedUploads = this.resolveResumedUploads.bind(this);
     this.clearAllUnfinished = this.clearAllUnfinished.bind(this);
     this.hideUnfinished = this.hideUnfinished.bind(this);
   }
 
   fetchUnfinished(){
-      this.setState({"loading" : true});
-      let unfinishedResponse = ResourceService.fetchUnfinished(this.props.item.id);
-      unfinishedResponse.then((data)=>{
-        let unfinished = data.filter((unfinished)=>{
-          return this.props.uploads.filter((upload)=>{return upload.filehash == unfinished.filehash}).length == 0;
-        })
-        this.setState({
-          "unfinished" : unfinished,
-          "loading": false
-        });
-      });
+    this.setState({"loading" : true});
+    UploadService.fetchUnfinished(this.props.item.id, this.props.uploads).then((data)=>{
+      this.resolveResumedUploads(data);
+    });
   }
 
-  resolveResumedUploads(){
-    let resolved = [];
-    for (var i = 0; i < this.state.unfinished.length; i++) {
-      for (var j = 0; j < this.props.uploads.length; j++) {
-        if(this.state.unfinished[i].filename == this.props.uploads[j].fileName &&
-        this.state.unfinished[i].filehash == this.props.uploads[j].uniqueIdentifier){
-          resolved.push(i);
-        }
-      }
-    }
-    for(var r in resolved){
-      this.state.unfinished.splice(r,1);
-      this.forceUpdate();
-    }
+  resolveResumedUploads(data = this.state.unfinished){
+    let unfinished = UploadService.resolveResumed(data, this.props.uploads);
+    this.setState({
+      "unfinished" : unfinished,
+      "loading": false
+    });
   }
 
   handleDelete(e){
@@ -70,7 +55,7 @@ export class UnfinishedUploads extends React.Component{
     if(this.props.need_refresh){
       this.fetchUnfinished();
     }
-    if(this.state.unfinished != prevState.unfinished){
+    if(this.props.uploads != prevProps.uploads){
       this.resolveResumedUploads();
     }
   }

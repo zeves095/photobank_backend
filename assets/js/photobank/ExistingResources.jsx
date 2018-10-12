@@ -1,6 +1,7 @@
 import React from 'react';
 // import $ from 'jquery';
 import { hex_md5 } from '../vendor/md5';
+import {ResourceService} from './services/ResourceService';
 
 export class ExistingResources extends React.Component{
   constructor(props) {
@@ -27,71 +28,37 @@ export class ExistingResources extends React.Component{
 
     this.handleResourceUpdate = this.handleResourceUpdate.bind(this);
     this.handlePagination = this.handlePagination.bind(this);
-    this.getFinishedPresets = this.getFinishedPresets.bind(this);
     this.fetchExisting = this.fetchExisting.bind(this);
   }
 
   fetchExisting(){
-    $.getJSON(window.config.existing_uploads_url+this.props.item_id, (data)=>{
+    ResourceService.fetchExisting(this.props.item_id).then((data)=>{
       this.setState({
-        "existing": data,
+        "existing": data
       });
     });
   }
 
-  getFinishedPresets(resource, id){
-    if(this.state.busy || typeof this.state.existing[id] == 'undefined'){return}
-    if(this.state.finished_presets.filter((fin_preset)=>{return fin_preset.resource == resource.id}).length >= Object.keys(window.config['presets']).length){this.setState({"loading" : false}); return}
-    for(var preset in window.config['presets']){
-      this.finishedPresetRequestStack.push(id+"-"+preset);
-      let presetId = window.config['presets'][preset]['id'];
-      let resId = resource.id;
-      let url = window.config.resource_url + resource.id + "/" + presetId;
-      // this.state.finished_presets = [];
-      $.ajax({url: url, method: 'GET'}).done((data)=>{
-        if(typeof data.id != "undefined"&&this.state.finished_presets.filter((preset)=>{return preset.preset==data.preset&&preset.resource==data.gid}).length==0){
-          this.state.finished_presets.push({
-            'id': data.id,
-            'resource' : data.gid,
-            'preset' : data.preset
-          });
-        }
-        this.finishedPresetRequestStack.splice(this.finishedPresetRequestStack.indexOf(id+"-"+preset), 1);
-        if(this.finishedPresetRequestStack.length == 0){
-          this.setState({"loading" : false})
-        }
-      });
-    }
-  }
-
   fetchPresets(){
-    if(this.state.existing.length==0){this.setState({"loading":false});return;}
-    for(var i = this.state.list_start; i<this.state.list_end; i++){
-      if(this.state.loading == false){this.setState({"loading":true})};
-      this.getFinishedPresets(this.state.existing[i], i);
+    ResourceService.fetchExistingPresets(
+      this.props.item_id,
+      this.state.existing,
+      this.state.list_start,
+      this.state.list_end,
+      this.state.finished_presets).then((data)=>{
+        this.setState({
+          "finished_presets": this.state.finished_presets.concat(data),
+          "loading": false
+        });
     }
+    );
   }
 
   handleResourceUpdate(e){
     let form = $(e.target).parent().parent();
-    let data = {
-      "id" : form.find("input[name='id']").val()
-    };
-    let sel = form.find("select");
-    let chk = form.find("input[type='checkbox']");
-    let txt = form.find("input[type='text']");
-    if(sel.length){data[sel.prop('name')]=sel.val()}
-    if(chk.length){data[chk.prop('name')]=chk.prop("checked")}
-    if(txt.length){data[txt.prop('name')]=txt.val()}
-    let dataJson = JSON.stringify(data);
-    $.ajax({
-      url: window.config.resource_url+data.id,
-      method: 'PATCH',
-      data: dataJson,
-      contentType: "application/json; charset=utf-8",
-      dataType: "json"
+    ResourceService.updateResource(form).then((data)=>{
+      this.fetchExisting();
     });
-    this.fetchExisting();
   }
 
   handlePagination(e){

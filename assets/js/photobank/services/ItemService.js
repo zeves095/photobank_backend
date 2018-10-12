@@ -16,6 +16,14 @@ class ItemService{
     });
   }
 
+  static getIdentity(id){
+    return new Promise((resolve,reject)=>{
+        $.ajax({url: window.config['item_url']+id, method: 'GET'}).done((data)=>{
+          resolve(data);
+        });
+    });
+  }
+
   static _getItems(queryObject){
     return new Promise((resolve,reject)=>{
       if(!queryObject instanceof ItemQueryObject){reject("Invalid query object")}

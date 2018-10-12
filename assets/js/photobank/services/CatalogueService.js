@@ -1,0 +1,124 @@
+import $ from 'jquery';
+
+class CatalogueService{
+  constructor(){
+
+  }
+
+  static fetchRootNodes(){
+    return new Promise((resolve, reject)=>{
+      $.getJSON(window.config.get_nodes_url, (data)=>{
+        resolve(data);
+      });
+    });
+  }
+
+  static makeTree(data, currentNode){
+    let tree={ core: { data: [] }, 'selected':[]};
+    for(var node in data){
+      let item = data[node];
+      let treeNode ={
+        'text':"",
+        'parent':"",
+        'state':{
+          'selected':false,
+          'opened':false
+        }
+      };
+      if(item.id == currentNode){
+        tree['selected'] = [item.id];
+        treeNode['state']['selected'] = true;
+        treeNode['state']['opened'] = true;
+        let nodeToOpen = item;
+        let bugCounter = 0;
+        while(nodeToOpen.parent != null && nodeToOpen.parent != 1 && nodeToOpen.parent != "#"){
+          treeNode['state']['opened'] = true;
+          nodeToOpen = data.filter((datum)=>{return datum.id == nodeToOpen.parent})[0];
+          if(bugCounter++ >= 200){
+            alert('AHTUNG!!!!');
+            break;
+          }
+        }
+      }
+      treeNode.text = item.name;
+      treeNode.parent = item.parent;
+      if(treeNode.parent == null){
+        treeNode.parent = "#";
+      }
+      treeNode.id = item.id;
+      tree['core']['data'].push(treeNode);
+    }
+    return tree;
+  }
+
+  static fetchNodes(data, tracked, node){
+    let result = data;
+    return new Promise((resolve,reject)=>{
+      $.getJSON(window.config.get_nodes_url+node, (nodes)=>{
+        let cat_data = [];
+        for(var node in nodes){
+          if(tracked.indexOf(nodes[node].id) == -1){
+            cat_data.push(nodes[node]);
+            tracked.push(nodes[node].id);
+          }
+        }
+        if(cat_data.length>0){
+          result = result.concat(cat_data);
+        }
+        resolve(result);
+      });
+    });
+  }
+
+  static fetchLevel(data, currentNode){
+    let parent = this._getNodeById(data, currentNode);
+    let children = this._getNodeChildren(data, parent);
+    return children;
+  }
+
+  static getCrumbs(data, currentNode){
+    let crumbs = [];
+    let cur_node = this._getNodeById(data, currentNode);
+    cur_node.active = true;
+    crumbs.push(cur_node);
+    while(this._getNodeParent(data, cur_node) != cur_node && this._getNodeParent(data, cur_node)!= null){
+      let parent = this._getNodeParent(data, cur_node);
+      parent.active = false;
+      crumbs.push(parent);
+      cur_node = this._getNodeById(data, parent.id);
+    }
+    return crumbs.reverse();
+  }
+
+  static _getNodeParent(data, node){
+    for(var i = 0; i<data.length; i++){
+      if(node.parent == data[i].id){
+        return data[i];
+      }
+    }
+    return null;
+  }
+
+  static _getNodeChildren(data, node){
+    let children = [];
+    for(var i = 0; i<data.length; i++){
+      if(node.id == data[i].parent && node.id !== data[i].id){
+        children.push(data[i]);
+      }
+    }
+    return children;
+  }
+
+  static _getNodeById(data, id){
+    for(var i = 0; i<data.length; i++){
+      if(id == data[i].id){
+        return data[i];
+      }
+    }
+    return null;
+  }
+
+
+}
+
+export {CatalogueService}

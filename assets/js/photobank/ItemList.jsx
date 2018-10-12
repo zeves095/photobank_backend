@@ -39,8 +39,7 @@ export class ItemList extends React.Component{
 
   getItems(nodeId = this.props.node){
     this.setState({"loading":true});
-    let bulk = ItemService.fetchItems(this.props.query, this.state.filter_query);
-    bulk.then((data)=>{
+    ItemService.fetchItems(this.props.query, this.state.filter_query).then((data)=>{
       this.setState({
         "node_items_filtered" : data,
         "loading": false

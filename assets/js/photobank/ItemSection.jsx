@@ -3,6 +3,7 @@ import React from 'react';
 import { hex_md5 } from '../vendor/md5';
 import { ExistingResources } from './ExistingResources';
 import { Uploads } from './Uploads';
+import {ItemService} from './services/ItemService';
 
 export class ItemSection extends React.Component{
   constructor(props) {
@@ -35,7 +36,7 @@ export class ItemSection extends React.Component{
   }
 
   componentWillMount(){
-    $.ajax({url: window.config['item_url']+this.props.item_id, method: 'GET'}).done((data)=>{
+    ItemService.getIdentity(this.props.item_id).then((data)=>{
       this.setState({
         "item":data
       });

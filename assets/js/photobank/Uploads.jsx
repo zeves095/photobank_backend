@@ -2,6 +2,7 @@ import React from 'react';
 // import $ from 'jquery';
 import { hex_md5 } from '../vendor/md5';
 import { UnfinishedUploads } from './UnfinishedUploads';
+import { UploadService } from './services/UploadService';
 
 export class Uploads extends React.Component{
   constructor(props) {
@@ -27,7 +28,7 @@ export class Uploads extends React.Component{
       "completed": "Загружен"
     };
     this.handleDelete = this.handleDelete.bind(this);
-    this.getHash = this.getHash.bind(this);
+    this.processFile = this.processFile.bind(this);
     this.cleanUpDone = this.cleanUpDone.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClearUnfinished = this.handleClearUnfinished.bind(this);
@@ -45,48 +46,21 @@ export class Uploads extends React.Component{
     }
   }
 
-  getHash(file) {
-    let fileObj = file.file;
-    let reader = new FileReader();
+  processFile(file) {
     this.fileHashStack.push(file);
-    reader.onload = function(e) {
-      let hashable = e.target.result;
-      hashable = new Uint8Array(hashable);
-      hashable = CRC32.buf(hashable).toString();
-      let identifier = hex_md5(hashable+file.itemId + file.file.size)
-      file.uniqueIdentifier = identifier;
-      let allowed = true;
-      let self = this.props.resumable.files.indexOf(file);
-      for(var existingUpload in this.props.resumable.files){
-        if(this.props.resumable.files[existingUpload].uniqueIdentifier == identifier && existingUpload != self){
-          allowed = false;
-          this.props.resumable.files.splice(self, 1);
-        }
-      }
-      if(allowed){
-        file.ready = true;
-        this.commitUpload(file);
-      }
+    file.itemId = this.props.item.id;
+    file.itemCode = this.props.item.itemCode;
+    file.ready = false;
+    let processResponse = UploadService.processFile(file, this.props.resumable.files);
+    processResponse.then((response)=>{
       this.fileHashStack.splice(this.fileHashStack.indexOf(file), 1);
       if(this.fileHashStack.length == 0){
-        console.log("hash refresh");
         this.setState({
           "need_refresh": true,
           "unfinished_need_refresh": true
         });
       }
-    }.bind(this);
-    reader.readAsArrayBuffer(fileObj);
-  }
-
-  commitUpload(file){
-    let obj = {
-      'filehash': file.uniqueIdentifier,
-      'filename': file.fileName,
-      'itemid': file.itemId,
-      'totalchuks': file.chunks.length
-    }
-    $.ajax({url: window.config.commit_upload_url, method: 'POST', data: obj});
+    });
   }
 
   handleDelete(e){
@@ -95,11 +69,8 @@ export class Uploads extends React.Component{
     if(typeof this.removeUploadStack[filehash] == 'undefined'){
       this.removeUploadStack.push(filehash);
     }
-    let obj = {
-      'filehash': filehash,
-      'itemid': this.props.item.id
-    }
-    $.ajax({url: window.config.remove_upload_url, method: 'POST', data: obj}).done(()=>{
+    let deleteResponse = UploadService.deleteUpload(filehash,this.props.item.id);
+    deleteResponse.then((response)=>{
       for(var i = 0; i<this.props.resumable.files.length; i++){
         if(this.props.resumable.files[i].uniqueIdentifier == filehash){
           this.props.resumable.files.splice(i,1);
@@ -138,10 +109,7 @@ export class Uploads extends React.Component{
     this.props.resumable.on('fileAdded', (file, event)=>{
       //this.fileAddQueue.push(file);
       this.setState({"loading" : true});
-      file.itemId = this.props.item.id;
-      file.itemCode = this.props.item.itemCode;
-      file.ready = false;
-      this.getHash(file);
+      this.processFile(file);
       if(window.resumableContainer[this.props.item.id] == undefined){
         window.resumableContainer[this.props.item.id] = this.props.resumable;
       }
