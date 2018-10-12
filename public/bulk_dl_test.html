@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <script>
+
+  var links = [2973,2974,2975,2976,2977,2978,2979,2980,2981,2982,2983,2984,2985,2986,2987,2988,2989,2990,2991,2992];
+
+function downloadAll(urls) {
+var link = document.createElement('a');
+
+link.setAttribute('download', null);
+link.style.display = 'none';
+
+document.body.appendChild(link);
+
+for (var i = 0; i < urls.length; i++) {
+  link.setAttribute('href', 'http://localhost:8000/catalogue/node/item/resource/'+urls[i]+'.jpg');
+  link.click();
+}
+
+document.body.removeChild(link);
+}
+downloadAll(links);
+
+
+  </script>
+
+</body>
+</html>

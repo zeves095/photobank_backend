@@ -101,6 +101,20 @@ body {
     button{
       @include button-color();
     }
+    & button.upload-pool__upload-all{
+      font-weight: bold;
+      background-color: $color-accent-fade;
+      color: $color-text-alt;
+      padding:10px;
+      font-size: 18px;
+      &:hover{
+        padding: 12px;
+        font-size: 18px;
+        background-color: $color-tertiary;
+        color: $color-text;
+        @include hover-shadow();
+      }
+    }
     .view-button{
       @include button-view-color();
     }
@@ -188,7 +202,7 @@ body {
 }
 
 .item-view {
-  .file-list__button-block{
+  .file-list__button-block, .item-view__subheader>.button-block{
     button{
       @include button-color();
       color:$color-text;
@@ -199,12 +213,10 @@ body {
       }
     }
   }
+  .item-view__view-button{
+    @include button-view-color();
+  }
   &__existing{
-    .file{
-      &:hover{
-        @include hover-shadow();
-      }
-    }
     .pagination-controls{
       button{
         @include button-accent-color();
@@ -217,9 +229,6 @@ body {
         border:none;
         background-color: $color-main-fade;
       }
-    }
-    &>button.item-view__view-button{
-      @include button-view-color();
     }
   }
   &__item-title{
@@ -246,6 +255,19 @@ body {
       color:$color-text;
     }
     &--icons-lg{
+      .file{
+        .file__thumbnail{
+          background-size: auto 100% !important;
+          background-position: center;
+          transition: background-size 0.1s linear;
+        }
+        &:hover{
+          @include hover-shadow();
+          .file__thumbnail{
+            background-size: auto 120% !important;
+          }
+        }
+      }
       .item-uploads{
         .file-list__file-item{
           background-color:$color-main;
@@ -254,6 +276,19 @@ body {
       }
     }
     &--icons-sm{
+      .file{
+        .file__thumbnail{
+          background-size: auto 100% !important;
+          background-position: center;
+          transition: background-size 0.1s linear;
+        }
+        &:hover{
+          @include hover-shadow();
+          .file__thumbnail{
+            background-size: auto 120% !important;
+          }
+        }
+      }
       .item-uploads{
         .file-list__file-item{
           background-color:$color-main;
@@ -281,6 +316,7 @@ body {
           select{
             border: none;
             background-color: transparent;
+            appearance: none;
           }
           &:hover{
             box-shadow: none;
@@ -293,6 +329,7 @@ body {
               outline: 1px solid $color-main-fade;
               background-color: $color-background;
               color:$color-text;
+              appearance: menulist;
             }
             a{
               color: $color-text-alt;
@@ -306,6 +343,10 @@ body {
         //border: 2px solid $color-accent;
         .info__info-field, .file>a, select, span, .edit-input{
           @include table-cell-color();
+        }
+        .item-view__table-header>span{
+          background-color: $color-accent !important;
+          color: $color-text-alt !important;
         }
       }
     }

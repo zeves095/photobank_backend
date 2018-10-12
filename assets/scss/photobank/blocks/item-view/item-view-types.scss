@@ -164,13 +164,21 @@
         .existing-files__file{
           display:table-row;
           .file__thumbnail{
-            display:none;
+            height: 38px;
+            width: 38px;
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            left:0px;
+            top: 0;
           }
           .file__file-name{
-            max-width: 256px;
+            max-width: 200px;
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
+            padding-left:40px;
+            position: relative;
           }
         }
         .info__info-field, .file>a, select, span, .edit-input{
@@ -179,11 +187,14 @@
       }
       .item-uploads{
         position: relative;
-        display:table;
         width: 100%;
         text-align: center;
         .item-view__table-header{
           display:table-header-group;
+        }
+        .item-uploads__upload-wrapper, .item-uploads__unfinished-wrapper{
+          width: 100%;
+          display: table;
         }
         .file-list__file-item{
           display:table-row;
