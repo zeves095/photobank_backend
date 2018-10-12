@@ -58,14 +58,10 @@ class UploadService{
     return new Promise((resolve, reject)=>{
       let hashResponse = this._getHash(file);
       hashResponse.then((filehash)=>{
+        console.log("HASH GET " + filehash);
         file.uniqueIdentifier = filehash;
-        let commitResponse = this._commitUpload(file, existingUploads);
-        commitResponse.then((response)=>{
-          if(response){
-            resolve();
-          }else{
-            reject();
-          }
+        this._commitUpload(file, existingUploads).then((response)=>{
+          resolve();
         });
       });
     });
@@ -104,9 +100,10 @@ class UploadService{
       let self = existingUploads.indexOf(file);
       for(var existingUpload in existingUploads){
         if(existingUploads[existingUpload].uniqueIdentifier == file.uniqueIdentifier && existingUpload != self){
+          console.log("FOUND IN EXISTING");
           allowed = false;
           existingUploads.splice(self, 1);
-          reject();
+          resolve(false);
         }
       }
       if(allowed){
