@@ -4,66 +4,52 @@ import React from 'react';
 import { CatalogueTree } from './CatalogueTree';
 import { NodeViewer } from './NodeViewer';
 import { Draggable } from './Draggable';
-
+import {ItemQueryObject} from './services/ItemQueryObject';
+import {ResourceService} from './services/ResourceService';
+import {UploadService} from './services/UploadService';
+import {CatalogueService} from './services/CatalogueService';
 
 export class PhotoBank extends React.Component {
 
   constructor(props) {
     super(props);
     this.state ={
-      "catalogue_data": {},
-      "crumb_string": ""
+      "crumb_string": "",
+      "item_query_object": new ItemQueryObject(1)
     }
     this.fetchUnfinished();
-    this.handleNodeChoice = this.handleNodeChoice.bind(this);
-    this.handleDataChange = this.handleDataChange.bind(this);
+    this.handleCatalogueQuery = this.handleCatalogueQuery.bind(this);
     this.handleCrumbUpdate = this.handleCrumbUpdate.bind(this);
+
+    if(typeof window.localStorage.photobank_data == "undefined"){
+      window.localStorage.photobank_data = "set";
+      window.localStorage.pb_data_catalogue_current_node = "1";
+    }
   }
 
   fetchUnfinished(){
-    $.getJSON("/api/upload/unfinished/", (data)=>{
-      for (var i = 0; i < data.length; i++) {
-        let unfinishedUpload = data[i];
-        if(typeof window.resumableContainer[unfinishedUpload[0]] == 'undefined'){
-          window.resumableContainer[unfinishedUpload[0]]=new Resumable({target: window.config.upload_target_url});
-        }
+    UploadService.fetchUnfinishedItems().then((items)=>{
+      for(var item in items){
+        window.resumableContainer[items[item]]=new Resumable({target: window.config.upload_target_url});
       }
     });
   }
 
-  handleNodeChoice(id){
+  handleCatalogueQuery(queryObject){
     this.setState({
-      "selected_node": id
+      "selected_node": queryObject.getNodeId(),
+      "item_query_object": queryObject
     });
-  }
-
-  handleDataChange(data, filteredData){
-    if(this.state.catalogue_data != data || this.state.catalogue_data_filtered != filteredData){
-      // this.setState({
-      //   "catalogue_data": data,
-      //   "catalogue_data_filtered": filteredData
-      // });
-      this.state.catalogue_data = data;
-    }
   }
 
   handleCrumbUpdate(crumbs){
+    let crumbsClone = crumbs.slice(0).reverse();
     let needElipsis = false;
-    if(crumbs.length>3){crumbs = crumbs.slice(0,3); needElipsis = true;}
-    let crumb_string = crumbs.reverse().reduce((accumulator,currentValue)=>accumulator+"/"+currentValue.name, "");
+    if(crumbsClone.length>3){crumbsClone = crumbsClone.slice(0,3); needElipsis = true;}
+    let crumb_string = crumbsClone.reduce((accumulator,currentValue)=>accumulator+"/"+currentValue.name, "");
     this.setState({
       "crumb_string":(needElipsis?"...":"")+crumb_string
     })
-  }
-
-  componentWillMount(){
-    //$.getJSON("/assets/js/components/photobank/dummy_data1.json", (data)=>{
-    $.getJSON(window.config.get_nodes_url, (data)=>{
-      this.setState({
-        "catalogue_data":data,
-        "selected_node":1
-      });
-    });
   }
 
   render() {
@@ -71,9 +57,9 @@ export class PhotoBank extends React.Component {
     return (
       <div className="photobank-main">
       <div className="photobank-main__main-block">
-        <CatalogueTree catalogue_data={this.state.catalogue_data} nodeChoiceHandler={this.handleNodeChoice} dataChangeHandler={this.handleDataChange} default_view="2" crumb_handler={this.handleCrumbUpdate} />
+        <CatalogueTree catalogue_data={this.state.catalogue_data} queryHandler={this.handleCatalogueQuery} default_view="2" crumb_handler={this.handleCrumbUpdate} />
       {$(".catalogue-tree").length>0?<Draggable box1=".catalogue-tree" box2=".node-viewer" id="1" />:null}
-      <NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} crumb_string={this.state.crumb_string} />
+      <NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} query={this.state.item_query_object} crumb_string={this.state.crumb_string} />
         </div>
         <div className="photobank-main__butt-wrapper">
         </div>

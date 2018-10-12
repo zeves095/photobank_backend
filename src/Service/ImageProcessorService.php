@@ -55,7 +55,7 @@ class ImageProcessorService{
     }
     $imageProcessor = new Imagine();
     $size = new Box($preset['width'],$preset['height']);
-    $mode = ImageInterface::THUMBNAIL_INSET;
+    $mode = ImageInterface::THUMBNAIL_OUTBOUND;
     $processorDirectory = $this->container->getParameter('upload_directory').'/imgproc/';
     if(!$this->fileSystem->exists($processorDirectory)){$this->fileSystem->mkDir($processorDirectory);}
     $targetPath = $processorDirectory.$resource->getId().'_'.$preset['name'].'.'.$extension;

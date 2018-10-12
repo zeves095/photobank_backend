@@ -2,6 +2,7 @@
   order: 2;
   flex-grow: 1;
   height: 85vh;
+  width:85%;
   display: inline-block;
 
   .view-inner__container{
@@ -15,6 +16,7 @@
     &__item-list {
       overflow: hidden;
       min-width: 210px;
+      width:20%;
       flex-grow: 0;
       flex-shrink: 2;
       overflow: scroll;
@@ -27,6 +29,7 @@
     &__item-section {
       overflow: hidden;
       min-width: 440px;
+      width:80%;
       flex-grow: 2;
       flex-shrink: 1;
       //max-width: 60vw;
@@ -36,11 +39,13 @@
     }
   }
 
-  .item-section-switcher{
+  .view-switcher-button-block{
     position: absolute;
     top: 2px;
     right: 0px;
-    @include button();
-    margin: 0;
+    .item-section-switcher{
+      @include button();
+      margin: 0;
+    }
   }
 }

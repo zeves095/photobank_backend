@@ -101,6 +101,20 @@ body {
     button{
       @include button-color();
     }
+    & button.upload-pool__upload-all{
+      font-weight: bold;
+      background-color: $color-accent-fade;
+      color: $color-text-alt;
+      padding:10px;
+      font-size: 18px;
+      &:hover{
+        padding: 12px;
+        font-size: 18px;
+        background-color: $color-tertiary;
+        color: $color-text;
+        @include hover-shadow();
+      }
+    }
     .view-button{
       @include button-view-color();
     }
@@ -188,7 +202,7 @@ body {
 }
 
 .item-view {
-  .file-list__button-block{
+  .file-list__button-block, .item-view__subheader>.button-block{
     button{
       @include button-color();
       color:$color-text;
@@ -199,12 +213,10 @@ body {
       }
     }
   }
+  .item-view__view-button{
+    @include button-view-color();
+  }
   &__existing{
-    .file{
-      &:hover{
-        @include hover-shadow();
-      }
-    }
     .pagination-controls{
       button{
         @include button-accent-color();
@@ -217,9 +229,6 @@ body {
         border:none;
         background-color: $color-main-fade;
       }
-    }
-    &>button.item-view__view-button{
-      @include button-view-color();
     }
   }
   &__item-title{
@@ -246,6 +255,19 @@ body {
       color:$color-text;
     }
     &--icons-lg{
+      .file{
+        .file__thumbnail{
+          background-size: auto 100% !important;
+          background-position: center;
+          transition: background-size 0.1s linear;
+        }
+        &:hover{
+          @include hover-shadow();
+          .file__thumbnail{
+            background-size: auto 120% !important;
+          }
+        }
+      }
       .item-uploads{
         .file-list__file-item{
           background-color:$color-main;
@@ -254,6 +276,35 @@ body {
       }
     }
     &--icons-sm{
+      .existing-download-controls, .existing-download{
+        background-color: transparent !important;
+        i{
+          transition: margin-top 0.2s;
+          color: $color-text-alt;
+          cursor:pointer;
+        }
+        &:hover{
+          background-color: #3337 !important;
+          i{
+            &:hover{
+              background-color: $color-accent;
+            }
+          }
+        }
+      }
+      .file{
+        .file__thumbnail{
+          background-size: auto 100% !important;
+          background-position: center;
+          transition: background-size 0.1s linear;
+        }
+        &:hover{
+          @include hover-shadow();
+          .file__thumbnail{
+            background-size: auto 120% !important;
+          }
+        }
+      }
       .item-uploads{
         .file-list__file-item{
           background-color:$color-main;
@@ -262,6 +313,42 @@ body {
       }
     }
     &--detailed{
+      .existing-download-controls, .existing-download{
+        overflow: hidden;
+        background-color: transparent !important;
+        i{
+          transition: margin-top 0.2s;
+          font-size: 12px;
+          position: absolute;
+          margin-top: 50px;
+          width: 25%;
+          height: 100%;
+          padding: 5px 0;
+          color: $color-text-alt;
+          cursor:pointer;
+          &.get-url{
+            left: 0;
+          }
+          &.open-in-tab{
+            left: 25%;
+          }
+          &.dl-now{
+            right: 25%;
+          }
+          &.dl-cart-add{
+            right: 0;
+          }
+        }
+        &:hover{
+          background-color: #3337 !important;
+          i{
+            margin-top: 0;
+            &:hover{
+              background-color: $color-accent;
+            }
+          }
+        }
+      }
       .item-resources{
         //border: 2px solid $color-accent;
         animation-name: foldout;
@@ -276,11 +363,11 @@ body {
         .existing-files__file{
           .info__info-field, .file>a, select, span, .edit-input{
               @include table-cell-color();
-              padding: 4px 2px;
           }
           select{
             border: none;
             background-color: transparent;
+            appearance: none;
           }
           &:hover{
             box-shadow: none;
@@ -293,6 +380,7 @@ body {
               outline: 1px solid $color-main-fade;
               background-color: $color-background;
               color:$color-text;
+              appearance: menulist;
             }
             a{
               color: $color-text-alt;
@@ -307,6 +395,10 @@ body {
         .info__info-field, .file>a, select, span, .edit-input{
           @include table-cell-color();
         }
+        .item-view__table-header>span{
+          background-color: $color-accent !important;
+          color: $color-text-alt !important;
+        }
       }
     }
   }
@@ -320,6 +412,19 @@ body {
 
 .progress-bar{
   transition: 0.5s;
+}
+
+.download-pool{
+  .pending-download{
+    border-bottom: 1px solid $color-accent;
+  }
+  button{
+    @include button-color();
+    border: none;
+    font-size: 17px;
+    color: $color-accent;
+    padding: 5px;
+  }
 }
 
 @keyframes foldout {

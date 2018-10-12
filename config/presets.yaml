@@ -3,25 +3,25 @@ parameters:
         thumbnail:
             id: 1
             name: 'thumbnail'
-            width: 100
-            height: 100
+            width: 320
+            height: 180
         large:
             id: 2
             name: 'large'
-            width: 1920
-            height: 1080
+            width: 3840
+            height: 2160
         medium:
             id: 3
             name: 'medium'
-            width: 1280
-            height: 720
+            width: 1920
+            height: 1080
     preset_collections:
         main:
           id: 1
           presets: [1,2,3]
         additional:
           id: 2
-          presets: [1,2,3]
+          presets: [1,3]
         original:
           id: 3
           presets: [1]

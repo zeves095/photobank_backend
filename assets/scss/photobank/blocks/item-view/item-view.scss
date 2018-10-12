@@ -46,7 +46,7 @@
       border: 5px dashed #777;
     }
   }
-  &__existing>button.item-view__view-button{
+  .item-view__view-button{
     @include button-view();
   }
   &__item-title{
@@ -68,7 +68,7 @@
     padding:10px;
         margin-bottom: 0;
         font-size: 15px;
-
+    position: relative;
   }
   .item-view__inner {
     @include component-inner();
@@ -90,18 +90,38 @@
   .existing-files{
     &__file{
       vertical-align: top;
+      &>div, &>span{
+        position: relative;
+      }
+    }
+    .existing-download-controls, .existing-download{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
     }
   }
   .item-uploads{
     .button-block{
       position: absolute;
-      top: 18px;
-      right: 0;
+      top: 0;
+      right: 25px;
       button{
         @include button();
         margin: 0;
         font-size: 12px;
       }
+    }
+  }
+  .item-view__existing .button-block{
+    position: absolute;
+    top: 0;
+    right: 25px;
+    button{
+      @include button();
+      margin: 0;
+      font-size: 12px;
     }
   }
 }
