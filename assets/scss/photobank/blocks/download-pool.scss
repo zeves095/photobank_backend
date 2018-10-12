@@ -1,0 +1,19 @@
+.download-pool{
+  .pending-download{
+    line-height: 30px;
+  }
+  .download-thumbnail{
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    display: inline-block;
+    margin: 10px;
+  }
+  .download-infofields{
+    display: inline-block;
+  }
+  .download-infofields__field{
+
+  }
+}

@@ -39,11 +39,13 @@
     }
   }
 
-  .item-section-switcher{
+  .view-switcher-button-block{
     position: absolute;
     top: 2px;
     right: 0px;
-    @include button();
-    margin: 0;
+    .item-section-switcher{
+      @include button();
+      margin: 0;
+    }
   }
 }

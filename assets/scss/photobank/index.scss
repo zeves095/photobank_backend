@@ -31,9 +31,9 @@ $bordrad:0px;
 }
 
 @mixin table-cell(){
-  display:table-cell;
+  display: table-cell;
   text-align: center;
-  padding:5px;
+  //padding:5px;
 }
 
 @mixin button(){
@@ -114,4 +114,5 @@ i.fas{
 @import "./blocks/node-viewer.scss";
 @import "./blocks/list-filter.scss";
 @import "./blocks/item-view/item-view.scss";
+@import "./blocks/download-pool.scss";
 @import "./overrides.scss"

@@ -276,6 +276,22 @@ body {
       }
     }
     &--icons-sm{
+      .existing-download-controls, .existing-download{
+        background-color: transparent !important;
+        i{
+          transition: margin-top 0.2s;
+          color: $color-text-alt;
+          cursor:pointer;
+        }
+        &:hover{
+          background-color: #3337 !important;
+          i{
+            &:hover{
+              background-color: $color-accent;
+            }
+          }
+        }
+      }
       .file{
         .file__thumbnail{
           background-size: auto 100% !important;
@@ -297,6 +313,42 @@ body {
       }
     }
     &--detailed{
+      .existing-download-controls, .existing-download{
+        overflow: hidden;
+        background-color: transparent !important;
+        i{
+          transition: margin-top 0.2s;
+          font-size: 12px;
+          position: absolute;
+          margin-top: 50px;
+          width: 25%;
+          height: 100%;
+          padding: 5px 0;
+          color: $color-text-alt;
+          cursor:pointer;
+          &.get-url{
+            left: 0;
+          }
+          &.open-in-tab{
+            left: 25%;
+          }
+          &.dl-now{
+            right: 25%;
+          }
+          &.dl-cart-add{
+            right: 0;
+          }
+        }
+        &:hover{
+          background-color: #3337 !important;
+          i{
+            margin-top: 0;
+            &:hover{
+              background-color: $color-accent;
+            }
+          }
+        }
+      }
       .item-resources{
         //border: 2px solid $color-accent;
         animation-name: foldout;
@@ -311,7 +363,6 @@ body {
         .existing-files__file{
           .info__info-field, .file>a, select, span, .edit-input{
               @include table-cell-color();
-              padding: 4px 2px;
           }
           select{
             border: none;
@@ -361,6 +412,19 @@ body {
 
 .progress-bar{
   transition: 0.5s;
+}
+
+.download-pool{
+  .pending-download{
+    border-bottom: 1px solid $color-accent;
+  }
+  button{
+    @include button-color();
+    border: none;
+    font-size: 17px;
+    color: $color-accent;
+    padding: 5px;
+  }
 }
 
 @keyframes foldout {

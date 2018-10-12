@@ -29,6 +29,11 @@ export class ExistingResources extends React.Component{
     this.handleResourceUpdate = this.handleResourceUpdate.bind(this);
     this.handlePagination = this.handlePagination.bind(this);
     this.fetchExisting = this.fetchExisting.bind(this);
+
+    this.handleCopyToClipboard = this.handleCopyToClipboard.bind(this);
+    this.handleOpenInTab = this.handleOpenInTab.bind(this);
+    this.handleDownloadResource = this.handleDownloadResource.bind(this);
+    this.handleAddToDownloads = this.handleAddToDownloads.bind(this);
   }
 
   fetchExisting(){
@@ -105,6 +110,34 @@ export class ExistingResources extends React.Component{
     }
   }
 
+  handleCopyToClipboard(e){
+    e.preventDefault();
+    let resource = e.target.dataset["resource"];
+    console.log("handleCopyToClipboard "+ resource);
+    ResourceService.copyLinkToClipboard(resource);
+  }
+
+  handleOpenInTab(e){
+    e.preventDefault();
+    let resource = e.target.dataset["resource"];
+    console.log("handleOpenInTab "+ resource);
+    ResourceService.openInTab(resource);
+  }
+
+  handleDownloadResource(e){
+    e.preventDefault();
+    let resource = e.target.dataset["resource"];
+    console.log("handleDownloadResource "+ resource);
+    ResourceService.downloadResource(resource);
+  }
+
+  handleAddToDownloads(e){
+    e.preventDefault();
+    let resource = e.target.dataset["resource"];
+    console.log("handleAddToDownloads "+ resource);
+    this.props.addDownloadHandler(resource);
+  }
+
   componentDidMount(){
     let presets = [];
     for(var preset in window.config['presets']){
@@ -168,7 +201,16 @@ export class ExistingResources extends React.Component{
         presets.push(
           <span key={file.id+"-"+presetId} className={"info__info-field info__info-field--preset "+finished?"info__info-field--preset-done":"info__info-field--preset-not-done"}>
             {finished
-              ?<a href={window.config['resource_url']+finishedPreset.id+".jpg"} target="_blank">{window.config['presets'][preset]['width']+'/'+window.config['presets'][preset]['height']}</a>
+              //?<span className="existing-preset"><a href={window.config['resource_url']+finishedPreset.id+".jpg"} target="_blank">{window.config['presets'][preset]['width']+'/'+window.config['presets'][preset]['height']}</a></span>
+              ?<span className="existing-download">
+                <span className="existing-download-controls">
+                  <i onClick={this.handleCopyToClipboard} data-resource={finishedPreset.id} className="fas fa-link get-url"></i>
+                <i onClick={this.handleOpenInTab} data-resource={finishedPreset.id} className="fas fa-external-link-square-alt open-in-tab"></i>
+              <i onClick={this.handleDownloadResource} data-resource={finishedPreset.id} className="fas fa-arrow-alt-circle-down dl-now"></i>
+            <i onClick={this.handleAddToDownloads} data-resource={finishedPreset.id} className="fas fa-plus-circle dl-cart-add"></i>
+                </span>
+                <a href={window.config['resource_url']+finishedPreset.id+".jpg"} target="_blank">{window.config['presets'][preset]['width']+'/'+window.config['presets'][preset]['height']}</a>
+              </span>
               :"Не обработан"
             }
           </span>);
@@ -176,7 +218,12 @@ export class ExistingResources extends React.Component{
       existingListMarkupData.push(
 
         <div className={"existing-files__file file "+this.fileViewClasses[this.state.view_type]} key={file.src_filename+file.filename}>
-        <a className="file__file-name" href={window.config.resource_url+file.id+".jpg"} target="_blank"><div className="file__thumbnail" style={{"backgroundImage":"url("+presetLinks[0]+")"}}></div>{file.src_filename}</a>
+        <a className="file__file-name" href={window.config.resource_url+file.id+".jpg"} target="_blank"><div className="file__thumbnail" style={{"backgroundImage":"url("+presetLinks[0]+")"}}></div><span className="existing-download-controls">
+          <i onClick={this.handleCopyToClipboard} data-resource={file.id} className="fas fa-link get-url"></i>
+        <i onClick={this.handleOpenInTab} data-resource={file.id} className="fas fa-external-link-square-alt open-in-tab"></i>
+      <i onClick={this.handleDownloadResource} data-resource={file.id} className="fas fa-arrow-alt-circle-down dl-now"></i>
+    <i onClick={this.handleAddToDownloads} data-resource={file.id} className="fas fa-plus-circle dl-cart-add"></i>
+        </span>{file.src_filename}</a>
       {/* <div className="file__edit-fields edit-fields"> */}
           <div className="edit-input">
             <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>

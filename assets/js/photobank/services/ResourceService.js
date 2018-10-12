@@ -106,6 +106,74 @@ class ResourceService{
     });
   }
 
+  static downloadResource(resources){
+    if(!Array.isArray(resources)){resources = [resources]}
+    let anchor = document.createElement('a');
+    anchor.setAttribute('download', null);
+    anchor.style.display = 'none';
+    document.body.appendChild(anchor);
+    for (var i = 0; i < resources.length; i++) {
+      let link = this._getLinkById(resources[i]);
+      anchor.setAttribute('href', link);
+      anchor.click();
+    }
+    document.body.removeChild(anchor);
+  }
+
+  static copyLinkToClipboard(id){
+    let link = this._getLinkById(id);
+    console.log(link);
+    navigator.clipboard.writeText(link);
+  }
+
+  static openInTab(id){
+    let link = this._getLinkById(id);
+    console.log(link);
+    window.open(link)
+  }
+
+  static fetchThumbnailLink(id){
+    let resourceLink = this._getLinkById(id, true);
+    console.log(resourceLink);
+    return new Promise((resolve, reject)=>{
+      new Promise((resolve,reject)=>{
+        $.ajax(resourceLink).done((result)=>{
+          console.log(result);
+          resolve(result.gid);
+        })
+      }).then((gid)=>{
+        console.log(resourceLink+"/"+gid);
+        $.ajax(resourceLink+"/"+gid).done((result)=>{
+          resolve(this._getLinkById(result.id, true));
+        })
+      })
+    });
+  }
+
+  static getResource(res){
+    if(!Array.isArray(res)){res = [res]}
+    let resourceIterable = [];
+    return new Promise((resolve,reject)=>{
+      for(var r in res){
+        resourceIterable.push(new Promise((resolve,reject)=>{
+          $.ajax(window.config["resource_url"]+res[r]).done((result)=>{
+            resolve(result);
+          });
+        }));
+      }
+      Promise.all(resourceIterable).then((results)=>{
+        resolve(results);
+      });
+    })
+  }
+
+  static _getLinkById(id, isAjax = false){
+    let href = window.location.href.split("/");
+    let host = href[0] + "//" + href[2]
+    let link = host+window.config.resource_url+id+(isAjax?"":".jpg");
+    return link;
+  }
+
 }
 
 export {ResourceService}

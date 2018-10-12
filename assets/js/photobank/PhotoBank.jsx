@@ -20,6 +20,11 @@ export class PhotoBank extends React.Component {
     this.fetchUnfinished();
     this.handleCatalogueQuery = this.handleCatalogueQuery.bind(this);
     this.handleCrumbUpdate = this.handleCrumbUpdate.bind(this);
+
+    if(typeof window.localStorage.photobank_data == "undefined"){
+      window.localStorage.photobank_data = "set";
+      window.localStorage.pb_data_catalogue_current_node = "1";
+    }
   }
 
   fetchUnfinished(){

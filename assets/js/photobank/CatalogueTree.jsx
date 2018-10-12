@@ -69,8 +69,9 @@ export class CatalogueTree extends React.Component {
   componentWillMount(){
     let rootResponse = CatalogueService.fetchRootNodes();
     rootResponse.then((data)=>{
+      let currentNode = data[0].id;
       this.setState({
-        "current_node": data[0].id,
+        "current_node": currentNode,
         "catalogue_data": data,
       });
     });

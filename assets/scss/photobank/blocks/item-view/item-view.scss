@@ -90,6 +90,16 @@
   .existing-files{
     &__file{
       vertical-align: top;
+      &>div, &>span{
+        position: relative;
+      }
+    }
+    .existing-download-controls, .existing-download{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
     }
   }
   .item-uploads{

@@ -99,7 +99,7 @@ export class ItemSection extends React.Component{
           <button type="button" data-view="2" className={this.state.view_type==2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
             <i className="fas fa-list-ul"></i>
           </button>
-          {this.props.render_existing?<ExistingResources item_id={this.state.item_id} need_refresh={this.state.need_refresh} />:null}
+          {this.props.render_existing?<ExistingResources item_id={this.state.item_id} addDownloadHandler={this.props.addDownloadHandler} need_refresh={this.state.need_refresh} />:null}
         <h4 className="item-view__subheader">Загрузки</h4>
       {(typeof this.state.item=='undefined')?null:<Uploads item={this.state.item} resumable={this.resumable} uploadCompleteHandler={this.handleUpload} />}
       </div> < /div>
