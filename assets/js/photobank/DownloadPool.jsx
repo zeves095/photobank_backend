@@ -62,14 +62,11 @@ export class DownloadPool extends React.Component{
         <div key={"dl"+download.id} className="pending-download">
           <div className="download-thumbnail" style={{"backgroundImage":"url("+ResourceService._getLinkById(download.id)+")"}}></div>
         <div className="download-infofields">
-          <div className="download-infofields__field">
+          <div className="download-infofields__field name">
             Имя:{download.name}
           </div>
-          <div className="download-infofields__field">
+          <div className="download-infofields__field sizepx">
           Размер:{download.sizepx}
-        </div>
-          <div className="download-infofields__field">
-          Тип:{download.preset}
           </div>
           <button type="button" data-download={download.id} onClick={this.handleRemoveDownload}><i className="fas fa-trash-alt"></i>Отменить</button>
         </div>

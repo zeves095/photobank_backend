@@ -213,10 +213,10 @@ export class ExistingResources extends React.Component{
               //?<span className="existing-preset"><a href={window.config['resource_url']+finishedPreset.id+".jpg"} target="_blank">{window.config['presets'][preset]['width']+'/'+window.config['presets'][preset]['height']}</a></span>
               ?<span className="existing-download">
                 <span className="existing-download-controls">
-                  <i onClick={this.handleCopyToClipboard} data-resource={finishedPreset.id} className="fas fa-link get-url"></i>
-                <i onClick={this.handleOpenInTab} data-resource={finishedPreset.id} className="fas fa-external-link-square-alt open-in-tab"></i>
-              <i onClick={this.handleDownloadResource} data-resource={finishedPreset.id} className="fas fa-arrow-alt-circle-down dl-now"></i>
-            <i onClick={this.handleAddToDownloads} data-resource={finishedPreset.id} className="fas fa-plus-circle dl-cart-add"></i>
+                  <i onClick={this.handleCopyToClipboard} title="Скопировать ссылку" data-resource={finishedPreset.id} className="fas fa-link get-url"></i>
+                <i onClick={this.handleOpenInTab} title="Открыть в новой вкладке" data-resource={finishedPreset.id} className="fas fa-external-link-square-alt open-in-tab"></i>
+              <i onClick={this.handleDownloadResource} title="Скачать файл" data-resource={finishedPreset.id} className="fas fa-arrow-alt-circle-down dl-now"></i>
+            <i onClick={this.handleAddToDownloads} title="Добавить в загрузки" data-resource={finishedPreset.id} className="fas fa-plus-circle dl-cart-add"></i>
                 </span>
                 <a href={window.config['resource_url']+finishedPreset.id+".jpg"} target="_blank">{window.config['presets'][preset]['width']+'/'+window.config['presets'][preset]['height']}</a>
               </span>
@@ -228,10 +228,10 @@ export class ExistingResources extends React.Component{
 
         <div className={"existing-files__file file "+this.fileViewClasses[this.state.view_type]} key={file.src_filename+file.filename}>
         <a className="file__file-name" href={window.config.resource_url+file.id+".jpg"} target="_blank"><div className="file__thumbnail" style={{"backgroundImage":"url("+presetLinks[0]+")"}}></div><span className="existing-download-controls">
-          <i onClick={this.handleCopyToClipboard} data-resource={file.id} className="fas fa-link get-url"></i>
-        <i onClick={this.handleOpenInTab} data-resource={file.id} className="fas fa-external-link-square-alt open-in-tab"></i>
-      <i onClick={this.handleDownloadResource} data-resource={file.id} className="fas fa-arrow-alt-circle-down dl-now"></i>
-    <i onClick={this.handleAddToDownloads} data-resource={file.id} className="fas fa-plus-circle dl-cart-add"></i>
+          <i onClick={this.handleCopyToClipboard} title="Скопировать ссылку" data-resource={file.id} className="fas fa-link get-url"></i>
+        <i onClick={this.handleOpenInTab} title="Открыть в новой вкладке" data-resource={file.id} className="fas fa-external-link-square-alt open-in-tab"></i>
+      <i onClick={this.handleDownloadResource} title="Скачать файл" data-resource={file.id} className="fas fa-arrow-alt-circle-down dl-now"></i>
+    <i onClick={this.handleAddToDownloads} title="Добавить в загрузки" data-resource={file.id} className="fas fa-plus-circle dl-cart-add"></i>
         </span>{file.src_filename}</a>
       {/* <div className="file__edit-fields edit-fields"> */}
           <div className={"edit-input " + (file.type=="2"?"edit-input--add-file":"")}>
