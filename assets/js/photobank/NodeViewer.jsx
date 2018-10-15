@@ -5,6 +5,7 @@ import { ListFilter } from './ListFilter';
 import { UploadPool } from './UploadPool';
 import { DownloadPool } from './DownloadPool';
 import { Draggable } from './Draggable';
+import {LocalStorageService} from './services/LocalStorageService';
 
 export class NodeViewer extends React.Component{
   constructor(props) {
@@ -12,6 +13,7 @@ export class NodeViewer extends React.Component{
     this.state ={
       "catalogue_data": this.props.catalogue_data,
       "node": this.props.node,
+      "prev_node_id": 1,
       "node_items": [],
       "node_items_filtered": [],
       "filter_query": "",
@@ -45,20 +47,19 @@ export class NodeViewer extends React.Component{
     });
   }
 
-  handleItemChoice(itemId){
+  handleItemChoice(item){
     this.setState({
       'view_pool':0,
-      'current_item': itemId,
+      'current_item': item,
       'product_crumbs': this.props.crumb_string
     });
   }
 
   handleAddToDownloads(id){
-    console.warn("DLS")
-    console.warn(this.state.downloads)
     if(this.state.downloads.indexOf(id)==-1){
       let downloads = this.state.downloads.slice(0);
       downloads.push(id);
+      LocalStorageService.addTo("pending_downloads", id);
       this.setState({
         "downloads": downloads
       });
@@ -66,14 +67,11 @@ export class NodeViewer extends React.Component{
   }
 
   handleRemoveDownload(id){
-    console.warn("DLS -R"+id);
     let downloads = this.state.downloads.slice(0);
-    console.log(downloads.indexOf(id));
     let index = downloads.indexOf(id);
+    LocalStorageService.removeFrom("pending_downloads", id);
     if(index!=-1){
-      console.log(index);
       downloads.splice(index,1);
-      console.log(downloads);
       this.setState({
         "downloads": downloads
       });
@@ -81,13 +79,32 @@ export class NodeViewer extends React.Component{
   }
 
   handleDownload(){
+    for(var dl in this.state.downloads){
+      console.log();
+      this.handleRemoveDownload(this.state.downloads[dl]);
+    }
     this.setState({
       "downloads": []
     })
   }
 
-  render() {
+  componentDidMount(){
+    let downloads = LocalStorageService.get("pending_downloads");
+    downloads = downloads.split(" ");
+    this.setState({
+      "downloads":downloads
+    });
+  }
 
+  componentDidUpdate(prevProps,prevState){
+    if(this.state.node == prevState.node && this.props.node != this.state.node){
+      this.setState({
+        "node":this.props.node
+      });
+    }
+  }
+
+  render() {
     let nodeItemList = this.state.node_items_filtered.map((item)=>
       <div className={"list-item"+((this.state.current_item!=null&&item.id==this.state.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={this.itemClickHandler}>
         <h4 data-item={item.id} onClick={this.itemClickHandler}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
@@ -116,7 +133,7 @@ export class NodeViewer extends React.Component{
 
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
-          <ItemList node={this.props.node} query={this.props.query} itemChoiceHandler={this.handleItemChoice} />
+          <ItemList node={this.state.node} query={this.props.query} itemChoiceHandler={this.handleItemChoice} item={this.props.item} />
           {$(".view-inner__item-section").length>0?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
           <div className="view-inner__item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
             <h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.state.product_crumbs}</i></h2>

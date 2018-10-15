@@ -3,6 +3,7 @@ import React from 'react';
 import TreeView from 'react-simple-jstree';
 import {ItemQueryObject} from './services/ItemQueryObject';
 import {CatalogueService} from './services/CatalogueService';
+import {LocalStorageService} from './services/LocalStorageService';
 export class CatalogueTree extends React.Component {
 
   constructor(props) {
@@ -12,7 +13,7 @@ export class CatalogueTree extends React.Component {
       "catalogue_list": [],
       "catalogue_tree": {},
       "tracked_nodes": [],
-      "current_node": 0,
+      "current_node": null,
       "crumbs": [],
       "view": this.props.default_view,
       "loading": false,
@@ -24,6 +25,7 @@ export class CatalogueTree extends React.Component {
     this.handleTreeClick = this.handleTreeClick.bind(this);
     this.handleViewChoice = this.handleViewChoice.bind(this);
     this.traverseUp = this.traverseUp.bind(this);
+    this.handleNodeChoice = this.handleNodeChoice.bind(this);
   }
 
   getCatalogueNodes(){
@@ -49,29 +51,32 @@ export class CatalogueTree extends React.Component {
   listClickHandler(e){
     e.stopPropagation();
     let curr_id = e.target.getAttribute('data-node');
-    this.chooseNode(curr_id);
+    this.setState({
+      "current_node": curr_id,
+    });
   }
 
   handleTreeClick(e,data){
     if(data.selected[0] != this.state.current_node && data.action == "select_node"){
-      this.chooseNode(data.selected[0]);
+      this.setState({
+        "current_node": data.selected[0],
+      });
     }
   }
 
-  chooseNode(id){
-    this.setState({
-      "current_node" : id
-    });
-    let queryObject = new ItemQueryObject(id);
+  handleNodeChoice(){
+    LocalStorageService.set("current_node", this.state.current_node);
+    let queryObject = new ItemQueryObject(this.state.current_node);
     this.props.queryHandler(queryObject);
   }
 
   componentWillMount(){
-    let rootResponse = CatalogueService.fetchRootNodes();
-    rootResponse.then((data)=>{
-      let currentNode = data[0].id;
+    //let currentNode = LocalStorageService.get("current_node");
+    CatalogueService.fetchRootNodes(this.props.node).then((data)=>{
+      let tracked = data.slice(0).map((result)=>{return result.id});
       this.setState({
-        "current_node": currentNode,
+        "tracked_nodes": tracked,
+        "current_node": this.props.node,
         "catalogue_data": data,
       });
     });
@@ -79,6 +84,7 @@ export class CatalogueTree extends React.Component {
 
   componentDidUpdate(prevProps,prevState){
     if(this.state.current_node != prevState.current_node){
+      this.handleNodeChoice();
       this.getCatalogueNodes();
       this.getCrumbs();
     }
