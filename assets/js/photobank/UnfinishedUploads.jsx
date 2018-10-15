@@ -2,6 +2,7 @@ import React from 'react';
 // import $ from 'jquery';
 import { hex_md5 } from '../vendor/md5';
 import {UploadService} from './services/UploadService';
+import {NotificationService} from './services/NotificationService';
 
 export class UnfinishedUploads extends React.Component{
   constructor(props) {
@@ -70,6 +71,7 @@ export class UnfinishedUploads extends React.Component{
       this.props.deleteHandler(unfinished.filehash);
       this.props.clearAllHandler();
     }
+    NotificationService.toast("unfinished-cleared");
   }
 
   hideUnfinished(){

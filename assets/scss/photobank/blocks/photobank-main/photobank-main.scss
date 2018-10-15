@@ -54,4 +54,57 @@
       order:0;
     }
   }
+  #notification-overlay{
+    pointer-events: none;
+    position: fixed;
+    width: 250px;
+    height: 100vh;
+    top: 0;
+    right: 25px;
+    z-index: 1000;
+    &>.notification{
+      position: relative;
+      width: 200px;
+      animation-name: slidein;
+      animation-duration: 0.4s;
+      pointer-events: all;
+      margin: 10px 0;
+      padding: 5px 25px;
+      button{
+        i{
+          pointer-events: none;
+        }
+        top: 20px;
+        right: 10px;
+        position: absolute;
+        width: 30px;
+        height: 30px;
+      }
+      &__notification-caption{
+        padding: 20px;
+      }
+      &--out{
+        animation-name: slideout;
+        animation-duration: 0.4s;
+      }
+    }
+  }
+
+  @keyframes slidein {
+    from {
+  		margin-left: 1000px;
+    	}
+  	to {
+  		margin-left: 0px;
+    	}
+  }
+
+  @keyframes slideout {
+    from {
+  		margin-left: 0px;
+    	}
+  	to {
+  		margin-left: 1000px;
+    	}
+  }
 }

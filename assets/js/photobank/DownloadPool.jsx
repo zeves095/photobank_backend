@@ -36,11 +36,9 @@ export class DownloadPool extends React.Component{
   }
 
   populateDownloads(){
-    console.warn("WAT-WAT");
     let downloads = [];
     ResourceService.getResource(this.props.resources).then((res)=>{
       for(var r in res){
-        console.log(r);
         if(res[r] == ""){continue;}
         downloads.push({
           "id": res[r].id,

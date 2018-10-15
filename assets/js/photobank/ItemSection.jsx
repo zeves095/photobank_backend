@@ -62,6 +62,7 @@ export class ItemSection extends React.Component{
   }
 
   handleUpload(){
+    NotificationService.toast("up-done");
     this.setState({
       "need_refresh": true
     });
