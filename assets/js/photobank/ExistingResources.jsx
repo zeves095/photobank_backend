@@ -2,6 +2,7 @@ import React from 'react';
 // import $ from 'jquery';
 import { hex_md5 } from '../vendor/md5';
 import {ResourceService} from './services/ResourceService';
+import {NotificationService} from './services/NotificationService';
 
 export class ExistingResources extends React.Component{
   constructor(props) {
@@ -41,6 +42,8 @@ export class ExistingResources extends React.Component{
       this.setState({
         "existing": data
       });
+    }).catch((error)=>{
+      NotificationService.throw(error);
     });
   }
 
@@ -56,13 +59,17 @@ export class ExistingResources extends React.Component{
           "loading": false
         });
     }
-    );
+    ).catch((error)=>{
+      NotificationService.throw(error);
+    });
   }
 
   handleResourceUpdate(e){
     let form = $(e.target).parent().parent();
     ResourceService.updateResource(form).then((data)=>{
       this.fetchExisting();
+    }).catch((error)=>{
+      NotificationService.throw(error);
     });
   }
 
@@ -115,6 +122,7 @@ export class ExistingResources extends React.Component{
     let resource = e.target.dataset["resource"];
     console.log("handleCopyToClipboard "+ resource);
     ResourceService.copyLinkToClipboard(resource);
+    NotificationService.toast("link-copied");
   }
 
   handleOpenInTab(e){
@@ -136,6 +144,7 @@ export class ExistingResources extends React.Component{
     let resource = e.target.dataset["resource"];
     console.log("handleAddToDownloads "+ resource);
     this.props.addDownloadHandler(resource);
+    NotificationService.toast("dl-queued");
   }
 
   componentDidMount(){
@@ -225,12 +234,13 @@ export class ExistingResources extends React.Component{
     <i onClick={this.handleAddToDownloads} data-resource={file.id} className="fas fa-plus-circle dl-cart-add"></i>
         </span>{file.src_filename}</a>
       {/* <div className="file__edit-fields edit-fields"> */}
-          <div className="edit-input">
+          <div className={"edit-input " + (file.type=="2"?"edit-input--add-file":"")}>
             <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
               <option disabled={currMain>=maxMain?true:false} value="1">Основноe{mainStatus}</option>
-            <option disabled={currAdd>=maxAdd?true:false} value="2">Дополнительное{addStatus}</option>
+            <option disabled={currAdd>=maxAdd?true:false} value="2">Доп.{addStatus}</option>
               <option value="3">Исходник</option>
             </select>
+            {file.type=="2"?<input type="text" name="priority" defaultValue={file.priority} onBlur={this.handleResourceUpdate}></input>:null}
           </div>
           {/* <span className="edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span> */}
           <input type="hidden" name="id" value={file.id}/>

@@ -4,6 +4,7 @@ import { hex_md5 } from '../vendor/md5';
 import { ExistingResources } from './ExistingResources';
 import { Uploads } from './Uploads';
 import {ItemService} from './services/ItemService';
+import {NotificationService} from './services/NotificationService';
 
 export class ItemSection extends React.Component{
   constructor(props) {
@@ -41,6 +42,8 @@ export class ItemSection extends React.Component{
         "item":data
       });
       if(typeof this.props.identityHandler != "undefined"){this.props.identityHandler(data.id,data.name,data.itemCode)};
+    }).catch((error)=>{
+      NotificationService.throw(error);
     });
   }
 
@@ -59,6 +62,7 @@ export class ItemSection extends React.Component{
   }
 
   handleUpload(){
+    NotificationService.toast("up-done");
     this.setState({
       "need_refresh": true
     });

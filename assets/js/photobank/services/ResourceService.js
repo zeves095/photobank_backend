@@ -8,8 +8,10 @@ class ResourceService{
     return new Promise((resolve, reject)=>{
       $.getJSON(window.config.existing_uploads_url+itemId, (data)=>{
         resolve(data);
-      });
-    });
+      }).fail(()=>{
+        reject("request-failed");
+      });;
+    })
   }
 
   static fetchExistingPresets(itemId, existing, start, end, finishedPresets){
@@ -38,6 +40,8 @@ class ResourceService{
           return true;
         });
         resolve(presets);
+      }).catch((e)=>{
+        reject(e);
       });
     });
   }
@@ -67,6 +71,8 @@ class ResourceService{
             }else{
               resolvePreset(null);
             }
+          }).fail(()=>{
+            reject("request-failed");
           });
         }))
       }
@@ -101,6 +107,8 @@ class ResourceService{
         dataType: "json"
       }).done(()=>{
         resolve();
+      }).fail(()=>{
+        reject("request-failed");
       });
       resolve();
     });

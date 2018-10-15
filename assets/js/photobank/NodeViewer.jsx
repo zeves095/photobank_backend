@@ -6,6 +6,7 @@ import { UploadPool } from './UploadPool';
 import { DownloadPool } from './DownloadPool';
 import { Draggable } from './Draggable';
 import {LocalStorageService} from './services/LocalStorageService';
+import {NotificationService} from './services/NotificationService';
 
 export class NodeViewer extends React.Component{
   constructor(props) {
@@ -20,7 +21,7 @@ export class NodeViewer extends React.Component{
       "current_item": null,
       "item_section": "Не выбран товар",
       "view_pool": 0,
-      "view_type": 1,
+      "view_type": this.props.default_view,
       "product_crumbs": this.props.crumb_string,
       "loading": false,
       "downloads": []
@@ -42,6 +43,7 @@ export class NodeViewer extends React.Component{
   }
 
   handleViewChoice(view){
+    LocalStorageService.set("list_view_type", view);
     this.setState({
       "view_type":view
     });
@@ -80,9 +82,9 @@ export class NodeViewer extends React.Component{
 
   handleDownload(){
     for(var dl in this.state.downloads){
-      console.log();
       this.handleRemoveDownload(this.state.downloads[dl]);
     }
+    NotificationService.toast("dl-done");
     this.setState({
       "downloads": []
     })

@@ -9,6 +9,7 @@ import {ResourceService} from './services/ResourceService';
 import {UploadService} from './services/UploadService';
 import {CatalogueService} from './services/CatalogueService';
 import {LocalStorageService} from './services/LocalStorageService';
+import {NotificationService} from './services/NotificationService';
 
 export class PhotoBank extends React.Component {
 
@@ -31,6 +32,8 @@ export class PhotoBank extends React.Component {
       for(var item in items){
         window.resumableContainer[items[item]]=new Resumable({target: window.config.upload_target_url});
       }
+    }).catch((error)=>{
+      NotificationService.throw(error);
     });
   }
 
@@ -54,9 +57,11 @@ export class PhotoBank extends React.Component {
   componentWillMount(){
     let prevnode = LocalStorageService.get("current_node");
     let previtem = LocalStorageService.get("current_item");
+    let prevview = LocalStorageService.get("list_view_type");
     this.setState({
       "ls_node": prevnode,
       "ls_item": previtem,
+      "ls_view": prevview,
     });
   }
 
@@ -64,10 +69,13 @@ export class PhotoBank extends React.Component {
     if(this.state.catalogue_data != {}){
     return (
       <div className="photobank-main">
+        <div id="notification-overlay">
+          
+        </div>
       <div className="photobank-main__main-block">
         <CatalogueTree catalogue_data={this.state.catalogue_data} queryHandler={this.handleCatalogueQuery} default_view="2" crumb_handler={this.handleCrumbUpdate} node={this.state.ls_node} />
       {$(".catalogue-tree").length>0?<Draggable box1=".catalogue-tree" box2=".node-viewer" id="1" />:null}
-      {this.state.item_query_object == null?null:<NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} query={this.state.item_query_object} crumb_string={this.state.crumb_string} item={this.state.ls_item} />}
+      {this.state.item_query_object == null?null:<NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} query={this.state.item_query_object} crumb_string={this.state.crumb_string} item={this.state.ls_item} default_view={this.state.ls_view} />}
         </div>
         <div className="photobank-main__butt-wrapper">
         </div>
