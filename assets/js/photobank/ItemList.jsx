@@ -2,6 +2,8 @@ import React from 'react';
 import { ListFilter } from './ListFilter';
 import {ItemService} from './services/ItemService';
 
+import {LocalStorageService} from './services/LocalStorageService';
+
 export class ItemList extends React.Component{
   constructor(props) {
     super(props);
@@ -11,6 +13,7 @@ export class ItemList extends React.Component{
       "node_items_filtered": [],
       "filter_query": "",
       "current_item": null,
+      "previtem_id": this.props.item,
       "loading": false
     }
     this.getItems = this.getItems.bind(this);
@@ -18,26 +21,7 @@ export class ItemList extends React.Component{
     this.filterQueryHandler = this.filterQueryHandler.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState){
-    if(this.props.node !== prevProps.node){
-      this.setState({
-        "node": this.props.node
-      });
-      this.getItems();
-    }
-    if(this.state.current_item != prevState.current_item){
-      this.getItems();
-    }
-    if(this.state.filter_query != prevState.filter_query){
-      this.getItems();
-    }
-  }
-
-  componentDidMount(){
-    this.getItems();
-  }
-
-  getItems(nodeId = this.props.node){
+  getItems(){
     this.setState({"loading":true});
     ItemService.fetchItems(this.props.query, this.state.filter_query).then((data)=>{
       this.setState({
@@ -54,12 +38,45 @@ export class ItemList extends React.Component{
   }
 
   itemClickHandler(e){
-    let itemId = $(e.target).attr("data-item");
+    let itemId = "";
+    if(e.target){
+      itemId = $(e.target).attr("data-item");
+    }else{
+      itemId = e;
+    }
+    console.log(itemId);
+    LocalStorageService.set("current_item", itemId);
     let currItem = this.state.node_items_filtered.filter((item)=>{return item.id == itemId})[0];
     this.setState({
       'current_item': currItem,
     });
     this.props.itemChoiceHandler(currItem);
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(this.props.node !== prevProps.node){
+      this.setState({
+        "node": this.props.node
+      });
+      this.getItems();
+    }
+    if(this.state.current_item != prevState.current_item){
+      this.getItems();
+    }
+    if(this.state.filter_query != prevState.filter_query){
+      this.getItems();
+    }
+    if(this.props.node == prevProps.node && prevState.node_items_filtered.length == 0 && this.state.node_items_filtered.length>0){
+      this.itemClickHandler(this.props.item);
+    }
+  }
+
+  componentWillMount(){
+    this.getItems();
+  }
+
+  componentDidMount(){
+    this.itemClickHandler(this.props.item);
   }
 
   render() {

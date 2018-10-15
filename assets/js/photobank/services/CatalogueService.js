@@ -5,10 +5,30 @@ class CatalogueService{
 
   }
 
-  static fetchRootNodes(){
+  static fetchRootNodes(currentNode = "", prevresult = []){
+    let result = prevresult;
     return new Promise((resolve, reject)=>{
-      $.getJSON(window.config.get_nodes_url, (data)=>{
-        resolve(data);
+      $.getJSON(window.config.get_nodes_url+currentNode, (data)=>{
+        result = result.concat(data);
+
+        if(data.filter((node)=>{return node.parent == null}).length >0){
+          //tracked = result.map((res)=>{return res.id});
+          resolve(result);
+        }
+
+        else if(data.filter((node)=>{return node.parent == 1}).length >0){
+          this.fetchRootNodes("", result).then((result)=>{
+            resolve(result);
+          });
+        }
+
+        else{
+          this._fetchNodeParent(currentNode).then((parent)=>{
+            this.fetchRootNodes(parent,result).then((result)=>{
+              resolve(result);
+            });
+          });
+        }
       });
     });
   }
@@ -88,6 +108,14 @@ class CatalogueService{
       cur_node = this._getNodeById(data, parent.id);
     }
     return crumbs.reverse();
+  }
+
+  static _fetchNodeParent(id){
+    return new Promise((resolve,reject)=>{
+      $.getJSON("/catalogue/node/"+id, (data)=>{
+        resolve(data.parent);
+      });
+    });
   }
 
   static _getNodeParent(data, node){
