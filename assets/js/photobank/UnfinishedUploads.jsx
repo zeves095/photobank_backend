@@ -62,6 +62,7 @@ export class UnfinishedUploads extends React.Component{
   }
 
   clearAllUnfinished(){
+    if(this.state.unfinished.length == 0){return null}
     this.setState({"loading":true});
     for(var id in this.state.unfinished){
       this.removeUploadStack.push(this.state.unfinished[id].filehash);
