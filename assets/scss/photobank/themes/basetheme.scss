@@ -255,6 +255,22 @@ body {
       color:$color-text;
     }
     &--icons-lg{
+      .existing-download-controls, .existing-download{
+        background-color: transparent !important;
+        i{
+          transition: margin-top 0.2s;
+          color: $color-text-alt;
+          cursor:pointer;
+        }
+        &:hover{
+          background-color: #3337 !important;
+          i{
+            &:hover{
+              background-color: $color-accent;
+            }
+          }
+        }
+      }
       .file{
         .file__thumbnail{
           background-size: auto 100% !important;

@@ -84,6 +84,38 @@
         .info__info-field, .edit-input, .info__info-field--preset-done{
           display:none;
         }
+        .existing-download-controls, .existing-download{
+          @include download-controls();
+          i{
+            font-size: 20px;
+            margin-top: 250px;
+            width: 10%;
+            height: 10%;
+            padding: 20%;
+            cursor:pointer;
+            &.get-url{
+              top:0;
+              left: 0;
+            }
+            &.open-in-tab{
+              top: 0;
+              left:50%;
+            }
+            &.dl-now{
+              top: 50%;
+              left: 0;
+            }
+            &.dl-cart-add{
+              top: 50%;
+              left:50%;
+            }
+          }
+          &:hover{
+            i{
+              margin-top: 0;
+            }
+          }
+        }
         .existing-files__file{
           width: 150px;
           position: relative;
@@ -264,11 +296,23 @@
           @include table-cell();
           padding: 6px 2px;
         }
-        .file>.edit-input>select{
-          width: 125px;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
+        .file>.edit-input{
+          select{
+            width: 125px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+          }
+          &--add-file{
+            select{
+              width:100px;
+              display: inline-block;
+            }
+            input{
+              width:20px;
+              display: inline-block;
+            }
+          }
         }
         .existing-download-controls, .existing-download{
           @include download-controls();

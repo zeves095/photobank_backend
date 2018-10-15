@@ -4,6 +4,7 @@ import TreeView from 'react-simple-jstree';
 import {ItemQueryObject} from './services/ItemQueryObject';
 import {CatalogueService} from './services/CatalogueService';
 import {LocalStorageService} from './services/LocalStorageService';
+import {NotificationService} from './services/NotificationService';
 export class CatalogueTree extends React.Component {
 
   constructor(props) {
@@ -37,6 +38,8 @@ export class CatalogueTree extends React.Component {
         "draw_tree":true,
         "loading":false
       });
+    }).catch((error)=>{
+      NotificationService.throw(error);
     });
   }
 
@@ -79,6 +82,8 @@ export class CatalogueTree extends React.Component {
         "current_node": this.props.node,
         "catalogue_data": data,
       });
+    }).catch((error)=>{
+      NotificationService.throw(error);
     });
   }
 

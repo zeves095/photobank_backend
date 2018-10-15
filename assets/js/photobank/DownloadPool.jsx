@@ -1,6 +1,7 @@
 import React from 'react';
 // import $ from 'jquery';
 import {ResourceService} from './services/ResourceService';
+import {NotificationService} from './services/NotificationService';
 
 export class DownloadPool extends React.Component{
 
@@ -51,11 +52,13 @@ export class DownloadPool extends React.Component{
       this.setState({
         "downloads": downloads
       });
+    }).catch((error)=>{
+      NotificationService.throw(error);
     });
   }
 
   render(){
-    if(this.state.downloads.length == 0){return null}
+    if(this.state.downloads.length == 0){return "Нет загрузок"}
     let downloads = this.state.downloads.map((download)=>{
       return(
         <div key={"dl"+download.id} className="pending-download">

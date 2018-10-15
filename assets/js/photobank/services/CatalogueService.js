@@ -8,7 +8,7 @@ class CatalogueService{
   static fetchRootNodes(currentNode = "", prevresult = []){
     let result = prevresult;
     return new Promise((resolve, reject)=>{
-      $.getJSON(window.config.get_nodes_url+currentNode, (data)=>{
+      $.getJSON(window.config.get_nodes_url+currentNode).done((data)=>{
         result = result.concat(data);
 
         if(data.filter((node)=>{return node.parent == null}).length >0){
@@ -86,6 +86,8 @@ class CatalogueService{
           result = result.concat(cat_data);
         }
         resolve(result);
+      }).fail(()=>{
+        reject("request-failed");
       });
     });
   }
@@ -112,8 +114,11 @@ class CatalogueService{
 
   static _fetchNodeParent(id){
     return new Promise((resolve,reject)=>{
+      console.warn("id" + id);
       $.getJSON("/catalogue/node/"+id, (data)=>{
         resolve(data.parent);
+      }).fail(()=>{
+        reject("request-failed");
       });
     });
   }

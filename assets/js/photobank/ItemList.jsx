@@ -3,6 +3,7 @@ import { ListFilter } from './ListFilter';
 import {ItemService} from './services/ItemService';
 
 import {LocalStorageService} from './services/LocalStorageService';
+import {NotificationService} from './services/NotificationService';
 
 export class ItemList extends React.Component{
   constructor(props) {
@@ -28,6 +29,8 @@ export class ItemList extends React.Component{
         "node_items_filtered" : data,
         "loading": false
       });
+    }).catch((error)=>{
+      NotificationService.throw(error);
     });
   }
 
