@@ -10,7 +10,6 @@ class CatalogueService{
     return new Promise((resolve, reject)=>{
       $.getJSON(window.config.get_nodes_url+currentNode).done((data)=>{
         result = result.concat(data);
-
         if(data.filter((node)=>{return node.parent == null}).length >0){
           //tracked = result.map((res)=>{return res.id});
           resolve(result);

@@ -122,6 +122,7 @@ export class ExistingResources extends React.Component{
     let resource = e.target.dataset["resource"];
     console.log("handleCopyToClipboard "+ resource);
     ResourceService.copyLinkToClipboard(resource);
+    NotificationService.toast("link-copied");
   }
 
   handleOpenInTab(e){
@@ -143,6 +144,7 @@ export class ExistingResources extends React.Component{
     let resource = e.target.dataset["resource"];
     console.log("handleAddToDownloads "+ resource);
     this.props.addDownloadHandler(resource);
+    NotificationService.toast("dl-queued");
   }
 
   componentDidMount(){

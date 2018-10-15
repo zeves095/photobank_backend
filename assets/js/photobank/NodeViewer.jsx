@@ -82,9 +82,9 @@ export class NodeViewer extends React.Component{
 
   handleDownload(){
     for(var dl in this.state.downloads){
-      console.log();
       this.handleRemoveDownload(this.state.downloads[dl]);
     }
+    NotificationService.toast("dl-done");
     this.setState({
       "downloads": []
     })

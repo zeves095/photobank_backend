@@ -3,6 +3,7 @@ import React from 'react';
 import { hex_md5 } from '../vendor/md5';
 import { UnfinishedUploads } from './UnfinishedUploads';
 import { UploadService } from './services/UploadService';
+import {NotificationService} from './services/NotificationService';
 
 export class Uploads extends React.Component{
   constructor(props) {
@@ -55,6 +56,7 @@ export class Uploads extends React.Component{
     processResponse.then((response)=>{
       this.fileHashStack.splice(this.fileHashStack.indexOf(file), 1);
       if(this.fileHashStack.length == 0){
+        NotificationService.toast("up-ready");
         this.setState({
           "need_refresh": true,
           "unfinished_need_refresh": true
