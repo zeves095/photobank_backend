@@ -120,15 +120,15 @@ export class CatalogueTree extends React.Component {
     // if(this.state.current_node==0){return null}
     let view = "";
     let viewClass = "";
-    console.warn(this.state.view ==2);
+    console.warn(this.state.view);
     switch(this.state.view){
-      case 1:
+      case "1":
         console.log("list");
         let children = CatalogueService.fetchLevel(this.state.catalogue_data, this.state.current_node)
         let list = [];
+        list.push(<div onClick={this.traverseUp} className="list-view__cat_item list-view__cat_item--parent">../</div>);
         for(var i = 0; i<children.length; i++){
           let child = children[i];
-          list.push(<div onClick={this.traverseUp} className="list-view__cat_item list-view__cat_item--parent">../</div>);
           list.push(
             <div key={child.id} className="list-view__cat_item list-view__cat_item--parent" onClick={this.listClickHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></div>
           );
@@ -136,13 +136,13 @@ export class CatalogueTree extends React.Component {
         view = list;
         viewClass = "list-view";
         break;
-      case 2:
+      case "2":
       console.log("tree");
         let tree=CatalogueService.makeTree(this.state.catalogue_data, this.state.current_node);
-        view = <TreeView treeData={tree} onChange={this.handleTreeClick} />;
+        view = this.state.catalogue_data.length != 0?<TreeView treeData={tree} onChange={this.handleTreeClick} />:"";
         viewClass = "tree-view";
         break;
-      case 3:
+      case "3":
       console.log("search");
         viewClass = "search-view";
         break;
