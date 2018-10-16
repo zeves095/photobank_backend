@@ -39,7 +39,7 @@ export class PhotoBank extends React.Component {
 
   handleCatalogueQuery(queryObject){
     this.setState({
-      "selected_node": queryObject.getNodeId(),
+      "selected_node": queryObject.nodeId,
       "item_query_object": queryObject
     });
   }
@@ -70,7 +70,7 @@ export class PhotoBank extends React.Component {
     return (
       <div className="photobank-main">
         <div id="notification-overlay">
-          
+
         </div>
       <div className="photobank-main__main-block">
         <CatalogueTree catalogue_data={this.state.catalogue_data} queryHandler={this.handleCatalogueQuery} default_view="2" crumb_handler={this.handleCrumbUpdate} node={this.state.ls_node} />

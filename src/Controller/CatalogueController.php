@@ -25,6 +25,10 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 use Symfony\Component\Messenger\MessageBusInterface;
 use App\Message\ResourcePresetNotification;
+
+use App\Service\Search\SearchQueryBuilder;
+use App\Service\Search\SearchService;
+
 class CatalogueController extends AbstractController
 {
     /**
@@ -132,6 +136,24 @@ class CatalogueController extends AbstractController
 
         $response->setData($itemsArray);
         return $response;
+    }
+
+    /**
+     * @Route("/catalogue/search/items",
+     * methods={"GET"},
+     * name="catalogue_search_items")
+     */
+    public function searchItems(Request $request, SearchQueryBuilder $queryBuilder, SearchService $searchService,AppSerializer $serializer)
+    {
+      $response = new JsonResponse();
+      $queryObject = $queryBuilder->makeItemQuery($request);
+      $items = $searchService->search($queryObject);
+      $itemsArray = $serializer->normalize($items, null, array(
+          ObjectNormalizer::ENABLE_MAX_DEPTH => true,
+          'groups' => array('main')
+      ));
+      $response->setData($itemsArray);
+      return $response;
     }
 
     /**

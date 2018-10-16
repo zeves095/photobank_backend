@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\CatalogueNodeItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Entity\Search\ItemQueryObject;
 
 /**
  * @method CatalogueNodeItem|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,6 +19,31 @@ class CatalogueNodeItemRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, CatalogueNodeItem::class);
     }
+
+  /**
+    * @return CatalogueNodeItem[] Returns an array of CatalogueNodeItem objects
+    */
+
+    public function search(ItemQueryObject $queryObject)
+    {
+      $queryBuilder = $this->createQueryBuilder('c');
+      if($queryObject->getField("name") != ""){
+        $queryBuilder->andWhere('c.name LIKE :name')
+        ->setParameter('name', '%'.$queryObject->getField("name").'%');
+      }
+      if($queryObject->getField("code") != ""){
+        $queryBuilder->andWhere('c.itemCode = :code')
+        ->setParameter('code', $queryObject->getField("code"));
+      }
+      if($queryObject->getField("parent_name") != ""){
+        $queryBuilder->leftJoin('c.node', 'parent')
+        ->andWhere('parent.name LIKE :pname')
+        ->setParameter('pname', '%'.$queryObject->getField("parent_name").'%');
+      }
+      return $queryBuilder->setMaxResults(100)->getQuery()->getResult();
+
+    }
+
 
 
 //    /**

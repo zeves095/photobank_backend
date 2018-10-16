@@ -47,7 +47,6 @@ export class ItemList extends React.Component{
     }else{
       itemId = e;
     }
-    console.log(itemId);
     LocalStorageService.set("current_item", itemId);
     let currItem = this.state.node_items_filtered.filter((item)=>{return item.id == itemId})[0];
     this.setState({
@@ -61,6 +60,9 @@ export class ItemList extends React.Component{
       this.setState({
         "node": this.props.node
       });
+      this.getItems();
+    }
+    if(this.props.query !== prevProps.query){
       this.getItems();
     }
     if(this.state.current_item != prevState.current_item){

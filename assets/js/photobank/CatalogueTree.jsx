@@ -71,7 +71,8 @@ export class CatalogueTree extends React.Component {
 
   handleNodeChoice(){
     LocalStorageService.set("current_node", this.state.current_node);
-    let queryObject = new ItemQueryObject(this.state.current_node);
+    let queryObject = new ItemQueryObject();
+    queryObject.nodeId = this.state.current_node;
     this.props.queryHandler(queryObject);
   }
 
@@ -112,18 +113,17 @@ export class CatalogueTree extends React.Component {
     }
   }
 
-  handleQuery(){
-
+  handleQuery(queryObject){
+    console.log("QUERY");
+    this.props.queryHandler(queryObject);
   }
 
   render() {
     // if(this.state.current_node==0){return null}
     let view = "";
     let viewClass = "";
-    console.warn(this.state.view);
     switch(this.state.view){
       case "1":
-        console.log("list");
         let children = CatalogueService.fetchLevel(this.state.catalogue_data, this.state.current_node)
         let list = [];
         list.push(<div onClick={this.traverseUp} className="list-view__cat_item list-view__cat_item--parent">../</div>);
@@ -137,13 +137,12 @@ export class CatalogueTree extends React.Component {
         viewClass = "list-view";
         break;
       case "2":
-      console.log("tree");
         let tree=CatalogueService.makeTree(this.state.catalogue_data, this.state.current_node);
-        view = this.state.catalogue_data.length != 0?<TreeView treeData={tree} onChange={this.handleTreeClick} />:"";
+        this.state.catalogue_data.length>0?view = <TreeView treeData={tree} onChange={this.handleTreeClick} />:"";
         viewClass = "tree-view";
         break;
       case "3":
-      console.log("search");
+        view = <ItemSearch searchQueryHandler={this.handleQuery} />;
         viewClass = "search-view";
         break;
     }

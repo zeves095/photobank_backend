@@ -8,6 +8,7 @@ class NotificationService{
       "unknown-error": "Неизвестная ошибка",
       "failed-root-nodes": "Не удалось получить структуру каталога",
       "request-failed": "Ошибка запроса",
+      "none-found": "Ничего не найдено",
       "link-copied": "Сcылка скопирована в буфер обмена",
       "dl-queued": "Загрузка поставлена в очередь",
       "dl-done": "Загрузка завершена",
@@ -29,7 +30,7 @@ class NotificationService{
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(key) != -1){
       this._makeNotification(keys[key], 1);
-    }else{alert(keys["unknown-error"])}
+    }else{this._makeNotification(keys["unknown-error"], 1);}
   }
 
   static _makeNotification(text, type ,time=0){

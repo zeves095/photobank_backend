@@ -15,15 +15,18 @@ export class ItemSearch extends React.Component{
   };
 
   handleChange(e){
-    let query = e.target.value;
-    this.state.query = query;
+    let field = e.target.name;
+    let query = this.state.query;
+    this.state.query[field] = e.target.value;
   }
 
   handleSubmit(){
-    this.props.filterHandler(this.state.query);
+    let newQuery = Object.assign({},this.state.query);
+    this.props.searchQueryHandler(newQuery);
   }
 
   componentDidMount(){
+    let queryObject = new ItemQueryObject();
     let input = document.getElementById(this.props.filterid+"inpt");
     input.addEventListener("keyup", (event)=> {
       event.preventDefault();
@@ -31,12 +34,17 @@ export class ItemSearch extends React.Component{
         document.getElementById(this.props.filterid+"btn").click();
       }
     });
+    this.setState({
+      "query":queryObject
+    });
   }
 
   render(){
     return(
       <div className="list-filter">
-        <input type="text" id={this.props.filterid+"inpt"} name="filter-query" placeholder={this.props.placeholder} onChange={this.handleChange}></input>
+        <input type="text" id={this.props.filterid+"inpt"} name="name" placeholder="nodeId" onChange={this.handleChange}></input>
+      <input type="text" id={this.props.filterid+"inpt"} name="parent_name" placeholder="parent_name" onChange={this.handleChange}></input>
+    <input type="text" id={this.props.filterid+"inpt"} name="code" placeholder="code" onChange={this.handleChange}></input>
       <button type="button" id={this.props.filterid+"btn"} onClick={this.handleSubmit}><i className="fas fa-search"></i></button>
       </div>
     );
