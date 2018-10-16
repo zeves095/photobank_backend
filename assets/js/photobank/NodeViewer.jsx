@@ -91,8 +91,7 @@ export class NodeViewer extends React.Component{
   }
 
   componentDidMount(){
-    let downloads = LocalStorageService.get("pending_downloads");
-    downloads = downloads.split(" ");
+    let downloads = LocalStorageService.getList("pending_downloads");
     this.setState({
       "downloads":downloads
     });
