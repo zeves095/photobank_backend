@@ -61,6 +61,18 @@ class LocalStorageService{
     }
   }
 
+  static getList(list, delimiter=" "){
+    let keys = this._getKeys();
+    if(Object.keys(keys).indexOf(list) != -1){
+      let storedList = window.localStorage[keys[list]];
+      if(typeof storedList == "undefined" || storedList == null){
+        return [];
+      }
+      let splitList = storedList.split(delimiter);
+      return splitList;
+    }
+  }
+
 }
 
 
