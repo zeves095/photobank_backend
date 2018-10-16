@@ -94,13 +94,13 @@ export class ItemSection extends React.Component{
           this.state.open
           ? "item-view__inner--open "
           : "item-view__inner--closed ") + this.containerViewClasses[this.state.view_type]}>
-          <button type="button" data-view="0" className={this.state.view_type==0?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
+          <button type="button" data-view="0" title="Большие иконки" className={this.state.view_type==0?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
             <i className="fas fa-th-large"></i>
           </button>
-          <button type="button" data-view="1" className={this.state.view_type==1?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
+          <button type="button" data-view="1" title="Маленькие иконки" className={this.state.view_type==1?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
             <i className="fas fa-th"></i>
           </button>
-          <button type="button" data-view="2" className={this.state.view_type==2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
+          <button type="button" data-view="2" title="Таблица" className={this.state.view_type==2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
             <i className="fas fa-list-ul"></i>
           </button>
           {this.props.render_existing?<ExistingResources item_id={this.state.item_id} addDownloadHandler={this.props.addDownloadHandler} need_refresh={this.state.need_refresh} />:null}

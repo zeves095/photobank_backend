@@ -1,6 +1,10 @@
 .download-pool{
   .pending-download{
+    font-size: 15px;
     line-height: 30px;
+    width: 400px;
+display: inline-block;
+margin:10px;
   }
   .download-thumbnail{
     width: 100px;
@@ -11,9 +15,13 @@
     margin: 10px;
   }
   .download-infofields{
+    position: absolute;
     display: inline-block;
+    width: 250px;
   }
   .download-infofields__field{
-
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

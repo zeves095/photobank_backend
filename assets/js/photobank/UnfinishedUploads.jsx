@@ -62,6 +62,7 @@ export class UnfinishedUploads extends React.Component{
   }
 
   clearAllUnfinished(){
+    if(this.state.unfinished.length == 0){return null}
     this.setState({"loading":true});
     for(var id in this.state.unfinished){
       this.removeUploadStack.push(this.state.unfinished[id].filehash);
@@ -94,7 +95,7 @@ export class UnfinishedUploads extends React.Component{
       <div className={"item-uploads__unfinished "+(this.state.loading?"loading":"")}>
         <div key={this.props.item.id + "unfinished"} className="item-view__subheader-wrapper">
           <h4 className="item-view__subheader">Незаконченные          <div className="button-block">
-                      <button onClick={this.clearAllUnfinished} className="button-block__btn button-block__btn--clear"><i className="fas fa-trash-alt"></i>Очистить</button>
+                      <button onClick={this.clearAllUnfinished} title="Удалить все незавершенные загрузки для данного товара" className="button-block__btn button-block__btn--clear"><i className="fas fa-trash-alt"></i>Очистить</button>
                     <button onClick={this.hideUnfinished} className="button-block__btn button-block__btn--clear">{this.state.unfinished_hidden?<i className='fas fa-eye'></i>:<i className='fas fa-eye-slash'></i>}{this.state.unfinished_hidden?"Показать":"Скрыть"}</button>
                     </div></h4>
         </div>

@@ -9,6 +9,7 @@ export class DownloadPool extends React.Component{
     super(props);
     this.state = {
       "downloads": [],
+      "loading": false
     }
     this.handleDownload = this.handleDownload.bind(this);
     this.handleRemoveDownload = this.handleRemoveDownload.bind(this);
@@ -26,6 +27,9 @@ export class DownloadPool extends React.Component{
   }
 
   componentDidMount(){
+    this.setState({
+      "loading": true
+    });
     this.populateDownloads();
   }
 
@@ -48,7 +52,8 @@ export class DownloadPool extends React.Component{
         });
       }
       this.setState({
-        "downloads": downloads
+        "downloads": downloads,
+        "loading":false
       });
     }).catch((error)=>{
       NotificationService.throw(error);
@@ -56,20 +61,17 @@ export class DownloadPool extends React.Component{
   }
 
   render(){
-    if(this.state.downloads.length == 0){return "Нет загрузок"}
+    //if(this.state.downloads.length == 0){return "Нет загрузок"}
     let downloads = this.state.downloads.map((download)=>{
       return(
         <div key={"dl"+download.id} className="pending-download">
           <div className="download-thumbnail" style={{"backgroundImage":"url("+ResourceService._getLinkById(download.id)+")"}}></div>
         <div className="download-infofields">
-          <div className="download-infofields__field">
+          <div className="download-infofields__field name">
             Имя:{download.name}
           </div>
-          <div className="download-infofields__field">
+          <div className="download-infofields__field sizepx">
           Размер:{download.sizepx}
-        </div>
-          <div className="download-infofields__field">
-          Тип:{download.preset}
           </div>
           <button type="button" data-download={download.id} onClick={this.handleRemoveDownload}><i className="fas fa-trash-alt"></i>Отменить</button>
         </div>
@@ -77,11 +79,17 @@ export class DownloadPool extends React.Component{
       )
     });
     return(
-      <div className="download-pool">
+      <div className={(this.state.loading?"loading":"")}>
+        {this.state.downloads.length != 0?
+        <div className="download-pool">
         <h2 className="download-pool__component-title component-title">Загрузки</h2>
         <button type="button" onClick={this.handleDownload}>Скачать все</button>
+      <div className="download-pool__pending-wrapper">
         {downloads}
+      </div>
         <button type="button" onClick={this.handleDownload}>Скачать все</button>
+    </div>
+        :<h2>Нет загрузок</h2>}
       </div>
     );
   }

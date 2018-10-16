@@ -437,9 +437,23 @@ body {
   button{
     @include button-color();
     border: none;
-    font-size: 17px;
+    font-size: 15px;
     color: $color-accent;
-    padding: 5px;
+    padding: 10px;
+  }
+  >button{
+    font-weight: bold;
+    background-color: $color-accent-fade;
+    color: $color-text-alt;
+    padding:10px;
+    font-size: 18px;
+    &:hover{
+      padding: 12px;
+      font-size: 18px;
+      background-color: $color-tertiary;
+      color: $color-text;
+      @include hover-shadow();
+    }
   }
 }
 
