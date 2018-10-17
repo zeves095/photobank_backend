@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostUpdateEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ResourceRepository")
@@ -345,6 +347,31 @@ class Resource
         return;
       }
       $this->setGid($this->getId());
+      $args->getEntityManager()->flush();
+    }
+
+  /**
+    *  @ORM\PostUpdate
+    */
+    public function sortPriority(LifecycleEventArgs $args)
+    {
+      $obj = $args->getObject();
+      $priority = $obj->getPriority();
+      if($obj->getType() != 2 || $priority==0){return;}
+
+      $rep = $args->getEntityManager()->getRepository(get_class($this));
+      $additional = $rep->findBy([
+        "item" => $obj->getItem(),
+        "type"=> $obj->getType(),
+        "priority"=>$priority,
+      ]);
+      if(sizeof($additional)>1){
+        foreach($additional as $resource){
+          if($resource->getId() == $obj->getId()){continue;}
+          $resource->setPriority(0);
+        }
+      }
+
       $args->getEntityManager()->flush();
     }
 
