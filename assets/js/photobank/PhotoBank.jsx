@@ -39,7 +39,7 @@ export class PhotoBank extends React.Component {
 
   handleCatalogueQuery(queryObject){
     this.setState({
-      "selected_node": queryObject.getNodeId(),
+      "selected_node": queryObject.nodeId,
       "item_query_object": queryObject
     });
   }
@@ -66,14 +66,15 @@ export class PhotoBank extends React.Component {
   }
 
   render() {
-    if(this.state.catalogue_data != {}){
+    if(this.state.catalogue_data == {}){return (<h1>ЗАГРУЗКА...</h1>)}
+    let cat_view = LocalStorageService.get("catalogue_view");
     return (
       <div className="photobank-main">
         <div id="notification-overlay">
-          
+
         </div>
       <div className="photobank-main__main-block">
-        <CatalogueTree catalogue_data={this.state.catalogue_data} queryHandler={this.handleCatalogueQuery} default_view="2" crumb_handler={this.handleCrumbUpdate} node={this.state.ls_node} />
+        <CatalogueTree catalogue_data={this.state.catalogue_data} queryHandler={this.handleCatalogueQuery} default_view={cat_view} crumb_handler={this.handleCrumbUpdate} node={this.state.ls_node} />
       {$(".catalogue-tree").length>0?<Draggable box1=".catalogue-tree" box2=".node-viewer" id="1" />:null}
       {this.state.item_query_object == null?null:<NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} query={this.state.item_query_object} crumb_string={this.state.crumb_string} item={this.state.ls_item} default_view={this.state.ls_view} />}
         </div>
@@ -81,6 +82,5 @@ export class PhotoBank extends React.Component {
         </div>
       </div>
     );
-  } else {return (<h1>ЗАГРУЗКА...</h1>)}
-  }
+}
 }

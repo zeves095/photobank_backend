@@ -67,7 +67,7 @@ class ResourceService{
         throw new NotFoundHttpException($error_string);
     }
 
-    if(in_array($resourceParameters['extension'],array('jpg','jpeg','png'))){
+    if(in_array(strtolower($resourceParameters['extension']),array('jpg','jpeg','png'))){
       $filesizepx = getimagesize($resourceParameters['path']);
       $resource->setSizePx($filesizepx[0].'/'.$filesizepx[1]);
     }
@@ -127,4 +127,6 @@ class ResourceService{
     $item = $itemRepository->findOneBy(['id'=>$itemId]);
     return $item->getItemCode();
   }
+
+  
 }

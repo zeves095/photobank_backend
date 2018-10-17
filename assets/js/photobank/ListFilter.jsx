@@ -10,11 +10,17 @@ export class ListFilter extends React.Component{
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.filterTimeout = null;
   };
 
   handleChange(e){
     let query = e.target.value;
     this.state.query = query;
+    if(this.filterTimeout != null){
+      clearTimeout(this.filterTimeout);
+    }
+    this.filterTimeout = setTimeout(this.handleSubmit, 400);
   }
 
   handleSubmit(){

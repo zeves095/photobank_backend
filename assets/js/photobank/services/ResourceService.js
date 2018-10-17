@@ -122,7 +122,6 @@ class ResourceService{
     document.body.appendChild(anchor);
     for (var i = 0; i < resources.length; i++) {
       let link = this._getLinkById(resources[i]);
-      console.warn(link);
       anchor.setAttribute('href', link);
       anchor.click();
     }

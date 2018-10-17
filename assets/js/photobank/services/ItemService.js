@@ -10,8 +10,11 @@ class ItemService{
     return new Promise((resolve, reject)=>{
       let searchResponse = this._getItems(query);
       searchResponse.then((data)=>{
+        if(data.length == 0){reject("none-found")}
         let dataFiltered = this._filterData(data, filter);
         resolve(dataFiltered);
+      }).catch((e)=>{
+        reject("none-found");
       });
     });
   }
@@ -27,9 +30,16 @@ class ItemService{
   static _getItems(queryObject){
     return new Promise((resolve,reject)=>{
       if(!queryObject instanceof ItemQueryObject){reject("Invalid query object")}
-      $.getJSON(window.config.get_items_url+queryObject.getNodeId(), (data)=>{
-        resolve(data);
-      });
+      if(queryObject.nodeId != null){
+        $.getJSON(window.config.get_items_url+queryObject.nodeId, (data)=>{
+          resolve(data);
+        }).fail((e)=>{reject([])});
+      }else{
+        let data = {"name":queryObject.name,"code":queryObject.code,"parent_name":queryObject.parent_name}
+        $.get(window.config.item_search_url,data).done((data)=>{
+          resolve(data);
+        }).fail((e)=>{reject([])});
+      }
     })
   }
 

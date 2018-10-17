@@ -24,7 +24,8 @@ export class NodeViewer extends React.Component{
       "view_type": this.props.default_view,
       "product_crumbs": this.props.crumb_string,
       "loading": false,
-      "downloads": []
+      "downloads": [],
+      "query": this.props.query
     }
     this.handleItemChoice = this.handleItemChoice.bind(this);
     this.handlePoolClick = this.handlePoolClick.bind(this);
@@ -93,6 +94,7 @@ export class NodeViewer extends React.Component{
   componentDidMount(){
     let downloads = LocalStorageService.getList("pending_downloads");
     this.setState({
+      "query":this.props.query,
       "downloads":downloads
     });
   }
@@ -101,6 +103,11 @@ export class NodeViewer extends React.Component{
     if(this.state.node == prevState.node && this.props.node != this.state.node){
       this.setState({
         "node":this.props.node
+      });
+    }
+    if(this.props.query != prevProps.query){
+      this.setState({
+        "query":this.props.query
       });
     }
   }
@@ -129,12 +136,11 @@ export class NodeViewer extends React.Component{
         section = itemSection;
         break;
     }
-
     return (
 
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
-          <ItemList node={this.state.node} query={this.props.query} itemChoiceHandler={this.handleItemChoice} item={this.props.item} />
+          <ItemList node={this.state.node} query={this.state.query} itemChoiceHandler={this.handleItemChoice} item={this.props.item} />
           {$(".view-inner__item-section").length>0?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
           <div className="view-inner__item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
             <h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.state.product_crumbs}</i></h2>

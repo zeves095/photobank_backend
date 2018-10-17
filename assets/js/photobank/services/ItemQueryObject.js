@@ -1,15 +1,10 @@
 class ItemQueryObject{
 
-  constructor(node){
-    this.nodeId = node;
-  }
-
-  setNodeId(node){
-    this.nodeId = node;
-  }
-
-  getNodeId(){
-    return this.nodeId;
+  constructor(){
+    this.nodeId = null;
+    this.name = null;
+    this.parent_name = null;
+    this.code = null;
   }
 
 }
