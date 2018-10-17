@@ -44,7 +44,7 @@ class NotificationService{
       overlay.appendChild(notification);
 
       let btn = document.getElementById("button-"+id);
-      btn.onclick = (e)=>{console.log("CLIK");this._slideOut(notification)};//document.getElementById("notification-"+id))}
+      btn.onclick = (e)=>{this._slideOut(notification)};//document.getElementById("notification-"+id))}
       if(time!=0){setTimeout(()=>{this._slideOut(notification)},time*1000)};
   }
 

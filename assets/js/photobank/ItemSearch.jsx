@@ -27,13 +27,15 @@ export class ItemSearch extends React.Component{
 
   componentDidMount(){
     let queryObject = new ItemQueryObject();
-    let input = document.getElementById(this.props.filterid+"inpt");
-    input.addEventListener("keyup", (event)=> {
-      event.preventDefault();
-      if (event.keyCode === 13) {
-        document.getElementById(this.props.filterid+"btn").click();
-      }
-    });
+    for(var i = 1; i<4; i++){
+      let input = document.getElementById(this.props.filterid+"inpt"+i);
+      input.addEventListener("keyup", (event)=> {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+          document.getElementById(this.props.filterid+"btn").click();
+        }
+      });
+    }
     this.setState({
       "query":queryObject
     });
@@ -41,10 +43,13 @@ export class ItemSearch extends React.Component{
 
   render(){
     return(
-      <div className="list-filter">
-        <input type="text" id={this.props.filterid+"inpt"} name="name" placeholder="nodeId" onChange={this.handleChange}></input>
-      <input type="text" id={this.props.filterid+"inpt"} name="parent_name" placeholder="parent_name" onChange={this.handleChange}></input>
-    <input type="text" id={this.props.filterid+"inpt"} name="code" placeholder="code" onChange={this.handleChange}></input>
+      <div className="item-search">
+        <label htmlFor="name">Название</label>
+      <input type="text" id={this.props.filterid+"inpt1"} name="name" placeholder="Название" onChange={this.handleChange}></input>
+    <label htmlFor="parent_name">Раздел каталога</label>
+    <input type="text" id={this.props.filterid+"inpt2"} name="parent_name" placeholder="Раздел каталога" onChange={this.handleChange}></input>
+  <label htmlFor="code">Код 1С</label>
+  <input type="text" id={this.props.filterid+"inpt3"} name="code" placeholder="Код 1С" onChange={this.handleChange}></input>
       <button type="button" id={this.props.filterid+"btn"} onClick={this.handleSubmit}><i className="fas fa-search"></i></button>
       </div>
     );

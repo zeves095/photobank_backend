@@ -285,7 +285,16 @@
             padding-left:40px;
             position: relative;
           }
-          .info__info-field--preset-done{
+          .file__file-src{
+            padding: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            //min-width: 200px;
+          }
+          .info__info-field--preset-done, .info__info-field--sizepx{
             width: 90px;
           }
           .info__info-field--uploaddate{

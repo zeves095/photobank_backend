@@ -100,6 +100,7 @@ export class CatalogueTree extends React.Component {
 
   handleViewChoice(e){
     let view = $(e.target).attr("data-view");
+    LocalStorageService.set("catalogue_view", view);
     this.setState({'view':view});
   }
 
@@ -114,7 +115,6 @@ export class CatalogueTree extends React.Component {
   }
 
   handleQuery(queryObject){
-    console.log("QUERY");
     this.props.queryHandler(queryObject);
   }
 
@@ -137,8 +137,9 @@ export class CatalogueTree extends React.Component {
         viewClass = "list-view";
         break;
       case "2":
+        if(this.state.catalogue_data.length==0){view = "";break;}
         let tree=CatalogueService.makeTree(this.state.catalogue_data, this.state.current_node);
-        this.state.catalogue_data.length>0?view = <TreeView treeData={tree} onChange={this.handleTreeClick} />:"";
+        view = <TreeView treeData={tree} onChange={this.handleTreeClick} />;
         viewClass = "tree-view";
         break;
       case "3":

@@ -37,35 +37,32 @@ class CatalogueService{
     for(var node in data){
       let item = data[node];
       let treeNode ={
-        'text':"",
-        'parent':"",
+        'text':item.name,
+        'parent':item.parent,
+        'id':item.id,
         'state':{
           'selected':false,
           'opened':false
         }
       };
-      if(item.id == currentNode){
-        tree['selected'] = [item.id];
-        treeNode['state']['selected'] = true;
-        treeNode['state']['opened'] = true;
-        let nodeToOpen = item;
-        let bugCounter = 0;
-        while(nodeToOpen.parent != null && nodeToOpen.parent != 1 && nodeToOpen.parent != "#"){
-          treeNode['state']['opened'] = true;
-          nodeToOpen = data.filter((datum)=>{return datum.id == nodeToOpen.parent})[0];
-          if(bugCounter++ >= 200){
-            alert('AHTUNG!!!!');
-            break;
-          }
-        }
-      }
-      treeNode.text = item.name;
-      treeNode.parent = item.parent;
       if(treeNode.parent == null){
         treeNode.parent = "#";
       }
-      treeNode.id = item.id;
       tree['core']['data'].push(treeNode);
+    }
+    for(var node in tree['core']['data']){
+      let treeNode = tree['core']['data'][node];
+      if(treeNode.id == currentNode){
+        tree['selected'] = [treeNode.id];
+        treeNode['state']['selected'] = true;
+        treeNode['state']['opened'] = true;
+        let nodeToOpen = treeNode;
+        let bugCounter = 0;
+        while(typeof nodeToOpen != "undefined"){
+          nodeToOpen['state']['opened'] = true;
+          nodeToOpen = tree['core']['data'].filter((datum)=>{return datum.id == nodeToOpen.parent})[0];
+        }
+      }
     }
     return tree;
   }
@@ -113,7 +110,6 @@ class CatalogueService{
 
   static _fetchNodeParent(id){
     return new Promise((resolve,reject)=>{
-      console.warn("id" + id);
       $.getJSON("/catalogue/node/"+id, (data)=>{
         resolve(data.parent);
       }).fail(()=>{
