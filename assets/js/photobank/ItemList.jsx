@@ -30,7 +30,15 @@ export class ItemList extends React.Component{
         "loading": false
       });
     }).catch((error)=>{
-      NotificationService.throw(error);
+      if(error == "none-found"){
+        NotificationService.toast(error);
+        this.setState({
+          "node_items_filtered" : [],
+          "loading": false
+        });
+      }else{
+        NotificationService.throw(error);
+      }
     });
   }
 

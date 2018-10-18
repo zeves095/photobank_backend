@@ -19,6 +19,7 @@ export class ExistingResources extends React.Component{
       "list_end": 20,
       "list_current_page": 1,
       "list_total_pages": 0,
+      "priority_active":null
     };
     this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
@@ -37,7 +38,9 @@ export class ExistingResources extends React.Component{
     this.handleDownloadResource = this.handleDownloadResource.bind(this);
     this.handleAddToDownloads = this.handleAddToDownloads.bind(this);
 
-    this.key = 1;
+    this.handlePriority = this.handlePriority.bind(this);
+    this.handlePriorityUpdate = this.handlePriorityUpdate.bind(this);
+
   }
 
   fetchExisting(){
@@ -67,8 +70,15 @@ export class ExistingResources extends React.Component{
     });
   }
 
-  handleResourceUpdate(e){
-    let form = $(e.target).parent().parent();
+  handleResourceUpdate(e, id=null){
+    let form = {};
+    if(id==null){
+      form = $(e.target).closest(".existing-files__file.file");
+    }else{
+      form = $(".existing-files__file.file").filter(function(){
+        return $(this).find("input[name=id]").val() == id;
+      });
+    }
     ResourceService.updateResource(form).then((data)=>{
       this.key++;
       this.fetchExisting();
@@ -146,6 +156,23 @@ export class ExistingResources extends React.Component{
     let resource = e.target.dataset["resource"];
     this.props.addDownloadHandler(resource);
     NotificationService.toast("dl-queued");
+  }
+
+  handlePriority(e){
+    let file = e.target.dataset["file"];
+    if(this.state.priority_active == file){file = null}
+    this.setState({
+      "priority_active": file
+    });
+  }
+
+  handlePriorityUpdate(e){
+    let priority = e.target.dataset["priority"];
+    let form = $(e.target).closest(".existing-files__file.file");
+    let input = form.find("input[name='priority']");
+    let id = form.find("input[name='id']").val();
+    input.val(priority);
+    this.handleResourceUpdate(e, id)
   }
 
   componentDidMount(){
@@ -245,6 +272,17 @@ export class ExistingResources extends React.Component{
           <i onClick={this.handleAddToDownloads} title="Добавить в загрузки" data-resource={file.id} className="fas fa-plus-circle dl-cart-add"></i>
         </span>
       ];
+      let priorityStack = [];
+      let priorityCtx = "";
+      if(this.state.priority_active == file.id){
+        for(var j=0; j<maxAdd; j++){
+          priorityStack.push(<div className={"item " + (file.priority == j?"active":"")} onClick={this.handlePriorityUpdate} data-priority={j}>{j}</div>);
+        }
+        priorityCtx = [
+          <div className="edit-input__context-menu">{priorityStack}</div>
+        ];
+      }
+
       existingListMarkupData.push(
 
         <div className={"existing-files__file file "+this.fileViewClasses[this.state.view_type]} key={file.src_filename+file.filename}>
@@ -260,7 +298,8 @@ export class ExistingResources extends React.Component{
             <option disabled={currAdd>=maxAdd?true:false} value="2">Доп.{addStatus}</option>
               <option value="3">Исходник</option>
             </select>
-            {file.type=="2"?<input type="text" name="priority" defaultValue={file.priority} onBlur={this.handleResourceUpdate}></input>:null}
+            {file.type=="2"?<span className="edit-input__priority-btn" data-file={file.id} onClick={this.handlePriority}>{file.priority}{priorityCtx}</span>:null}
+            <input type="hidden" name="priority" defaultValue={file.priority} onChange={this.handleResourceUpdate}></input>
           </div>
           {/* <span className="edit-input"><input onClick={this.handleResourceUpdate} type="checkbox" defaultChecked={file.isDeleted} name="deleted"/><label htmlFor="deleted">Удален</label></span> */}
           <input type="hidden" name="id" value={file.id}/>
@@ -304,7 +343,7 @@ export class ExistingResources extends React.Component{
         {paginationControls}
         {this.state.existing.length==0?"Нет загруженных файлов":null}
         <div className={(this.state.loading?"loading ":"") + "item-resources"}>
-          <div key={this.key} className="item-view__file-list existing-files">
+          <div className="item-view__file-list existing-files">
             <div className="item-view__table-header">
               <span className="info__info-field info__info-field--title info__info-field--sizepx">Имя файла</span>
               <span className="info__info-field info__info-field--title info__info-field--type">Тип ресурса</span>
