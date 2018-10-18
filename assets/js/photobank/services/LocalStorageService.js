@@ -59,7 +59,7 @@ class LocalStorageService{
       let result = "";
       listArr.splice(listArr.indexOf(value),1);
       for(var item in listArr){
-        if(listArr[item] == ""){continue}
+        if(listArr[item] == "" || listArr[item] == "undefined"){continue}
         result = result + listArr[item]+" ";
       }
       window.localStorage[keys[list]] = result;
@@ -74,6 +74,11 @@ class LocalStorageService{
         return [];
       }
       let splitList = storedList.split(delimiter);
+      for(var item in splitlist){
+        if(splitList[item] == "undefined"){
+          splitList.splice(item, 1);
+        }
+      }
       return splitList;
     }
   }
