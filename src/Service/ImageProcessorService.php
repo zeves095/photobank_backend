@@ -61,6 +61,7 @@ class ImageProcessorService{
     $targetPath = $processorDirectory.$resource->getId().'_'.$preset['name'].'.'.$extension;
     $imageProcessor->open($resource->getPath())
     ->thumbnail($size, $mode)
+    ->setImageFormat('jpg')
     ->save($targetPath);
 
     $filename = $this->resourceService->getUniqueIdentifier(file_get_contents($targetPath), $resource->getItem()->getId(),filesize($targetPath)).'.'.$extension;

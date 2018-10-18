@@ -105,7 +105,7 @@ body {
   .catalogue_tree_inner,
   .node_viewer_inner,
   .upload_pool_inner {
-    overflow-y: scroll;
+    overflow-y: overlay;
     height: 785px;
   }
 
@@ -118,7 +118,7 @@ body {
   .item_view_inner.open {
     max-height: 500px;
     transition: 1s;
-    overflow: scroll;
+    overflow: overlay;
   }
 
   .upload_pool {

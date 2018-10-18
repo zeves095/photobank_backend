@@ -313,6 +313,7 @@
             overflow: hidden;
           }
           &--add-file{
+            min-width: 120px;
             select{
               width:100px;
               display: inline-block;

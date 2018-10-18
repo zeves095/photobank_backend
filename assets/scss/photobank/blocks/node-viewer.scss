@@ -19,7 +19,7 @@
       width:20%;
       flex-grow: 0;
       flex-shrink: 2;
-      overflow: scroll;
+      overflow: overlay;
       @include component-section();
       .list-item{
         @include list-item();
@@ -34,7 +34,7 @@
       flex-shrink: 1;
       //max-width: 60vw;
       overflow-x:hidden;
-      overflow-y:scroll;
+      overflow-y:overlay;
       @include component-section();
     }
   }
