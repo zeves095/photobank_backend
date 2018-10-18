@@ -54,7 +54,7 @@ export class ItemSection extends React.Component{
         "open": this.props.open_by_default
       });
     }
-    if(prevState.need_refresh){
+    if(this.state.need_refresh){
       this.setState({
         "need_refresh":false,
       });

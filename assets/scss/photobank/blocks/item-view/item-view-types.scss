@@ -326,6 +326,38 @@
         .existing-download-controls, .existing-download{
           @include download-controls();
         }
+        .edit-input{
+          &__priority-btn{
+            padding:5px;
+          }
+          &__context-menu{
+            position: absolute;
+            z-index: 100;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            right: -25px;
+            top: -41px;
+            border-radius:10px;
+            .item{
+              padding:3px;
+              &.active{
+                background-color: #666;
+              }
+            }
+            &::before {
+              content: "";
+              width: 10px;
+              height: 10px;
+              transform: rotate(45deg);
+              position: absolute;
+              display: block;
+              left: -5px;
+              top: 50px;
+              background-color: #333;
+            }
+          }
+        }
       }
       .item-uploads{
         position: relative;

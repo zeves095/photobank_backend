@@ -92,12 +92,18 @@ class ResourceService{
       let data = {
         "id" : form.find("input[name='id']").val()
       };
-      let sel = form.find("select");
+      let val = form.find("select, input[type='text'], input[type='hidden']");
       let chk = form.find("input[type='checkbox']");
-      let txt = form.find("input[type='text']");
-      if(sel.length){data[sel.prop('name')]=sel.val()}
-      if(chk.length){data[chk.prop('name')]=chk.prop("checked")}
-      if(txt.length){data[txt.prop('name')]=txt.val()}
+      if(val.length){
+        val.each(function(){
+          data[$(this).prop('name')]=$(this).val()
+        })
+      }
+      if(chk.length){
+        sel.each(function(){
+          data[$(this).prop('name')]=$(this).prop("checked")
+        })
+      }
       let dataJson = JSON.stringify(data);
       $.ajax({
         url: window.config.resource_url+data.id,
