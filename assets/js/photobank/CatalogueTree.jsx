@@ -50,6 +50,7 @@ export class CatalogueTree extends React.Component {
     this.setState({
       "crumbs" : crumbs
     });
+    crumbs.reverse();
     this.props.crumb_handler(crumbs);
   }
 
