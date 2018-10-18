@@ -74,7 +74,7 @@ class LocalStorageService{
         return [];
       }
       let splitList = storedList.split(delimiter);
-      for(var item in splitlist){
+      for(var item in splitList){
         if(splitList[item] == "undefined"){
           splitList.splice(item, 1);
         }
