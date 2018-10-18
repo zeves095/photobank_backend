@@ -43,6 +43,7 @@ class LocalStorageService{
   }
 
   static addTo(list, value){
+    if(typeof value == 'undefined'){return null}
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
       let val = window.localStorage[keys[list]] + " " + value;
