@@ -78,7 +78,7 @@ body {
   button{
     transition: 0.3s;
   }
-  div{
+  .photobank-main div{
     transition: 0.2s;
   }
   .catalogue-tree, .node-viewer, .view-inner__item-list, .view-inner__item-section{
@@ -369,7 +369,6 @@ body {
         //border: 2px solid $color-accent;
         animation-name: foldout;
         animation-duration: 3s;
-        overflow: hidden;
         .item-view__table-header{
           .info__info-field{
             background-color: $color-accent;
@@ -381,9 +380,11 @@ body {
               @include table-cell-color();
           }
           select{
+            transition: 0s;
             border: none;
             background-color: transparent;
             appearance: none;
+            padding: 1px;
           }
           &:hover{
             box-shadow: none;
@@ -393,10 +394,12 @@ body {
               color: $color-text-alt;
             }
             select{
+              transition: 0s;
               outline: 1px solid $color-main-fade;
               background-color: $color-background;
               color:$color-text;
               appearance: menulist;
+              padding: 0;
             }
             a{
               color: $color-text-alt;
@@ -497,9 +500,11 @@ body {
 
 @keyframes foldout {
   from {
+    overflow: hidden;
 		max-height: 0;
   	}
 	to {
+    overflow: visible;
 		max-height: 10000px;
   	}
 }

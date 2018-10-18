@@ -7,7 +7,7 @@
   width: 100%;
   display: block;
   padding: 10px;
-  overflow-y: scroll;
+  overflow-y: overlay;
   > button {
     @include button-view();
   }
