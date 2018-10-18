@@ -351,7 +351,7 @@ export class ExistingResources extends React.Component{
               <span className="info__info-field info__info-field--title info__info-field--uploaddate">Дата создания</span>
               <span className="info__info-field info__info-field--title info__info-field--username">Пользователь</span>
               <span className="info__info-field info__info-field--title info__info-field--comment">Комментарий</span>
-            <span className="info__info-field info__info-field--title info__info-field--sizemb">Размер файла</span>
+            <span className="info__info-field info__info-field--title info__info-field--sizemb">original</span>
               {this.preset_headers}
             </div>
             {existingListMarkupData}

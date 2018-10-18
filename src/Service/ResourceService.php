@@ -67,7 +67,7 @@ class ResourceService{
         throw new NotFoundHttpException($error_string);
     }
 
-    if(in_array(strtolower($resourceParameters['extension']),array('jpg','jpeg','png'))){
+    if(in_array(strtolower($resourceParameters['extension']),array('jpg','jpeg','png','gif','psd','tiff','tif','bmp'))){
       $filesizepx = getimagesize($resourceParameters['path']);
       $resource->setSizePx($filesizepx[0].'/'.$filesizepx[1]);
     }
@@ -128,5 +128,5 @@ class ResourceService{
     return $item->getItemCode();
   }
 
-  
+
 }
