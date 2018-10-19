@@ -34,7 +34,6 @@ class CatalogueController extends AbstractController
     /**
      * @Route("/catalogue/node/{id}",
      * methods={"GET"},
-     * schemes={"HTTP"},
      * name="catalogue_node")
      */
     public function getNode(CatalogueNode $cnode, AppSerializer $serializer)
