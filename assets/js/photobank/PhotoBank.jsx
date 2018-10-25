@@ -45,7 +45,7 @@ export class PhotoBank extends React.Component {
   }
 
   handleCrumbUpdate(crumbs){
-    let crumbsClone = crumbs.slice(0).reverse();
+    let crumbsClone = crumbs.slice(0);//.reverse();
     let needElipsis = false;
     if(crumbsClone.length>3){crumbsClone = crumbsClone.slice(-3); needElipsis = true;}
     let crumb_string = crumbsClone.reduce((accumulator,currentValue)=>accumulator+"/"+currentValue.name, "");

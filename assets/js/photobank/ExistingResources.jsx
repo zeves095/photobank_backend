@@ -45,6 +45,7 @@ export class ExistingResources extends React.Component{
 
   fetchExisting(){
     ResourceService.fetchExisting(this.props.item_id).then((data)=>{
+      console.warn(data);
       this.setState({
         "existing": data
       });
@@ -236,8 +237,10 @@ export class ExistingResources extends React.Component{
 
     let existingListMarkupData = [];
 
+    console.log(fileList);
+
     for(var i = this.state.list_start; i<this.state.list_end; i++){
-      if(typeof fileList[i]=='undefined'){break};
+      if(typeof fileList[i]=='undefined'){continue};
       let file = fileList[i];
       let presets = [];
       let presetLinks = [];

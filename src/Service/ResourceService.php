@@ -39,7 +39,7 @@ class ResourceService{
     for($i=0; $i<=strlen($item_code)/2; $i++){
       $splitId[] = substr($item_code, $i*2, 2);
     }
-    $splitIdPath = implode('/',$splitId)."/";
+    $splitIdPath = implode('/',$splitId);
 
     return $splitIdPath;
   }

@@ -31,7 +31,7 @@ export class ItemList extends React.Component{
       });
     }).catch((error)=>{
       if(error == "none-found"){
-        NotificationService.toast(error);
+        //NotificationService.toast(error);
         this.setState({
           "node_items_filtered" : [],
           "loading": false
@@ -102,9 +102,9 @@ export class ItemList extends React.Component{
     let tooBroadMsg = this.state.node_items_filtered.length == 100?"Показаны не все результаты. Необходимо сузить критерии поиска.":"";
     return (
 
-      <div className={(this.state.loading?"loading ":"")+"view-inner__item-list"}>
+      <div className={"view-inner__item-list"}>
         <h2 className="node-viewer__component-title component-title">Товары</h2>
-      <div className="view-inner__container">
+      <div className={(this.state.loading?"loading ":"")+"view-inner__container"}>
         <ListFilter filterHandler={this.filterQueryHandler} filterid="nodesearch" placeholder="Фильтр по выбранному" />
       {this.state.node_items_filtered.length>0?null:"Нет товаров в выбранной категории"}
         {tooBroadMsg}
