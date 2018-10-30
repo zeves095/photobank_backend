@@ -5,24 +5,19 @@ class CatalogueService{
 
   }
 
-  static fetchRootNodes(currentNode = "", prevresult = []){
+  static fetchRootNodes(currentNode = null, prevresult = []){
     let result = prevresult;
     return new Promise((resolve, reject)=>{
-      $.getJSON(window.config.get_nodes_url+currentNode).done((data)=>{
+      let searchNode = (currentNode!=null?currentNode:"");
+      $.getJSON(window.config.get_nodes_url+searchNode).done((data)=>{
         result = result.concat(data);
-        if(data.filter((node)=>{return node.parent == null}).length >0){
-          //tracked = result.map((res)=>{return res.id});
+        if(currentNode == null){
           resolve(result);
-        }
-
-        else if(data.filter((node)=>{return node.parent == 1}).length >0){
-          this.fetchRootNodes("", result).then((result)=>{
-            resolve(result);
-          });
         }
 
         else{
           this._fetchNodeParent(currentNode).then((parent)=>{
+            //if(parent == null){parent = "";}
             this.fetchRootNodes(parent,result).then((result)=>{
               resolve(result);
             });
@@ -70,7 +65,8 @@ class CatalogueService{
   static fetchNodes(data, tracked, node){
     let result = data;
     return new Promise((resolve,reject)=>{
-      $.getJSON(window.config.get_nodes_url+node, (nodes)=>{
+      let searchNode = (node!=null?node:"");
+      $.getJSON(window.config.get_nodes_url+searchNode, (nodes)=>{
         let cat_data = [];
         for(var node in nodes){
           if(tracked.indexOf(nodes[node].id) == -1){
@@ -89,6 +85,7 @@ class CatalogueService{
   }
 
   static fetchLevel(data, currentNode){
+
     let parent = this._getNodeById(data, currentNode);
     let children = this._getNodeChildren(data, parent);
     return children;
@@ -96,6 +93,7 @@ class CatalogueService{
 
   static getCrumbs(data, currentNode){
     let crumbs = [];
+    if(currentNode == null){return crumbs;}
     let cur_node = this._getNodeById(data, currentNode);
     cur_node.active = true;
     crumbs.push(cur_node);
@@ -129,8 +127,10 @@ class CatalogueService{
 
   static _getNodeChildren(data, node){
     let children = [];
+    let nodeId = null;
+    if(node != null){nodeId = node.id;}
     for(var i = 0; i<data.length; i++){
-      if(node.id == data[i].parent && node.id !== data[i].id){
+      if(nodeId == data[i].parent && nodeId !== data[i].id){
         children.push(data[i]);
       }
     }

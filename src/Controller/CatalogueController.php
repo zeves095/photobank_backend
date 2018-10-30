@@ -85,7 +85,7 @@ class CatalogueController extends AbstractController
      * requirements={"item" = "\d{11}"},
      * methods={"GET"},
      * name="catalogue_node_item_by_itemcode")
-     * @ParamConverter("citem", class="App\Entity\CatalogueNodeItem", options={"mapping": {"item": "itemCode"}})
+     * @ParamConverter("citem", class="App\Entity\CatalogueNodeItem", options={"mapping": {"item": "id"}})
      */
     public function getItemByItemCode(CatalogueNodeItem $citem, AppSerializer $serializer)
     {
@@ -214,7 +214,7 @@ class CatalogueController extends AbstractController
 
         $upload_directory = $this->getParameter('upload_directory');
         // @TODO: DELETE and use service|utils methods to get $fileDirectory
-        $item_code = $resource->getItem()->getItemCode();
+        $item_code = $resource->getItem()->getId();
         $fileDirectory = $upload_directory .'/'. $resourceService->generatePath($item_code);
         $filename = $resource->getFilename();
         $fullFilePath = $fileDirectory . $filename;

@@ -32,7 +32,7 @@ class CatalogueNodeItemRepository extends ServiceEntityRepository
         ->setParameter('name', '%'.$queryObject->getField("name").'%');
       }
       if($queryObject->getField("code") != ""){
-        $queryBuilder->andWhere('c.itemCode = :code')
+        $queryBuilder->andWhere('c.id = :code')
         ->setParameter('code', $queryObject->getField("code"));
       }
       if($queryObject->getField("parent_name") != ""){

@@ -79,7 +79,6 @@ class UploadReceiver
 
   protected function compileFile(){
     $filepath = $this->uploadParams['tempchunkdir'].'/'.$this->uploadParams['filename'];
-    var_dump($filepath);
     $this->fileSystem->dumpFile($filepath,'');
     for ($i=1; $i<=$this->uploadParams['resumablevars']['resumableTotalChunks']; $i++) {
       $this->fileSystem->appendToFile($filepath,file_get_contents($this->uploadParams['tempchunkdir'].'/'.$this->uploadParams['filename'].'.part'.$i));

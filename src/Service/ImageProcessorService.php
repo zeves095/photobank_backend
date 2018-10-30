@@ -59,14 +59,14 @@ class ImageProcessorService{
     $processorDirectory = $this->container->getParameter('upload_directory').'/imgproc/';
     if(!$this->fileSystem->exists($processorDirectory)){$this->fileSystem->mkDir($processorDirectory);}
     $targetPath = $processorDirectory.$resource->getId().'_'.$preset['name'].'.'.'jpeg';
-    $imageProcessor->open($resource->getPath())
+    $imageProcessor->open($this->container->getParameter('upload_directory').$resource->getPath())
     ->thumbnail($size, $mode)
     ->save($targetPath);
 
     $filename = $this->resourceService->getUniqueIdentifier(file_get_contents($targetPath), $resource->getItem()->getId(),filesize($targetPath)).'.'.$extension;
 
     $resourceParameters = [
-      'item_id' => $resource->getItem(),
+      'item_id' => $resource->getItem()->getId(),
       'extension' => $extension,
       'path' => $targetPath,
       'username' => $resource->getUsername(),

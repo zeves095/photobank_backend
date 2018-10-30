@@ -39,18 +39,18 @@ class ResourceService{
     for($i=0; $i<=strlen($item_code)/2; $i++){
       $splitId[] = substr($item_code, $i*2, 2);
     }
-    $splitIdPath = implode('/',$splitId);
+    $splitIdPath = implode('/',$splitId)."/";
 
     return $splitIdPath;
   }
 
   public function processCompletedUpload($resourceParameters){
     $filepath = $resourceParameters['path'];
-    $item_code = $this->_getItemCode($resourceParameters['item_id']);
+    $item_code = $resourceParameters['item_id'];
+    $destinationPath = '/'.$this->generatePath($item_code).$resourceParameters['filename'];
     $destinationDir = $this->container->getParameter('fileuploader.uploaddirectory').'/'.$this->generatePath($item_code).$resourceParameters['filename'];
-    var_dump($this->container->getParameter('fileuploader.uploaddirectory'));
     $this->fileSystem->copy($filepath, $destinationDir);
-    $resourceParameters['path'] = $destinationDir;
+    $resourceParameters['path'] = $destinationPath;
     $resourceEntity = $this->persistResource($resourceParameters);
     if($resourceEntity->getType() != NULL){
       $this->dispatchPresetMessages($resourceEntity->getId(), $resourceEntity->getType());
@@ -68,7 +68,7 @@ class ResourceService{
     }
 
     if(in_array(strtolower($resourceParameters['extension']),array('jpg','jpeg','png','gif','psd','tiff','tif','bmp'))){
-      $filesizepx = getimagesize($resourceParameters['path']);
+      $filesizepx = getimagesize($this->container->getParameter("upload_directory").$resourceParameters['path']);
       $resource->setSizePx($filesizepx[0].'/'.$filesizepx[1]);
     }
 
@@ -122,11 +122,11 @@ class ResourceService{
     }
   }
 
-  private function _getItemCode($itemId){
-    $itemRepository = $this->entityManager->getRepository(CatalogueNodeItem::class);
-    $item = $itemRepository->findOneBy(['id'=>$itemId]);
-    return $item->getItemCode();
-  }
+  // private function _getItemCode($itemId){
+  //   $itemRepository = $this->entityManager->getRepository(CatalogueNodeItem::class);
+  //   $item = $itemRepository->findOneBy(['id'=>$itemId]);
+  //   return $item->getItemCode();
+  // }
 
 
 }

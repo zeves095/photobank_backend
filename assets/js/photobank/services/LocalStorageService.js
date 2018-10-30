@@ -17,7 +17,6 @@ class LocalStorageService{
   static init(){
     if(window.localStorage.photobank_data != "1"){
       window.localStorage.photobank_data = "1";
-      window.localStorage.pb_data_catalogue_current_node = "1";
       window.localStorage.pb_data_current_item = "1";
       window.localStorage.pb_data_downloads = "";
       window.localStorage.pb_data_list_view_type = "1";
@@ -80,6 +79,13 @@ class LocalStorageService{
         }
       }
       return splitList;
+    }
+  }
+
+  static unset(key){
+    let keys = this._getKeys();
+    if(Object.keys(keys).indexOf(key) != -1 && typeof window.localStorage[keys[key]] != "undefined"){
+      window.localStorage.removeItem(keys[key]);
     }
   }
 

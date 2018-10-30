@@ -71,7 +71,9 @@ export class CatalogueTree extends React.Component {
   }
 
   handleNodeChoice(){
-    LocalStorageService.set("current_node", this.state.current_node);
+    if(this.state.current_node == null){LocalStorageService.unset("current_node");}else{
+      LocalStorageService.set("current_node", this.state.current_node);
+    }
     let queryObject = new ItemQueryObject();
     queryObject.nodeId = this.state.current_node;
     this.props.queryHandler(queryObject);
@@ -107,11 +109,11 @@ export class CatalogueTree extends React.Component {
 
   traverseUp(){
     let curNode = this.state.catalogue_data.filter((node)=>{return parseInt(node.id)==parseInt(this.state.current_node)})[0];
-    if(typeof curNode!= "undefined"&&curNode.parent != null){
+    if(typeof curNode!= "undefined"){
       this.setState({
         "current_node" : curNode.parent
       });
-      this.props.nodeChoiceHandler(curNode.parent);
+      // this.props.nodeChoiceHandler(curNode.parent);
     }
   }
 

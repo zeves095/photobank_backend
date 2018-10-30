@@ -74,7 +74,7 @@ class ImportResourceService{
       ]);
 
       $itemid = $item->getId();
-      $code = $item->getItemCode();
+      $code = $item->getId();
       $sizebytes = filesize($filepath);
       $filehash = $this->resourceService->getUniqueIdentifier(file_get_contents($filepath),$code,$filesize);
       $dirname = $this->container->getParameter('fileuploader.uploaddirectory').$this->resourceService->generatePath($code);
