@@ -15,8 +15,8 @@ class LocalStorageService{
     return keys;
   }
   static init(){
-    if(typeof window.localStorage.photobank_data == "undefined"){
-      window.localStorage.photobank_data = "set";
+    if(window.localStorage.photobank_data != "1"){
+      window.localStorage.photobank_data = "1";
       window.localStorage.pb_data_catalogue_current_node = "1";
       window.localStorage.pb_data_current_item = "1";
       window.localStorage.pb_data_downloads = "";

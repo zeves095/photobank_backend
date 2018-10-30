@@ -10,6 +10,10 @@
   overflow: overlay;
   @include component-section();
 
+  .view-inner{
+    padding-bottom: 30px;
+  }
+
   .view-inner__list-view{
     margin-top:10px;
     .list-view__cat_item{

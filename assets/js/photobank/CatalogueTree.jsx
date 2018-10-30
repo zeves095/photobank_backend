@@ -50,7 +50,7 @@ export class CatalogueTree extends React.Component {
     this.setState({
       "crumbs" : crumbs
     });
-    crumbs.reverse();
+    //crumbs.reverse();
     this.props.crumb_handler(crumbs);
   }
 
@@ -152,13 +152,13 @@ export class CatalogueTree extends React.Component {
     let crumbs = this.state.crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"crumbs__crumb crumbs__crumb--active":"crumbs__crumb"} onClick={this.listClickHandler}>{crumb.name}</span>);
 
     return (
-      <div className={(this.state.loading?"loading ":"")+"catalogue-tree"}>
+      <div className={"catalogue-tree"}>
         <h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-sitemap" title="Дерево" data-view="2" onClick={this.handleViewChoice}></i><i className="fas fa-list" title="Список" data-view="1" onClick={this.handleViewChoice}></i><i title="Список" data-view="3" onClick={this.handleViewChoice} className="fas fa-search"></i></span></h2>
         <div>
           <div className="catalogue-tree__crumbs crumbs">
             {this.state.view==1?crumbs:null}
           </div>
-          <div className="catalogue-tree__view-inner view-inner">
+          <div className={(this.state.loading?"loading ":"")+"catalogue-tree__view-inner view-inner"}>
             <div className={"view-inner__"+viewClass + " " + viewClass}>
               {view}
             </div>
