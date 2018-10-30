@@ -12,21 +12,16 @@ use Doctrine\ORM\Mapping as ORM;
 class CatalogueNodeItem
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    * @ORM\Id()
+    * @ORM\GeneratedValue(strategy="NONE")
+    * @ORM\Column(type="string", length=11)
+    */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $name;
-
-    /**
-     * @ORM\Column(type="string", length=11)
-     */
-    private $itemCode;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\CatalogueNode", inversedBy="items")
@@ -44,7 +39,7 @@ class CatalogueNodeItem
         $this->resources = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -57,18 +52,6 @@ class CatalogueNodeItem
     public function setName(?string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getItemCode(): ?string
-    {
-        return $this->itemCode;
-    }
-
-    public function setItemCode(string $itemCode): self
-    {
-        $this->itemCode = $itemCode;
 
         return $this;
     }

@@ -13,8 +13,8 @@ class CatalogueNode
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Column(type="string", length=11)
      */
     private $id;
 
@@ -38,19 +38,13 @@ class CatalogueNode
      */
     private $items;
 
-    /**
-     * @ORM\Column(type="string", length=11, nullable=true)
-     */
-    private $catalogue_code;
-
-
     public function __construct()
     {
         $this->children = new ArrayCollection();
         $this->items = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -141,15 +135,4 @@ class CatalogueNode
         return $this;
     }
 
-    public function getCatalogueCode(): ?string
-    {
-        return $this->catalogue_code;
-    }
-
-    public function setCatalogueCode(?string $catalogue_code): self
-    {
-        $this->catalogue_code = $catalogue_code;
-
-        return $this;
-    }
 }
