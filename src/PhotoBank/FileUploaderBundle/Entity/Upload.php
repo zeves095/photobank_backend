@@ -47,7 +47,7 @@ class Upload
     private $filename;
 
     /**
-     * @ORM\Column(type="bigint")
+     * @ORM\Column(type="string", length=11)
      */
     private $item_id;
 
@@ -128,12 +128,12 @@ class Upload
         return $this;
     }
 
-    public function getItemId(): ?int
+    public function getItemId(): ?string
     {
         return $this->item_id;
     }
 
-    public function setItemId(int $item_id): self
+    public function setItemId(string $item_id): self
     {
         $this->item_id = $item_id;
 
