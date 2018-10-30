@@ -45,7 +45,6 @@ export class ExistingResources extends React.Component{
 
   fetchExisting(){
     ResourceService.fetchExisting(this.props.item_id).then((data)=>{
-      console.warn(data);
       this.setState({
         "existing": data
       });
@@ -127,8 +126,8 @@ export class ExistingResources extends React.Component{
         "list_limit": limit,
         "list_end": start+limit,
         "loading": true,
-        "list_current_page": Math.floor(this.state.list_start/this.state.list_limit)+1,
-        "list_total_pages": Math.ceil(this.state.existing.length/this.state.list_limit)
+        "list_current_page": Math.floor(this.state.list_start/limit)+1,
+        "list_total_pages": Math.ceil(this.state.existing.length/limit)
       });
     }
   }
@@ -236,8 +235,6 @@ export class ExistingResources extends React.Component{
     let addStatus = currAdd+"/"+maxAdd;
 
     let existingListMarkupData = [];
-
-    console.log(fileList);
 
     for(var i = this.state.list_start; i<this.state.list_end; i++){
       if(typeof fileList[i]=='undefined'){continue};
