@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PureComponent} from 'react';
 import { ListFilter } from './ListFilter';
 import {ItemService} from './services/ItemService';
 

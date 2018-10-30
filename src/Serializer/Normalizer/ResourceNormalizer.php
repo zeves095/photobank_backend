@@ -4,11 +4,19 @@ namespace App\Serializer\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\CustomNormalizer;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use App\Entity\Resource;
 
 class ResourceNormalizer extends CustomNormalizer implements NormalizerInterface
 {
+
+    private $container;
+
+    public function __construct(ContainerInterface $container){
+      $this->container = $container;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -17,7 +25,7 @@ class ResourceNormalizer extends CustomNormalizer implements NormalizerInterface
         return [
             'id'     => $object->getId(),
             'gid'     => $object->getGid(),
-            'path'     => $object->getPath(),
+            'path'     => $this->container->getParameter('upload_directory')."/".$object->getPath(),
             'username'   => $object->getUsername(),
             'preset' => $object->getPreset(),
             'type' => $object->getType(),

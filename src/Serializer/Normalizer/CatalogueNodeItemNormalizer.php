@@ -18,7 +18,7 @@ class CatalogueNodeItemNormalizer extends CustomNormalizer implements Normalizer
         return [
             'id'     => $object->getId(),
             'name'   => $object->getName(),
-            'itemCode' => $object->getItemCode(),
+            'itemCode' => $object->getId(),
             'node' => $object->getNode()?$object->getNode()->getId():$object->getNode(),
             'resources' => array_map(
                 function (Resource $resource) use ($format, $context){
