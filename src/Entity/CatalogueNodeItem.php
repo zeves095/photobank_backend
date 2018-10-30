@@ -25,7 +25,7 @@ class CatalogueNodeItem
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\CatalogueNode", inversedBy="items")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $node;
 
