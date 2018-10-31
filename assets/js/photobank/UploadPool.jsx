@@ -104,7 +104,7 @@ export class UploadPool extends React.Component{
     let pool = items.map(item=>{
       return(
       <div key={"pool-item" + item.id}>
-        <ItemSection key={"pool" + item.id} item_id={item.id} default_view={this.state.view_type} render_existing={false} open_by_default={!this.state.collapse_all} identityHandler={this.handleItemIdentity} section_type="up" />
+        <ItemSection authorized={true} key={"pool" + item.id} item_id={item.id} default_view={this.state.view_type} render_existing={false} open_by_default={!this.state.collapse_all} identityHandler={this.handleItemIdentity} section_type="up" />
       </div>
     )}
     );
