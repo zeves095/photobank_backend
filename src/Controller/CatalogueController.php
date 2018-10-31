@@ -74,7 +74,8 @@ class CatalogueController extends AbstractController
             $children = $cnode->getChildren();
         }
         $cnodeArray = $serializer->normalize($children, null, array(
-            'add-relation' => false
+            'add-relation' => false,
+            'add-item-count' => true
         ));
 
         $response->setData($cnodeArray);

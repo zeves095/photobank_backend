@@ -38,6 +38,12 @@ class CatalogueNodeNormalizer extends CustomNormalizer implements NormalizerInte
             ]);
         }
 
+        if($context['add-item-count']??false){
+            $main_data = array_merge($main_data, [
+                'items_count' => $object->getItems()->count()
+            ]);
+        }
+
         return $main_data;
     }
 
