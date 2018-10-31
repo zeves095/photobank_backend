@@ -71,6 +71,7 @@ export class ExistingResources extends React.Component{
   }
 
   handleResourceUpdate(e, id=null){
+    if(!this.props.authorized){return}
     let form = {};
     if(id==null){
       form = $(e.target).closest(".existing-files__file.file");
@@ -159,6 +160,7 @@ export class ExistingResources extends React.Component{
   }
 
   handlePriority(e){
+    if(!this.props.authorized){return}
     let file = e.target.dataset["file"];
     if(this.state.priority_active == file){file = null}
     this.setState({
@@ -167,6 +169,7 @@ export class ExistingResources extends React.Component{
   }
 
   handlePriorityUpdate(e){
+    if(!this.props.authorized){return}
     let priority = e.target.dataset["priority"];
     let form = $(e.target).closest(".existing-files__file.file");
     let input = form.find("input[name='priority']");
@@ -293,7 +296,7 @@ export class ExistingResources extends React.Component{
         </a>
       {/* <div className="file__edit-fields edit-fields"> */}
           <div className={"edit-input " + (file.type=="2"?"edit-input--add-file":"")}>
-            <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type}>
+            <select onChange={this.handleResourceUpdate} name="type" defaultValue={file.type} disabled={!this.props.authorized}>
               <option disabled={currMain>=maxMain?true:false} value="1">Основноe{mainStatus}</option>
             <option disabled={currAdd>=maxAdd?true:false} value="2">Доп.{addStatus}</option>
               <option value="3">Исходник</option>
