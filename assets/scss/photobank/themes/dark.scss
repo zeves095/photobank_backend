@@ -1,15 +1,15 @@
 $color-main: #111;
 $color-main-fade: #555;
-$color-secondary: #35403b;
-$color-secondary-fade: #3a4d5f;
+$color-secondary: #39cc5a;
+$color-secondary-fade: #84de98;
 $color-tertiary: #FFF;
 $color-tertiary-fade: #222;
-$color-accent: #64c79a;
-$color-accent-fade: #e64c65;
+$color-accent: #26475f;
+$color-accent-fade: #36647d;
 $color-background: #222;
 $color-text: #ffffff;
 $color-text-fade: #666666;
-$color-text-alt: #333;
+$color-text-alt: #aaa;
 
 @import "./basetheme.scss";
 
@@ -33,19 +33,19 @@ $color-text-alt: #333;
   border-bottom: 2px solid $color-accent;
 }
 
-.view-inner__item-list,.catalogue-tree{
-  -webkit-box-shadow: inset -24px 30px 136px -30px rgba(0,0,0,0.75);
-  -moz-box-shadow: inset -24px 30px 136px -30px rgba(0,0,0,0.75);
-  box-shadow: inset -24px 30px 136px -30px rgba(0,0,0,0.75);
-}
+// .view-inner__item-list,.catalogue-tree{
+//   -webkit-box-shadow: inset -24px 30px 136px -30px rgba(0,0,0,0.75);
+//   -moz-box-shadow: inset -24px 30px 136px -30px rgba(0,0,0,0.75);
+//   box-shadow: inset -24px 30px 136px -30px rgba(0,0,0,0.75);
+// }
 
 .catalogue-tree__crumbs .crumbs__crumb--active{
   color: $color-text;
 }
 
-.item-view__subheader{
-  background-color: $color-secondary;
-}
+// .item-view__subheader{
+//   background-color: $color-secondary;
+// }
 
 .item-uploads .file-list__file-item{
   background-color: $color-accent !important;
