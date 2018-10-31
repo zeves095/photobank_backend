@@ -10,6 +10,7 @@ import {UploadService} from './services/UploadService';
 import {CatalogueService} from './services/CatalogueService';
 import {LocalStorageService} from './services/LocalStorageService';
 import {NotificationService} from './services/NotificationService';
+import {UtilityService} from './services/UtilityService';
 
 export class PhotoBank extends React.Component {
 
@@ -18,7 +19,8 @@ export class PhotoBank extends React.Component {
     this.state ={
       "crumb_string": "",
       "item_query_object": null,
-      "ls_node": null
+      "ls_node": null,
+      "authorized":false
     }
     this.fetchUnfinished();
     this.handleCatalogueQuery = this.handleCatalogueQuery.bind(this);
@@ -63,6 +65,11 @@ export class PhotoBank extends React.Component {
       "ls_item": previtem,
       "ls_view": prevview,
     });
+    UtilityService.getRole().then((result)=>{
+      this.setState({
+        "authorized":result
+      });
+    });
   }
 
   render() {
@@ -74,9 +81,9 @@ export class PhotoBank extends React.Component {
 
         </div>
       <div className="photobank-main__main-block">
-        <CatalogueTree catalogue_data={this.state.catalogue_data} queryHandler={this.handleCatalogueQuery} default_view={cat_view} crumb_handler={this.handleCrumbUpdate} node={this.state.ls_node} />
+        <CatalogueTree authorized={this.state.authorized} catalogue_data={this.state.catalogue_data} queryHandler={this.handleCatalogueQuery} default_view={cat_view} crumb_handler={this.handleCrumbUpdate} node={this.state.ls_node} />
       {$(".catalogue-tree").length>0?<Draggable box1=".catalogue-tree" box2=".node-viewer" id="1" />:null}
-      {this.state.item_query_object == null?null:<NodeViewer catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} query={this.state.item_query_object} crumb_string={this.state.crumb_string} item={this.state.ls_item} default_view={this.state.ls_view} />}
+      {this.state.item_query_object == null?null:<NodeViewer authorized={this.state.authorized} catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} query={this.state.item_query_object} crumb_string={this.state.crumb_string} item={this.state.ls_item} default_view={this.state.ls_view} />}
         </div>
         <div className="photobank-main__butt-wrapper">
         </div>

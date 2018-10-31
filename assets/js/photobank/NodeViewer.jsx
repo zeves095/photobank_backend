@@ -119,7 +119,7 @@ export class NodeViewer extends React.Component{
       </div>
     );
 
-    let itemSection = this.state.current_item!=null?(<ItemSection viewChoiceHandler={this.handleViewChoice} addDownloadHandler={this.handleAddToDownloads} render_existing={true} item_id={this.state.current_item.id} open_by_default={true} section_type="nv" crumb_string={this.props.crumb_string} default_view={this.state.view_type} />):"Не выбран товар";
+    let itemSection = this.state.current_item!=null?(<ItemSection authorized={this.props.authorized} viewChoiceHandler={this.handleViewChoice} addDownloadHandler={this.handleAddToDownloads} render_existing={true} item_id={this.state.current_item.id} open_by_default={true} section_type="nv" crumb_string={this.props.crumb_string} default_view={this.state.view_type} />):"Не выбран товар";
 
     let section = "";
     switch(parseInt(this.state.view_pool)){
@@ -146,7 +146,7 @@ export class NodeViewer extends React.Component{
             <h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.state.product_crumbs}</i></h2>
           <div className="view-switcher-button-block">
             <button type="button" className="item-section-switcher" data-pool="1" onClick={this.handlePoolClick}>{this.state.view_pool==1?"К последнему товару":"Выгрузка"}</button>
-          <button type="button" className="item-section-switcher" data-pool="2" onClick={this.handlePoolClick}>{this.state.view_pool==2?"К последнему товару":"Загрузка"}</button>
+          {this.props.authorized?<button type="button" className="item-section-switcher" data-pool="2" onClick={this.handlePoolClick}>{this.state.view_pool==2?"К последнему товару":"Загрузка"}</button>:null}
           </div>
           <div className="view-inner__container">
             {section}

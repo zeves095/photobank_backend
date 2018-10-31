@@ -103,9 +103,9 @@ export class ItemSection extends React.Component{
           <button type="button" data-view="2" title="Таблица" className={this.state.view_type==2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
             <i className="fas fa-list-ul"></i>
           </button>
-          {this.props.render_existing?<ExistingResources item_id={this.state.item_id} addDownloadHandler={this.props.addDownloadHandler} need_refresh={this.state.need_refresh} default_view={this.state.view_type} />:null}
-        <h4 className="item-view__subheader">Загрузки</h4>
-      {(typeof this.state.item=='undefined')?null:<Uploads item={this.state.item} resumable={this.resumable} uploadCompleteHandler={this.handleUpload} />}
+          {this.props.render_existing?<ExistingResources authorized={this.props.authorized} item_id={this.state.item_id} addDownloadHandler={this.props.addDownloadHandler} need_refresh={this.state.need_refresh} default_view={this.state.view_type} />:null}
+        {((typeof this.state.item=='undefined')||!this.props.authorized)?null:<h4 className="item-view__subheader">Загрузки</h4>}
+      {((typeof this.state.item=='undefined')||!this.props.authorized)?null:<Uploads item={this.state.item} resumable={this.resumable} uploadCompleteHandler={this.handleUpload} />}
       </div> < /div>
     );
   }
