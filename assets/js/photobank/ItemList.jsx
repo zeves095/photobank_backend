@@ -15,7 +15,8 @@ export class ItemList extends React.Component{
       "filter_query": "",
       "current_item": null,
       "previtem_id": this.props.item,
-      "loading": false
+      "loading": false,
+      "need_refresh": false
     }
     this.getItems = this.getItems.bind(this);
     this.itemClickHandler = this.itemClickHandler.bind(this);
@@ -24,7 +25,7 @@ export class ItemList extends React.Component{
 
   getItems(){
     this.setState({"loading":true});
-    ItemService.fetchItems(this.props.query, this.state.filter_query, this.state.node_items).then((data)=>{
+    ItemService.fetchItems(this.props.query, this.state.filter_query, this.state.node_items, this.state.need_refresh).then((data)=>{
       this.setState({
         "node_items": data[0],
         "node_items_filtered" : data[1],
@@ -67,17 +68,19 @@ export class ItemList extends React.Component{
 
   componentDidUpdate(prevProps, prevState){
     if(this.props.node !== prevProps.node || this.props.query !== prevProps.query){
+      console.log("reset");
       this.setState({
         "node": this.props.node,
-        "node_items":[]
+        "node_items":[],
+        "need_refresh":true
       });
     }
-    if(this.state.node != prevState.node || this.state.filter_query != prevState.filter_query || this.props.query !== prevProps.query){
+    if(this.state.filter_query != prevState.filter_query || this.state.need_refresh){
+      this.setState({
+        "need_refresh":false
+      });
       this.getItems();
     }
-    // if(this.state.current_item != prevState.current_item){
-    //   this.getItems();
-    // }
     if(this.props.node == prevProps.node && prevState.node_items_filtered.length == 0 && this.state.node_items_filtered.length>0){
       this.itemClickHandler(this.props.item);
     }
