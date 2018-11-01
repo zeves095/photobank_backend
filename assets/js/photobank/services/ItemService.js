@@ -6,9 +6,9 @@ class ItemService{
 
   }
 
-  static fetchItems(query, filter, items = []){
+  static fetchItems(query, filter, items,need_refresh = true){
     return new Promise((resolve, reject)=>{
-      if(items.length != 0){
+      if(!need_refresh){
         let dataFiltered = this._filterData(items, filter);
         resolve([items, dataFiltered]);
       }else{
