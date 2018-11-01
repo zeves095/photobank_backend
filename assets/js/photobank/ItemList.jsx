@@ -16,7 +16,7 @@ export class ItemList extends React.Component{
       "current_item": null,
       "previtem_id": this.props.item,
       "loading": false,
-      "need_refresh": false
+      "need_refresh": true
     }
     this.getItems = this.getItems.bind(this);
     this.itemClickHandler = this.itemClickHandler.bind(this);
