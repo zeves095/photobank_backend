@@ -116,7 +116,7 @@ class ResourceService{
       }).fail(()=>{
         reject("request-failed");
       });
-      resolve();
+      //resolve();
     });
   }
 
