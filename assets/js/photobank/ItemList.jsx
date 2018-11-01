@@ -24,15 +24,17 @@ export class ItemList extends React.Component{
 
   getItems(){
     this.setState({"loading":true});
-    ItemService.fetchItems(this.props.query, this.state.filter_query).then((data)=>{
+    ItemService.fetchItems(this.props.query, this.state.filter_query, this.state.node_items).then((data)=>{
       this.setState({
-        "node_items_filtered" : data,
+        "node_items": data[0],
+        "node_items_filtered" : data[1],
         "loading": false
       });
     }).catch((error)=>{
       if(error == "none-found"){
         //NotificationService.toast(error);
         this.setState({
+          "node_items": [],
           "node_items_filtered" : [],
           "loading": false
         });
@@ -66,19 +68,16 @@ export class ItemList extends React.Component{
   componentDidUpdate(prevProps, prevState){
     if(this.props.node !== prevProps.node){
       this.setState({
-        "node": this.props.node
+        "node": this.props.node,
+        "node_items":[]
       });
+    }
+    if(this.state.node != prevState.node || this.state.filter_query != prevState.filter_query || this.props.query !== prevProps.query){
       this.getItems();
     }
-    if(this.props.query !== prevProps.query){
-      this.getItems();
-    }
-    if(this.state.current_item != prevState.current_item){
-      this.getItems();
-    }
-    if(this.state.filter_query != prevState.filter_query){
-      this.getItems();
-    }
+    // if(this.state.current_item != prevState.current_item){
+    //   this.getItems();
+    // }
     if(this.props.node == prevProps.node && prevState.node_items_filtered.length == 0 && this.state.node_items_filtered.length>0){
       this.itemClickHandler(this.props.item);
     }
