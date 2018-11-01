@@ -76,7 +76,6 @@ export class UploadPool extends React.Component{
   }
 
   handleItemIdentity(id, name){
-    console.log(id);
     let itlist = this.state.item_list;
     itlist[id] = {
       "id": id,
@@ -108,7 +107,6 @@ export class UploadPool extends React.Component{
       </div>
     )}
     );
-    console.log(this.state.item_list);
     return(
       <div className="upload-pool">
         <button type="button" className={"view-button"+(this.state.view_type==0?" view-button--active":"")} data-view="0" onClick={this.handleViewChoice}><i className="fas fa-th-large"></i></button>

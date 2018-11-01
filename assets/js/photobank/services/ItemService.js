@@ -6,16 +6,20 @@ class ItemService{
 
   }
 
-  static fetchItems(query, filter){
+  static fetchItems(query, filter, items = []){
     return new Promise((resolve, reject)=>{
-      let searchResponse = this._getItems(query);
-      searchResponse.then((data)=>{
-        if(data.length == 0){reject("none-found")}
-        let dataFiltered = this._filterData(data, filter);
-        resolve(dataFiltered);
-      }).catch((e)=>{
-        reject("none-found");
-      });
+      if(items.length != 0){
+        let dataFiltered = this._filterData(items, filter);
+        resolve([items, dataFiltered]);
+      }else{
+        this._getItems(query).then((data)=>{
+          if(data.length == 0){reject("none-found")}
+          let dataFiltered = this._filterData(data, filter);
+          resolve([data, dataFiltered]);
+        }).catch((e)=>{
+          reject("none-found");
+        });
+      }
     });
   }
 
