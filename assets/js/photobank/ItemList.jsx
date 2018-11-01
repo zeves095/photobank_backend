@@ -98,7 +98,7 @@ export class ItemList extends React.Component{
 
     let nodeItemList = this.state.node_items_filtered.map((item)=>
       <div className={"list-item"+((this.state.current_item!=null&&item.id==this.state.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={this.itemClickHandler}>
-        <h4 data-item={item.id} onClick={this.itemClickHandler}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
+        <h4 data-item={item.id} onClick={this.itemClickHandler} title={item.node}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
       </div>
     );
     let tooBroadMsg = this.state.node_items_filtered.length == 100?"Показаны не все результаты. Необходимо сузить критерии поиска.":"";
