@@ -17,12 +17,13 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
-    .addEntry('app', './assets/js/app.js')
+    .addEntry('photobank-app', './assets/js/photobank-app.js')
+    .addEntry('usermanager-app', './assets/js/usermanager-app.js')
     // .addEntry('crc32', './assets/js/vendor/crc32.js')
     // .addEntry('md5', './assets/js/vendor/md5.js')
     // .addEntry('resumable', './assets/js/vendor/resumable.js')
-    .addStyleEntry('main_style', './assets/scss/app.scss')
-    .addStyleEntry('color_theme_default', './assets/scss/photobank/themes/default.scss')
+    //.addStyleEntry('main_style', './assets/scss/app.scss')
+    //.addStyleEntry('color_theme_default', './assets/scss/photobank/themes/default.scss')
 
 
     /*

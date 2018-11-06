@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Редактор пользователей{% endblock %}
+
+{% block head %}
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('build/usermanager-app.css') }}">
+{% endblock %}
+
+{% block body %}
+  <div id="usermanager-wrapper"></div>
+{% endblock %}
+
+{% block javascripts %}
+  <script src="{{ asset('build/usermanager-app.js') }}"></script>
+{% endblock %}

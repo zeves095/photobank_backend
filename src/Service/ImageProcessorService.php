@@ -62,7 +62,7 @@ class ImageProcessorService{
     $imageProcessor->open($this->container->getParameter('upload_directory').$resource->getPath())
     ->thumbnail($size, $mode)
     ->save($targetPath);
-
+    $imageProcessor = null;
     $filename = $this->resourceService->getUniqueIdentifier(file_get_contents($targetPath), $resource->getItem()->getId(),filesize($targetPath)).'.'.$extension;
 
     $resourceParameters = [
