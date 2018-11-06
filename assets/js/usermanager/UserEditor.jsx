@@ -30,7 +30,11 @@ export class UserEditor extends React.Component {
   }
 
   render() {
-    if(this.props.user == null){return "Не выбран пользователь"}
+    if(this.props.user == null){return (
+      <div className="user-editor col s8" key={"user"+0}>
+      <h4>Не выбран пользователь</h4>
+  </div>
+)}
     return(
       <div className="user-editor col s8" key={"user"+this.props.user.id}>
       <h4>{this.props.user.name.length>0?this.props.user.name:"Новый пользователь"}</h4>
@@ -40,8 +44,7 @@ export class UserEditor extends React.Component {
     <input defaultValue={this.props.user.name} type="text" ref="name-input" name="name"></input>
   <label htmlFor="email">Email</label>
     <input defaultValue={this.props.user.email} type="text" ref="email-input" name="email"></input>
-  <label htmlFor="active">Активен</label>
-<input defaultChecked={this.props.user.active} type="checkbox" ref="active-input" name="active"></input>
+  <p><label><input defaultChecked={this.props.user.active} type="checkbox" ref="active-input" name="active" /><span>Активен</span></label></p>
   <label htmlFor="password">Пароль</label>
     <input defaultValue={this.props.user.password} type="password" ref="password-input" name="password"></input>
   <label htmlFor="role">Уровень доступа</label>
@@ -50,7 +53,7 @@ export class UserEditor extends React.Component {
       <option value="2">Редактор</option>
     <option value="1">Модератор</option>
       </select>
-      <button className="waves-effect waves-light btn" type="submit">Сохранить</button>
+      <button className="blue-grey waves-effect waves-light btn" type="submit"><i class="fas fa-user-check"></i>Сохранить</button>
       </form>
       </div>
     );

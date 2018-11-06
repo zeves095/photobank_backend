@@ -48,14 +48,14 @@
     float: right;
     padding: 2px;
   }
-  height: 25px !important;
+  height: 40px !important;
   padding: 10px !important;
   width: 97vw !important;
   margin-bottom:3px;
   border: none !important;
 }
 
-input[type="checkbox"], select{
+select{
   position: relative !important;
   opacity: 1 !important;
   pointer-events: all !important;
@@ -71,9 +71,38 @@ input[type="checkbox"], select{
   }
 }
 
+.user-list, .user-editor{
+  height:83vh;
+}
+
+.user-list{
+  outline-right:2px solid #333;
+  background-color: #eff9fd;
+}
+
+.user-item{
+  i{
+    padding: 0px 5px;
+  }
+}
+
+.brand-logo{
+  margin-left: 24px;
+}
+
 .card-panel{
   padding: 12px !important;
 }
 .btn{
   margin:4px;
+  i{
+        padding: 0px 5px;
+  }
 }
+
+nav{
+  z-index: 10;
+position: relative;
+}
+
+.fa-camera{padding: 20px 0;}
