@@ -35,20 +35,20 @@ export class UserList extends React.Component {
       return !user.active;
     });
     let usersActiveMarkup = usersActive.map((user)=>{
-      return <div key={"userl"+user.id} className="user-item" data-user={user.id} onClick={this.handleUserChoice}>{user.name}</div>
+      return <div key={"userl"+user.id} className="user-item card-panel blue darken-2 white-text" data-user={user.id} onClick={this.handleUserChoice}>{user.name}</div>
     });
     let usersInactiveMarkup = usersInactive.map((user)=>{
-      return <div key={"userl"+user.id} className="user-item inactive" data-user={user.id} onClick={this.handleUserChoice}>{user.name}</div>
+      return <div key={"userl"+user.id} className="user-item inactive card-panel  blue lighten-4" data-user={user.id} onClick={this.handleUserChoice}>{user.name}</div>
     });
     return(
       <div className="user-list col s4">
       <h4>Пользователи</h4>
     {usersActiveMarkup}
-    <button type="button" onClick={this.showInactive}>{this.state.show_inactive?"Скрыть неактивных":"Показать неактивных"}</button>
+    <button  className="waves-effect waves-light btn" type="button" onClick={this.showInactive}>{this.state.show_inactive?"Скрыть неактивных":"Показать неактивных"}</button>
   <div className={"users-inactive" + (this.state.show_inactive?"":" hidden")}>
         {usersInactiveMarkup}
         </div>
-        <button type="button" onClick={this.addUser}>Добавить</button>
+        <button  className="waves-effect waves-light btn" type="button" onClick={this.addUser}>Добавить</button>
       </div>
     );
   }

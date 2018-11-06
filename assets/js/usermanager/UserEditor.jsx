@@ -33,7 +33,7 @@ export class UserEditor extends React.Component {
     if(this.props.user == null){return "Не выбран пользователь"}
     return(
       <div className="user-editor col s8" key={"user"+this.props.user.id}>
-      <h4>{this.props.user.name}</h4>
+      <h4>{this.props.user.name.length>0?this.props.user.name:"Новый пользователь"}</h4>
       <form onSubmit={this.handleSubmit}>
       <input defaultValue={this.props.user.id} type="hidden" ref="id-input" name="id"></input>
     <label htmlFor="name">Имя пользователя</label>
@@ -50,7 +50,7 @@ export class UserEditor extends React.Component {
       <option value="2">Редактор</option>
     <option value="1">Модератор</option>
       </select>
-      <button type="submit">Сохранить</button>
+      <button className="waves-effect waves-light btn" type="submit">Сохранить</button>
       </form>
       </div>
     );
