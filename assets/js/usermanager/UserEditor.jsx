@@ -20,6 +20,8 @@ export class UserEditor extends React.Component {
     let newUser={
       "id":this.refs["id-input"].value,
       "password":this.refs["password-input"].value,
+      "email":this.refs["email-input"].value,
+      "active":this.refs["active-input"].value,
       "name":this.refs["name-input"].value,
       "role":this.refs["role-input"].value,
     }
@@ -33,12 +35,20 @@ export class UserEditor extends React.Component {
       <h2>{this.props.user.name}</h2>
       <form onSubmit={this.handleSubmit}>
       <input defaultValue={this.props.user.id} type="hidden" ref="id-input" name="id"></input>
-      <input defaultValue={this.props.user.name} type="text" ref="name-input" name="name"></input>
-      <input defaultValue={this.props.user.password} type="password" ref="password-input" name="password"></input>
-      <select defaultValue={this.props.user.role} ref="role-input" name="role">
-        <option value="ROLE_USER">Пользователь</option>
-        <option value="ROLE_WRITER">Редактор</option>
-        <option value="ROLE_ADMIN">Администратор</option>
+    <label htmlFor="name">Имя пользователя</label>
+    <input defaultValue={this.props.user.name} type="text" ref="name-input" name="name"></input>
+  <label htmlFor="email">Email</label>
+    <input defaultValue={this.props.user.email} type="text" ref="email-input" name="email"></input>
+  <label htmlFor="active">Активен</label>
+<input defaultChecked={this.props.user.active} type="checkbox" ref="active-input" name="active"></input>
+  <label htmlFor="password">Пароль</label>
+    <input defaultValue={this.props.user.password} type="password" ref="password-input" name="password"></input>
+  <label htmlFor="role">Уровень доступа</label>
+    <select defaultValue={this.props.user.role} ref="role-input" name="role">
+      <option value="3">Пользователь</option>
+      <option value="2">Редактор</option>
+    <option value="1">Модератор</option>
+  <option value="0">Администратор</option>
       </select>
       <button type="submit">Сохранить</button>
       </form>

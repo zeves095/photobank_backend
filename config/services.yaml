@@ -4,6 +4,7 @@ parameters:
 imports:
     - { resource: presets.yaml }
     - { resource: fileuploader.yaml }
+    - { resource: user.yaml }
 
 services:
     _defaults:

@@ -19,7 +19,7 @@ export class UserList extends React.Component {
 
   render() {
     let users = this.props.users.map((user)=>{
-      return <div className="user-item" data-user={user.id} onClick={this.handleUserChoice}>{user.name}</div>
+      return <div key={"userl"+user.id} className="user-item" data-user={user.id} onClick={this.handleUserChoice}>{user.name}</div>
     });
     return(
       <div className="user-list">

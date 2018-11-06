@@ -19,6 +19,7 @@ export class UserManager extends React.Component {
   }
 
   fetchUsers(){
+    console.warn("FETCH");
     UserService.fetchUsers().then((users)=>{
       console.log(users);
       this.setState({
@@ -28,13 +29,16 @@ export class UserManager extends React.Component {
   }
 
   handleUserUpdate(user){
-    UserService.submitUser(user);
+    UserService.submitUser(user).then((user)=>{
+      this.fetchUsers();
+      this.handleUserChoice(user.id);
+    });
   }
 
   handleUserChoice(id){
     let user;
     if(typeof id == "undefined"){
-      user = UserService.getBlankUser();
+      user = UserService.getBlankUser(this.state.users);
     }else{
       user = this.state.users.filter(u=>u.id==id)[0];
     }
@@ -48,7 +52,6 @@ export class UserManager extends React.Component {
   }
 
   render() {
-    console.log(this.state.users);
     return(
       <div className="user-manager-main">
       <h1>Редактор пользователей</h1>
