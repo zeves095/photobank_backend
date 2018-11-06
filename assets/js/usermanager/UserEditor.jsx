@@ -31,8 +31,8 @@ export class UserEditor extends React.Component {
   render() {
     if(this.props.user == null){return "Не выбран пользователь"}
     return(
-      <div className="user-editor" key={"user"+this.props.user.id}>
-      <h2>{this.props.user.name}</h2>
+      <div className="user-editor col s8" key={"user"+this.props.user.id}>
+      <h4>{this.props.user.name}</h4>
       <form onSubmit={this.handleSubmit}>
       <input defaultValue={this.props.user.id} type="hidden" ref="id-input" name="id"></input>
     <label htmlFor="name">Имя пользователя</label>

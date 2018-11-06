@@ -22,8 +22,8 @@ export class UserList extends React.Component {
       return <div key={"userl"+user.id} className="user-item" data-user={user.id} onClick={this.handleUserChoice}>{user.name}</div>
     });
     return(
-      <div className="user-list">
-      <h2>Пользователи</h2>
+      <div className="user-list col s4">
+      <h4>Пользователи</h4>
         {users}
         <button type="button" onClick={this.addUser}>Добавить</button>
       </div>
