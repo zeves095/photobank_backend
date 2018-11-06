@@ -54,7 +54,9 @@ export class UserManager extends React.Component {
   render() {
     return(
       <div className="user-manager-main row">
-      <h1>Редактор пользователей</h1>
+      <nav className="nav-wrapper blue-grey darken-2">
+        <div class="brand-logo"><i className="fas fa-camera"></i>PotoBank - Редактор пользователей</div>
+        </nav>
         <UserList users={this.state.users} userChoiceHandler={this.handleUserChoice} />
         <UserEditor user={this.state.current_user} userUpdateHandler={this.handleUserUpdate} />
       </div>
