@@ -43,3 +43,12 @@ input[type="checkbox"], select{
   pointer-events: all !important;
   display: block !important;
 }
+
+.users-inactive{
+  transition: 0.3s;
+  max-height:1000px;
+  overflow: hidden;
+  &.hidden{
+    max-height: 0px;
+  }
+}

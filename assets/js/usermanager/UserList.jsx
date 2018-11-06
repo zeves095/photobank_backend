@@ -4,8 +4,12 @@ export class UserList extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      "show_inactive": false
+    }
     this.handleUserChoice = this.handleUserChoice.bind(this);
     this.addUser = this.addUser.bind(this);
+    this.showInactive = this.showInactive.bind(this);
   }
 
   handleUserChoice(e){
@@ -17,14 +21,33 @@ export class UserList extends React.Component {
     this.props.userChoiceHandler();
   }
 
+  showInactive(){
+    this.setState({
+      "show_inactive":!this.state.show_inactive
+    });
+  }
+
   render() {
-    let users = this.props.users.map((user)=>{
+    let usersActive = this.props.users.filter((user)=>{
+      return user.active;
+    });
+    let usersInactive = this.props.users.filter((user)=>{
+      return !user.active;
+    });
+    let usersActiveMarkup = usersActive.map((user)=>{
       return <div key={"userl"+user.id} className="user-item" data-user={user.id} onClick={this.handleUserChoice}>{user.name}</div>
+    });
+    let usersInactiveMarkup = usersInactive.map((user)=>{
+      return <div key={"userl"+user.id} className="user-item inactive" data-user={user.id} onClick={this.handleUserChoice}>{user.name}</div>
     });
     return(
       <div className="user-list col s4">
       <h4>Пользователи</h4>
-        {users}
+    {usersActiveMarkup}
+    <button type="button" onClick={this.showInactive}>{this.state.show_inactive?"Скрыть неактивных":"Показать неактивных"}</button>
+  <div className={"users-inactive" + (this.state.show_inactive?"":" hidden")}>
+        {usersInactiveMarkup}
+        </div>
         <button type="button" onClick={this.addUser}>Добавить</button>
       </div>
     );

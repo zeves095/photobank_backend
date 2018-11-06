@@ -17,11 +17,12 @@ export class UserEditor extends React.Component {
 
   handleSubmit(e){
     e.preventDefault();
+    console.warn(this.refs["active-input"].checked);
     let newUser={
       "id":this.refs["id-input"].value,
       "password":this.refs["password-input"].value,
       "email":this.refs["email-input"].value,
-      "active":this.refs["active-input"].value,
+      "active":this.refs["active-input"].checked,
       "name":this.refs["name-input"].value,
       "role":this.refs["role-input"].value,
     }

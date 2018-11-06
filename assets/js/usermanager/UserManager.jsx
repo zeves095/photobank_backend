@@ -29,7 +29,7 @@ export class UserManager extends React.Component {
   }
 
   handleUserUpdate(user){
-    UserService.submitUser(user).then((user)=>{
+    UserService.submitUser(user).then(()=>{
       this.fetchUsers();
       this.handleUserChoice(user.id);
     });

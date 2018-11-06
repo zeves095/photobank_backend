@@ -6,7 +6,6 @@ class UserService{
   }
 
   static fetchUsers(){
-    console.log("FETCHING");
     return new Promise((resolve,reject)=>{
       $.getJSON(window.config.user_get_url).done((data)=>{
         console.log(data);
@@ -28,12 +27,12 @@ class UserService{
   static submitUser(user){
     return new Promise((resolve, reject)=>{
       console.log(user);
+      user.active = user.active?1:0;
       $.ajax({
         "url":window.config.user_set_url,
         "data":user,
         "method":"POST"
       }).done((data)=>{
-        console.log(data);
         resolve(data);
       });
     });
