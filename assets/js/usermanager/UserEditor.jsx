@@ -49,7 +49,6 @@ export class UserEditor extends React.Component {
       <option value="3">Пользователь</option>
       <option value="2">Редактор</option>
     <option value="1">Модератор</option>
-  <option value="0">Администратор</option>
       </select>
       <button type="submit">Сохранить</button>
       </form>
