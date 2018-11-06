@@ -17,11 +17,12 @@ export class UserEditor extends React.Component {
 
   handleSubmit(e){
     e.preventDefault();
+    console.warn(this.refs["active-input"].checked);
     let newUser={
       "id":this.refs["id-input"].value,
       "password":this.refs["password-input"].value,
       "email":this.refs["email-input"].value,
-      "active":this.refs["active-input"].value,
+      "active":this.refs["active-input"].checked,
       "name":this.refs["name-input"].value,
       "role":this.refs["role-input"].value,
     }
@@ -48,7 +49,6 @@ export class UserEditor extends React.Component {
       <option value="3">Пользователь</option>
       <option value="2">Редактор</option>
     <option value="1">Модератор</option>
-  <option value="0">Администратор</option>
       </select>
       <button type="submit">Сохранить</button>
       </form>

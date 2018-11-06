@@ -28,6 +28,7 @@ class UserService{
     $responseArr = [];
 
     for($i = 0; $i<sizeof($users); $i++){
+      if($users[$i]->getPermissions() == "ROLE_SUPER_ADMIN"){continue;}
       $user = [];
       $user["id"] = $users[$i]->getId();
       $user["name"] = $users[$i]->getUsername();
