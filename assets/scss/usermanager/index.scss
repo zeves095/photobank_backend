@@ -1,0 +1,38 @@
+body {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: Roboto, sans-serif;
+  button{
+    cursor:pointer;
+  }
+}
+
+
+h1 {
+  margin: 0;
+  width: 100%;
+  padding: 10px 25px;
+  font-weight: 100;
+  width:auto;
+  display: block;
+}
+
+.user-manager-main{
+  vertical-align: top;
+}
+
+.user-list{
+  display: inline-block;
+  width:20%;
+  height:100vh;
+}
+
+.user-editor{
+  display: inline-block;
+  width:80%;
+  height:100vh;
+  input,select,button{
+    display: block;
+  }
+}
