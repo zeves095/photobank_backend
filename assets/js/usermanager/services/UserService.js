@@ -8,19 +8,8 @@ class UserService{
   static fetchUsers(){
     return new Promise((resolve,reject)=>{
       $.getJSON(window.config.user_get_url).done((data)=>{
-        console.log(data);
         resolve(data);
       });
-      // let users = [
-      //   {"id":"0", "password":"pass1","name":"admin", "role":"0"},
-      //   {"id":"1", "password":"pass1","name":"user1", "role":"1"},
-      //   {"id":"2", "password":"pass1","name":"user2", "role":"1"},
-      //   {"id":"3", "password":"pass1","name":"user3", "role":"1"},
-      //   {"id":"4", "password":"pass1","name":"user4", "role":"1"},
-      //   {"id":"5", "password":"pass1","name":"user5", "role":"1"},
-      //   {"id":"6", "password":"pass1","name":"user6", "role":"1"},
-      // ];
-      // resolve(users);
     });
   }
 

@@ -9,6 +9,7 @@ class NotificationService{
       "failed-root-nodes": "Не удалось получить структуру каталога",
       "request-failed": "Ошибка запроса",
       "none-found": "Ничего не найдено",
+      "ext-not-supported": "Тип файла не поддерживается",
       "link-copied": "Сcылка скопирована в буфер обмена",
       "dl-queued": "Загрузка поставлена в очередь",
       "dl-done": "Загрузка завершена",

@@ -73,6 +73,7 @@ select{
 
 .user-list, .user-editor{
   height:83vh;
+  overflow: auto;
 }
 
 .user-list{

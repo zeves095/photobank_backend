@@ -132,6 +132,12 @@ export class Uploads extends React.Component{
       window.resumableContainer.splice(this.props.item.id, 1);
       this.props.uploadCompleteHandler();
     });
+    this.props.resumable.on('fileError', (file,message)=>{
+      this.state.busy = false;
+      if(message == "Unsupported media type"){NotificationService.throw("ext-not-supported");}else{
+        NotificationService.throw("unknown-error");
+      }
+    });
   }
 
   componentDidMount(){
