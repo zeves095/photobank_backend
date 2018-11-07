@@ -38,9 +38,9 @@ class CatalogueNodeItemRepository extends ServiceEntityRepository
       if($queryObject->getField("parent_name") != ""){
         $queryBuilder->leftJoin('c.node', 'parent')
         ->where('parent.name LIKE :pname')
-        ->orWhere('parent.id = :pcode')
+        ->orWhere('parent.id LIKE :pcode')
         ->setParameter('pname', '%'.$queryObject->getField("parent_name").'%')
-        ->setParameter('pcode', $queryObject->getField("parent_name"));
+        ->setParameter('pcode', '%'.$queryObject->getField("parent_name"));
       }
       return $queryBuilder->setMaxResults(100)->getQuery()->getResult();
 
