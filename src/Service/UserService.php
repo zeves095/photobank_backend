@@ -6,6 +6,7 @@ use App\Entity\Security\User;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Service\UserService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class UserService{
 
@@ -53,6 +54,9 @@ class UserService{
 
   private function _createUser($user){
     $roles = $this->_getRoles();
+    if(!in_array($user["role"], $roles) || $user["role"]==0){
+      throw new BadRequestHttpException();
+    }
     $newUser = new User();
     $newUser->setUsername($user["name"]);
     $newUser->setPassword($user["password"]);
@@ -65,6 +69,9 @@ class UserService{
 
   private function _updateUser($user, $existing){
     $roles = $this->_getRoles();
+    if(!in_array($user["role"], $roles) || $user["role"]==0){
+      throw new BadRequestHttpException();
+    }
     $existing->setUsername($user["name"]);
     $existing->setPassword($user["password"]);
     $existing->setEmail($user["email"]);

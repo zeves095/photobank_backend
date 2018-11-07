@@ -3,7 +3,7 @@ import { ListFilter } from './ListFilter';
 import {ItemService} from './services/ItemService';
 
 import {LocalStorageService} from './services/LocalStorageService';
-import {NotificationService} from './services/NotificationService';
+import {NotificationService} from '../services/NotificationService';
 
 export class ItemList extends React.Component{
   constructor(props) {

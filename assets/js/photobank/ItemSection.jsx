@@ -4,7 +4,7 @@ import { hex_md5 } from '../vendor/md5';
 import { ExistingResources } from './ExistingResources';
 import { Uploads } from './Uploads';
 import {ItemService} from './services/ItemService';
-import {NotificationService} from './services/NotificationService';
+import {NotificationService} from '../services/NotificationService';
 
 export class ItemSection extends React.Component{
   constructor(props) {

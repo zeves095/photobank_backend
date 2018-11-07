@@ -5,7 +5,7 @@ import {ItemSearch} from './ItemSearch';
 import {ItemQueryObject} from './services/ItemQueryObject';
 import {CatalogueService} from './services/CatalogueService';
 import {LocalStorageService} from './services/LocalStorageService';
-import {NotificationService} from './services/NotificationService';
+import {NotificationService} from '../services/NotificationService';
 export class CatalogueTree extends React.Component {
 
   constructor(props) {

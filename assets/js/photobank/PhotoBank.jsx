@@ -9,7 +9,7 @@ import {ResourceService} from './services/ResourceService';
 import {UploadService} from './services/UploadService';
 import {CatalogueService} from './services/CatalogueService';
 import {LocalStorageService} from './services/LocalStorageService';
-import {NotificationService} from './services/NotificationService';
+import {NotificationService} from '../services/NotificationService';
 import {UtilityService} from './services/UtilityService';
 
 export class PhotoBank extends React.Component {

@@ -2,7 +2,7 @@ import React from 'react';
 // import $ from 'jquery';
 import { hex_md5 } from '../vendor/md5';
 import {UploadService} from './services/UploadService';
-import {NotificationService} from './services/NotificationService';
+import {NotificationService} from '../services/NotificationService';
 
 export class UnfinishedUploads extends React.Component{
   constructor(props) {
