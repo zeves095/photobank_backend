@@ -39,7 +39,7 @@ class ItemService{
           resolve(data);
         }).fail((e)=>{reject([])});
       }else{
-        let data = {"name":queryObject.name,"code":queryObject.code,"parent_name":queryObject.parent_name}
+        let data = {"name":queryObject.name,"code":queryObject.code,"parent_name":queryObject.parent_name,"search_nested":queryObject.search_nested}
         $.get(window.config.item_search_url,data).done((data)=>{
           resolve(data);
         }).fail((e)=>{reject([])});

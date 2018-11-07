@@ -5,6 +5,7 @@ class ItemQueryObject{
     this.name = null;
     this.parent_name = null;
     this.code = null;
+    this.search_nested = 0;
   }
 
 }

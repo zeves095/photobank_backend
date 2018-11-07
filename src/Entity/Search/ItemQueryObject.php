@@ -9,7 +9,8 @@ class ItemQueryObject implements SearchQueryInterface{
   private $_searchFields = [
     "name"=>"",
     "code"=>"",
-    "parent_name"=>""
+    "parent_name"=>"",
+    "search_nested"=>""
   ];
 
   private $_entityType = "App\Entity\CatalogueNodeItem";
