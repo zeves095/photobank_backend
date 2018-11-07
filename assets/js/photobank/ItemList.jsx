@@ -104,7 +104,7 @@ export class ItemList extends React.Component{
     return (
 
       <div className={"view-inner__item-list"}>
-        <h2 className="node-viewer__component-title component-title">Товары</h2>
+        <span className="titlefix"><h2 className="node-viewer__component-title component-title">Товары</h2></span>
       <div className={(this.state.loading?"loading ":"")+"view-inner__container"}>
         <ListFilter filterHandler={this.filterQueryHandler} filterid="nodesearch" placeholder="Фильтр по выбранному" />
       {this.state.node_items_filtered.length>0?null:"Нет товаров в выбранной категории"}

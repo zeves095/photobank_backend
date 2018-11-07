@@ -24,6 +24,8 @@ export class UserManager extends React.Component {
       this.setState({
           "users":users
       });
+    }).catch((e)=>{
+      NotificationService.throw("user-list");
     });
   }
 
@@ -31,6 +33,9 @@ export class UserManager extends React.Component {
     UserService.submitUser(user).then(()=>{
       this.fetchUsers();
       //this.handleUserChoice(user.id);
+      NotificationService.toast("user-success");
+    }).catch((e)=>{
+      NotificationService.throw("user-update-failed");
     });
   }
 
@@ -53,6 +58,9 @@ export class UserManager extends React.Component {
   render() {
     return(
       <div className="user-manager-main row">
+        <div id="notification-overlay">
+
+        </div>
       <nav className="nav-wrapper blue-grey darken-2">
         <div class="brand-logo"><i className="fas fa-camera"></i>PhotoBank - Редактор пользователей</div>
         </nav>

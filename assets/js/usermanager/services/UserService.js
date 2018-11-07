@@ -9,6 +9,8 @@ class UserService{
     return new Promise((resolve,reject)=>{
       $.getJSON(window.config.user_get_url).done((data)=>{
         resolve(data);
+      }).fail((e)=>{
+        reject();
       });
     });
   }
@@ -22,6 +24,8 @@ class UserService{
         "method":"POST"
       }).done((data)=>{
         resolve(data);
+      }).fail((e)=>{
+        reject();
       });
     });
   }

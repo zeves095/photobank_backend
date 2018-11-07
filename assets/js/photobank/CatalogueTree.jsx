@@ -155,7 +155,7 @@ export class CatalogueTree extends React.Component {
 
     return (
       <div className={"catalogue-tree"}>
-        <h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-sitemap" title="Дерево" data-view="2" onClick={this.handleViewChoice}></i><i className="fas fa-list" title="Список" data-view="1" onClick={this.handleViewChoice}></i><i title="Список" data-view="3" onClick={this.handleViewChoice} className="fas fa-search"></i></span></h2>
+        <span className="titlefix"><h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-sitemap" title="Дерево" data-view="2" onClick={this.handleViewChoice}></i><i className="fas fa-list" title="Список" data-view="1" onClick={this.handleViewChoice}></i><i title="Список" data-view="3" onClick={this.handleViewChoice} className="fas fa-search"></i></span></h2></span>
         <div>
           <div className="catalogue-tree__crumbs crumbs">
             {this.state.view==1?crumbs:null}
