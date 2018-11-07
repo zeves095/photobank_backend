@@ -23,6 +23,7 @@ class FileUploadController extends AbstractController
      */
     public function upload(UploadReceiver $receiver, EventDispatcherInterface $dispatcher, ContainerInterface $container, TokenStorageInterface $token, RequestStack $requestStack, UploadRecordManager $recordManager)
     {
+      $response = new Response();
       $this->username = $token->getToken()->getUser()->getUsername();
       $itemId = $requestStack->getCurrentRequest()->query->get('itemId');
       $totalChunks = $requestStack->getCurrentRequest()->query->get('resumableTotalChunks');
@@ -30,7 +31,9 @@ class FileUploadController extends AbstractController
       if($this->_validateUpload($uploadParams)){
         $result = $receiver->uploadChunks($uploadParams);
       } else {
-        throw new NotAcceptableHttpException();
+        $result = null;
+        $response->setStatusCode(415);
+        $response->setContent("Unsupported media type");
       }
       if($result['completed']){
         $responseParams=array(
@@ -54,7 +57,7 @@ class FileUploadController extends AbstractController
       if($result['chunk_written']){
         $recordManager->update($this->username, $result['src_filename'], $itemId);
       }
-      return new Response();
+      return $response;
     }
     /**
      * @Route("/", methods={"GET"})
