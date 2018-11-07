@@ -64,14 +64,23 @@ class CatalogueController extends AbstractController
 
         $response = new JsonResponse();
 
+
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository(CatalogueNode::class);
+
         if(!$cnode){
-            $em = $this->getDoctrine()->getManager();
-            $repo = $em->getRepository(CatalogueNode::class);
             $children = $repo->findBy([
                 'parent' => null,
+            ],[
+              'name'=>'ASC'
             ]);
         }else{
-            $children = $cnode->getChildren();
+            // $children = $cnode->getChildren();
+            $children = $repo->findBy([
+                'parent' => $cnode->getId(),
+            ],[
+              'name'=>'ASC'
+            ]);
         }
         $cnodeArray = $serializer->normalize($children, null, array(
             'add-relation' => false,
