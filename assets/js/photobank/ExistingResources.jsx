@@ -282,7 +282,7 @@ export class ExistingResources extends React.Component{
           priorityStack.push(<div className={"item " + (file.priority == j?"active":"")} onClick={this.handlePriorityUpdate} data-priority={j}>{j}</div>);
         }
         priorityCtx = [
-          <div className="edit-input__context-menu">{priorityStack}</div>
+          <div className="edit-input__context-menu context-menu"><div className="context-menu__inner">{priorityStack}</div></div>
         ];
       }
 
