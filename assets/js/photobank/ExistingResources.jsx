@@ -2,7 +2,7 @@ import React from 'react';
 // import $ from 'jquery';
 import { hex_md5 } from '../vendor/md5';
 import {ResourceService} from './services/ResourceService';
-import {NotificationService} from './services/NotificationService';
+import {NotificationService} from '../services/NotificationService';
 import {LocalStorageService} from './services/LocalStorageService';
 
 export class ExistingResources extends React.Component{

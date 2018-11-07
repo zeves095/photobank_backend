@@ -4,6 +4,7 @@ import React from 'react';
 import {UserList} from './UserList';
 import {UserEditor} from './UserEditor';
 import {UserService} from './services/UserService';
+import {NotificationService} from '../services/NotificationService';
 
 export class UserManager extends React.Component {
 

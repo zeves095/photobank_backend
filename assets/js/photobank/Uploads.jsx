@@ -3,7 +3,7 @@ import React from 'react';
 import { hex_md5 } from '../vendor/md5';
 import { UnfinishedUploads } from './UnfinishedUploads';
 import { UploadService } from './services/UploadService';
-import {NotificationService} from './services/NotificationService';
+import {NotificationService} from '../services/NotificationService';
 
 export class Uploads extends React.Component{
   constructor(props) {

@@ -3,7 +3,7 @@ import React from 'react';
 
 import { ItemSection } from './ItemSection';
 import { ListFilter } from './ListFilter';
-import {NotificationService} from './services/NotificationService';
+import {NotificationService} from '../services/NotificationService';
 
 export class UploadPool extends React.Component{
 
