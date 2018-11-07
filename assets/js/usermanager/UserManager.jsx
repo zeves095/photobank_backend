@@ -19,9 +19,7 @@ export class UserManager extends React.Component {
   }
 
   fetchUsers(){
-    console.warn("FETCH");
     UserService.fetchUsers().then((users)=>{
-      console.log(users);
       this.setState({
           "users":users
       });
@@ -31,7 +29,7 @@ export class UserManager extends React.Component {
   handleUserUpdate(user){
     UserService.submitUser(user).then(()=>{
       this.fetchUsers();
-      this.handleUserChoice(user.id);
+      //this.handleUserChoice(user.id);
     });
   }
 

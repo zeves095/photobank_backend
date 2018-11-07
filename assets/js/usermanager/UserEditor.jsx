@@ -5,19 +5,14 @@ export class UserEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state ={
-      "user": this.props.current_user
+      "user": this.props.current_user,
+      "sent": false
     }
-    this.updateUser = this.updateUser.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  updateUser(){
-    this.props.userUpdateHandler(this.state.user);
   }
 
   handleSubmit(e){
     e.preventDefault();
-    console.warn(this.refs["active-input"].checked);
     let newUser={
       "id":this.refs["id-input"].value,
       "password":this.refs["password-input"].value,
@@ -27,6 +22,17 @@ export class UserEditor extends React.Component {
       "role":this.refs["role-input"].value,
     }
     this.props.userUpdateHandler(newUser);
+    this.setState({
+      "sent":true
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(prevState.sent == true && this.props.user.id != prevProps.user.id){
+      this.setState({
+        "sent":false
+      });
+    }
   }
 
   render() {
@@ -53,7 +59,7 @@ export class UserEditor extends React.Component {
       <option value="2">Редактор</option>
     <option value="1">Модератор</option>
       </select>
-      <button className="blue-grey waves-effect waves-light btn" type="submit"><i class="fas fa-user-check"></i>Сохранить</button>
+      <button className="blue-grey waves-effect waves-light btn" type="submit">{this.state.sent?<i className="fas fa-check"></i>:<i class="fas fa-user-check"></i>}Сохранить</button>
       </form>
       </div>
     );

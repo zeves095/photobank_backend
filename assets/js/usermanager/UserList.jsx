@@ -14,6 +14,12 @@ export class UserList extends React.Component {
   }
 
   handleUserChoice(e){
+    if(typeof e == "undefined"){
+      this.setState({
+        "chosen": null
+      });
+      return;
+    }
     let user_id = e.target.dataset["user"];
     this.props.userChoiceHandler(user_id);
     this.setState({
@@ -23,6 +29,7 @@ export class UserList extends React.Component {
 
   addUser(){
     this.props.userChoiceHandler();
+    this.handleUserChoice();
   }
 
   showInactive(){

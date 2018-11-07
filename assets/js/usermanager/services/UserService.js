@@ -15,7 +15,6 @@ class UserService{
 
   static submitUser(user){
     return new Promise((resolve, reject)=>{
-      console.log(user);
       user.active = user.active?1:0;
       $.ajax({
         "url":window.config.user_set_url,

@@ -68,7 +68,6 @@ export class ItemList extends React.Component{
 
   componentDidUpdate(prevProps, prevState){
     if(this.props.node !== prevProps.node || this.props.query !== prevProps.query){
-      console.log("reset");
       this.setState({
         "node": this.props.node,
         "node_items":[],
