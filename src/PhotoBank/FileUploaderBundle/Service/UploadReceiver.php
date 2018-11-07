@@ -2,13 +2,16 @@
 
 namespace App\PhotoBank\FileUploaderBundle\Service;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class UploadReceiver
 {
   protected $requestStack;
+  protected $ContainerInterface;
 
-  public function __construct()
+  public function __construct(ContainerInterface $container)
   {
+      $this->container = $container;
       $this->fileSystem = new Filesystem();
       $this->response = array(
         'completed' => false,
@@ -85,6 +88,14 @@ class UploadReceiver
     }
     $this->response['completed'] = true;
     return $this->response;
+  }
+
+  public function validateUpload($uploadParams){
+    $allowedFiletypes = explode(',',$this->container->getParameter('fileuploader.allowedfiletypes'));
+    if(in_array(strtolower($uploadParams['extension']), $allowedFiletypes)){
+      return true;
+    }
+    return false;
   }
 
 }

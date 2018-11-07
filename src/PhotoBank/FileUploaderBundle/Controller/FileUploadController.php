@@ -28,7 +28,7 @@ class FileUploadController extends AbstractController
       $itemId = $requestStack->getCurrentRequest()->query->get('itemId');
       $totalChunks = $requestStack->getCurrentRequest()->query->get('resumableTotalChunks');
       $uploadParams = $this->_getUploadParameters($container, $requestStack);
-      if($this->_validateUpload($uploadParams)){
+      if($receiver->validateUpload($uploadParams)){
         $result = $receiver->uploadChunks($uploadParams);
       } else {
         $result = null;
@@ -80,14 +80,6 @@ class FileUploadController extends AbstractController
     {
       $uploads = $recordManager->get();
       return new JsonResponse($uploads);
-    }
-
-    private function _validateUpload($uploadParams){
-      $allowedFiletypes = explode(',',$this->container->getParameter('fileuploader.allowedfiletypes'));
-      if(in_array(strtolower($uploadParams['extension']), $allowedFiletypes)){
-        return true;
-      }
-      return false;
     }
 
     private function _getUploadParameters($container, $requestStack){
