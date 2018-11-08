@@ -84,6 +84,22 @@ body {
   .catalogue-tree, .node-viewer, .view-inner__item-list, .view-inner__item-section{
     transition: 0s;
   }
+
+  input[type="checkbox"]{
+    width: 0;
+    color:$color-accent;
+    font-size: 13px;
+    &::before{
+      font-family:"Font Awesome 5 Free";
+      content: "\f0c8";
+      position: absolute;
+      padding: 3px;
+    }
+    &:checked::before{
+      content: "\f14a";
+      color:$color-secondary;
+    }
+  }
 }
 
 .userblock {
