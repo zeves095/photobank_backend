@@ -35,6 +35,7 @@
       &__view-icons {
         font-size: 12pt;
         float:right;
+        cursor: pointer;
         i{
           padding:2px;
         }
@@ -88,6 +89,16 @@
         animation-duration: 0.4s;
       }
     }
+  }
+
+  .titlefix{
+    position: fixed;
+    width:inherit;
+    min-width: inherit;
+  }
+
+  .inner-bump{
+    margin-top: 45px !important;
   }
 
   @keyframes slidein {

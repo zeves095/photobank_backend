@@ -133,7 +133,7 @@ export class CatalogueTree extends React.Component {
         for(var i = 0; i<children.length; i++){
           let child = children[i];
           list.push(
-            <div key={child.id} className="list-view__cat_item list-view__cat_item--parent" onClick={this.listClickHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></div>
+            <div key={child.id} title={child.id} className="list-view__cat_item list-view__cat_item--parent" onClick={this.listClickHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></div>
           );
         }
         view = list;
@@ -146,7 +146,7 @@ export class CatalogueTree extends React.Component {
         viewClass = "tree-view";
         break;
       case "3":
-        view = <ItemSearch searchQueryHandler={this.handleQuery} />;
+        view = <ItemSearch searchQueryHandler={this.handleQuery} filterid="srch" />;
         viewClass = "search-view";
         break;
     }
@@ -156,7 +156,7 @@ export class CatalogueTree extends React.Component {
     return (
       <div className={"catalogue-tree"}>
         <span className="titlefix"><h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-sitemap" title="Дерево" data-view="2" onClick={this.handleViewChoice}></i><i className="fas fa-list" title="Список" data-view="1" onClick={this.handleViewChoice}></i><i title="Список" data-view="3" onClick={this.handleViewChoice} className="fas fa-search"></i></span></h2></span>
-        <div>
+      <div className="inner-bump">
           <div className="catalogue-tree__crumbs crumbs">
             {this.state.view==1?crumbs:null}
           </div>
