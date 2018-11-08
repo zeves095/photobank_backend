@@ -148,7 +148,7 @@ export class NodeViewer extends React.Component{
             <button type="button" className="item-section-switcher" data-pool="1" onClick={this.handlePoolClick}>{this.state.view_pool==1?"К последнему товару":"Выгрузка"}</button>
           {this.props.authorized?<button type="button" className="item-section-switcher" data-pool="2" onClick={this.handlePoolClick}>{this.state.view_pool==2?"К последнему товару":"Загрузка"}</button>:null}
           </div>
-          <div className="view-inner__container">
+          <div className="view-inner__container inner-bump">
             {section}
           </div>
           </div>
