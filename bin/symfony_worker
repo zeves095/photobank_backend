@@ -1,0 +1,9 @@
+#!/bin/bash
+
+shopt -s expand_aliases
+alias pblisten='console messenger:consume-messages amqp'
+
+until pblisten; do
+    echo "Crashed with exit code $?.  Respawning.." >&2
+    sleep 1
+done
