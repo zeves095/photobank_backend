@@ -15,13 +15,18 @@ parameters:
             name: 'large'
             width: 3840
             height: 2160
+        1600x700:
+            id: 4
+            name: '1600x700'
+            width: 1600
+            height: 700
     preset_collections:
         main:
           id: 1
-          presets: [1,2,3]
+          presets: [1,2,3,4]
         additional:
           id: 2
-          presets: [1,2]
+          presets: [1,2,4]
         original:
           id: 3
-          presets: [1]
+          presets: [1,4]

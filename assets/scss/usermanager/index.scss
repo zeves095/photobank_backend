@@ -108,6 +108,19 @@ position: relative;
 
 .fa-camera{padding: 20px 0;}
 
+.password-field{
+  i,input{
+    display: inline;
+  }
+  i{
+    width:5%;
+    padding: 0 10px;
+  }
+  input{
+    width:95% !important;
+  }
+}
+
 #notification-overlay{
   pointer-events: none;
   position: fixed;
