@@ -6,9 +6,11 @@ export class UserEditor extends React.Component {
     super(props);
     this.state ={
       "user": this.props.current_user,
-      "sent": false
+      "sent": false,
+      "hide_password": true
     }
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.hidePassword = this.hidePassword.bind(this);
   }
 
   handleSubmit(e){
@@ -24,6 +26,13 @@ export class UserEditor extends React.Component {
     this.props.userUpdateHandler(newUser);
     this.setState({
       "sent":true
+    });
+  }
+
+  hidePassword(e){
+    e.preventDefault();
+    this.setState({
+      "hide_password": !this.state.hide_password
     });
   }
 
@@ -52,7 +61,7 @@ export class UserEditor extends React.Component {
     <input defaultValue={this.props.user.email} type="text" ref="email-input" name="email"></input>
   <p><label><input defaultChecked={this.props.user.active} type="checkbox" ref="active-input" name="active" /><span>Активен</span></label></p>
   <label htmlFor="password">Пароль</label>
-    <input defaultValue={this.props.user.password} type="password" ref="password-input" name="password"></input>
+    <div className="password-field"><i className={this.state.hide_password?"fas fa-eye":"fas fa-eye-slash"} onClick={this.hidePassword}></i><input defaultValue={this.props.user.password} type={this.state.hide_password?"password":"text"} ref="password-input" name="password"></input></div>
   <label htmlFor="role">Уровень доступа</label>
     <select defaultValue={this.props.user.role} ref="role-input" name="role">
       <option value="3">Пользователь</option>
