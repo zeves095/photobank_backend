@@ -15,9 +15,9 @@ parameters:
             name: 'large'
             width: 3840
             height: 2160
-        1600x700:
+        ozon:
             id: 4
-            name: '1600x700'
+            name: 'ozon'
             width: 1600
             height: 700
     preset_collections:
