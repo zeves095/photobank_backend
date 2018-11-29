@@ -122,6 +122,21 @@ class ResourceService{
     }
   }
 
+  public function getResourceInfo($id){
+    $returnParams = [
+      'path'=>'',
+      'size_px'=>'',
+      'size_bytes'=>'',
+    ];
+    $resource = $this->entityManager->getRepository(Resource::class)->findOneBy([
+      'id'=>$id
+    ]);
+    $returnParams['path'] = $resource->getPath();
+    $returnParams['size_px'] = $resource->getSizePx();
+    $returnParams['size_bytes'] = $resource->getSizeBytes();
+    return $returnParams;
+  }
+
   // private function _getItemCode($itemId){
   //   $itemRepository = $this->entityManager->getRepository(CatalogueNodeItem::class);
   //   $item = $itemRepository->findOneBy(['id'=>$itemId]);

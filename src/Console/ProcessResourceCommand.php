@@ -66,7 +66,7 @@ class ProcessResourceCommand extends Command
 
     private function processImage(){
       $text = "Calling image processor for resource with id ".$resource." with preset ".$preset."\n";
-      $response = $this->imageProcessor->process($resource, $preset);
+      $response = $this->imageProcessor->processPreset($resource, $preset);
       $text .= $response;
       return $text;
     }

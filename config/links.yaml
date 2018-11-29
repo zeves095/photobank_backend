@@ -1,0 +1,3 @@
+parameters:
+  link_url_prefix: 'links'
+  link_fs_path: 'generated'
