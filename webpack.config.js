@@ -1,6 +1,9 @@
 var Encore = require('@symfony/webpack-encore');
 
 Encore
+    .configureBabel((config) => {
+      config.presets.push('stage-2');
+    })
     // directory where compiled assets will be stored
     .setOutputPath('public/build/')
     // public path used by the web server to access the output path
@@ -19,6 +22,7 @@ Encore
      */
     .addEntry('photobank-app', './assets/js/photobank-app.js')
     .addEntry('usermanager-app', './assets/js/usermanager-app.js')
+    .addEntry('linkmanager-app', './assets/js/linkmanager-app.js')
     // .addEntry('crc32', './assets/js/vendor/crc32.js')
     // .addEntry('md5', './assets/js/vendor/md5.js')
     // .addEntry('resumable', './assets/js/vendor/resumable.js')

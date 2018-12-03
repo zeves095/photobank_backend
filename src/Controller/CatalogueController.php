@@ -166,6 +166,24 @@ class CatalogueController extends AbstractController
     }
 
     /**
+     * @Route("/catalogue/search/resources",
+     * methods={"GET"},
+     * name="catalogue_search_resources")
+     */
+    public function searchResources(Request $request, SearchQueryBuilder $queryBuilder, SearchService $searchService, AppSerializer $serializer)
+    {
+      $response = new JsonResponse();
+      $queryObject = $queryBuilder->makeResourceQuery($request);
+      $resources = $searchService->search($queryObject);
+      $resourcesArray = $serializer->normalize($resources, null, array(
+          ObjectNormalizer::ENABLE_MAX_DEPTH => true,
+          'groups' => array('main')
+      ));
+      $response->setData($resourcesArray);
+      return $response;
+    }
+
+    /**
      * @Route(
      *      "/catalogue/node/item/resource/{id}",
      *      methods={"GET"},

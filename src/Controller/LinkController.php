@@ -11,10 +11,16 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use App\Message\LinkCreatedMessage;
 use App\Service\LinkService;
 
+use App\Serializer\AppSerializer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+
+/**
+  * @Route("/api/links")
+  */
 class LinkController extends AbstractController
 {
     /**
-     * @Route("/link", name="link")
+     * @Route("/test", name="links")
      */
     public function index()
     {
@@ -24,28 +30,86 @@ class LinkController extends AbstractController
     }
 
     /**
-     * @Route("/link/create", name="create_link")
+     * @Route("/submit", name="links_create")
      */
     public function create(Request $request, LinkService $linkService, MessageBusInterface $bus)
     {
-      $post = $request->request;
+
+      $data = json_decode(
+          $request->getContent(),
+          true
+      );
+
+      $post = $data;
       $user = $this->getUser();
       $username = $user->getUsername();
+      var_dump($post);
       $params = [
-        'access'=> $post->get('access'),
-        'target'=> $post->get('target'),
-        'expires_by'=> $post->get('expires_by'),
-        'comment'=> $post->get('comment'),
-        'max_requests'=> $post->get('max_requests'),
+        'access'=> $post['access'],
+        'target'=> $post['target'],
+        'expires_by'=> $post['expires_by'],
+        'comment'=> $post['comment'],
+        'max_requests'=> $post['max_requests'],
         'created_by'=>$user,
       ];
+
+      // $post = $request->request;
+      // $user = $this->getUser();
+      // $username = $user->getUsername();
+      // var_dump($post);
+      // $params = [
+      //   'access'=> $post->get('access'),
+      //   'target'=> $post->get('target'),
+      //   'expires_by'=> $post->get('expires_by'),
+      //   'comment'=> $post->get('comment'),
+      //   'max_requests'=> $post->get('max_requests'),
+      //   'created_by'=>$user,
+      // ];
 
       $link = $linkService->createLink($params);
       $linkId = $link->getId();
       $linkHash = $link->getHash();
 
-      $bus->dispatch(new LinkCreatedMessage($linkId, $linkHash, $username, $post));
+      $bus->dispatch(new LinkCreatedMessage($linkId, $linkHash, $username, $post['resource'], $post['custom_size']));
 
       return new Response();
     }
+
+    /**
+     * @Route("/get/{link_hash}.jpg", name="links_get")
+     */
+     public function getResource($link_hash, Request $request, LinkService $linkService)
+     {
+        $imageData = $linkService->getImageData($link_hash, $request);
+        $image = $imageData['content'];
+        $headers = array(
+          'Content-Type'     => 'image/jpeg',
+          'Content-Disposition' => 'inline; filename="'.$imageData['filename'].'"');
+        return new Response($image, 200, $headers);
+     }
+
+    /**
+     * @Route("/get/{link_hash}", name="links_get_data")
+     */
+     public function getLinkData($link_hash, Request $request, LinkService $linkService)
+     {
+        var_dump($link_hash);
+        return new Response();
+     }
+
+     /**
+      * @Route("/fetchall", name="links_fetch_all")
+      */
+      public function fetchAll(Request $request, LinkService $linkService, AppSerializer $serializer)
+      {
+         $user = $this->getUser();
+         $links = $linkService->fetchAllForUser($user);
+         $links = $serializer->normalize($links, null, array(
+             ObjectNormalizer::ENABLE_MAX_DEPTH => true,
+             'groups' => array('main')
+         ));
+         $response = new JsonResponse($links);
+         return $response;
+      }
+
 }

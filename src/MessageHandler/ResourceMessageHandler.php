@@ -46,16 +46,12 @@ class ResourceMessageHandler implements MessageSubscriberInterface
     {
       $resource = $message->post['resource'];
       if($resource != ''){
-        // $returnParams = [
-        //   'path'=>'',
-        //   'size_px'=>'',
-        //   'size_bytes'=>'',
-        // ];
         $filenameSafeUsername = preg_replace('/[^A-Za-z0-9 _ .-]/', '', $message->username);
         if($message->post['custom_size'] != ''){
           //TODO not jpg
           $targetDir = '/'.$this->container->getParameter('link_fs_path').'/'.$filenameSafeUsername.'/'.$message->linkHash.'.jpg';
-          $targetPath = $this->container->getParameter('local_file_dir').$targetDir;
+          var_dump($targetDir);
+          $targetPath = $this->container->getParameter('local_file_dir').'/'.$targetDir;
           $this->imageProcessor->processCustom($resource, $message->post['custom_size'], $targetPath);
           $returnParams = [
             'path'=>$targetDir,

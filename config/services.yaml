@@ -1,6 +1,6 @@
 parameters:
     locale: 'ru'
-    local_file_dir: '%kernel.project_dir%/%env(resolve:UPLOADS_PARENT)%/'
+    local_file_dir: '%kernel.project_dir%/%env(resolve:UPLOADS_PARENT)%/uploads'
 
 imports:
     - { resource: presets.yaml }
@@ -39,6 +39,9 @@ services:
     app.normalizer.resource:
         class: 'App\Serializer\Normalizer\ResourceNormalizer'
 
+    app.normalizer.link:
+        class: 'App\Serializer\Normalizer\LinkNormalizer'
+
     App\Serializer\AppSerializer:
         autowire: false
         autoconfigure: false
@@ -48,6 +51,7 @@ services:
                 - '@app.normalizer.catalogue.node'
                 - '@app.normalizer.catalogue.item'
                 - '@app.normalizer.resource'
+                - '@app.normalizer.link'
                 - '@serializer.normalizer.object'
             1:
                 - '@app.encoder.json'

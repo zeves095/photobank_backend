@@ -1,0 +1,136 @@
+import React, {Component} from 'react';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import  M  from 'materialize-css';
+import {submitLink} from '../actionCreator';
+
+export class LinkAddForm extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state={
+      form:{
+        access:'',
+        target:'',
+        expires_by:'',
+        comment:'',
+        max_requests:'',
+        resource:this.props.resource_chosen,
+        custom_size:'',
+      }
+    };
+    this.datePickerRef = React.createRef();
+    this.datePickerOpts = {
+      onSelect:this.handleInputChange
+    };
+  }
+
+  componentDidUpdate(prevProps){
+   M.Datepicker.init(this.datePickerRef.current, this.datePickerOpts);
+   if(this.props.resource_chosen != prevProps.resource_chosen){
+     let form = this.state.form;
+     form.resource = this.props.resource_chosen;
+     this.setState({
+       form: form
+     });
+   }
+  }
+
+  componentDidMount(){
+    M.Datepicker.init(this.datePickerRef.current, this.datePickerOpts);
+  }
+
+  validateField = (target)=>{
+    switch(target.name){
+      case 'custom_size':
+        if(!target.value.match(/^[0-9]{0,4}\/?[0-9]{0,4}$/)){return false;}
+        return true;
+      case 'resource':
+        if(!target.value.match(/^[0-9]{0,10}$/)){return false;}
+        return true;
+      case 'access':
+      //TODO fix regex
+        //if(!target.value.match(/^\b((\d{1,3}\.){0,3}(\d{1,3})?\b[ ,;]{0,2})+$/)){return false;}
+        if(!target.value.match(/^(((\d{1,3}\.){0,3}(\d{0,3})[ ,;]{0,2})?)+$/)){return false;}
+        return true;
+      default:
+        return true;
+    }
+
+  }
+
+  handleInputChange = (e)=>{
+    let form = this.state.form;
+    if(typeof e.getMonth === 'function'){
+      form['expires_by']= Math.round(e.getTime()/1000);
+    }else{
+      console.log(this.validateField(e.target));
+      if(!this.validateField(e.target)){return false;}
+      form[e.target.name]= e.target.value;
+    }
+    console.log(form);
+    this.setState({
+      form: form
+    });
+  }
+
+  handleFormSubmit = (e) =>{
+    this.props.submitLink(this.state.form);
+  }
+
+
+  render() {
+    console.log("render");
+    return (<div className="link-add-form">
+      <div className="component-header component-header--subcomponent">
+        <h2 className="component-title">
+          Опции
+        </h2>
+      </div>
+      <div className="component-body component-body--subcomponent row">
+        <form className="col s12 row" onSubmit={this.handleSubmitForm}>
+          <div className="input-field col s12 m6 l3">
+            <input onChange={this.handleInputChange} type="text" name="access" id="access" value={this.state.form['access']}/>
+            <label htmlFor="access">access</label>
+          </div>
+          <div className="input-field col s12 m6 l3">
+            <input onChange={this.handleInputChange} type="text" name="target" id="target" value={this.state.form['target']}/>
+            <label htmlFor="target">target</label>
+          </div>
+          <div className="input-field col s12 m6 l3">
+            <input onChange={this.handleInputChange} type="text" className="datepicker" name="expires_by" id="expires_by" ref={this.datePickerRef} value={this.state.form['expires_by']}/>
+            <label htmlFor="expires_by">expires_by</label>
+          </div>
+          <div className="input-field col s12 m6 l3">
+            <input onChange={this.handleInputChange} type="text" name="comment" id="comment" value={this.state.form['comment']}/>
+            <label htmlFor="comment">comment</label>
+          </div>
+          <div className="input-field col s12 m6 l3">
+            <input onChange={this.handleInputChange} type="number" name="max_requests" id="max_requests" value={this.state.form['max_requests']}/>
+            <label htmlFor="max_requests">max_requests</label>
+          </div>
+          <div className="input-field col s12 m6 l3">
+            <input onChange={this.handleInputChange} type="text" name="custom_size" id="custom_size" value={this.state.form['custom_size']}/>
+            <label htmlFor="custom_size">custom_size</label>
+          </div>
+          <input type="hidden" value={this.props.resource_chosen}></input>
+          <button className="waves-effect waves-light btn" type="button" onClick={this.handleFormSubmit}>SUBMIT</button>
+        </form>
+      </div>
+    </div>);
+  }
+
+}
+
+const mapStateToProps = (state) =>{
+  return {
+    link_editing: state.link.link_editing,
+    resource_chosen: state.resource.resource_chosen
+  }
+}
+
+const mapDispatchToProps = {
+  submitLink
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LinkAddForm);

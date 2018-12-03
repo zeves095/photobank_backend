@@ -3,5 +3,7 @@ security:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
         - { path: ^/catalogue/node/item/resource, methods: [PATCH], roles: ROLE_WRITER, requires_channel: http }
         - { path: ^/usermanager, roles: ROLE_ADMIN , requires_channel: http }
+        - { path: ^/link/create, roles: ROLE_USER , requires_channel: http }
+        - { path: ^/link/get, roles: IS_AUTHENTICATED_ANONYMOUSLY , requires_channel: http }
         - { path: ^/, methods: [PATCH, POST], roles: ROLE_WRITER, requires_channel: http }
         - { path: ^/, roles: ROLE_USER , requires_channel: http }
