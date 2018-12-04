@@ -40,6 +40,7 @@ export class LinkList extends React.Component{
             <div><b>Ссылка:</b>{link.external_url}</div>
           <div><b>Органичение по запросам: </b>{link.max_requests}<b> раз, ссылка запрошена </b>{link.done_requests} раз</div>
         <div><b>Срок действия: по </b>{link.expires_by}</div>
+      <div><b>Комментарий: </b>{link.comment}</div>
           </div>
         )
       }
@@ -58,13 +59,11 @@ export class LinkList extends React.Component{
         </div>
         <div className="component-body">
           <div className="component-body__top-section">
+            <button onClick={this.handleLinkAdd} style={{float:"none"}} className="waves-effect waves-light btn add-button" type="button">Добавить</button>
             <div className="link-list__tabs col s12">
               {tabs}
             </div>
             {links.length==0?"Нет ссылок":links}
-          </div>
-          <div className="component-body__bottom-section">
-            <button onClick={this.handleLinkAdd} className="waves-effect waves-light btn add-button" type="button">Добавить</button>
           </div>
         </div>
       </div>

@@ -65,15 +65,15 @@ export class ResourceSearchForm extends React.Component {
           </div>
           <div className="input-field col s12 m6">
             <input type="text" name="resource_search_id" id="resource_search_id" onChange={this.handleInputChange} value={this.state.form.resource_search_id}/>
-            <label htmlFor="resource_search_id">resource_id</label>
+          <label htmlFor="resource_search_id">ID ресурса</label>
           </div>
           <div className="input-field col s12 m6">
             <input type="text" name="resource_search_preset" id="resource_search_preset" onChange={this.handleInputChange} value={this.state.form.resource_search_preset}/>
-            <label htmlFor="resource_search_preset">preset</label>
+          <label htmlFor="resource_search_preset">Пресет</label>
           </div>
           <div className="input-field col s12 m6">
             <input type="text" name="resource_search_type" id="resource_search_type" onChange={this.handleInputChange} value={this.state.form.resource_search_type}/>
-            <label htmlFor="resource_search_type">resource_search_type</label>
+          <label htmlFor="resource_search_type">Тип ресурса</label>
           </div>
           <button className="waves-effect waves-light btn" type="button" name="button" onClick={this.handleFormSubmit}>Поиск</button>
         </form>
