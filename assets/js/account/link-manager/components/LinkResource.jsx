@@ -15,7 +15,7 @@ export class LinkResource extends React.Component{
     ?(<div className="resource card-panel red lighten-1 white-text">Не выбран ресурс</div>)
     :(<div className="resource card-panel teal darken-1 white-text">
       <span className={"resource-preview"+(typeof this.props.resource.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+this.props.resource.thumbnail+".jpg)"}}></span>
-      {this.props.resource.id}
+    {this.props.resource.src_filename}
     </div>);
     return (
       <div className="link-resource">

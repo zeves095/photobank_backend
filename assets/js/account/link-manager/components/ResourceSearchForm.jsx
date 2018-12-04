@@ -22,6 +22,13 @@ export class ResourceSearchForm extends React.Component {
     };
   }
 
+  handleFormKeyup = (e) => {
+    e.preventDefault();
+    if (e.keyCode === 13) {
+      this.handleFormSubmit();
+    }
+  }
+
   handleFormSubmit = () => {
     this.props.searchResources(this.state.form);
   }
@@ -37,7 +44,7 @@ export class ResourceSearchForm extends React.Component {
   render() {
     return (<div className="resource-search-form">
       <div className="component-body component-body--subcomponent">
-        <form className="col s12 row">
+        <form className="col s12 row" onKeyUp={this.handleFormKeyup}>
           <div className="input-field col s12 m6">
             <input type="text" id="item_search_name" name="item_search_name" onChange={this.handleInputChange} value={this.state.form.item_search_name}></input>
             <label htmlFor="item_search_name">Название товара</label>
@@ -68,7 +75,7 @@ export class ResourceSearchForm extends React.Component {
             <input type="text" name="resource_search_type" id="resource_search_type" onChange={this.handleInputChange} value={this.state.form.resource_search_type}/>
             <label htmlFor="resource_search_type">resource_search_type</label>
           </div>
-          <button className="waves-effect waves-light btn" type="button" name="button" onClick={this.handleFormSubmit}>SUBMIT</button>
+          <button className="waves-effect waves-light btn" type="button" name="button" onClick={this.handleFormSubmit}>Поиск</button>
         </form>
       </div>
     </div>);

@@ -126,8 +126,9 @@ class ResourceRepository extends ServiceEntityRepository
        }
        if($queryObject->getField("type") != ""){
          $queryBuilder->andWhere('r.type = :type')
-         ->setParameter('type', $queryObject->getField("preset"));
+         ->setParameter('type', $queryObject->getField("type"));
        }
+        //var_dump($queryBuilder->getDQL());
         return $queryBuilder->setMaxResults(100)->getQuery()->getResult();
 
       }

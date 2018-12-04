@@ -76,6 +76,12 @@ export class LinkAddForm extends React.Component {
     this.props.submitLink(this.state.form);
   }
 
+  handleFormKeyup = (e) => {
+    e.preventDefault();
+    if (e.keyCode === 13) {
+      this.handleFormSubmit();
+    }
+  }
 
   render() {
     return (<div className="link-add-form">
@@ -85,7 +91,7 @@ export class LinkAddForm extends React.Component {
         </h2>
       </div>
       <div className="component-body component-body--subcomponent row">
-        <form className="col s12 row" onSubmit={this.handleSubmitForm}>
+        <form className="col s12 row" onSubmit={this.handleSubmitForm} onKeyUp={this.handleFormKeyup}>
           <div className="input-field col s12 m6 l6">
             <input onChange={this.handleInputChange} type="text" name="custom_size" id="custom_size" value={this.state.form['custom_size']}/>
           <label htmlFor="custom_size">Размер изображения</label>
@@ -98,11 +104,11 @@ export class LinkAddForm extends React.Component {
             <input onChange={this.handleInputChange} type="text" name="comment" id="comment" value={this.state.form['comment']}/>
           <label htmlFor="comment">Комментарий</label>
           </div>
-          {/* <div className="input-field col s12 m6 l6">
+          <div className="input-field col s12 m6 l6">
             <input onChange={this.handleInputChange} type="text" name="target" id="target" value={this.state.form['target']}/>
-            <label htmlFor="target">target</label>
-          </div> */}
-          <input type="hidden" name="target" value></input>
+          <label htmlFor="target">Группа</label>
+          </div>
+          {/* <input type="hidden" name="target" value></input> */}
           <div className="input-field col s12 m6 l6">
             <input onChange={this.handleInputChange} type="text" name="access" id="access" value={this.state.form['access']}/>
           <label htmlFor="access">Ограничение по IP</label>

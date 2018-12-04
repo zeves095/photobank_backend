@@ -19,6 +19,10 @@ class LinkNormalizer extends CustomNormalizer implements NormalizerInterface
             'created_by'   => $object->getCreatedBy()->getId(),
             'external_url' => $object->getExternalUrl(),
             'size_px' => $object->getSizePx(),
+            'max_requests' => $object->getMaxRequests(),
+            'done_requests' => $object->getDoneRequests(),
+            'expires_by' => $object->getExpiresBy()!==NULL?date_format($object->getExpiresBy(),"Y-m-d"):NULL,
+            'target' => $object->getTarget()
         ];
         return $main_data;
     }

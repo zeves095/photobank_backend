@@ -81,6 +81,9 @@ export function searchResources(searchObject={}){
     let params = {
       method: "GET",
     }
+    Object.keys(searchObject).forEach((key)=>{
+      searchObject[key] = searchObject[key].toLowerCase();
+    });
     fetch("/catalogue/search/resources"+"?"+Object.keys(searchObject).map(key=>key + '=' + searchObject[key]).join('&'), params)
     .then((response)=>response.json())
     .then((response)=>{
