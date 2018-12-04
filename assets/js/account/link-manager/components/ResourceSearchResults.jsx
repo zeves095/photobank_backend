@@ -18,7 +18,10 @@ export class ResourceSearchResults extends React.Component{
   render(){
     let resources = this.props.resources_found.map((resource)=>{
       return(
-        <div data-res={resource.id} className="resource card-panel blue-grey darken-1 white-text" onClick={this.handleResourceChoice}>{resource.id}</div>
+        <div data-res={resource.id} key={"resource"+resource.id} className="waves-effect waves-light resource card-panel blue-grey lighten-2 white-text col s12 m6" onClick={this.handleResourceChoice}>
+          <span className={"resource-preview"+(typeof resource.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+resource.thumbnail+".jpg)"}}></span>
+          {resource.id}
+        </div>
       )
     });
     return (

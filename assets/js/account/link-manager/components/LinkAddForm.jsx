@@ -26,7 +26,7 @@ export class LinkAddForm extends React.Component {
   }
 
   componentDidUpdate(prevProps){
-   M.Datepicker.init(this.datePickerRef.current, this.datePickerOpts);
+   //M.Datepicker.init(this.datePickerRef.current, this.datePickerOpts);
    if(this.props.resource_chosen != prevProps.resource_chosen){
      let form = this.state.form;
      form.resource = this.props.resource_chosen;
@@ -62,13 +62,11 @@ export class LinkAddForm extends React.Component {
   handleInputChange = (e)=>{
     let form = this.state.form;
     if(typeof e.getMonth === 'function'){
-      form['expires_by']= Math.round(e.getTime()/1000);
+      form['expires_by']= e.getFullYear()+"-"+parseInt(e.getMonth()+1, 10)+-+e.getDate();
     }else{
-      console.log(this.validateField(e.target));
       if(!this.validateField(e.target)){return false;}
       form[e.target.name]= e.target.value;
     }
-    console.log(form);
     this.setState({
       form: form
     });
@@ -80,7 +78,6 @@ export class LinkAddForm extends React.Component {
 
 
   render() {
-    console.log("render");
     return (<div className="link-add-form">
       <div className="component-header component-header--subcomponent">
         <h2 className="component-title">
@@ -89,32 +86,33 @@ export class LinkAddForm extends React.Component {
       </div>
       <div className="component-body component-body--subcomponent row">
         <form className="col s12 row" onSubmit={this.handleSubmitForm}>
-          <div className="input-field col s12 m6 l3">
-            <input onChange={this.handleInputChange} type="text" name="access" id="access" value={this.state.form['access']}/>
-            <label htmlFor="access">access</label>
+          <div className="input-field col s12 m6 l6">
+            <input onChange={this.handleInputChange} type="text" name="custom_size" id="custom_size" value={this.state.form['custom_size']}/>
+          <label htmlFor="custom_size">Размер изображения</label>
           </div>
-          <div className="input-field col s12 m6 l3">
+          <div className="input-field col s12 m6 l6">
+            <input onChange={this.handleInputChange} type="text" className="datepicker" name="expires_by" id="expires_by" ref={this.datePickerRef} value={this.state.form['expires_by']}/>
+          <label htmlFor="expires_by">Срок действия</label>
+          </div>
+          <div className="input-field col s12 m6 l6">
+            <input onChange={this.handleInputChange} type="text" name="comment" id="comment" value={this.state.form['comment']}/>
+          <label htmlFor="comment">Комментарий</label>
+          </div>
+          {/* <div className="input-field col s12 m6 l6">
             <input onChange={this.handleInputChange} type="text" name="target" id="target" value={this.state.form['target']}/>
             <label htmlFor="target">target</label>
+          </div> */}
+          <input type="hidden" name="target" value></input>
+          <div className="input-field col s12 m6 l6">
+            <input onChange={this.handleInputChange} type="text" name="access" id="access" value={this.state.form['access']}/>
+          <label htmlFor="access">Ограничение по IP</label>
           </div>
-          <div className="input-field col s12 m6 l3">
-            <input onChange={this.handleInputChange} type="text" className="datepicker" name="expires_by" id="expires_by" ref={this.datePickerRef} value={this.state.form['expires_by']}/>
-            <label htmlFor="expires_by">expires_by</label>
-          </div>
-          <div className="input-field col s12 m6 l3">
-            <input onChange={this.handleInputChange} type="text" name="comment" id="comment" value={this.state.form['comment']}/>
-            <label htmlFor="comment">comment</label>
-          </div>
-          <div className="input-field col s12 m6 l3">
+          <div className="input-field col s12 m6 l6">
             <input onChange={this.handleInputChange} type="number" name="max_requests" id="max_requests" value={this.state.form['max_requests']}/>
-            <label htmlFor="max_requests">max_requests</label>
-          </div>
-          <div className="input-field col s12 m6 l3">
-            <input onChange={this.handleInputChange} type="text" name="custom_size" id="custom_size" value={this.state.form['custom_size']}/>
-            <label htmlFor="custom_size">custom_size</label>
+          <label htmlFor="max_requests">Максимальное число запросов</label>
           </div>
           <input type="hidden" value={this.props.resource_chosen}></input>
-          <button className="waves-effect waves-light btn" type="button" onClick={this.handleFormSubmit}>SUBMIT</button>
+        <button className="waves-effect waves-light btn" type="button" onClick={this.handleFormSubmit}>Отправить</button>
         </form>
       </div>
     </div>);

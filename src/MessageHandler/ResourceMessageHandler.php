@@ -44,18 +44,18 @@ class ResourceMessageHandler implements MessageSubscriberInterface
 
     public function processLink(LinkCreatedMessage $message)
     {
-      $resource = $message->post['resource'];
+      $resource = $message->resource;
       if($resource != ''){
         $filenameSafeUsername = preg_replace('/[^A-Za-z0-9 _ .-]/', '', $message->username);
-        if($message->post['custom_size'] != ''){
+        if($message->custom_size != ''){
           //TODO not jpg
           $targetDir = '/'.$this->container->getParameter('link_fs_path').'/'.$filenameSafeUsername.'/'.$message->linkHash.'.jpg';
           var_dump($targetDir);
           $targetPath = $this->container->getParameter('local_file_dir').'/'.$targetDir;
-          $this->imageProcessor->processCustom($resource, $message->post['custom_size'], $targetPath);
+          $this->imageProcessor->processCustom($resource, $message->custom_size, $targetPath);
           $returnParams = [
             'path'=>$targetDir,
-            'size_px'=>$message->post['custom_size'],
+            'size_px'=>$message->custom_size,
             'size_bytes'=>filesize($targetPath),
           ];
         }else{

@@ -31,7 +31,6 @@ let defaultState = {
 }
 
 export default (link = defaultState, action) => {
-  console.log(action, link);
   switch(action.type){
     case LINK_CHOICE:
       break;

@@ -1,4 +1,4 @@
-import { RESOURCE_SEARCH, RESOURCE_CHOICE, SUCCESS } from '../../constants'
+import { RESOURCE_SEARCH, RESOURCE_CHOICE, RESOURCE_THUMBNAIL, SUCCESS } from '../../constants'
 
 let defaultState = {
   resources_found:[],
@@ -29,6 +29,16 @@ export default (resource = defaultState, action) => {
         let id = action.payload;
         resource = {...resource, resource_chosen:id};
         break;
+      case RESOURCE_THUMBNAIL+SUCCESS:
+        let found = resource.resources_found;
+        action.payload.forEach((actionResource)=>{
+          let resourceIndex = found.findIndex((resource)=>{
+            return resource.id === actionResource.id;
+          });
+          found[resourceIndex] = {...found[resourceIndex], thumbnail:actionResource.thumbnail};
+        });
+        found = found.slice();
+        resource = {...resource, resources_found:found};
     }
     return resource;
 }

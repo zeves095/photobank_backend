@@ -12,8 +12,15 @@ class AccountController extends AbstractController
      */
     public function index()
     {
+        $user = $this->getUser();
         return $this->render('account/index.html.twig', [
             'controller_name' => 'AccountController',
+            'user_id' => $user->getId(),
+            'user_name' => $user->getUsername(),
+            'user_email' => $user->getEmail(),
+            'user_active' => $user->getIsActive(),
+            'user_password' => $user->getPassword(),
+            'user_role' => $user->getRoles()[0],
         ]);
     }
 }

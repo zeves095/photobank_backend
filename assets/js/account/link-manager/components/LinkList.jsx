@@ -26,12 +26,12 @@ export class LinkList extends React.Component{
     let links = this.props.links.map(
       (link)=>{
         return(
-          <div data-linkid={link.id} className="link card-panel blue-grey darken-1 white-text" onClick={this.handleLinkClick}>{link.id}:  {link.external_url}</div>
+          <div data-linkid={link.id} key={"link"+link.id} className="link card-panel blue-grey lighten-2 white-text" onClick={this.handleLinkClick}>{link.id}:  {link.external_url}</div>
         )
       }
     );
     return(
-      <div className="link-list">
+      <div className="link-list-inner">
         <div className="component-header">
           <h2 className="component-title">
             Ссылки

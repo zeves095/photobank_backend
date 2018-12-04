@@ -15,7 +15,7 @@ export class LinkAdder extends React.Component{
   }
   render(){
     let link_adder = (
-      <div className="link-adder__inner">
+      <div className={"link-adder__inner"+(this.props.link_editing?"open":"")}>
       <div className="component-body__top-section">
         <LinkAddForm />
         <LinkResource />

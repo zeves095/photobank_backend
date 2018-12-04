@@ -34,7 +34,7 @@ class LinkService{
     $hash = $this->_generateHash($user_id, date_format($createdOn, 'U'));
     $external_url = $this->container->getParameter('link_url_prefix').'/'.$hash.".jpg";
 
-    $expires = $params['expires_by']==""?NULL:strtotime( $params['expires_by']);
+    $expires = $params['expires_by']==""?NULL:date_create_from_format("Y-m-d", $params['expires_by']);
     //date_create_from_format('Y-m-d', $params['expires_by']);
 
 

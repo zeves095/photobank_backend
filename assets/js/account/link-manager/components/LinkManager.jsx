@@ -17,10 +17,10 @@ export class LinkManager extends React.Component{
     return(
       <div className="link-manager">
         <div className="row">
-          <div className="col s12 m6">
+          <div className="link-list col s12 m12 l6">
             <LinkList />
           </div>
-          <div className="col s12 m6">
+          <div className="link-adder col s12 m12 l6">
             <LinkAdder />
           </div>
         </div>

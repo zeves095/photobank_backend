@@ -54,6 +54,15 @@ class ResourceRepository extends ServiceEntityRepository
 
     }
 
+    public function getThumbnail($gid)
+    {
+      $queryBuilder = $this->createQueryBuilder('r')
+      ->andWhere('r.gid = :gid')
+      ->andWhere('r.preset = 1')
+      ->setParameter('gid', $gid);
+      return $queryBuilder->getQuery()->getOneOrNullResult();
+    }
+
     /**
       * @return Resource[] Returns an array of Resource objects
       */

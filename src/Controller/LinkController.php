@@ -39,11 +39,9 @@ class LinkController extends AbstractController
           $request->getContent(),
           true
       );
-
       $post = $data;
       $user = $this->getUser();
       $username = $user->getUsername();
-      var_dump($post);
       $params = [
         'access'=> $post['access'],
         'target'=> $post['target'],

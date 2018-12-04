@@ -272,6 +272,47 @@ class CatalogueController extends AbstractController
        return $response;
      }
 
+     /**
+      * @Route(
+      *      "/catalogue/node/item/resource/thumbnail/{gid}",
+      *      methods={"GET"},
+      *      name="catalogue_node_item_resource_thumbnail",
+      *      requirements={"gid"="\d+"}
+      * )
+      */
+      public function getResourceThumbnail($gid, AppSerializer $serializer, EntityManagerInterface $entityManager)
+      {
+        $response = new JsonResponse();
+        $thumbnail = $entityManager->getRepository(Resource::class)->getThumbnail($gid);
+        $resourceData = $serializer->normalize($thumbnail, null, array());
+        $response->setData($resourceData);
+        return $response;
+      }
+
+      /**
+       * @Route(
+       *      "/catalogue/node/item/resource/thumbnails/",
+       *      methods={"POST"},
+       *      name="catalogue_node_item_resource_thumbnails"
+       * )
+       */
+       public function getResourceThumbnails(Request $request, AppSerializer $serializer, EntityManagerInterface $entityManager)
+       {
+         $data = json_decode(
+             $request->getContent(),
+             true
+         );
+         $thumbnails = array();
+         $repo = $entityManager->getRepository(Resource::class);
+         foreach($data['resources'] as $resource){
+           $thumbnail = $repo->getThumbnail($resource['gid']);
+           array_push($thumbnails, ['id'=>$resource['id'], 'thumbnail'=>$thumbnail->getId()]);
+         }
+         $response = new JsonResponse();
+         $response->setData($thumbnails);
+         return $response;
+       }
+
     /**
      * @Route(
      *      "/catalogue/node/item/resource/{id}",

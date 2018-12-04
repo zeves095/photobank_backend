@@ -10,7 +10,7 @@ const composeEnhancers =
     : compose
 
 let enhancer = composeEnhancers(
-  applyMiddleware(thunk, api)
+  applyMiddleware(thunk)
 );
 
 export const store = createStore(
