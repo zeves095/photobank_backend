@@ -4,6 +4,8 @@ import {
   RESOURCE_SEARCH,
   RESOURCE_CHOICE,
   RESOURCE_THUMBNAIL,
+  RESOURCE_ADD,
+  RESOURCE_REMOVE,
   LINK_FETCH,
   LINK_SUBMIT,
   SUCCESS,
@@ -104,6 +106,20 @@ export function searchResources(searchObject={}){
 export function chooseResource(id){
   return{
     type: RESOURCE_CHOICE,
+    payload: id
+  }
+}
+
+export function addResourceToPool(id){
+  return{
+    type: RESOURCE_ADD,
+    payload: id
+  }
+}
+
+export function removeResourceFromPool(id){
+  return{
+    type: RESOURCE_REMOVE,
     payload: id
   }
 }

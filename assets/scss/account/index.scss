@@ -127,6 +127,11 @@ white-space: nowrap;
 text-overflow: ellipsis;
 }
 
+.add-res{
+  font-size: 1.2em;
+    padding-right: 5px;
+}
+
 @keyframes rotation {
 		from {
 				transform: rotate(0deg);

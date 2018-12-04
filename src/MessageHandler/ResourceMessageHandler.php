@@ -50,8 +50,7 @@ class ResourceMessageHandler implements MessageSubscriberInterface
         if($message->custom_size != ''){
           //TODO not jpg
           $targetDir = '/'.$this->container->getParameter('link_fs_path').'/'.$filenameSafeUsername.'/'.$message->linkHash.'.jpg';
-          var_dump($targetDir);
-          $targetPath = $this->container->getParameter('local_file_dir').'/'.$targetDir;
+          $targetPath = $this->container->getParameter('local_file_dir').$targetDir;
           $this->imageProcessor->processCustom($resource, $message->custom_size, $targetPath);
           $returnParams = [
             'path'=>$targetDir,

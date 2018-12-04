@@ -39,37 +39,25 @@ class LinkController extends AbstractController
           $request->getContent(),
           true
       );
-      $post = $data;
-      $user = $this->getUser();
-      $username = $user->getUsername();
-      $params = [
-        'access'=> $post['access'],
-        'target'=> $post['target'],
-        'expires_by'=> $post['expires_by'],
-        'comment'=> $post['comment'],
-        'max_requests'=> $post['max_requests'],
-        'created_by'=>$user,
-      ];
+      foreach($data['resource'] as $res_id){
+        $post = $data;
+        $user = $this->getUser();
+        $username = $user->getUsername();
+        $params = [
+          'access'=> $post['access'],
+          'target'=> $post['target'],
+          'expires_by'=> $post['expires_by'],
+          'comment'=> $post['comment'],
+          'max_requests'=> $post['max_requests'],
+          'created_by'=>$user,
+        ];
 
-      // $post = $request->request;
-      // $user = $this->getUser();
-      // $username = $user->getUsername();
-      // var_dump($post);
-      // $params = [
-      //   'access'=> $post->get('access'),
-      //   'target'=> $post->get('target'),
-      //   'expires_by'=> $post->get('expires_by'),
-      //   'comment'=> $post->get('comment'),
-      //   'max_requests'=> $post->get('max_requests'),
-      //   'created_by'=>$user,
-      // ];
+        $link = $linkService->createLink($params);
+        $linkId = $link->getId();
+        $linkHash = $link->getHash();
 
-      $link = $linkService->createLink($params);
-      $linkId = $link->getId();
-      $linkHash = $link->getHash();
-
-      $bus->dispatch(new LinkCreatedMessage($linkId, $linkHash, $username, $post['resource'], $post['custom_size']));
-
+        $bus->dispatch(new LinkCreatedMessage($linkId, $linkHash, $username, $res_id['id'], $post['custom_size']));
+      }
       return new Response();
     }
 

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
-import { chooseResource } from '../actionCreator'
+import { chooseResource, addResourceToPool } from '../actionCreator'
 
 export class ResourceSearchResults extends React.Component{
 
@@ -12,7 +12,12 @@ export class ResourceSearchResults extends React.Component{
   }
 
   handleResourceChoice = (e)=>{
-    this.props.chooseResource(parseInt(e.target.dataset['res'], 10));
+    //this.props.chooseResource(parseInt(e.target.dataset['res'], 10));
+  }
+
+  handleAddResourceToPool = (e)=>{
+    e.stopPropagation();
+    this.props.addResourceToPool(parseInt(e.target.dataset['res'], 10));
   }
 
   render(){
@@ -21,6 +26,7 @@ export class ResourceSearchResults extends React.Component{
       return(
         <div data-res={resource.id} key={"resource"+resource.id} className="waves-effect waves-light resource card-panel blue-grey lighten-2 white-text col s12 m6" onClick={this.handleResourceChoice}>
           <span className={"resource-preview"+(typeof resource.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+resource.thumbnail+".jpg)"}}></span>
+        <i className="fas fa-plus-circle add-res" data-res={resource.id} onClick={this.handleAddResourceToPool}></i>
         {resource.src_filename}
         </div>
       )
@@ -48,7 +54,8 @@ const mapStateToProps = (state) =>{
 }
 
 const mapDispatchToProps = {
-  chooseResource
+  chooseResource,
+  addResourceToPool
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ResourceSearchResults);
