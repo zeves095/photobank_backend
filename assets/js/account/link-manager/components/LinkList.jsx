@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import { getLinkTargets } from '../selectors';
 import { chooseLink, addLink, fetchLinks, deleteLink } from '../actionCreator'
-
+import {NotificationService} from '../../../services/NotificationService';
 export class LinkList extends React.Component{
 
   constructor(props){
@@ -36,6 +36,16 @@ export class LinkList extends React.Component{
     this.props.deleteLink(e.target.dataset['link']);
   }
 
+  handleCopyAllToClipboard = ()=>{
+    let links = [];
+    this.props.links.forEach((link)=>{
+      if(link.target !== this.state.target && this.state.target !== "Все"){return false;}
+      links.push(link.external_url);
+    });
+    navigator.clipboard.writeText(links.join(",\n"));
+    NotificationService.toast("link-copied");
+  }
+
   render(){
     let links = this.props.links.map(
       (link)=>{
@@ -66,6 +76,7 @@ export class LinkList extends React.Component{
         <div className="component-body">
           <div className="component-body__top-section">
             <button onClick={this.handleLinkAdd} style={{float:"none"}} className="waves-effect waves-light btn add-button" type="button">Добавить</button>
+            <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className="waves-effect waves-light btn add-button" type="button">Скопировать</button>
             <div className="link-list__tabs col s12">
               {tabs}
             </div>

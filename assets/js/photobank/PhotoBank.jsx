@@ -5,7 +5,7 @@ import { CatalogueTree } from './CatalogueTree';
 import { NodeViewer } from './NodeViewer';
 import { Draggable } from './Draggable';
 import {ItemQueryObject} from './services/ItemQueryObject';
-import {ResourceService} from './services/ResourceService';
+import {ResourceService} from './../services/ResourceService';
 import {UploadService} from './services/UploadService';
 import {CatalogueService} from './services/CatalogueService';
 import {LocalStorageService} from './services/LocalStorageService';
