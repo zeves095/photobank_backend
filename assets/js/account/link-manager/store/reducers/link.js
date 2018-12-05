@@ -3,6 +3,7 @@ import {
   LINK_ADD,
   LINK_SUBMIT,
   LINK_FETCH,
+  LINK_DELETE,
   SUCCESS,
   FAIL
  } from '../../constants'

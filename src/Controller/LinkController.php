@@ -101,4 +101,16 @@ class LinkController extends AbstractController
          return $response;
       }
 
+      /**
+       * @Route("/delete/{link}", name="links_delete")
+       */
+       public function delete($link, Request $request, LinkService $linkService, AppSerializer $serializer)
+       {
+          $user = $this->getUser()->getId();
+          $response = $linkService->deleteLink($link, $user);
+          $response = new JsonResponse($response);
+          return $response;
+       }
+
+
 }

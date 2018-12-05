@@ -31,7 +31,7 @@ class LinkService{
     $createdOn = date_create();
 
     $user_id = $params['created_by']->getId();
-    $hash = $this->_generateHash($user_id, date_format($createdOn, 'U'));
+    $hash = $this->_generateHash($user_id, date_format($createdOn, 'U'), rand());
     $external_url = $this->container->getParameter('link_url_prefix').'/'.$hash.".jpg";
 
     $expires = $params['expires_by']==""?NULL:date_create_from_format("Y-m-d", $params['expires_by']);
@@ -139,6 +139,16 @@ class LinkService{
       'created_by'=>$user->getId()
     ]);
     return $links;
+  }
+
+  public function deleteLink($link, $user){
+    $link = $this->entityManager->getRepository(Link::class)->findOneBy([
+      'id'=>$link
+    ]);
+    if($link->getCreatedBy()->getId() !== $user){return false;}
+    $this->entityManager->remove($link);
+    $this->entityManager->flush();
+    return true;
   }
 
 

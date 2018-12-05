@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import { getLinkTargets } from '../selectors';
-import { chooseLink, addLink, fetchLinks } from '../actionCreator'
+import { chooseLink, addLink, fetchLinks, deleteLink } from '../actionCreator'
 
 export class LinkList extends React.Component{
 
@@ -31,12 +31,18 @@ export class LinkList extends React.Component{
     });
   }
 
+  handleLinkDelete = (e)=>{
+    e.preventDefault();
+    this.props.deleteLink(e.target.dataset['link']);
+  }
+
   render(){
     let links = this.props.links.map(
       (link)=>{
         if(link.target !== this.state.target && this.state.target !== "Все"){return false;}
         return(
           <div data-linkid={link.id} key={"link"+link.id} className="link card-panel blue-grey lighten-2 white-text" onClick={this.handleLinkClick}>
+            <i className="fas fa-trash-alt delete-link" data-link={link.id} onClick={this.handleLinkDelete}></i>
             <div><b>Ссылка:</b>{link.external_url}</div>
           <div><b>Органичение по запросам: </b>{link.max_requests}<b> раз, ссылка запрошена </b>{link.done_requests} раз</div>
         <div><b>Срок действия: по </b>{link.expires_by}</div>
@@ -83,6 +89,7 @@ const mapDispatchToProps = {
     chooseLink,
     addLink,
     fetchLinks,
+    deleteLink
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LinkList);

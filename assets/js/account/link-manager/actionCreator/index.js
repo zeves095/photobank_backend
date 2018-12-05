@@ -9,6 +9,7 @@ import {
   RESOURCE_REMOVE,
   LINK_FETCH,
   LINK_SUBMIT,
+  LINK_DELETE,
   SUCCESS,
   FAIL
 } from '../constants';
@@ -129,6 +130,29 @@ export function removeResourceFromPool(id){
   }
 }
 
+export function deleteLink(id){
+  return (dispatch)=>{
+    let params = {
+      method: "GET",
+    }
+    fetch("/api/links/delete/"+id, params)
+    .then((response)=>response.json())
+    .then((response)=>{
+      dispatch({
+        type: LINK_DELETE+SUCCESS,
+        payload: response,
+      });
+      dispatch(fetchLinks());
+    }).catch(()=>{
+      dispatch({
+        type: LINK_DELETE+FAIL,
+        payload: response,
+      });
+      NotificationService.throw("link-delete-error");
+    });
+  }
+}
+
 export function fetchLinks(){
   return (dispatch)=>{
     let params = {
@@ -144,7 +168,7 @@ export function fetchLinks(){
     }).catch(()=>{
       dispatch({
         type: LINK_FETCH+FAIL,
-        payload: response,
+        payload: "",
       });
       NotificationService.throw("link-fetch-error");
     });

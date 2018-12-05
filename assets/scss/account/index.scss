@@ -132,6 +132,16 @@ text-overflow: ellipsis;
     padding-right: 5px;
 }
 
+.link.card-panel{
+  position: relative;
+  i.delete-link{
+    position: absolute;
+    right: 10px;
+    font-size: 1.5em;
+    cursor: pointer;
+  }
+}
+
 #notification-overlay{
   pointer-events: none;
   position: fixed;
