@@ -1,3 +1,4 @@
+import {NotificationService} from '../../../services/NotificationService';
 import {
   LINK_CHOICE,
   LINK_ADD,
@@ -72,9 +73,12 @@ export function getResourceThumbnails(resources){
           payload
         });
     }).catch((error)=>{
-      console.error(error);
-      }
-    );
+      dispatch({
+        type: RESOURCE_THUMBNAIL+FAIL,
+        payload
+      });
+      NotificationService.throw("thumbnail-error");
+    });
   }
 }
 
@@ -99,6 +103,7 @@ export function searchResources(searchObject={}){
         type: RESOURCE_SEARCH+FAIL,
         payload: response,
       });
+      NotificationService.throw("search-error");
     });
   }
 }
@@ -141,6 +146,7 @@ export function fetchLinks(){
         type: LINK_FETCH+FAIL,
         payload: response,
       });
+      NotificationService.throw("link-fetch-error");
     });
   }
 }
@@ -151,17 +157,27 @@ export function submitLink(form){
       method: "POST",
       body: JSON.stringify(form)
     }
-    fetch("/api/links/submit", params).then(()=>{
-      dispatch({
-        type: LINK_SUBMIT+SUCCESS,
-        payload: form,
-      });
-      dispatch(fetchLinks());
+    fetch("/api/links/submit", params).then((response)=>{
+      if(response.status === 200){
+        dispatch({
+          type: LINK_SUBMIT+SUCCESS,
+          payload: form,
+        });
+        NotificationService.toast("link-added");
+        dispatch(fetchLinks());
+      } else{
+        dispatch({
+          type: LINK_SUBMIT+FAIL,
+          payload: form,
+        });
+        NotificationService.throw("link-add-error");
+      }
     }).catch(()=>{
       dispatch({
         type: LINK_SUBMIT+FAIL,
         payload: form,
       });
+      NotificationService.throw("link-add-error");
     });
   }
 }

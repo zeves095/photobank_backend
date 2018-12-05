@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 use App\Message\LinkCreatedMessage;
 use App\Service\LinkService;
-
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Serializer\AppSerializer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
@@ -39,6 +39,9 @@ class LinkController extends AbstractController
           $request->getContent(),
           true
       );
+      if(sizeof($data['resource'])==0){
+        throw new HttpException(400);
+      }
       foreach($data['resource'] as $res_id){
         $post = $data;
         $user = $this->getUser();

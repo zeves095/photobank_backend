@@ -22,7 +22,8 @@ class LinkNormalizer extends CustomNormalizer implements NormalizerInterface
             'max_requests' => $object->getMaxRequests(),
             'done_requests' => $object->getDoneRequests(),
             'expires_by' => $object->getExpiresBy()!==NULL?date_format($object->getExpiresBy(),"Y-m-d"):NULL,
-            'target' => $object->getTarget()
+            'target' => $object->getTarget(),
+            'comment' => $object->getComment(),
         ];
         return $main_data;
     }

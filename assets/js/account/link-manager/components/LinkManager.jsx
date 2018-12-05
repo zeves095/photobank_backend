@@ -16,6 +16,9 @@ export class LinkManager extends React.Component{
   render(){
     return(
       <div className="link-manager">
+        <div id="notification-overlay">
+
+        </div>
         <div className="row">
           <div className="link-list col s12 m12 l6">
             <LinkList />

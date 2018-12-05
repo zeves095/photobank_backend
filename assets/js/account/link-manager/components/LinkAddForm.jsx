@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import  M  from 'materialize-css';
 import {submitLink} from '../actionCreator';
+import {getLinkTargets} from '../selectors';
 
 export class LinkAddForm extends React.Component {
 
@@ -20,6 +21,7 @@ export class LinkAddForm extends React.Component {
       }
     };
     this.datePickerRef = React.createRef();
+    this.autoCompleteRef = React.createRef();
     this.datePickerOpts = {
       onSelect:this.handleInputChange
     };
@@ -38,6 +40,13 @@ export class LinkAddForm extends React.Component {
 
   componentDidMount(){
     M.Datepicker.init(this.datePickerRef.current, this.datePickerOpts);
+    let targs = this.props.targets;
+    let auto = {};
+    targs.forEach((target)=>auto[target]=null);
+    let autoCompleteOpts = {
+      data: auto
+    };
+    M.Autocomplete.init(this.autoCompleteRef.current, autoCompleteOpts);
   }
 
   validateField = (target)=>{
@@ -105,7 +114,7 @@ export class LinkAddForm extends React.Component {
           <label htmlFor="comment">Комментарий</label>
           </div>
           <div className="input-field col s12 m6 l6">
-            <input onChange={this.handleInputChange} type="text" name="target" id="target" value={this.state.form['target']}/>
+            <input onChange={this.handleInputChange} className="autocomplete" ref={this.autoCompleteRef} type="text" name="target" id="target" value={this.state.form['target']}/>
           <label htmlFor="target">Группа</label>
           </div>
           {/* <input type="hidden" name="target" value></input> */}
@@ -129,7 +138,8 @@ export class LinkAddForm extends React.Component {
 const mapStateToProps = (state) =>{
   return {
     link_editing: state.link.link_editing,
-    resource_chosen: state.resource.resource_chosen
+    resource_chosen: state.resource.resource_chosen,
+    targets: getLinkTargets(state)
   }
 }
 
