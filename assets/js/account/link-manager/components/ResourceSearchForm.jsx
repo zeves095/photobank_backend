@@ -79,14 +79,16 @@ export class ResourceSearchForm extends React.Component {
           </div>
           <div className="input-field col s12 m6">
             <select className="browser-default" name="resource_search_preset" id="resource_search_preset" onChange={this.handleInputChange} value={this.state.form.resource_search_preset}>
-              <option value>Пресет...</option>
+              <option value="">Пресет...</option>
               {presets}
+              <option value="0">Исходник</option>
             </select>
           </div>
           <div className="input-field col s12 m6">
             <select className="browser-default" name="resource_search_type" id="resource_search_type" onChange={this.handleInputChange} value={this.state.form.resource_search_type}>
-              <option value>Тип ресурса...</option>
+              <option value="">Тип ресурса...</option>
               {types}
+              <option value="4">Пресет</option>
             </select>
           </div>
           <button className="blue-grey waves-effect hoverable waves-light btn" type="button" name="button" onClick={this.handleFormSubmit}><i className="fas fa-search"></i>Поиск</button>
