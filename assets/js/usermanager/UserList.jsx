@@ -55,11 +55,11 @@ export class UserList extends React.Component {
       <div className="user-list col s4">
       <h4>Пользователи</h4>
     {usersActiveMarkup}
-    <button className="blue-grey waves-effect waves-light btn" type="button" onClick={this.showInactive}>{this.state.show_inactive?"Скрыть неактивных":"Показать неактивных"}</button>
+    <button className="blue-grey waves-effect hoverable waves-light btn" type="button" onClick={this.showInactive}>{this.state.show_inactive?"Скрыть неактивных":"Показать неактивных"}</button>
   <div className={"users-inactive" + (this.state.show_inactive?"":" hidden")}>
         {usersInactiveMarkup}
         </div>
-        <button className="blue-grey waves-effect waves-light btn" type="button" onClick={this.addUser}><i class="fas fa-user-plus"></i>Добавить</button>
+        <button className="blue-grey waves-effect hoverable waves-light btn" type="button" onClick={this.addUser}><i class="fas fa-user-plus"></i>Добавить</button>
       </div>
     );
   }

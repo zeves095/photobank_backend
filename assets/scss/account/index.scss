@@ -15,13 +15,16 @@
 
 .link-list {
   height: 90vh;
-  background-color: #eff9fd;
   overflow: auto;
 }
 
 .link-adder{
   height:90vh;
   overflow: auto;
+}
+
+.link-add-form__form{
+  overflow: visible !important;
 }
 
 .user-info {
@@ -34,21 +37,15 @@
 }
 .component-header{
   h2{
-    font-size: 2.7em;
+    font-size: 2em;
     color:#333;
   }
   &--subcomponent{
     h2{
       color:#555;
       margin:0;
-      font-size: 2.2em;
+      font-size: 1.5em;
     }
-  }
-}
-
-.component-body{
-  &--subcomponent{
-    margin-bottom: 0;
   }
 }
 
@@ -67,6 +64,15 @@
 button{
   float: right;
   margin-right: 15px !important;
+  .fas{
+    font-size: 0.9em;
+    margin: 0 5px 0 -6px;
+    pointer-events: none;
+  }
+}
+
+.target-panel{
+  margin:10px;
 }
 
 .input-field{
@@ -82,12 +88,15 @@ button{
 //   }
 // }
 
-.row{
-  margin-bottom: 0 !important;
-}
+// .row{
+//   margin-bottom: 0 !important;
+// }
 
 .card-panel{
   padding: 12px !important;
+  .left-icon{
+    padding-right:8px;
+  }
 }
 
 .brand-logo i{
@@ -121,6 +130,10 @@ button{
   position: relative;
 }
 
+.link-resource .resource{
+  animation: unfold 0.5s;
+}
+
 .card-panel{
   overflow: hidden;
 white-space: nowrap;
@@ -140,6 +153,33 @@ text-overflow: ellipsis;
     font-size: 1.5em;
     cursor: pointer;
   }
+}
+
+.nav-wrapper{
+  position: relative !important;
+  z-index: 1000 !important;
+}
+
+.flex-wrapper{
+  display:flex;
+  .link-list{
+    padding: 0 10px;
+    width:auto;
+    flex:1;
+  }
+  .link-adder{
+    transition:flex 0.5s;
+    width:auto;
+    flex:0;
+    &.open{
+      padding: 0 10px;
+      flex:1;
+    }
+  }
+}
+
+.unset-padding{
+  padding:0 !important;
 }
 
 #notification-overlay{
@@ -241,4 +281,13 @@ text-overflow: ellipsis;
 		to {
 				transform: rotate(359deg);
 		}
+}
+
+@keyframes unfold {
+  from {
+      width: 0%;
+  }
+  to {
+      width: 100%;
+  }
 }

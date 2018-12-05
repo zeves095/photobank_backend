@@ -47,6 +47,7 @@ export class LinkAddForm extends React.Component {
       data: auto
     };
     M.Autocomplete.init(this.autoCompleteRef.current, autoCompleteOpts);
+    this.autocomplete = M.Autocomplete.getInstance(this.autoCompleteRef.current);
   }
 
   validateField = (target)=>{
@@ -86,8 +87,9 @@ export class LinkAddForm extends React.Component {
   }
 
   handleFormKeyup = (e) => {
-    e.preventDefault();
+    if(e.target.classList.contains("autocomplete")){return false;}
     if (e.keyCode === 13) {
+      console.log(this.autocomplete);
       this.handleFormSubmit();
     }
   }
@@ -99,7 +101,7 @@ export class LinkAddForm extends React.Component {
           Опции
         </h2>
       </div>
-      <div className="component-body component-body--subcomponent row">
+      <div className="component-body component-body--subcomponent card-panel link-add-form__form row">
         <form className="col s12 row" onSubmit={this.handleSubmitForm} onKeyUp={this.handleFormKeyup}>
           <div className="input-field col s12 m6 l6">
             <input onChange={this.handleInputChange} type="text" name="custom_size" id="custom_size" value={this.state.form['custom_size']}/>
@@ -127,7 +129,7 @@ export class LinkAddForm extends React.Component {
           <label htmlFor="max_requests">Максимальное число запросов</label>
           </div>
           <input type="hidden" value={this.props.resource_chosen}></input>
-        <button className="waves-effect waves-light btn" type="button" onClick={this.handleFormSubmit}>Отправить</button>
+        <button className="blue-grey waves-effect hoverable waves-light btn" type="button" onClick={this.handleFormSubmit}><i className="fas fa-arrow-alt-circle-down"></i>Сохранить</button>
         </form>
       </div>
     </div>);

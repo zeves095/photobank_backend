@@ -43,7 +43,7 @@ export class ResourceSearchForm extends React.Component {
 
   render() {
     return (<div className="resource-search-form">
-      <div className="component-body component-body--subcomponent">
+      <div className="component-body component-body--subcomponent card-panel">
         <form className="col s12 row" onKeyUp={this.handleFormKeyup}>
           <div className="input-field col s12 m6">
             <input type="text" id="item_search_name" name="item_search_name" onChange={this.handleInputChange} value={this.state.form.item_search_name}></input>
@@ -75,7 +75,7 @@ export class ResourceSearchForm extends React.Component {
             <input type="text" name="resource_search_type" id="resource_search_type" onChange={this.handleInputChange} value={this.state.form.resource_search_type}/>
           <label htmlFor="resource_search_type">Тип ресурса</label>
           </div>
-          <button className="waves-effect waves-light btn" type="button" name="button" onClick={this.handleFormSubmit}>Поиск</button>
+          <button className="blue-grey waves-effect hoverable waves-light btn" type="button" name="button" onClick={this.handleFormSubmit}><i className="fas fa-search"></i>Поиск</button>
         </form>
       </div>
     </div>);

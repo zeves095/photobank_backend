@@ -26,7 +26,7 @@ export class LinkAdder extends React.Component{
     </div>
     )
     return (
-      <div className="link-adder">
+      <div className={"link-adder"+(this.props.link_editing?" open":"")}>
         <div className="component-header">
           <h2 className="component-title">
             Добавление ссылки

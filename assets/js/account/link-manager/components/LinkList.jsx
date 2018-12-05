@@ -63,11 +63,11 @@ export class LinkList extends React.Component{
     );
     let tabs = ["Все"].concat(this.props.targets).map((target)=>{
         return(
-          <span className="waves-effect waves-light card-panel teal white-text" data-target={target} onClick={this.handleTargetChoice}>{target}</span>
+          <span className={"waves-effect hoverable waves-light card-panel target-panel"+(target===this.state.target?" cyan accent-1 grey-text text-darken-2":" cyan darken-1 white-text")} data-target={target} onClick={this.handleTargetChoice}>{target}</span>
         )
     })
     return(
-      <div className="link-list-inner">
+      <div className="link-list blue-grey lighten-5">
         <div className="component-header">
           <h2 className="component-title">
             Ссылки
@@ -75,12 +75,12 @@ export class LinkList extends React.Component{
         </div>
         <div className="component-body">
           <div className="component-body__top-section">
-            <button onClick={this.handleLinkAdd} style={{float:"none"}} className="waves-effect waves-light btn add-button" type="button">Добавить</button>
-            <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className="waves-effect waves-light btn add-button" type="button">Скопировать</button>
+            <button onClick={this.handleLinkAdd} style={{float:"none"}} className="blue-grey waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-plus-circle"></i>Добавить</button>
+            <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className="blue-grey waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-copy"></i>Скопировать</button>
             <div className="link-list__tabs col s12">
               {tabs}
             </div>
-            {links.length==0?"Нет ссылок":links}
+            {links.length==0?(<div className="resource card-panel red lighten-1 white-text">Нет ссылок</div>):links}
           </div>
         </div>
       </div>

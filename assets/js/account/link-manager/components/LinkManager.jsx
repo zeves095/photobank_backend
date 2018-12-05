@@ -19,13 +19,13 @@ export class LinkManager extends React.Component{
         <div id="notification-overlay">
 
         </div>
-        <div className="row">
-          <div className="link-list col s12 m12 l6">
+        <div className="flex-wrapper">
+          {/*<div className="link-list col s12 m12 l6">*/}
             <LinkList />
-          </div>
-          <div className="link-adder col s12 m12 l6">
+          {/*</div>*/}
+          {/*<div className="link-adder col s12 m12 l6">*/}
             <LinkAdder />
-          </div>
+          {/*</div>*/}
         </div>
       </div>
     )

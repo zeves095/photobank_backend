@@ -17,10 +17,10 @@ export class LinkResource extends React.Component{
 
   render(){
     let resource = this.props.resources.length === 0
-    ?(<div className="resource card-panel red lighten-1 white-text">Не выбран ресурс</div>)
+    ?(<div className="resource card-panel red lighten-1 white-text"><i className="fas fa-times-circle left-icon"></i>Не выбран ресурс</div>)
     :this.props.resources.map((res)=>{
       return(
-        <div className="resource card-panel teal darken-1 white-text">
+        <div className="resource card-panel cyan darken-1 white-text">
           <i className="fas fa-minus-circle add-res" data-res={res.id} onClick={this.handleRemoveChosenResource}></i>
           <span className={"resource-preview"+(typeof res.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+res.thumbnail+".jpg)"}}></span>
         {res.src_filename}

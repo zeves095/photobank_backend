@@ -39,7 +39,7 @@ export class ResourceSearchResults extends React.Component{
           </h2>
         </div>
         <div className="component-body component-body--subcomponent">
-          {tooManyResources?(<div className="resource card-panel red lighten-1 white-text">Показаны не все результаты. Необходимо сузить критерии поиска.</div>):null}
+          {tooManyResources?(<div className="resource card-panel red lighten-1 white-text"><i className="fas fa-times-circle left-icon"></i>Показаны не все результаты. Необходимо сузить критерии поиска.</div>):null}
           {this.props.resources_found.length==0?"Нет ресурсов":resources}
         </div>
       </div>
