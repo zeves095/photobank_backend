@@ -61,7 +61,8 @@ export class LinkAddForm extends React.Component {
       case 'access':
       //TODO fix regex
         //if(!target.value.match(/^\b((\d{1,3}\.){0,3}(\d{1,3})?\b[ ,;]{0,2})+$/)){return false;}
-        if(!target.value.match(/^(((\d{1,3}\.){0,3}(\d{0,3})[ ,;]{0,2})?)+$/)){return false;}
+        //if(!target.value.match(/^(((\d{1,3}\.){0,3}(\d{0,3})[ ,;]{0,2})?)+$/)){return false;}
+        if(!target.value.match(/((^|[ ,;])((\d{1,3}\.){0,3}(\d{0,3})?))+$/)){return false;}
         return true;
       default:
         return true;
@@ -89,7 +90,6 @@ export class LinkAddForm extends React.Component {
   handleFormKeyup = (e) => {
     if(e.target.classList.contains("autocomplete")){return false;}
     if (e.keyCode === 13) {
-      console.log(this.autocomplete);
       this.handleFormSubmit();
     }
   }
