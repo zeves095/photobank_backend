@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
-import {doAction} from '../actionCreator'
+import {init} from '../actionCreator'
 import LinkList from './LinkList';
 import LinkAdder from './LinkAdder';
 
@@ -11,6 +11,10 @@ export class LinkManager extends React.Component{
   constructor(props){
     super(props);
     this.state={};
+  }
+
+  componentDidMount(){
+    this.props.init();
   }
 
   render(){
@@ -38,8 +42,8 @@ const mapStateToProps = (state) =>{
   }
 }
 
-const mapDispatchToProps = (dispatch)=>{
-  return bindActionCreators({}, dispatch);
+const mapDispatchToProps = {
+  init
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(LinkManager);

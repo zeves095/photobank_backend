@@ -365,4 +365,46 @@ class CatalogueController extends AbstractController
         $response->setData($resourceArray);
         return $response;
     }
+
+    /**
+     * @Route(
+     *      "/catalogue/resource/presets",
+     *      methods={"GET"},
+     *      name="catalogue_resource_presets"
+     * )
+     */
+     public function getResourcePresets(ContainerInterface $container)
+     {
+       $response = new JsonResponse();
+       $presets = array();
+       foreach($container->getParameter('presets') as $preset){
+         $presets[$preset['id']] = [
+           'name'=>$preset['name'],
+           'id'=>$preset['id'],
+           'height'=>$preset['height'],
+           'width'=>$preset['width'],
+         ];
+       }
+       $response->setData($presets);
+       return $response;
+     }
+
+     /**
+      * @Route(
+      *      "/catalogue/resource/types",
+      *      methods={"GET"},
+      *      name="catalogue_resource_types"
+      * )
+      */
+      public function getResourceTypes(ContainerInterface $container)
+      {
+        $response = new JsonResponse();
+        $presets = [
+            1=>'Основное',
+            2=>'Дополнительное',
+            3=>'Исходник'
+          ];
+        $response->setData($presets);
+        return $response;
+      }
 }

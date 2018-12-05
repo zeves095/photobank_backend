@@ -1,8 +1,18 @@
-import { RESOURCE_SEARCH, RESOURCE_CHOICE, RESOURCE_THUMBNAIL, RESOURCE_ADD, RESOURCE_REMOVE, SUCCESS } from '../../constants'
+import { RESOURCE_SEARCH,
+  RESOURCE_CHOICE,
+  RESOURCE_THUMBNAIL,
+  RESOURCE_ADD,
+  RESOURCE_REMOVE,
+  RESOURCE_PRESETS_FETCH,
+  RESOURCE_TYPES_FETCH,
+  SUCCESS
+} from '../../constants'
 
 let defaultState = {
   resources_found:[],
-  resource_chosen:[]
+  resource_chosen:[],
+  resource_types:[],
+  resource_presets:[]
 }
 
 let mockData = [
@@ -29,6 +39,12 @@ export default (resource = defaultState, action) => {
       case RESOURCE_CHOICE:
         let id = action.payload;
         resource = {...resource, resource_chosen:id};
+        break;
+      case RESOURCE_PRESETS_FETCH+SUCCESS:
+        resource = {...resource, resource_presets:action.payload};
+        break;
+      case RESOURCE_TYPES_FETCH+SUCCESS:
+        resource = {...resource, resource_types:action.payload};
         break;
       case RESOURCE_ADD:
         let addingResource = resource.resources_found.find((res)=>res.id===action.payload);

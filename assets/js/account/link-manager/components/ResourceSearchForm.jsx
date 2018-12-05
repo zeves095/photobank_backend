@@ -42,6 +42,16 @@ export class ResourceSearchForm extends React.Component {
   }
 
   render() {
+    let presets = Object.keys(this.props.resource_presets).map((key)=>{
+      return(
+        <option value={this.props.resource_presets[key].id}>{this.props.resource_presets[key].name}</option>
+      );
+    })
+    let types = Object.keys(this.props.resource_types).map((key)=>{
+      return(
+        <option value={key}>{this.props.resource_types[key]}</option>
+      );
+    })
     return (<div className="resource-search-form">
       <div className="component-body component-body--subcomponent card-panel">
         <form className="col s12 row" onKeyUp={this.handleFormKeyup}>
@@ -68,12 +78,16 @@ export class ResourceSearchForm extends React.Component {
           <label htmlFor="resource_search_id">ID ресурса</label>
           </div>
           <div className="input-field col s12 m6">
-            <input type="text" name="resource_search_preset" id="resource_search_preset" onChange={this.handleInputChange} value={this.state.form.resource_search_preset}/>
-          <label htmlFor="resource_search_preset">Пресет</label>
+            <select className="browser-default" name="resource_search_preset" id="resource_search_preset" onChange={this.handleInputChange} value={this.state.form.resource_search_preset}>
+              <option value>Пресет...</option>
+              {presets}
+            </select>
           </div>
           <div className="input-field col s12 m6">
-            <input type="text" name="resource_search_type" id="resource_search_type" onChange={this.handleInputChange} value={this.state.form.resource_search_type}/>
-          <label htmlFor="resource_search_type">Тип ресурса</label>
+            <select className="browser-default" name="resource_search_type" id="resource_search_type" onChange={this.handleInputChange} value={this.state.form.resource_search_type}>
+              <option value>Тип ресурса...</option>
+              {types}
+            </select>
           </div>
           <button className="blue-grey waves-effect hoverable waves-light btn" type="button" name="button" onClick={this.handleFormSubmit}><i className="fas fa-search"></i>Поиск</button>
         </form>
@@ -83,7 +97,12 @@ export class ResourceSearchForm extends React.Component {
 
 }
 const mapStateToProps = (state, ownProps) => {
-  return {resources_found: resourceArr(state), resource_chosen: getChosenResource(state)}
+  return {
+    resources_found: resourceArr(state),
+    resource_chosen: getChosenResource(state),
+    resource_presets: state.resource.resource_presets,
+    resource_types: state.resource.resource_types,
+  }
 }
 const mapDispatchToProps = {
   searchResources

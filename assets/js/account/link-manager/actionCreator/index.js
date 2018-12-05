@@ -1,5 +1,7 @@
 import {NotificationService} from '../../../services/NotificationService';
 import {
+  RESOURCE_PRESETS_FETCH,
+  RESOURCE_TYPES_FETCH,
   LINK_CHOICE,
   LINK_ADD,
   RESOURCE_SEARCH,
@@ -13,6 +15,42 @@ import {
   SUCCESS,
   FAIL
 } from '../constants';
+
+export function init(){
+  return (dispatch)=>{
+    let params = {
+      method: "GET",
+    }
+    fetch("/catalogue/resource/presets/", params)
+    .then((response)=>response.json())
+    .then((response)=>{
+      dispatch({
+        type: RESOURCE_PRESETS_FETCH+SUCCESS,
+        payload: response,
+      });
+      dispatch(fetchLinks());
+    }).catch(()=>{
+      dispatch({
+        type: RESOURCE_PRESETS_FETCH+FAIL,
+        payload: response,
+      });
+    });
+    fetch("/catalogue/resource/types/", params)
+    .then((response)=>response.json())
+    .then((response)=>{
+      dispatch({
+        type: RESOURCE_TYPES_FETCH+SUCCESS,
+        payload: response,
+      });
+      dispatch(fetchLinks());
+    }).catch(()=>{
+      dispatch({
+        type: RESOURCE_TYPES_FETCH+FAIL,
+        payload: response,
+      });
+    });
+  }
+}
 
 export function chooseLink(id){
   return {
