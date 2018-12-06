@@ -48,6 +48,10 @@ export class LinkAddForm extends React.Component {
     };
     M.Autocomplete.init(this.autoCompleteRef.current, autoCompleteOpts);
     this.autocomplete = M.Autocomplete.getInstance(this.autoCompleteRef.current);
+    console.log(this.autocomplete.dropdown);
+    this.autocomplete.dropdown.dropdownEl.onclick = (e)=>{let form = this.state.form;
+    form["target"]= e.target.textContent;
+    this.setState({form:form});}
   }
 
   validateField = (target)=>{
@@ -88,7 +92,11 @@ export class LinkAddForm extends React.Component {
   }
 
   handleFormKeyup = (e) => {
-    if(e.target.classList.contains("autocomplete")){return false;}
+    if(e.target.classList.contains("autocomplete")){
+      let form = this.state.form;
+      form[e.target.name]= e.target.value;
+      this.setState({form:form});
+      return false;}
     if (e.keyCode === 13) {
       this.handleFormSubmit();
     }
@@ -116,7 +124,7 @@ export class LinkAddForm extends React.Component {
           <label htmlFor="comment">Комментарий</label>
           </div>
           <div className="input-field col s12 m6 l6">
-            <input onChange={this.handleInputChange} className="autocomplete" ref={this.autoCompleteRef} type="text" name="target" id="target" value={this.state.form['target']}/>
+            <input onClick={this.handleFormKeyup} onChange={this.handleInputChange} className="autocomplete" ref={this.autoCompleteRef} type="text" name="target" id="target" value={this.state.form['target']}/>
           <label htmlFor="target">Группа</label>
           </div>
           {/* <input type="hidden" name="target" value></input> */}
