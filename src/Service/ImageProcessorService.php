@@ -18,18 +18,21 @@ class ImageProcessorService{
   private $resourceService;
   private $fileSystem;
 
-  public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container, ResourceService $resourceService, Filesystem $fileSystem){
+  public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container, ResourceService $resourceService, Filesystem $fileSystem)
+  {
     $this->entityManager = $entityManager;
     $this->container = $container;
     $this->resourceService = $resourceService;
     $this->fileSystem = $fileSystem;
   }
 
-  public function queue($resourceId, $preset){
+  public function queue($resourceId, $preset)
+  {
     return true;
   }
 
-  public function process($resourceId, $presetId){
+  public function processPreset($resourceId, $presetId)
+  {
 
     $repository = $this->entityManager->getRepository(Resource::class);
     $processed = $repository->findBy(['gid'=>$resourceId]);
@@ -46,23 +49,49 @@ class ImageProcessorService{
     return true;
   }
 
-  private function _savePreset($resource, $presetId, $createdOn = NULL){
+  public function processCustom($id, $size_px, $targetPath)
+  {
+      $resource = $this->entityManager->getRepository(Resource::class)->findOneBy([
+        'id'=>$id
+      ]);
+      $size_px = explode('/', $size_px);
+      $params = [
+        'width'=>$size_px[0],
+        'height'=>$size_px[1],
+        'source'=>$this->container->getParameter('upload_directory').$resource->getPath(),
+        'target'=>$targetPath,
+        'mode'=>1
+      ];
+      $this->_generateImage($params);
+  }
+
+  private function _savePreset($resource, $presetId, $createdOn = NULL)
+  {
     $extension = $resource->getExtension();
     foreach($this->container->getParameter('presets') as $p){
       if($p['id'] == $presetId){
         $preset = $p;
       }
     }
-    $imageProcessor = new Imagine();
-    $size = new Box($preset['width'],$preset['height']);
-    $mode = ImageInterface::THUMBNAIL_OUTBOUND;
     $processorDirectory = $this->container->getParameter('upload_directory').'/imgproc/';
-    if(!$this->fileSystem->exists($processorDirectory)){$this->fileSystem->mkDir($processorDirectory);}
     $targetPath = $processorDirectory.$resource->getId().'_'.$preset['name'].'.'.'jpeg';
-    $imageProcessor->open($this->container->getParameter('upload_directory').$resource->getPath())
-    ->thumbnail($size, $mode)
-    ->save($targetPath);
-    $imageProcessor = null;
+    $this->_generateImage([
+      'width'=>$preset['width'],
+      'height'=>$preset['height'],
+      'source'=>$this->container->getParameter('upload_directory').$resource->getPath(),
+      'target'=>$targetPath,
+      'mode'=>1
+    ]);
+    // $imageProcessor = new Imagine();
+    // $size = new Box($preset['width'],$preset['height']);
+    // $mode = ImageInterface::THUMBNAIL_OUTBOUND;
+    // $processorDirectory = $this->container->getParameter('upload_directory').'/imgproc/';
+    // if(!$this->fileSystem->exists($processorDirectory)){$this->fileSystem->mkDir($processorDirectory);}
+    // $targetPath = $processorDirectory.$resource->getId().'_'.$preset['name'].'.'.'jpeg';
+    // $imageProcessor->open($this->container->getParameter('upload_directory').$resource->getPath())
+    // ->thumbnail($size, $mode)
+    // ->save($targetPath);
+    // $imageProcessor = null;
     $filename = $this->resourceService->getUniqueIdentifier(file_get_contents($targetPath), $resource->getItem()->getId(),filesize($targetPath)).'.'.$extension;
 
     $resourceParameters = [
@@ -83,6 +112,19 @@ class ImageProcessorService{
 
     $this->resourceService->processCompletedUpload($resourceParameters);
     $this->fileSystem->remove($targetPath);
+  }
+
+  private function _generateImage($params){
+    $imageProcessor = new Imagine();
+    $size = new Box($params['width'],$params['height']);
+    $mode = $params['mode']==1?ImageInterface::THUMBNAIL_OUTBOUND:ImageInterface::THUMBNAIL_INSET;
+    $processorDirectory = $this->container->getParameter('upload_directory').'/imgproc/';
+    if(!$this->fileSystem->exists($processorDirectory)){$this->fileSystem->mkDir($processorDirectory);}
+    if(!$this->fileSystem->exists(dirname($params['target']))){$this->fileSystem->mkDir(dirname($params['target']));}
+    $imageProcessor->open($params['source'])
+    ->thumbnail($size, $mode)
+    ->save($params['target']);
+    $imageProcessor = null;
   }
 
 }

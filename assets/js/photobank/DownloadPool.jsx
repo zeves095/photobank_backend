@@ -1,6 +1,6 @@
 import React from 'react';
 // import $ from 'jquery';
-import {ResourceService} from './services/ResourceService';
+import {ResourceService} from './../services/ResourceService';
 import {NotificationService} from '../services/NotificationService';
 
 export class DownloadPool extends React.Component{

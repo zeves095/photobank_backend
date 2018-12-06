@@ -5,6 +5,7 @@
 /private/uploads/
 /private/uploads3/
 /private/uploads_old/
+/private/generated/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###

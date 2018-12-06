@@ -2,6 +2,9 @@
 
 namespace App\Entity\Security;
 
+use App\Entity\Link;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 // deprecated https://symfony.com/blog/new-in-symfony-4-1-deprecated-the-advanceduserinterface
@@ -45,6 +48,16 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $permissions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Link", mappedBy="created_by", orphanRemoval=true)
+     */
+    private $links;
+
+    public function __construct()
+    {
+        $this->links = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -164,6 +177,37 @@ class User implements UserInterface, \Serializable
     public function setPermissions(?string $permissions): self
     {
         $this->permissions = $permissions;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Link[]
+     */
+    public function getLinks(): Collection
+    {
+        return $this->links;
+    }
+
+    public function addLink(Link $link): self
+    {
+        if (!$this->links->contains($link)) {
+            $this->links[] = $link;
+            $link->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLink(Link $link): self
+    {
+        if ($this->links->contains($link)) {
+            $this->links->removeElement($link);
+            // set the owning side to null (unless already changed)
+            if ($link->getCreatedBy() === $this) {
+                $link->setCreatedBy(null);
+            }
+        }
 
         return $this;
     }
