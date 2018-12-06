@@ -125,10 +125,10 @@ export class LinkAddForm extends React.Component {
           <label htmlFor="access">Ограничение по IP</label>
           </div>
           <div className="input-field col s12 m6 l6">
-            <input onChange={this.handleInputChange} type="number" name="max_requests" id="max_requests" value={this.state.form['max_requests']}/>
+            <input onChange={this.handleInputChange} type="number" name="max_requests" id="max_requests" value={this.state.form['max_requests']} required />
           <label htmlFor="max_requests">Максимальное число запросов</label>
           </div>
-          <input type="hidden" value={this.props.resource_chosen}></input>
+          <input type="hidden" value={this.props.resource_chosen} required></input>
         <button className="blue-grey waves-effect hoverable waves-light btn" type="button" onClick={this.handleFormSubmit}><i className="fas fa-arrow-alt-circle-down"></i>Сохранить</button>
         </form>
       </div>
