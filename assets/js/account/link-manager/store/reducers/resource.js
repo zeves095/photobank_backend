@@ -15,21 +15,6 @@ let defaultState = {
   resource_presets:[]
 }
 
-let mockData = [
-  {
-    id:"1",
-    code_1c:"00000000000"
-  },
-  {
-    id:"2",
-    code_1c:"00000000001"
-  },
-  {
-    id:"3",
-    code_1c:"00000000002"
-  }
-]
-
 export default (resource = defaultState, action) => {
     let resPool = resource.resource_chosen;
     switch(action.type){

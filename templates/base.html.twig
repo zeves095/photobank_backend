@@ -21,6 +21,7 @@
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
             <div class="userblock">
                 <p>Пользователь: {{ app.user.username }}</p>
+                <a href="{{ path('account') }}">Личный кабинет</a>
                 <a href="{{ path('logout') }}">Выход</a>
             </div>
             {% endif %}

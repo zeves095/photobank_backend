@@ -24,6 +24,7 @@ class NotificationService{
       "search-error":"Ошибка поиска",
       "link-fetch-error":"Невозможно получить список ссылок",
       "thumbnail-error":"Невозможно получить изображения ресурсов",
+      "clipboard-error":"Скачайте нормальный брузер",
     }
     return keys;
   }

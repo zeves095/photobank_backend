@@ -42,7 +42,7 @@ export class LinkList extends React.Component{
       if(link.target !== this.state.target && this.state.target !== "Все"){return false;}
       links.push(link.external_url);
     });
-    navigator.clipboard.writeText(links.join(",\n"));
+    if(typeof navigator.clipboard !== "undefined"){navigator.clipboard.writeText(links.join(",\n"))}else{NotificationService.throw('clipboard-error')};
     NotificationService.toast("link-copied");
   }
 
@@ -76,7 +76,7 @@ export class LinkList extends React.Component{
         <div className="component-body">
           <div className="component-body__top-section">
             <button onClick={this.handleLinkAdd} style={{float:"none"}} className="blue-grey waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-plus-circle"></i>Добавить</button>
-            <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className="blue-grey waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-copy"></i>Скопировать</button>
+          <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className="blue-grey waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-copy"></i>Скопировать все</button>
             <div className="link-list__tabs col s12">
               {tabs}
             </div>
