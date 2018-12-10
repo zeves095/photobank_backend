@@ -5,6 +5,7 @@ use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
 use App\Message\ResourcePresetNotification;
 use App\Message\LinkCreatedMessage;
+use App\Message\LinkDeletedMessage;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\ImageProcessorService;
@@ -32,6 +33,7 @@ class ResourceMessageHandler implements MessageSubscriberInterface
         return array(
             ResourcePresetNotification::class => 'processPreset',
             LinkCreatedMessage::class => 'processLink',
+            LinkDeletedMessage::class => 'processLinkDelete',
         );
     }
 
@@ -56,6 +58,7 @@ class ResourceMessageHandler implements MessageSubscriberInterface
             'path'=>$targetDir,
             'size_px'=>$message->custom_size,
             'size_bytes'=>filesize($targetPath),
+            'symlink'=>false
           ];
         }else{
           $returnParams = $this->resourceService->getResourceInfo($resource);
@@ -63,5 +66,12 @@ class ResourceMessageHandler implements MessageSubscriberInterface
         $returnParams['id'] = $message->linkId;
         $this->linkService->updateLink($returnParams);
       }
+    }
+
+    public function processLinkDelete(LinkDeletedMessage $message)
+    {
+      $id = $message->linkId;
+      $user = $message->user;
+      $this->linkService->deleteLink($id, $user);
     }
 }

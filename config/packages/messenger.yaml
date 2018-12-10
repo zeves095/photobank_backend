@@ -12,8 +12,14 @@ framework:
               options:
                 queue:
                   name: links
+            links_delete:
+              dsn: '%env(MESSENGER_TRANSPORT_DSN_LINKS_DEL)%'
+              options:
+                queue:
+                  name: links_delete
 
         routing:
             # Route your messages to the transports
             'App\Message\ResourcePresetNotification': amqp
             'App\Message\LinkCreatedMessage': links
+            'App\Message\LinkDeletedMessage': links_delete

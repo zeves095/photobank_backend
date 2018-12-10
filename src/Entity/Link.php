@@ -98,6 +98,16 @@ class Link
      */
     private $hash;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $symlink;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $src_id;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -291,6 +301,30 @@ class Link
     public function setHash(?string $hash): self
     {
         $this->hash = $hash;
+
+        return $this;
+    }
+
+    public function getSymlink(): ?bool
+    {
+        return $this->symlink;
+    }
+
+    public function setSymlink(bool $symlink): self
+    {
+        $this->symlink = $symlink;
+
+        return $this;
+    }
+
+    public function getSrcId(): ?int
+    {
+        return $this->src_id;
+    }
+
+    public function setSrcId(?int $src_id): self
+    {
+        $this->src_id = $src_id;
 
         return $this;
     }

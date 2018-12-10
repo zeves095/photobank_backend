@@ -54,14 +54,48 @@ class ResourceRepository extends ServiceEntityRepository
 
     }
 
-    public function getThumbnail($gid)
+    public function getThumbnail($id)
     {
       $queryBuilder = $this->createQueryBuilder('r')
-      ->andWhere('r.gid = :gid')
-      ->andWhere('r.preset = 1')
-      ->setParameter('gid', $gid);
+      ->join($this->_entityName, 'r2')
+      ->andWhere('r.id = :id')
+      ->andWhere('r2.gid = r.gid')
+      ->andWhere('r2.preset = 1')
+      ->setParameter('id', $id);
       return $queryBuilder->getQuery()->getOneOrNullResult();
     }
+
+    public function getThumbnailIds($ids)
+    {
+      $query = $this->getEntityManager()->createQuery(
+        'SELECT r.id, r2.id as thumb_id
+        FROM '.$this->_entityName.' r
+        INNER JOIN '.$this->_entityName.' r2
+        WHERE r.id IN ('.implode(',',$ids).')
+        AND r2.gid = r.gid
+        AND r2.preset = 1'
+      );
+      return $query->execute();
+    }
+
+    // public function getThumbnails($ids)
+    // {
+      // $queryBuilder = $this->createQueryBuilder('r')
+      // ->join($this->_entityName, 'r2')
+      // ->andWhere('r2.id IN ('.implode(',',$ids).')')
+      // ->andWhere('r.gid = r2.gid')
+      // ->andWhere('r.preset = 1');
+      // return $queryBuilder->setMaxResults(100)->getQuery()->getResult();
+    // }
+
+    // public function getThumbnail($gid)
+    // {
+      // $queryBuilder = $this->createQueryBuilder('r')
+      // ->andWhere('r.gid = :gid')
+      // ->andWhere('r.preset = 1')
+      // ->setParameter('gid', $gid);
+      // return $queryBuilder->getQuery()->getOneOrNullResult();
+    // }
 
     /**
       * @return Resource[] Returns an array of Resource objects

@@ -15,7 +15,7 @@ export class LinkAdder extends React.Component{
   }
   render(){
     let link_adder = (
-      <div className={"link-adder__inner"+(this.props.link_editing?"open":"")}>
+      <div className={"link-adder__inner"+(this.props.link_adding?"open":"")}>
       <div className="component-body__top-section">
         <LinkAddForm />
         <LinkResource />
@@ -26,14 +26,14 @@ export class LinkAdder extends React.Component{
     </div>
     )
     return (
-      <div className={"link-adder"+(this.props.link_editing?" open":"")}>
+      <div className={"link-adder"+(this.props.link_adding?" open":"")}>
         <div className="component-header">
           <h2 className="component-title">
             Добавление ссылки
           </h2>
         </div>
         <div className="component-body">
-          {this.props.link_editing?link_adder:null}
+          {this.props.link_adding?link_adder:null}
         </div>
       </div>
     );
@@ -43,7 +43,7 @@ export class LinkAdder extends React.Component{
 
 const mapStateToProps = (state) =>{
   return {
-    link_editing: state.link.link_editing
+    link_adding: state.link.link_adding,
   }
 }
 

@@ -24,6 +24,8 @@ class LinkNormalizer extends CustomNormalizer implements NormalizerInterface
             'expires_by' => $object->getExpiresBy()!==NULL?date_format($object->getExpiresBy(),"Y-m-d"):NULL,
             'target' => $object->getTarget(),
             'comment' => $object->getComment(),
+            'resource' => $object->getSrcId(),
+            'symlink' => $object->getSymlink(),
         ];
         return $main_data;
     }

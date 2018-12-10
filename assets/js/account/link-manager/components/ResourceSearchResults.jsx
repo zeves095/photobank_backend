@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-
+import { getResourcesWithThumbnails } from '../selectors';
 import { chooseResource, addResourceToPool } from '../actionCreator'
 
 export class ResourceSearchResults extends React.Component{
@@ -49,7 +49,7 @@ export class ResourceSearchResults extends React.Component{
 }
 const mapStateToProps = (state) =>{
   return {
-    resources_found: state.resource.resources_found
+    resources_found: getResourcesWithThumbnails(state)
   }
 }
 

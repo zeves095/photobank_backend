@@ -302,12 +302,9 @@ class CatalogueController extends AbstractController
              $request->getContent(),
              true
          );
-         $thumbnails = array();
+         $thumbnailids = array();
          $repo = $entityManager->getRepository(Resource::class);
-         foreach($data['resources'] as $resource){
-           $thumbnail = $repo->getThumbnail($resource['gid']);
-           array_push($thumbnails, ['id'=>$resource['id'], 'thumbnail'=>$thumbnail->getId()]);
-         }
+         $thumbnails = $repo->getThumbnailIds($data['resources']);
          $response = new JsonResponse();
          $response->setData($thumbnails);
          return $response;

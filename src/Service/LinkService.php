@@ -18,7 +18,8 @@ class LinkService{
   private $container;
   private $fileSystem;
 
-  public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container, Filesystem $fileSystem){
+  public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container, Filesystem $fileSystem)
+  {
     $this->entityManager = $entityManager;
     $this->container = $container;
     $this->fileSystem = $fileSystem;
@@ -50,6 +51,8 @@ class LinkService{
     ->setReady(false)
     ->setDoneRequests(0)
     ->setHash($hash)
+    ->setSrcId($params['resource'])
+    ->setSymLink(true)
     ;
 
     $this->entityManager->persist($link);
@@ -58,14 +61,34 @@ class LinkService{
     return $link;
   }
 
-  public function updateLink($params){
+  public function updateLink($params)
+  {
     $link = $this->entityManager->getRepository(Link::class)->findOneBy([
       'id'=>$params['id']
     ]);
-    $link->setPath($params['path'])
-    ->setSizePx($params['size_px'])
-    ->setSizeBytes($params['size_bytes']);
+    if(array_search('path', array_keys($params)) !== false && $params['path'] !== ''){$link->setPath($this->container->getParameter('local_file_dir').$params['path']);}
+    if(array_search('size_px', array_keys($params)) !== false && $params['size_px'] !== ''){$link->setSizePx($params['size_px']);}
+    if(array_search('size_bytes', array_keys($params)) !== false && $params['size_bytes'] !== ''){$link->setSizeBytes($params['size_bytes']);}
+    if(array_search('max_requests', array_keys($params)) !== false && $params['max_requests'] !== ''){$link->setMaxRequests($params['max_requests']);}
+    if(array_search('symlink', array_keys($params)) !== false && $params['symlink'] !== ''){$link->setSymLink($params['symlink']);}
+    if(array_search('expires_by', array_keys($params)) !== false && $params['expires_by'] !== ''){$link->setExpiresBy($params['expires_by']);}
+    if(array_search('target', array_keys($params)) !== false && $params['target'] !== ''){$link->setTarget($params['target']);}
+    if(array_search('access', array_keys($params)) !== false && $params['access'] !== ''){$link->setAccess($params['access']);}
+    if(array_search('comment', array_keys($params)) !== false && $params['comment'] !== ''){$link->setComment($params['comment']);}
+    $link->setUpdatedOn(date_create());
     $this->entityManager->flush();
+  }
+
+  public function userIsOwner($link_id, $user_id)
+  {
+    $repo = $this->entityManager->getRepository(Link::class);
+    $link = $repo->findOneBy([
+      "id"=>$link_id
+    ]);
+    if($link->getCreatedBy()->getId() === $user_id){
+      return true;
+    }
+    return false;
   }
 
   private function _generateHash()
@@ -74,16 +97,17 @@ class LinkService{
     return md5($src_string);
   }
 
-  public function getImageData($hash, $request)
+  public function getImageData($hash, $request, $user)
   {
     $link = $this->entityManager->getRepository(Link::class)->findOneBy([
       'hash'=>$hash
     ]);
-
-    if(!$this->_checkAccess($link, $request)){
+    $user_id = $user->getId();
+    $created_by = $link->getCreatedBy()->getId();
+    if($created_by!=$user_id && !$this->_checkAccess($link, $request)){
       throw new HttpException(403);
     }
-    if(!$this->_countRequests($link) || !$this->_isNotExpired($link))
+    if($created_by!=$user_id && (!$this->_countRequests($link) || !$this->_isNotExpired($link)))
     {
       throw new HttpException(410);
     }
@@ -110,8 +134,10 @@ class LinkService{
     return true;
   }
 
-  private function _checkAccess($link, $request){
+  private function _checkAccess($link, $request)
+  {
     $access = $link->getAccess();
+    var_dump($user);
     if($access == NULL){
       return true;
     }
@@ -122,7 +148,8 @@ class LinkService{
     return false;
   }
 
-  private function _countRequests($link){
+  private function _countRequests($link)
+  {
     $doneRequests = $link->getDoneRequests();
     $maxRequests = $link->getMaxRequests();
     if($maxRequests== NULL){
@@ -134,18 +161,28 @@ class LinkService{
     return true;
   }
 
-  public function fetchAllForUser($user){
+  public function fetchAllForUser($user)
+  {
     $links = $this->entityManager->getRepository(Link::class)->findBy([
       'created_by'=>$user->getId()
     ]);
     return $links;
   }
 
-  public function deleteLink($link, $user){
+  public function deleteLink($link, $user)
+  {
     $link = $this->entityManager->getRepository(Link::class)->findOneBy([
       'id'=>$link
     ]);
+    if($link == null){return false;}
     if($link->getCreatedBy()->getId() !== $user){return false;}
+    if($link->getSymlink() == 0){
+      if(preg_match('/\.jpg$/',$link->getPath())){
+        $this->fileSystem->remove($link->getPath());
+      }else{
+        throw new HttpException(500);
+      }
+    }
     $this->entityManager->remove($link);
     $this->entityManager->flush();
     return true;

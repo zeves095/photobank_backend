@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import  M  from 'materialize-css';
-import {submitLink} from '../actionCreator';
+import {submitLink, updateLink} from '../actionCreator';
 import {getLinkTargets} from '../selectors';
 
 export class LinkAddForm extends React.Component {
@@ -88,7 +88,12 @@ export class LinkAddForm extends React.Component {
   }
 
   handleFormSubmit = (e) =>{
-    this.props.submitLink(this.state.form);
+    if(this.props.link !== null){
+      this.props.updateLink(this.state.form, this.props.link);
+    }else{
+      this.props.submitLink(this.state.form);
+    }
+
   }
 
   handleFormKeyup = (e) => {
@@ -148,13 +153,15 @@ export class LinkAddForm extends React.Component {
 const mapStateToProps = (state) =>{
   return {
     link_editing: state.link.link_editing,
+    link: state.link.link_editing_id,
     resource_chosen: state.resource.resource_chosen,
     targets: getLinkTargets(state)
   }
 }
 
 const mapDispatchToProps = {
-  submitLink
+  submitLink,
+  updateLink
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LinkAddForm);

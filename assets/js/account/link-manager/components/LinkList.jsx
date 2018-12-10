@@ -16,8 +16,12 @@ export class LinkList extends React.Component{
     this.props.fetchLinks();
   }
 
-  handleLinkClick = (e)=>{
-    this.props.chooseLink(e.target.dataset['linkid']);
+  // handleLinkClick = (e)=>{
+  //   this.props.chooseLink(e.target.dataset['linkid']);
+  // }
+
+  handleLinkClick = (id)=>{
+    this.props.chooseLink(id);
   }
 
   handleLinkAdd = (e)=>{
@@ -50,13 +54,15 @@ export class LinkList extends React.Component{
     let links = this.props.links.map(
       (link)=>{
         if(link.target !== this.state.target && this.state.target !== "Все"){return false;}
+        let thumb = this.props.thumbs.find((thumb)=>thumb.id === link.resource);
         return(
-          <div data-linkid={link.id} key={"link"+link.id} className="link card-panel blue-grey lighten-2 white-text" onClick={this.handleLinkClick}>
+          <div data-linkid={link.id} key={"link"+link.id} className="link card-panel blue-grey lighten-2 white-text" onClick={()=>{this.handleLinkClick(link.id)}}>
             <i className="fas fa-trash-alt delete-link" data-link={link.id} onClick={this.handleLinkDelete}></i>
             <div><b>Ссылка:</b>{link.external_url}</div>
           <div><b>Органичение по запросам: </b>{link.max_requests}<b> раз, ссылка запрошена </b>{link.done_requests} раз</div>
         <div><b>Срок действия: по </b>{link.expires_by}</div>
       <div><b>Комментарий: </b>{link.comment}</div>
+    <span className={"resource-preview"+(typeof thumb === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:typeof thumb === 'undefined'?"none":"url(/catalogue/node/item/resource/"+thumb.thumb_id+".jpg)"}}></span>
           </div>
         )
       }
@@ -92,7 +98,10 @@ export class LinkList extends React.Component{
 const mapStateToProps = (state) =>{
   return {
     links: state.link.links_done,
-    targets: getLinkTargets(state)
+    editing: state.link.link_editing,
+    adding: state.link.link_adding,
+    targets: getLinkTargets(state),
+    thumbs: state.resource.resources_thumbnails
   }
 }
 

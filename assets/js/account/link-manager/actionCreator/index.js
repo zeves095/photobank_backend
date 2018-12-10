@@ -12,6 +12,7 @@ import {
   LINK_FETCH,
   LINK_SUBMIT,
   LINK_DELETE,
+  LINK_UPDATE,
   SUCCESS,
   FAIL
 } from '../constants';
@@ -91,13 +92,11 @@ export function addLink(){
 // }
 
 export function getResourceThumbnails(resources){
+  console.log(resources);
   return (dispatch)=>{
     let request = {resources:[]};
     resources.forEach((resource)=>{
-      request.resources.push({
-        id: resource.id,
-        gid: resource.gid
-      });
+      request.resources.push(resource.id);
     });
     let params = {
       method: "POST",
@@ -203,6 +202,12 @@ export function fetchLinks(){
         type: LINK_FETCH+SUCCESS,
         payload: response,
       });
+      let resources = response.map((link)=>{
+        return {
+          id:link.resource
+        }
+      })
+      dispatch(getResourceThumbnails(resources));
     }).catch(()=>{
       dispatch({
         type: LINK_FETCH+FAIL,
@@ -240,6 +245,38 @@ export function submitLink(form){
         payload: form,
       });
       NotificationService.throw("link-add-error");
+    });
+  }
+}
+
+export function updateLink(form, link){
+  return (dispatch)=>{
+    form['id'] = link;
+    let params = {
+      method: "POST",
+      body: JSON.stringify(form)
+    }
+    fetch("/api/links/update/"+link, params).then((response)=>{
+      if(response.status === 200){
+        dispatch({
+          type: LINK_UPDATE+SUCCESS,
+          payload: form,
+        });
+        NotificationService.toast("link-updated");
+        dispatch(fetchLinks());
+      } else{
+        dispatch({
+          type: LINK_UPDATE+FAIL,
+          payload: form,
+        });
+        NotificationService.throw("link-update-error");
+      }
+    }).catch(()=>{
+      dispatch({
+        type: LINK_UPDATE+FAIL,
+        payload: form,
+      });
+      NotificationService.throw("link-update-error");
     });
   }
 }
