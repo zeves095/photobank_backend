@@ -33,6 +33,7 @@ class NotificationService{
     let keys = this._getKeys();
     if(key === "custom"){
       this._makeNotification(customMessage, 0, 3);
+      return;
     }
     if(Object.keys(keys).indexOf(key) != -1){
       this._makeNotification(keys[key], 0, 3);
@@ -43,6 +44,7 @@ class NotificationService{
     let keys = this._getKeys();
     if(key === "custom"){
       this._makeNotification(customMessage, 1);
+      return;
     }
     if(Object.keys(keys).indexOf(key) != -1){
       this._makeNotification(keys[key], 1);

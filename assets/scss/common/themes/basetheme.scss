@@ -406,7 +406,7 @@ body {
   }
 }
 
-.resource-search-results{
+.resource-search-results, .link-resource{
   .list-item{
     @include list-item-color();
   }

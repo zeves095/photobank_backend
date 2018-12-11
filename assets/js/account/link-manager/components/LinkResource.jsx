@@ -20,7 +20,7 @@ export class LinkResource extends React.Component{
     ?(<div className="resource plaque warning"><i className="fas fa-times-circle left-icon"></i>Не выбран ресурс</div>)
     :this.props.resources.map((res)=>{
       return(
-        <div className="resource">
+        <div className="resource list-item">
           <i className="fas fa-minus-circle add-res" data-res={res.id} onClick={this.handleRemoveChosenResource}></i>
           <span className={"resource-preview"+(typeof res.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+res.thumbnail+".jpg)"}}></span>
             {res.item.name+"("+res.item.id+")"}

@@ -20,6 +20,7 @@
 .flex-wrapper{
   display:flex;
   .link-list{
+    overflow: auto;
     padding: 0 10px;
     width:auto;
     flex:1;
@@ -32,7 +33,7 @@
     }
     transition:flex 0.5s;
     width:auto;
-    overflow: hidden;
+    overflow: auto;
     flex:0;
     &.open{
       padding: 0 10px;
@@ -43,6 +44,7 @@
 
 .resource{
   position: relative;
+  @include list-item();
 }
 
 .link-resource .resource{
@@ -119,10 +121,11 @@
 }
 
 .flex-wrapper{
-  min-height: 90vh;
+  height: 92vh;
 }
 
 .account-info{
+  overflow: auto;
   text-align: center;
   font-size: 20px;
   color: #FFF;
@@ -141,7 +144,7 @@
   }
 }
 
-.resource-search-results{
+.resource-search-results, .link-resource{
   .list-item{
     pointer-events: none;
     @include list-item();

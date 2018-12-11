@@ -31,7 +31,7 @@ export function init(){
         payload: response,
       });
       dispatch(fetchLinks());
-    }).catch(()=>{
+    }).catch((error)=>{
       dispatch({
         type: RESOURCE_PRESETS_FETCH+FAIL,
         payload: response,
@@ -45,7 +45,7 @@ export function init(){
         payload: response,
       });
       dispatch(fetchLinks());
-    }).catch(()=>{
+    }).catch((error)=>{
       dispatch({
         type: RESOURCE_TYPES_FETCH+FAIL,
         payload: "",
@@ -59,7 +59,7 @@ export function init(){
         payload: response,
       });
       dispatch(fetchLinks());
-    }).catch(()=>{
+    }).catch((error)=>{
       dispatch({
         type: USER_INFO_FETCH+FAIL,
         payload: "",
@@ -128,7 +128,11 @@ export function getResourceThumbnails(resources){
         type: RESOURCE_THUMBNAIL+FAIL,
         payload
       });
-      NotificationService.throw("thumbnail-error");
+      if(typeof error.error !== 'undefined'){
+        NotificationService.throw("custom", error.error);
+      }else{
+        NotificationService.throw("thumbnail-error");
+      }
     });
   }
 }
@@ -151,12 +155,16 @@ export function searchResources(searchObject={}){
         payload: response,
       });
       dispatch(getResourceThumbnails(response));
-    }).catch(()=>{
+    }).catch((error)=>{
       dispatch({
         type: RESOURCE_SEARCH+FAIL,
         payload: response,
       });
-      NotificationService.throw("search-error");
+      if(typeof error.error !== 'undefined'){
+        NotificationService.throw("custom", error.error);
+      }else{
+        NotificationService.throw("search-error");
+      }
     });
   }
 }
@@ -194,13 +202,17 @@ export function deleteLink(id){
         type: LINK_DELETE+SUCCESS,
         payload: response,
       });
-      dispatch(fetchLinks());
-    }).catch(()=>{
+      setTimeout(()=>{dispatch(fetchLinks())},400);
+    }).catch((error)=>{
       dispatch({
         type: LINK_DELETE+FAIL,
         payload: response,
       });
-      NotificationService.throw("link-delete-error");
+      if(typeof error.error !== 'undefined'){
+        NotificationService.throw("custom", error.error);
+      }else{
+        NotificationService.throw("link-delete-error");
+      }
     });
   }
 }
@@ -223,12 +235,16 @@ export function fetchLinks(){
         }
       })
       dispatch(getResourceThumbnails(resources));
-    }).catch(()=>{
+    }).catch((error)=>{
       dispatch({
         type: LINK_FETCH+FAIL,
         payload: "",
       });
-      NotificationService.throw("link-fetch-error");
+      if(typeof error.error !== 'undefined'){
+        NotificationService.throw("custom", error.error);
+      }else{
+        NotificationService.throw("link-fetch-error");
+      }
     });
   }
 }
@@ -239,27 +255,33 @@ export function submitLink(form){
       method: "POST",
       body: JSON.stringify(form)
     }
-    fetch("/api/links/submit", params).then((response)=>{
+    fetch("/api/links/submit", params)
+    .then((response)=>{
+      console.log(response);
       if(response.status === 200){
         dispatch({
           type: LINK_SUBMIT+SUCCESS,
           payload: form,
         });
         NotificationService.toast("link-added");
-        dispatch(fetchLinks());
-      } else{
-        dispatch({
-          type: LINK_SUBMIT+FAIL,
-          payload: form,
-        });
-        NotificationService.throw("link-add-error");
+        setTimeout(()=>{dispatch(fetchLinks())}, 400);
+        return;
+      }else{
+          response.json().then((response)=>{
+            dispatch({
+              type: LINK_SUBMIT+FAIL,
+              payload: form,
+            });
+            console.log(typeof response.error !== 'undefined');
+            if(typeof response.error !== 'undefined'){
+              console.log("CUSTOM");
+              NotificationService.throw("custom", response.error);
+            }else{
+              console.log("NOT CUSTOM NOT CUSTOM");
+              NotificationService.throw("link-add-error");
+            }
+          });
       }
-    }).catch(()=>{
-      dispatch({
-        type: LINK_SUBMIT+FAIL,
-        payload: form,
-      });
-      NotificationService.throw("link-add-error");
     });
   }
 }
@@ -284,14 +306,22 @@ export function updateLink(form, link){
           type: LINK_UPDATE+FAIL,
           payload: form,
         });
-        NotificationService.throw("link-update-error");
+        if(typeof error.error !== 'undefined'){
+          NotificationService.throw("custom", error.error);
+        }else{
+          NotificationService.throw("link-update-error");
+        }
       }
-    }).catch(()=>{
+    }).catch((error)=>{
       dispatch({
         type: LINK_UPDATE+FAIL,
         payload: form,
       });
-      NotificationService.throw("link-update-error");
+      if(typeof error.error !== 'undefined'){
+        NotificationService.throw("custom", error.error);
+      }else{
+        NotificationService.throw("link-update-error");
+      }
     });
   }
 }

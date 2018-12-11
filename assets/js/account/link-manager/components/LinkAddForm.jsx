@@ -30,7 +30,7 @@ export class LinkAddForm extends React.Component {
   }
 
   handleInputChange = (data)=>{
-    if(typeof data.target !== "undefined"){
+    if(typeof data.target !== "undefined" && this.props.targets.includes(data.target)){
       let confirmatorQuestions = this.state.confirmatorQuestions;
       confirmatorQuestions[1] = "Группа с именем "+data.target+" уже существует. Все равно добавить?";
       this.setState({

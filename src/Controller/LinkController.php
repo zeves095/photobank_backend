@@ -40,10 +40,26 @@ class LinkController extends AbstractController
           $request->getContent(),
           true
       );
-      $resourceIds = explode(',',$data['resource']);
-      if(sizeof($resourceIds)==0){
-        throw new HttpException(400);
+
+      if(isset($data['resource'])){
+        $resourceIds = explode(',',$data['resource']);
+      }else{
+        $response = new JsonResponse();
+        $response->setData([
+          'error'=>'Необходимо указать ресурс'
+        ]);
+        $response->setStatusCode(400);
+        return $response;
       }
+      if(isset($data['size']['width']) && isset($data['size']['height']) && ($data['size']['height']/$data['size']['width'] > 2.3 || $data['size']['width']/$data['size']['height'] < 1)){
+        $response = new JsonResponse();
+        $response->setData([
+          'error'=>'Неверное соотношение высоты/ширины'
+        ]);
+        $response->setStatusCode(400);
+        return $response;
+      }
+
       foreach($resourceIds as $res_id){
         $post = $data;
         $user = $this->getUser();
@@ -68,6 +84,13 @@ class LinkController extends AbstractController
       }
       return new Response();
     }
+
+    /**
+     * @Route("/txt/{link_id}", name="links_get_txt")
+     */
+     public function getTxt($link_id){
+
+     }
 
     /**
      * @Route("/update/{link_id}", name="links_update")
@@ -101,15 +124,6 @@ class LinkController extends AbstractController
           'Content-Type'     => 'image/jpeg',
           'Content-Disposition' => 'inline; filename="'.$imageData['filename'].'"');
         return new Response($image, 200, $headers);
-     }
-
-    /**
-     * @Route("/get/{link_hash}", name="links_get_data")
-     */
-     public function getLinkData($link_hash, Request $request, LinkService $linkService)
-     {
-        var_dump($link_hash);
-        return new Response();
      }
 
      /**
