@@ -1,0 +1,55 @@
+@keyframes slidein {
+  from {
+    margin-left: 1000px;
+    }
+  to {
+    margin-left: 0px;
+    }
+}
+
+@keyframes slideout {
+  from {
+    margin-left: 0px;
+    }
+  to {
+    margin-left: 1000px;
+    }
+}
+
+@keyframes foldout {
+  from {
+    overflow: hidden;
+		max-height: 0;
+  	}
+	to {
+    overflow: visible;
+		max-height: 10000px;
+  	}
+}
+
+@keyframes rotation {
+		from {
+				transform: rotate(0deg);
+		}
+		to {
+				transform: rotate(359deg);
+		}
+}
+
+@keyframes unfold {
+  from {
+      width: 0%;
+  }
+  to {
+      width: 100%;
+  }
+}
+
+@keyframes loading {
+  from {
+		background-position: 0 0;
+  	}
+	to {
+		background-position: 0 -100px;
+  	}
+}

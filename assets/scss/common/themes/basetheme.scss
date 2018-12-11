@@ -1,80 +1,10 @@
-@mixin component-section-color(){
-//border-right: 2px solid $color-tertiary;
-  background-color:$color-main;
-}
-
-@mixin list-item-color(){
-  background-color: $color-main;
-  color: $color-text;
-  //border-bottom:1px solid $color-tertiary;
-  &:hover{
-    background-color: $color-accent-fade;
-    color:$color-text-alt;
-  }
-  &--active{
-    background-color: $color-accent;
-    color:$color-text-alt;
-  }
-}
-
-@mixin table-cell-color(){
-  background-color: $color-tertiary;
-  color: $color-text;
-  //border-bottom: 1px solid $color-main;
-  //border-right: 1px solid $color-accent-fade;
-  &:nth-child(even){
-    background-color: $color-tertiary-fade;
-  }
-}
-
-@mixin button-color(){
-  background-color: transparent;
-  color: $color-text;
-  &:hover{
-    background-color: $color-accent-fade;
-    color: $color-text-alt;
-    @include hover-shadow();
-  }
-}
-
-@mixin button-view-color(){
-  background-color: transparent;
-  color: $color-accent-fade;
-  &--active {
-    background-color: $color-accent;
-    color: $color-text-alt;
-  }
-  &:hover{
-    background-color: $color-accent-fade;
-    color: $color-text-alt;
-  }
-}
-
-@mixin button-accent-color(){
-  color:$color-text-alt;
-  background-color: $color-accent;
-  &:disabled{
-    background-color: $color-main-fade;
-    &:hover{
-      background-color: $color-main-fade;
-    }
-  }
-  &:hover{
-    background-color: $color-accent-fade;
-    color: $color-text-alt;
-    @include hover-shadow();
-  }
-}
-
-@mixin hover-shadow(){
-  -webkit-box-shadow: 0px 17px 46px -10px rgba(0,0,0,0.47);
--moz-box-shadow: 0px 17px 46px -10px rgba(0,0,0,0.47);
-box-shadow: 0px 17px 46px -10px rgba(0,0,0,0.47);
-}
+@import '../mixins/theme.scss';
 
 body {
   background-color: $color-background;
   font-size: 12px;
+  font-family: Roboto, sans-serif;
+  color:#333;
   button{
     transition: 0.3s;
   }
@@ -85,7 +15,7 @@ body {
     transition: 0s;
   }
 
-  input[type="checkbox"]{
+  .photobank-main input[type="checkbox"]{
     width: 0;
     color:$color-accent;
     font-size: 13px;
@@ -476,6 +406,29 @@ body {
   }
 }
 
+.resource-search-results{
+  .list-item{
+    @include list-item-color();
+  }
+}
+
+.link-list{
+  .button-block{
+    @include button-block();
+  }
+}
+
+.link-adder{
+  .button-block{
+    @include button-block();
+  }
+}
+
+fieldset{
+  border: none;
+  padding: 0;
+}
+
 #notification-overlay{
   &>.notification{
     border-radius: 5px;
@@ -512,15 +465,4 @@ body {
       }
     }
   }
-}
-
-@keyframes foldout {
-  from {
-    overflow: hidden;
-		max-height: 0;
-  	}
-	to {
-    overflow: visible;
-		max-height: 10000px;
-  	}
 }

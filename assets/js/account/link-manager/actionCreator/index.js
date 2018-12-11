@@ -1,5 +1,6 @@
 import {NotificationService} from '../../../services/NotificationService';
 import {
+  USER_INFO_FETCH,
   RESOURCE_PRESETS_FETCH,
   RESOURCE_TYPES_FETCH,
   LINK_CHOICE,
@@ -47,7 +48,21 @@ export function init(){
     }).catch(()=>{
       dispatch({
         type: RESOURCE_TYPES_FETCH+FAIL,
+        payload: "",
+      });
+    });
+    fetch("/account/getinfo/", params)
+    .then((response)=>response.json())
+    .then((response)=>{
+      dispatch({
+        type: USER_INFO_FETCH+SUCCESS,
         payload: response,
+      });
+      dispatch(fetchLinks());
+    }).catch(()=>{
+      dispatch({
+        type: USER_INFO_FETCH+FAIL,
+        payload: "",
       });
     });
   }
@@ -92,7 +107,6 @@ export function addLink(){
 // }
 
 export function getResourceThumbnails(resources){
-  console.log(resources);
   return (dispatch)=>{
     let request = {resources:[]};
     resources.forEach((resource)=>{
@@ -105,7 +119,6 @@ export function getResourceThumbnails(resources){
     fetch("/catalogue/node/item/resource/thumbnails/",params)
     .then((response)=>response.json())
     .then((payload)=>{
-      console.warn(payload);
         dispatch({
           type: RESOURCE_THUMBNAIL+SUCCESS,
           payload
@@ -125,10 +138,12 @@ export function searchResources(searchObject={}){
     let params = {
       method: "GET",
     }
-    Object.keys(searchObject).forEach((key)=>{
-      searchObject[key] = searchObject[key].toLowerCase();
-    });
-    fetch("/catalogue/search/resources"+"?"+Object.keys(searchObject).map(key=>key + '=' + searchObject[key]).join('&'), params)
+    // Object.keys(searchObject).forEach((key)=>{
+    //   searchObject[key] = searchObject[key].toLowerCase();
+    // });
+    fetch("/catalogue/search/resources"+"?"+Object.keys(searchObject).map(
+      key=>{if(typeof searchObject[key] === 'undefined'){return "";}return key + '=' + searchObject[key]}).join('&'),
+      params)
     .then((response)=>response.json())
     .then((response)=>{
       dispatch({
@@ -204,7 +219,7 @@ export function fetchLinks(){
       });
       let resources = response.map((link)=>{
         return {
-          id:link.resource
+          id:link.resource_id
         }
       })
       dispatch(getResourceThumbnails(resources));

@@ -169,6 +169,12 @@ class LinkService{
     return $links;
   }
 
+  public function fetchAllWithExtraFields($user)
+  {
+    $links = $this->entityManager->getRepository(Link::class)->fetchWithResourceAndItemInfo($user->getId());
+    return $links;
+  }
+
   public function deleteLink($link, $user)
   {
     $link = $this->entityManager->getRepository(Link::class)->findOneBy([

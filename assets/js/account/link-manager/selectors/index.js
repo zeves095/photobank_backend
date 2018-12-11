@@ -10,7 +10,7 @@ export const  getChosenResource = createSelector(resourceChosen, resourceArr, (c
 });
 
 export const getLinkTargets = createSelector(linkArr, (list)=>{
-  return Array.from(new Set(list.filter((item)=>item.target!=="").map((item)=>{if(item.target===''){return null}return item.target;})));
+  return Array.from(new Set(list.filter((item)=>item.target!==''&&item.target!==null).map((item)=>{if(item.target===''){return null}return item.target;})));
 });
 
 export const getResourcesWithThumbnails = createSelector(resourceArr, thumbArr, (list, thumbs)=>{

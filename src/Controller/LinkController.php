@@ -40,20 +40,20 @@ class LinkController extends AbstractController
           $request->getContent(),
           true
       );
-      if(sizeof($data['resource'])==0){
+      $resourceIds = explode(',',$data['resource']);
+      if(sizeof($resourceIds)==0){
         throw new HttpException(400);
       }
-      foreach($data['resource'] as $res){
-        $res_id = $res['id'];
+      foreach($resourceIds as $res_id){
         $post = $data;
         $user = $this->getUser();
         $username = $user->getUsername();
         $params = [
-          'access'=> $post['access'],
-          'target'=> $post['target'],
-          'expires_by'=> $post['expires_by'],
-          'comment'=> $post['comment'],
-          'max_requests'=> $post['max_requests'],
+          'access'=> isset($post['access'])?$post['access']:null,
+          'target'=> isset($post['target'])?$post['target']:null,
+          'expires_by'=> isset($post['expires_by'])?$post['expires_by']:null,
+          'comment'=> isset($post['comment'])?$post['comment']:null,
+          'max_requests'=> isset($post['max_requests'])?$post['max_requests']:null,
           'created_by'=>$user,
           'resource'=>$res_id
         ];
@@ -62,7 +62,9 @@ class LinkController extends AbstractController
         $linkId = $link->getId();
         $linkHash = $link->getHash();
 
-        $bus->dispatch(new LinkCreatedMessage($linkId, $linkHash, $username, $res_id, $post['custom_size']));
+        $custom_size = isset($post['size']['height'])&&isset($post['size']['width'])?$post['size']['width']."/".$post['size']['height']:null;
+
+        $bus->dispatch(new LinkCreatedMessage($linkId, $linkHash, $username, $res_id, $custom_size));
       }
       return new Response();
     }
@@ -116,11 +118,15 @@ class LinkController extends AbstractController
       public function fetchAll(Request $request, LinkService $linkService, AppSerializer $serializer)
       {
          $user = $this->getUser();
-         $links = $linkService->fetchAllForUser($user);
-         $links = $serializer->normalize($links, null, array(
-             ObjectNormalizer::ENABLE_MAX_DEPTH => true,
-             'groups' => array('main')
-         ));
+
+         $links = $linkService->fetchAllWithExtraFields($user);
+
+         // Альтернативный способ получения линков если нет нужды в полях, привязанных к сущностям Resource и CatalogueNodeItem
+         // $links = $linkService->fetchAllForUser($user);
+         // $links = $serializer->normalize($links, null, array(
+         //     ObjectNormalizer::ENABLE_MAX_DEPTH => true,
+         //     'groups' => array('main')
+         // ));
          $response = new JsonResponse($links);
          return $response;
       }
