@@ -3,12 +3,14 @@ import {connect} from 'react-redux';
 import { getLinkTargets } from '../selectors';
 import { chooseLink, addLink, fetchLinks, deleteLink } from '../actionCreator'
 import {NotificationService} from '../../../services/NotificationService';
+import {ModalImage} from '../../../common/ModalImage';
 export class LinkList extends React.Component{
 
   constructor(props){
     super(props);
     this.state={
-      target:"Все"
+      target:"Все",
+      modal_image_url:""
     };
   }
 
@@ -50,30 +52,64 @@ export class LinkList extends React.Component{
     NotificationService.toast("link-copied");
   }
 
+  handleGetTxt =()=>{
+    let links = this.props.links
+    .filter((link)=>{
+        return link.target == this.state.target || this.state.target == "Все";
+    })
+    .map((link)=>{
+        return(link.link_id);
+      }
+    );
+    let linkTxtForm = document.createElement("form");
+    linkTxtForm.target = "_blank";
+    linkTxtForm.method = "POST";
+    linkTxtForm.action = "/api/links/txt/";
+    let linkTxtInput = document.createElement("input");
+    linkTxtInput.type = "text";
+    linkTxtInput.name = "links";
+    linkTxtInput.value = links;
+    linkTxtForm.appendChild(linkTxtInput);
+    document.body.appendChild(linkTxtForm);
+    linkTxtForm.submit();
+    linkTxtForm.remove();
+  }
+
+  handleModalImage = (link)=>{
+    this.setState({
+      modal_image_url: link
+    });
+  }
+
+  handleModalClose = ()=>{
+    this.setState({
+      modal_image_url: ""
+    });
+  }
+
   render(){
     let links = this.props.links.map(
       (link)=>{
         if(link.target !== this.state.target && this.state.target !== "Все"){return false;}
-        let thumb = this.props.thumbs.find((thumb)=>thumb.id === link.resource);
+        let thumb = this.props.thumbs.find((thumb)=>thumb.id === link.resource_id);
         return(
-          <div data-linkid={link.id} key={"link"+link.id} className="link card-panel blue-grey lighten-2 white-text" onClick={()=>{this.handleLinkClick(link.id)}}>
-            <i className="fas fa-trash-alt delete-link" data-link={link.id} onClick={this.handleLinkDelete}></i>
+          <div data-linkid={link.link_id} key={"link"+link.link_id} className="link " onClick={()=>{this.handleLinkClick(link.link_id)}}>
+            <i className="fas fa-trash-alt delete-link" data-link={link.link_id} onClick={this.handleLinkDelete}></i>
             <div><b>Ссылка:</b>{link.external_url}</div>
-          <div><b>Органичение по запросам: </b>{link.max_requests}<b> раз, ссылка запрошена </b>{link.done_requests} раз</div>
-        <div><b>Срок действия: по </b>{link.expires_by}</div>
-      <div><b>Комментарий: </b>{link.comment}</div>
-    <span className={"resource-preview"+(typeof thumb === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:typeof thumb === 'undefined'?"none":"url(/catalogue/node/item/resource/"+thumb.thumb_id+".jpg)"}}></span>
+          <div><b>Товар: </b>{link.item_name}({link.item_id})</div>
+        <span className={"resource-preview"+(typeof thumb === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:typeof thumb === 'undefined'?"none":"url(/catalogue/node/item/resource/"+thumb.thumb_id+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+thumb.thumb_id+".jpg")}}></span>
           </div>
         )
       }
     );
     let tabs = ["Все"].concat(this.props.targets).map((target)=>{
         return(
-          <span className={"waves-effect hoverable waves-light card-panel target-panel"+(target===this.state.target?" cyan accent-1 grey-text text-darken-2":" cyan darken-1 white-text")} data-target={target} onClick={this.handleTargetChoice}>{target}</span>
+          <button className={(target===this.state.target?" active":"")} data-target={target} onClick={this.handleTargetChoice}>{target}</button>
         )
     })
     return(
-      <div className="link-list blue-grey lighten-5">
+      <div className="link-list  ">
+        {this.state.modal_image_url !== ""?<ModalImage image_url={this.state.modal_image_url} closeModalHandler={this.handleModalClose} width={320} height={180}/>:null}
         <div className="component-header">
           <h2 className="component-title">
             Ссылки
@@ -81,12 +117,15 @@ export class LinkList extends React.Component{
         </div>
         <div className="component-body">
           <div className="component-body__top-section">
-            <button onClick={this.handleLinkAdd} style={{float:"none"}} className="blue-grey waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-plus-circle"></i>Добавить</button>
-          <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className="blue-grey waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-copy"></i>Скопировать все</button>
-            <div className="link-list__tabs col s12">
+            <div className="button-block">
+              <button onClick={this.handleLinkAdd} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-plus-circle"></i>Добавить</button>
+              <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-copy"></i>Скопировать все</button>
+            <button onClick={this.handleGetTxt} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-align-justify"></i>Скачать ссылки</button>
+            </div>
+            <div className="link-list__tabs button-block">
               {tabs}
             </div>
-            {links.length==0?(<div className="resource card-panel red lighten-1 white-text">Нет ссылок</div>):links}
+            {links.length==0?(<div className="resource plaque warning"><i className="fas fa-times-circle"></i>Нет ссылок</div>):links}
           </div>
         </div>
       </div>

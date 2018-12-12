@@ -216,7 +216,7 @@ export class Uploads extends React.Component{
 
     return (
       <div className={"item-view__file-list file-list"} id={"file_list" + this.props.item.id}>
-          <div className="file-list__button-block">
+          <div className="file-list__button-block button-block">
             <button type="button" id={"browse" + this.props.item.id}><i className="fas fa-folder-open"></i>Выбрать файлы</button>
           <button type="button" disabled={!this.state.ready} onClick={this.handleSubmit} id={"submit" + this.props.item.id}><i className="fas fa-file-upload"></i>Загрузить выбранное</button>
 

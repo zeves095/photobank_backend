@@ -66,7 +66,7 @@ class LinkService{
     $link = $this->entityManager->getRepository(Link::class)->findOneBy([
       'id'=>$params['id']
     ]);
-    if(array_search('path', array_keys($params)) !== false && $params['path'] !== ''){$link->setPath($this->container->getParameter('local_file_dir').$params['path']);}
+    if(array_search('path', array_keys($params)) !== false && $params['path'] !== ''){$link->setPath($params['path']);}
     if(array_search('size_px', array_keys($params)) !== false && $params['size_px'] !== ''){$link->setSizePx($params['size_px']);}
     if(array_search('size_bytes', array_keys($params)) !== false && $params['size_bytes'] !== ''){$link->setSizeBytes($params['size_bytes']);}
     if(array_search('max_requests', array_keys($params)) !== false && $params['max_requests'] !== ''){$link->setMaxRequests($params['max_requests']);}
@@ -137,7 +137,6 @@ class LinkService{
   private function _checkAccess($link, $request)
   {
     $access = $link->getAccess();
-    var_dump($user);
     if($access == NULL){
       return true;
     }
@@ -169,6 +168,12 @@ class LinkService{
     return $links;
   }
 
+  public function fetchAllWithExtraFields($user)
+  {
+    $links = $this->entityManager->getRepository(Link::class)->fetchWithResourceAndItemInfo($user->getId());
+    return $links;
+  }
+
   public function deleteLink($link, $user)
   {
     $link = $this->entityManager->getRepository(Link::class)->findOneBy([
@@ -188,5 +193,20 @@ class LinkService{
     return true;
   }
 
+  public function getUrls($ids){
+    if(!is_array($ids)){
+      $ids = explode(",", $ids);
+    }
+    $repo = $this->entityManager->getRepository(Link::class);
+    $urls = array();
+    foreach($ids as $id){
+      $link = $repo->findOneBy([
+        'id'=>$id
+      ]);
+      array_push($urls, 'photobank.domfarfora.ru'.$link->getExternalUrl());
+    }
+    $urls = implode($urls, "\n");
+    return $urls;
+  }
 
 }

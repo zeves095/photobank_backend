@@ -4,7 +4,7 @@ namespace App\Serializer\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\CustomNormalizer;
-
+use App\Entity\Resource;
 use App\Entity\Link;
 
 class LinkNormalizer extends CustomNormalizer implements NormalizerInterface
@@ -27,6 +27,14 @@ class LinkNormalizer extends CustomNormalizer implements NormalizerInterface
             'resource' => $object->getSrcId(),
             'symlink' => $object->getSymlink(),
         ];
+
+        if($context['full-info']??false){
+          $resource =
+          $main_data = array_merge($main_data, [
+              'items' => $resource->serializer->normalize($item, $format, ['add-relation'=>true])
+          ]);
+        }
+
         return $main_data;
     }
 

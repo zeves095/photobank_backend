@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-
 import {init} from '../actionCreator'
 import LinkList from './LinkList';
 import LinkAdder from './LinkAdder';
@@ -24,10 +23,10 @@ export class LinkManager extends React.Component{
 
         </div>
         <div className="flex-wrapper">
-          {/*<div className="link-list col s12 m12 l6">*/}
+          {/*<div className="link-list">*/}
             <LinkList />
           {/*</div>*/}
-          {/*<div className="link-adder col s12 m12 l6">*/}
+          {/*<div className="link-adder">*/}
             <LinkAdder />
           {/*</div>*/}
         </div>

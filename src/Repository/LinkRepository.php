@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Link;
+use App\Entity\Resource;
+use App\Entity\CatalogueNodeItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -17,6 +19,21 @@ class LinkRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Link::class);
+    }
+
+    public function fetchWithResourceAndItemInfo($user_id)
+    {
+      $query = $this->getEntityManager()->createQuery(
+        'SELECT l.id as link_id, r.id as resource_id, i.id as item_id, l.target, 
+        l.external_url, i.name as item_name
+        FROM '.$this->_entityName.' l
+        INNER JOIN '.(Resource::class).' r
+        INNER JOIN '.(CatalogueNodeItem::class).' i
+        WHERE l.src_id = r.id
+        AND r.item = i.id
+        AND l.created_by = '. $user_id
+      );
+      return $query->execute();
     }
 
 //    /**

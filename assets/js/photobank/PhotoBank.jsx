@@ -3,7 +3,7 @@ import React from 'react';
 
 import { CatalogueTree } from './CatalogueTree';
 import { NodeViewer } from './NodeViewer';
-import { Draggable } from './Draggable';
+import { Draggable } from './../common/Draggable';
 import {ItemQueryObject} from './services/ItemQueryObject';
 import {ResourceService} from './../services/ResourceService';
 import {UploadService} from './services/UploadService';

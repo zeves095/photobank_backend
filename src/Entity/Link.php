@@ -79,7 +79,7 @@ class Link
     private $max_requests;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $done_requests;
 

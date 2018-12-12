@@ -22,7 +22,7 @@ class ResourceNormalizer extends CustomNormalizer implements NormalizerInterface
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        return [
+        $main_data = [
             'id'     => $object->getId(),
             'gid'     => $object->getGid(),
             'path'     => $this->container->getParameter('upload_directory')."/".$object->getPath(),
@@ -42,6 +42,14 @@ class ResourceNormalizer extends CustomNormalizer implements NormalizerInterface
             'comment' => $object->getComment(),
             'item' => $object->getItem()?$object->getItem()->getId():$object->getItem(),
         ];
+
+        if($context['add-relation']??false){
+            $main_data = array_merge($main_data, [
+                'item' => $this->serializer->normalize($object->getItem(), $format, [])
+            ]);
+        }
+
+        return $main_data;
     }
 
     /**

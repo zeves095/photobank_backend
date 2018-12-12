@@ -29,15 +29,23 @@ class NotificationService{
     return keys;
   }
 
-  static toast(key){
+  static toast(key, customMessage = ""){
     let keys = this._getKeys();
+    if(key === "custom"){
+      this._makeNotification(customMessage, 0, 3);
+      return;
+    }
     if(Object.keys(keys).indexOf(key) != -1){
       this._makeNotification(keys[key], 0, 3);
     }
   }
 
-  static throw(key){
+  static throw(key, customMessage = ""){
     let keys = this._getKeys();
+    if(key === "custom"){
+      this._makeNotification(customMessage, 1);
+      return;
+    }
     if(Object.keys(keys).indexOf(key) != -1){
       this._makeNotification(keys[key], 1);
     }else{this._makeNotification(keys["unknown-error"], 1);}

@@ -1,4 +1,15 @@
-@import './normalize.scss';
 @import '../fonts/webfonts/all.min.css';
 @import '../fonts/webfonts/fontawesome.min.css';
+@import './common/normalize.scss';
+
+@import './common/constants.scss';
+@import './common/mixins/index.scss';
+
+@import './common/materialize/materialize.min.css';
+
 @import './usermanager/index.scss';
+@import './common/themes/default.scss';
+
+@import './common/animations.scss';
+@import './common/notifications.scss';
+@import './common/overrides.scss';
