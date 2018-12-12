@@ -415,12 +415,18 @@ body {
 .link-list{
   .button-block{
     @include button-block();
+    button{
+      background-color: #ececec;
+    }
   }
 }
 
 .link-adder{
   .button-block{
     @include button-block();
+    button{
+      background-color: #ececec;
+    }
   }
 }
 

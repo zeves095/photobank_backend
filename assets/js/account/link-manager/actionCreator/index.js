@@ -14,6 +14,7 @@ import {
   LINK_SUBMIT,
   LINK_DELETE,
   LINK_UPDATE,
+  LINKS_TXT_DOWNLOAD,
   SUCCESS,
   FAIL
 } from '../constants';

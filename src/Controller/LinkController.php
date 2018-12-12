@@ -5,7 +5,9 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 use App\Message\LinkCreatedMessage;
@@ -86,10 +88,30 @@ class LinkController extends AbstractController
     }
 
     /**
-     * @Route("/txt/{link_id}", name="links_get_txt")
+     * @Route("/txt/", name="links_get_txt")
      */
-     public function getTxt($link_id){
-
+     public function getTxt(Request $request, LinkService $linkService){
+       // $data = json_decode(
+       //     $request->getContent(),
+       //     true
+       // );
+       $links = $request->request->get('links');
+       if(!isset($links)){
+         throw new HttpException(400);
+       }
+       $urls = $linkService->getUrls($links);
+       $response = new Response($urls);
+       $disposition = $response->headers->makeDisposition(
+         ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+        'links.txt'
+       );
+       $response->headers->set('Content-Disposition', $disposition);
+       $response->headers->set('Content-Length', strlen($urls));
+       $response->headers->set('Cache-Control', 'public');
+       $response->headers->set('Content-Description', 'File Transfer');
+       $response->headers->set('Content-Transfer-Encoding', 'binary');
+       $response->headers->set('Content-Type', 'binary/octet-stream');
+       return $response;
      }
 
     /**

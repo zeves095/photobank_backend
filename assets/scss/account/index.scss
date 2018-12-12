@@ -69,10 +69,8 @@
     position: relative;
     background-color: #f9f9f9;
     margin: 8px 0;
-    border-radius: 5px;
     i.delete-link{
       padding: 8.5px;
-      border-radius: 20px;
       background-color: #36647d;
       color: white;
       width: 18px;
@@ -102,13 +100,14 @@
   display: inline-block;
   background-repeat: no-repeat;
   background-size: 185%;
-  border-radius: 50px;
   border-color: #30657b;
   border-width: 0.5px;
   border-style: solid;
   position: absolute;
   right: 10px;
   top: 4px;
+  cursor: pointer;
+  pointer-events: all;
   &--loading::before{
     font-family: "Font Awesome 5 Free";
     font-weight: bolder;
@@ -162,7 +161,6 @@
 padding: 12px;
 background-color: #dc4444;
 color: white;
-border-radius: 5px;
 font-size: 14px;
 }
 
@@ -171,7 +169,6 @@ font-size: 14px;
 padding: 12px;
 background-color: #dc4444;
 color: white;
-border-radius: 5px;
 font-size: 14px;
 animation: foldout 0.5s;
 }
@@ -180,6 +177,9 @@ i.fas{
   padding-right: 5px;
 }
 
+.account-info{
+  display: none;
+}
 
 button{
   @include button-view();
