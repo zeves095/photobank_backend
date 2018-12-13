@@ -203,7 +203,7 @@ class LinkService{
       $link = $repo->findOneBy([
         'id'=>$id
       ]);
-      array_push($urls, 'photobank.domfarfora.ru'.$link->getExternalUrl());
+      array_push($urls, 'https://photobank.domfarfora.ru'.$link->getExternalUrl());
     }
     $urls = implode($urls, "\n");
     return $urls;
