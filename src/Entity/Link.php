@@ -79,7 +79,7 @@ class Link
     private $max_requests;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $done_requests;
 
@@ -97,6 +97,16 @@ class Link
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $hash;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $symlink;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $src_id;
 
     public function getId(): ?int
     {
@@ -291,6 +301,30 @@ class Link
     public function setHash(?string $hash): self
     {
         $this->hash = $hash;
+
+        return $this;
+    }
+
+    public function getSymlink(): ?bool
+    {
+        return $this->symlink;
+    }
+
+    public function setSymlink(bool $symlink): self
+    {
+        $this->symlink = $symlink;
+
+        return $this;
+    }
+
+    public function getSrcId(): ?int
+    {
+        return $this->src_id;
+    }
+
+    public function setSrcId(?int $src_id): self
+    {
+        $this->src_id = $src_id;
 
         return $this;
     }

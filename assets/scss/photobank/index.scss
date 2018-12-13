@@ -1,62 +1,9 @@
 $bordrad:0px;
 
-@mixin component-section (){
-  height: 90vh;
-  margin:0px;
-  border-radius:$bordrad;
-}
-
-@mixin component-inner (){
-  margin: 10px;
-}
-
-@mixin icon-view(){
-  display:inline-block;
-  padding:10px;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  .file__thumbnail{
-    background-size: cover;
-    background-position: center;
-    background-repeat:no-repeat;
-  }
-}
-
-@mixin list-item(){
-  padding:7px 15px;
-  h4{
-    margin:0;
-  }
-}
-
-@mixin table-cell(){
-  display: table-cell;
-  text-align: center;
-  //padding:5px;
-}
-
-@mixin button(){
-  border:none;
-  border-radius:$bordrad;
-  padding:10px 20px;
-  margin:2px;
-  font-size: 12pt;
-}
-
-@mixin button-view(){
-  border:none;
-  padding:10px;
-  margin:2px;
-  border-radius: $bordrad;
-  font-size: 12pt;
-}
-
 body {
   margin: 0;
   padding: 0;
   border: 0;
-  font-family: Roboto, sans-serif;
   button{
     cursor:pointer;
   }
@@ -74,7 +21,7 @@ i.fas{
   &::before{
     position: absolute;
     content: "";
-    background: repeating-linear-gradient( -55deg, #ffffff80 1px, #cecece80 2px, #cecece80 11px, #e6e6e680 12px, #e6e6e680 20px );
+    background: repeating-linear-gradient( -55deg, rgba(255,255,255,0.501) 1px, rgba(206,206,206,0.501) 2px, #rgba(206,206,206,0.501) 11px, rgba(255,255,255,0.501) 12px, rgba(255,255,255,0.501) 20px );
     background-repeat: repeat;
     width: 100%;
     height: 100%;
@@ -97,15 +44,10 @@ i.fas{
   }
 }
 
-@keyframes loading {
-  from {
-		background-position: 0 0;
-  	}
-	to {
-		background-position: 0 -100px;
-  	}
+.list-item{
+  @include list-item();
+  cursor: pointer;
 }
-
 
 @import "./blocks/userblock.scss";
 @import "./blocks/photobank-main/photobank-main.scss";
@@ -116,4 +58,3 @@ i.fas{
 @import "./blocks/item-view/item-view.scss";
 @import "./blocks/download-pool.scss";
 @import "./blocks/item-search.scss";
-@import "./overrides.scss";

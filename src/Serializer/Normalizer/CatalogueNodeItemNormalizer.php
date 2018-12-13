@@ -20,13 +20,18 @@ class CatalogueNodeItemNormalizer extends CustomNormalizer implements Normalizer
             'name'   => $object->getName(),
             'itemCode' => $object->getId(),
             'node' => $object->getNode()?$object->getNode()->getId():$object->getNode(),
-            'resources' => array_map(
-                function (Resource $resource) use ($format, $context){
-                    return $this->serializer->normalize($resource, $format, $context);
-                },
-                $object->getResources()->toArray()
-            ),
         ];
+
+        if($context['add-children']??false){
+            $main_data = array_merge($main_data, [
+              'resources' => array_map(
+                  function (Resource $resource) use ($format, $context){
+                      return $this->serializer->normalize($resource, $format, $context);
+                  },
+                  $object->getResources()->toArray()
+              ),
+          ]);
+        }
     }
 
     /**

@@ -1,9 +1,10 @@
 security:
-      access_control:
+    access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+        - { path: ^/catalogue/node/item/resource/thumbnails, roles: ROLE_USER, requires_channel: https }
         - { path: ^/catalogue/node/item/resource, methods: [PATCH], roles: ROLE_WRITER, requires_channel: https }
         - { path: ^/usermanager, roles: ROLE_ADMIN , requires_channel: https }
-        - { path: ^/link/create, roles: ROLE_USER , requires_channel: http }
-        - { path: ^/link/get, roles: IS_AUTHENTICATED_ANONYMOUSLY , requires_channel: http }
+        - { path: ^/api/link/create, roles: ROLE_USER , requires_channel: https }
+        - { path: ^/link/get, roles: IS_AUTHENTICATED_ANONYMOUSLY , requires_channel: https }
         - { path: ^/, methods: [PATCH, POST], roles: ROLE_WRITER, requires_channel: https }
-        - { path: ^/, roles: [ROLE_USER, ROLE_ADMIN] , requires_channel: https }
+        - { path: ^/, roles: ROLE_USER , requires_channel: https }

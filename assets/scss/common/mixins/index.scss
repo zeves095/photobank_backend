@@ -1,0 +1,159 @@
+@mixin component-section (){
+  height: 100vh;
+  margin:0px;
+  border-radius:$bordrad;
+}
+
+@mixin component-inner (){
+  margin: 10px;
+}
+
+@mixin component-title (){
+  margin: 0;
+  padding: 10px 25px;
+  font-weight: 100;
+  width:auto;
+  display: block;
+  border-radius: $bordrad $bordrad 0 0;
+  &__view-icons {
+    font-size: 12pt;
+    float:right;
+    cursor: pointer;
+    i{
+      padding:2px;
+    }
+  }
+}
+
+@mixin icon-view(){
+  display:inline-block;
+  padding:10px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  .file__thumbnail{
+    background-size: cover;
+    background-position: center;
+    background-repeat:no-repeat;
+  }
+}
+
+@mixin list-item(){
+  padding:7px 15px;
+  h4{
+    margin:0;
+  }
+}
+
+@mixin table-cell(){
+  display: table-cell;
+  text-align: center;
+}
+
+@mixin button(){
+  border:none;
+  border-radius:$bordrad;
+  padding:10px 20px;
+  margin:2px;
+  font-size: 12pt;
+}
+
+@mixin button-view(){
+  border:none;
+  padding:10px;
+  margin:2px;
+  border-radius: $bordrad;
+  font-size: 12pt;
+}
+
+@mixin icon-upload(){
+  overflow: hidden;
+  vertical-align: top;
+  position: relative;
+  border-radius:$bordrad;
+  text-align: center;
+  display:inline-block;
+  margin:10px;
+  .file-item__file-name{
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    z-index:100;
+    vertical-align: middle;
+    position: relative;
+  }
+  .file-item__delete-upload{
+    position: initial;
+    cursor: pointer;
+    &::after{
+      content: '';
+      position: relative;
+      background-color: transparent;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      transition: background-color 0.3s;
+    }
+    &:hover{
+      &::after{
+        position: absolute;
+        background-color: rgba(255,0,0,0.2);
+      }
+    }
+  }
+}
+
+@mixin download-controls{
+  overflow: hidden;
+  background-color: transparent !important;
+  i{
+    transition: margin-top 0.1s;
+    font-size: 12px;
+    position: absolute;
+    margin-top: 50px;
+    width: 25%;
+    height: 100%;
+    padding: 5px 0;
+    cursor:pointer;
+    &.get-url{
+      left: 0;
+    }
+    &.open-in-tab{
+      left: 25%;
+    }
+    &.dl-now{
+      right: 25%;
+    }
+    &.dl-cart-add{
+      right: 0;
+    }
+  }
+  &:hover{
+    i{
+      margin-top: 0;
+    }
+  }
+}
+
+@mixin form(){
+  background-color: #e9ebed;
+  button{
+    background-color: white !important;
+    &:hover{
+      background-color: #366479 !important;
+    }
+  }
+  padding:30px;
+  input{
+    padding: 5px;
+    border-color: #eaeaea;
+    border-style: solid;
+    border-width: 1px;
+    margin: 4px;
+    width: 98%;
+  }
+}

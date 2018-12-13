@@ -17,29 +17,8 @@
       padding: 2px 6px;
     }
   </style>
-  <nav class="nav-wrapper blue-grey darken-2">
-    <div class="brand-logo">
-      <i class="fas fa-camera"></i>PhotoBank - Личный кабинет</div>
-  </nav>
-  <div class="row main">
-    <div class="account-info col s6 m4 l2">
-      <div id="account-info-wrapper">
-        <div class="account-info__inner">
-          <div class="card horizontal user-info blue-grey lighten-2 white-text">
-            <div class="card-image">
-              <i class="fas fa-user-circle"></i>
-            </div>
-            <div class="card-content">
-              <strong>{{user_name}}</strong>
-            </div>
-          </div>
-          <a class="cyan darken-1 waves-effect waves-light btn" href="{{ path('logout') }}">Выход</a>
-        </div>
-      </div>
-    </div>
-    <div class="col s6 m8 l10 unset-padding">
+  <div class="account-wrapper row main">
       <div id="link-manager-wrapper"></div>
-    </div>
   </div>
 {% endblock %}
 

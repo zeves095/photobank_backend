@@ -4,7 +4,7 @@ import { ItemList } from './ItemList';
 import { ListFilter } from './ListFilter';
 import { UploadPool } from './UploadPool';
 import { DownloadPool } from './DownloadPool';
-import { Draggable } from './Draggable';
+import { Draggable } from './../common/Draggable';
 import {LocalStorageService} from './services/LocalStorageService';
 import {NotificationService} from '../services/NotificationService';
 

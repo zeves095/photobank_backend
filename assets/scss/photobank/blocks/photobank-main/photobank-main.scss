@@ -1,8 +1,9 @@
 .photobank-main {
 
   max-width: 100vw;
+}
 
-  &__butt-wrapper{
+  .photobank-main__butt-wrapper{
     position: fixed;
     bottom: 50px;
     left: 50vw;
@@ -16,7 +17,7 @@
     }
   }
 
-  &__main-block {
+  .photobank-main__main-block {
     display: flex;
     align-items: flex-start;
 
@@ -25,25 +26,11 @@
     }
 
     .component-title {
-      margin: 0;
-      padding: 10px 25px;
-      font-weight: 100;
-      //text-transform: uppercase;
-      width:auto;
-      display: block;
-      border-radius: $bordrad $bordrad 0 0;
-      &__view-icons {
-        font-size: 12pt;
-        float:right;
-        cursor: pointer;
-        i{
-          padding:2px;
-        }
-      }
+      @include component-title();
     }
     .draggable{
       width: 2px;
-      height: 90vh;
+      height: 100vh;
       cursor:col-resize;
       display: block;
       flex-shrink: 0;
@@ -53,41 +40,6 @@
     }
     #draggable-2{
       order:0;
-    }
-  }
-  #notification-overlay{
-    pointer-events: none;
-    position: fixed;
-    width: 250px;
-    height: auto;
-    bottom: 30px;
-    right: 25px;
-    z-index: 1000;
-    &>.notification{
-      position: relative;
-      width: 200px;
-      animation-name: slidein;
-      animation-duration: 0.4s;
-      pointer-events: all;
-      margin: 10px 0;
-      padding: 5px 25px;
-      button{
-        i{
-          pointer-events: none;
-        }
-        top: 20px;
-        right: 10px;
-        position: absolute;
-        width: 30px;
-        height: 30px;
-      }
-      &__notification-caption{
-        padding: 20px;
-      }
-      &--out{
-        animation-name: slideout;
-        animation-duration: 0.4s;
-      }
     }
   }
 
@@ -100,22 +52,3 @@
   .inner-bump{
     margin-top: 45px !important;
   }
-
-  @keyframes slidein {
-    from {
-  		margin-left: 1000px;
-    	}
-  	to {
-  		margin-left: 0px;
-    	}
-  }
-
-  @keyframes slideout {
-    from {
-  		margin-left: 0px;
-    	}
-  	to {
-  		margin-left: 1000px;
-    	}
-  }
-}

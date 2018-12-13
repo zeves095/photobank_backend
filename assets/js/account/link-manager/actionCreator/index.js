@@ -1,9 +1,11 @@
 import {NotificationService} from '../../../services/NotificationService';
 import {
+  USER_INFO_FETCH,
   RESOURCE_PRESETS_FETCH,
   RESOURCE_TYPES_FETCH,
   LINK_CHOICE,
   LINK_ADD,
+  LINK_STOP_EDITING,
   RESOURCE_SEARCH,
   RESOURCE_CHOICE,
   RESOURCE_THUMBNAIL,
@@ -12,6 +14,8 @@ import {
   LINK_FETCH,
   LINK_SUBMIT,
   LINK_DELETE,
+  LINK_UPDATE,
+  LINKS_TXT_DOWNLOAD,
   SUCCESS,
   FAIL
 } from '../constants';
@@ -29,7 +33,7 @@ export function init(){
         payload: response,
       });
       dispatch(fetchLinks());
-    }).catch(()=>{
+    }).catch((error)=>{
       dispatch({
         type: RESOURCE_PRESETS_FETCH+FAIL,
         payload: response,
@@ -43,10 +47,24 @@ export function init(){
         payload: response,
       });
       dispatch(fetchLinks());
-    }).catch(()=>{
+    }).catch((error)=>{
       dispatch({
         type: RESOURCE_TYPES_FETCH+FAIL,
+        payload: "",
+      });
+    });
+    fetch("/account/getinfo/", params)
+    .then((response)=>response.json())
+    .then((response)=>{
+      dispatch({
+        type: USER_INFO_FETCH+SUCCESS,
         payload: response,
+      });
+      dispatch(fetchLinks());
+    }).catch((error)=>{
+      dispatch({
+        type: USER_INFO_FETCH+FAIL,
+        payload: "",
       });
     });
   }
@@ -62,6 +80,13 @@ export function chooseLink(id){
 export function addLink(){
   return {
     type: LINK_ADD,
+    payload: ''
+  }
+}
+
+export function stopEditing(){
+  return {
+    type: LINK_STOP_EDITING,
     payload: ''
   }
 }
@@ -94,10 +119,7 @@ export function getResourceThumbnails(resources){
   return (dispatch)=>{
     let request = {resources:[]};
     resources.forEach((resource)=>{
-      request.resources.push({
-        id: resource.id,
-        gid: resource.gid
-      });
+      request.resources.push(resource.id);
     });
     let params = {
       method: "POST",
@@ -106,7 +128,6 @@ export function getResourceThumbnails(resources){
     fetch("/catalogue/node/item/resource/thumbnails/",params)
     .then((response)=>response.json())
     .then((payload)=>{
-      console.warn(payload);
         dispatch({
           type: RESOURCE_THUMBNAIL+SUCCESS,
           payload
@@ -116,7 +137,11 @@ export function getResourceThumbnails(resources){
         type: RESOURCE_THUMBNAIL+FAIL,
         payload
       });
-      NotificationService.throw("thumbnail-error");
+      if(typeof error.error !== 'undefined'){
+        NotificationService.throw("custom", error.error);
+      }else{
+        NotificationService.throw("thumbnail-error");
+      }
     });
   }
 }
@@ -126,10 +151,12 @@ export function searchResources(searchObject={}){
     let params = {
       method: "GET",
     }
-    Object.keys(searchObject).forEach((key)=>{
-      searchObject[key] = searchObject[key].toLowerCase();
-    });
-    fetch("/catalogue/search/resources"+"?"+Object.keys(searchObject).map(key=>key + '=' + searchObject[key]).join('&'), params)
+    // Object.keys(searchObject).forEach((key)=>{
+    //   searchObject[key] = searchObject[key].toLowerCase();
+    // });
+    fetch("/catalogue/search/resources"+"?"+Object.keys(searchObject).map(
+      key=>{if(typeof searchObject[key] === 'undefined'){return "";}return key + '=' + searchObject[key]}).join('&'),
+      params)
     .then((response)=>response.json())
     .then((response)=>{
       dispatch({
@@ -137,12 +164,16 @@ export function searchResources(searchObject={}){
         payload: response,
       });
       dispatch(getResourceThumbnails(response));
-    }).catch(()=>{
+    }).catch((error)=>{
       dispatch({
         type: RESOURCE_SEARCH+FAIL,
         payload: response,
       });
-      NotificationService.throw("search-error");
+      if(typeof error.error !== 'undefined'){
+        NotificationService.throw("custom", error.error);
+      }else{
+        NotificationService.throw("search-error");
+      }
     });
   }
 }
@@ -180,13 +211,17 @@ export function deleteLink(id){
         type: LINK_DELETE+SUCCESS,
         payload: response,
       });
-      dispatch(fetchLinks());
-    }).catch(()=>{
+      setTimeout(()=>{dispatch(fetchLinks())},400);
+    }).catch((error)=>{
       dispatch({
         type: LINK_DELETE+FAIL,
         payload: response,
       });
-      NotificationService.throw("link-delete-error");
+      if(typeof error.error !== 'undefined'){
+        NotificationService.throw("custom", error.error);
+      }else{
+        NotificationService.throw("link-delete-error");
+      }
     });
   }
 }
@@ -203,12 +238,22 @@ export function fetchLinks(){
         type: LINK_FETCH+SUCCESS,
         payload: response,
       });
-    }).catch(()=>{
+      let resources = response.map((link)=>{
+        return {
+          id:link.resource_id
+        }
+      })
+      dispatch(getResourceThumbnails(resources));
+    }).catch((error)=>{
       dispatch({
         type: LINK_FETCH+FAIL,
         payload: "",
       });
-      NotificationService.throw("link-fetch-error");
+      if(typeof error.error !== 'undefined'){
+        NotificationService.throw("custom", error.error);
+      }else{
+        NotificationService.throw("link-fetch-error");
+      }
     });
   }
 }
@@ -219,27 +264,73 @@ export function submitLink(form){
       method: "POST",
       body: JSON.stringify(form)
     }
-    fetch("/api/links/submit", params).then((response)=>{
+    fetch("/api/links/submit", params)
+    .then((response)=>{
+      console.log(response);
       if(response.status === 200){
         dispatch({
           type: LINK_SUBMIT+SUCCESS,
           payload: form,
         });
         NotificationService.toast("link-added");
+        setTimeout(()=>{dispatch(fetchLinks())}, 400);
+        return;
+      }else{
+          response.json().then((response)=>{
+            dispatch({
+              type: LINK_SUBMIT+FAIL,
+              payload: form,
+            });
+            console.log(typeof response.error !== 'undefined');
+            if(typeof response.error !== 'undefined'){
+              console.log("CUSTOM");
+              NotificationService.throw("custom", response.error);
+            }else{
+              console.log("NOT CUSTOM NOT CUSTOM");
+              NotificationService.throw("link-add-error");
+            }
+          });
+      }
+    });
+  }
+}
+
+export function updateLink(form, link){
+  return (dispatch)=>{
+    form['id'] = link;
+    let params = {
+      method: "POST",
+      body: JSON.stringify(form)
+    }
+    fetch("/api/links/update/"+link, params).then((response)=>{
+      if(response.status === 200){
+        dispatch({
+          type: LINK_UPDATE+SUCCESS,
+          payload: form,
+        });
+        NotificationService.toast("link-updated");
         dispatch(fetchLinks());
       } else{
         dispatch({
-          type: LINK_SUBMIT+FAIL,
+          type: LINK_UPDATE+FAIL,
           payload: form,
         });
-        NotificationService.throw("link-add-error");
+        if(typeof error.error !== 'undefined'){
+          NotificationService.throw("custom", error.error);
+        }else{
+          NotificationService.throw("link-update-error");
+        }
       }
-    }).catch(()=>{
+    }).catch((error)=>{
       dispatch({
-        type: LINK_SUBMIT+FAIL,
+        type: LINK_UPDATE+FAIL,
         payload: form,
       });
-      NotificationService.throw("link-add-error");
+      if(typeof error.error !== 'undefined'){
+        NotificationService.throw("custom", error.error);
+      }else{
+        NotificationService.throw("link-update-error");
+      }
     });
   }
 }

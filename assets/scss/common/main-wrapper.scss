@@ -1,0 +1,14 @@
+.main-wrapper{
+  display: flex;
+  height:100vh;
+  // width: 100vw;
+  .menublock{
+    flex:0;
+    &.open{
+      flex:1;
+    }
+  }
+  .body-container{
+    flex:8;
+  }
+}

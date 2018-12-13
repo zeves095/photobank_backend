@@ -102,6 +102,7 @@ class CatalogueController extends AbstractController
         $response = new JsonResponse();
 
         $citemArray = $serializer->normalize($citem, null, array(
+          'add-children'=>true,
             ObjectNormalizer::ENABLE_MAX_DEPTH => true,
             'groups' => array('main','parent')
         ));
@@ -121,6 +122,7 @@ class CatalogueController extends AbstractController
         $response = new JsonResponse();
 
         $citemArray = $serializer->normalize($citem, null, array(
+          'add-children'=>true,
             ObjectNormalizer::ENABLE_MAX_DEPTH => true,
             'groups' => array('main','parent')
         ));
@@ -176,6 +178,7 @@ class CatalogueController extends AbstractController
       $queryObject = $queryBuilder->makeResourceQuery($request);
       $resources = $searchService->search($queryObject);
       $resourcesArray = $serializer->normalize($resources, null, array(
+          "add-relation"=>true,
           ObjectNormalizer::ENABLE_MAX_DEPTH => true,
           'groups' => array('main')
       ));
@@ -200,6 +203,25 @@ class CatalogueController extends AbstractController
         $response->setData($resourceArray);
         return $response;
     }
+
+    /**
+     * @Route(
+     *      "/catalogue/node/item/resource/full/{id}",
+     *      methods={"GET"},
+     *      name="catalogue_node_item_resource_with_item",
+     *      requirements={"id"="\d+"}
+     * )
+     */
+    public function getResourceWithItem(Resource $resource, AppSerializer $serializer)
+    {
+        $response = new JsonResponse();
+
+        $resourceArray = $serializer->normalize($resource, null, ['add-relation'=>true]);
+
+        $response->setData($resourceArray);
+        return $response;
+    }
+
     /**
      * @Route(
      *      "/catalogue/node/item/resources/{id}",
@@ -218,6 +240,7 @@ class CatalogueController extends AbstractController
         $response->setData($resourcesArray);
         return $response;
     }
+
     /**
      * @Route(
      *      "/catalogue/node/item/resource/{id}.{_format}",
@@ -302,12 +325,9 @@ class CatalogueController extends AbstractController
              $request->getContent(),
              true
          );
-         $thumbnails = array();
+         $thumbnailids = array();
          $repo = $entityManager->getRepository(Resource::class);
-         foreach($data['resources'] as $resource){
-           $thumbnail = $repo->getThumbnail($resource['gid']);
-           array_push($thumbnails, ['id'=>$resource['id'], 'thumbnail'=>$thumbnail->getId()]);
-         }
+         $thumbnails = $repo->getThumbnailIds($data['resources']);
          $response = new JsonResponse();
          $response->setData($thumbnails);
          return $response;

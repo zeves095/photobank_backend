@@ -1,0 +1,81 @@
+.menublock {
+  transition: flex 0.5s;
+  min-width: 32px;
+  position: relative;
+  font-size: 15px;
+  color:white;
+  .collapsible{
+    display: none;
+  }
+  .account-info{
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+    margin-top: 50px;
+    color:#333;
+    padding: 5px 0 5px 0;
+    background-color: #aaa;
+    a{
+      color:#333;
+    }
+    i{
+      font-size: 15px;
+    }
+  }
+  a{
+    display: block;
+    margin:4px;
+    color:white;
+    white-space: nowrap;
+    text-align: center;
+  }
+  i{
+    padding-right: 0;
+  }
+  background-color: #777;
+  .menu-collapse {
+    position: absolute;
+    right: 3px;
+    top: 5px;
+    font-style: normal;
+    font-size: 30px;
+    font-family: "Font Awesome 5 Free";
+    cursor: pointer;
+    &::before {
+      content: "\f152";
+    }
+  }
+
+  &.open {
+    font-size: 15px;
+    .account-info{
+      font-size: 18px;
+      padding: 10px 0 20px 0;
+      a{
+        text-align: center;
+        padding:10px;
+        border: 1px solid #333;
+        border-radius: 5px;
+      }
+      i{
+        font-size: 30px;
+      }
+    }
+    a{
+      margin: 10px;
+      text-align: left;
+    }
+    i{
+      padding-right: 5px;
+    }
+    .collapsible{
+      display: inline-block;
+    }
+    .menu-collapse {
+      right: 10px;
+      &::before {
+        content: "\f191";
+      }
+    }
+  }
+}

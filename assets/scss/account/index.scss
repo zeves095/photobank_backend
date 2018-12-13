@@ -2,142 +2,102 @@
   display: none;
 }
 
-.account-info {
-  background-color: #36484e;
-  height: 90vh;
-  color: white;
-  overflow: auto;
-  .card-content{
-    padding: 20px 24px;
-    font-size: 1.3em;
-  }
-}
-
-.link-list {
-  height: 90vh;
-  overflow: auto;
-}
-
-.link-adder{
-  height:90vh;
-  overflow: auto;
-}
-
-.link-add-form__form{
-  overflow: visible !important;
-}
-
-.user-info {
-  & > .card-image {
-    i {
-      font-size: 2em;
-      margin: 0.7em;
-    }
-  }
-}
-.component-header{
-  h2{
-    font-size: 2em;
-    color:#333;
-  }
-  &--subcomponent{
-    h2{
-      color:#555;
-      margin:0;
-      font-size: 1.5em;
-    }
-  }
-}
-
-.subinput{
-  span{
-    font-size: 0.8rem !important;
-    padding-left: 20px !important;
-    &::before{
-      width: 15px !important;
-      height: 15px !important;
-      position: absolute !important;
-    }
-  }
-}
-
-button{
-  float: right;
-  margin-right: 15px !important;
-  .fas{
-    font-size: 0.9em;
-    margin: 0 5px 0 -6px;
-    pointer-events: none;
-  }
-}
-
-.target-panel{
+.nav-wrapper{
   margin:10px;
+  font-size: 1.2em;
 }
 
-.input-field{
-  margin-top: 0.2em !important;
-  margin-bottom: 0.2em !important;
-}
-
-// .link-adder{
-//   max-width:0px;
-//   transition: 0.5s;
-//   &.open{
-//     max-width:1000px;
-//   }
-// }
-
-.row.main{
-  margin-bottom: 0 !important;
-}
-
-.card-panel{
-  padding: 12px !important;
-  .left-icon{
-    padding-right:8px;
+.link-section, .resource-section{
+  flex:1;
+  overflow: hidden;
+  .component-body{
+    margin: 0 10px;
+  }
+  .component-header{
+    margin: 0 -10px;
   }
 }
 
-.brand-logo i{
-  margin: 19px;
+.adder-controls{
+  background-color: #e9ebed;
+  flex-basis: 100%;
+  width:100%;
+  .button-block{
+    float: right;
+  }
 }
 
-.resource-preview{
-  width: 35px;
-    height: 35px;
-    background-position: center;
-    display: inline-block;
-    background-repeat: no-repeat;
-    background-size: 153%;
-    border-radius: 50px;
-    /* margin-top: -20px; */
-    position: absolute;
-    right: 10px;
-    top: 6px;
-    &--loading::before{
-      font-family: "Font Awesome 5 Free";
-      font-weight: bolder;
-      content:'\f110';
-      font-size: 25px;
-      padding: 0 5px;
-      animation: rotation 2s infinite linear;
-      display: inline-block;
+.resource-section{
+  min-width: 200px;
+  .resource-explorer{
+    display:flex;
+    flex-direction: column;
+    height:96vh;
+    .resource-search-form{
+      flex: 1;
     }
+    .resource-search-results{
+      flex: 1;
+      flex-grow: 2;
+      overflow: auto;
+    }
+  }
+}
+.link-section{
+  min-width: 200px;
+    display:flex;
+    flex-direction: column;
+    height:96vh;
+    .link-add-form{
+      transition: 0.5s;
+      flex: 0;
+      padding: 0;
+      overflow: hidden;
+      &.open{
+        overflow: visible;
+        padding: 30px;
+        flex:1;
+      }
+    }
+    .link-resource{
+      flex: 1;
+      flex-grow: 2;
+      overflow: auto;
+    }
+}
+
+.flex-wrapper{
+  display:flex;
+  flex-wrap: wrap;
+  .link-list{
+    overflow: auto;
+    padding: 0 10px;
+    width:auto;
+    flex:1;
+  }
+  .link-adder{
+    .component-title{
+      background-color: #f9f9f9;
+      @include component-title();
+      margin: 0 -10px;
+    }
+    transition:flex 0.5s;
+    width:auto;
+    overflow: auto;
+    flex:0;
+    &.open{
+      flex:2;
+    }
+  }
 }
 
 .resource{
   position: relative;
+  @include list-item();
 }
 
 .link-resource .resource{
   animation: unfold 0.5s;
-}
-
-.card-panel{
-  overflow: hidden;
-white-space: nowrap;
-text-overflow: ellipsis;
 }
 
 .add-res{
@@ -146,149 +106,144 @@ text-overflow: ellipsis;
     cursor: pointer;
 }
 
-.link.card-panel{
-  position: relative;
-  i.delete-link{
-    position: absolute;
-    right: 10px;
-    font-size: 1.5em;
-    cursor: pointer;
+.link-list{
+  &.shrunk{
+    opacity: 0.6;
+  }
+  .component-title{
+    background-color: #f9f9f9;
+    @include component-title();
+    margin: 0 -10px;
+  }
+  background-color: #eaecee;
+  .link{
+    padding:9px 15px;
+    position: relative;
+    background-color: #f9f9f9;
+    margin: 8px 0;
+    i.delete-link{
+      padding: 8.5px;
+      background-color: #36647d;
+      color: white;
+      width: 18px;
+      text-align: center;
+      position: absolute;
+      right: 55px;
+      top:4px;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+    .link-info{
+      width:80%;
+    }
   }
 }
 
-.nav-wrapper{
-  position: relative !important;
-  z-index: 1000 !important;
+.draggable{
+  width: 2px;
+  height: 100vh;
+  cursor:col-resize;
+  display: block;
+  flex-shrink: 0;
+}
+
+.resource-preview{
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  background-position: center;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 185%;
+  border-color: #30657b;
+  border-width: 0.5px;
+  border-style: solid;
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  cursor: pointer;
+  pointer-events: all;
+  &--loading::before{
+    font-family: "Font Awesome 5 Free";
+    font-weight: bolder;
+    content:'\f110';
+    font-size: 29px;
+  padding: 0 3px;
+    animation: rotation 2s infinite linear;
+    display: inline-block;
+  }
 }
 
 .flex-wrapper{
-  display:flex;
-  .link-list{
-    padding: 0 10px;
-    width:auto;
-    flex:1;
-  }
-  .link-adder{
-    transition:flex 0.5s;
-    width:auto;
-    flex:0;
-    &.open{
-      padding: 0 10px;
-      flex:1;
-    }
-  }
+  height: 100vh;
 }
 
-.unset-padding{
-  padding:0 !important;
-}
+// .link-adder .link-adder__inneropen{
+//   display: -webkit-flex;
+//   display: -ms-flex;
+//   display: flex;
+//   .component-header{
+//     display:block;
+//   }
+//   .column1{
+//     margin:10px;
+//     flex:1;
+//   }
+//   .column2{
+//     margin:10px;
+//     flex:1;
+//   }
+// }
 
-#notification-overlay{
-  pointer-events: none;
-  position: fixed;
-  width: 250px;
-  height: auto;
-  bottom: 30px;
-  right: 10px;
-  z-index: 1000;
-  &>.notification{
-    position: relative;
-    width: 250px;
-    animation-name: slidein;
-    animation-duration: 0.4s;
-    pointer-events: all;
-    margin: 10px 0;
-    padding: 5px 25px;
-    button{
-      i{
-        pointer-events: none;
-      }
-      top: 20px;
-      right: 10px;
-      position: absolute;
-      width: 30px;
-      height: 30px;
+.resource-search-results, .link-resource{
+  .list-item{
+    pointer-events: none;
+    @include list-item();
+    padding: 14px 15px;
+    margin: 4px 0;
+    cursor: pointer;
+    i{
+      pointer-events: all;
     }
-    &__notification-caption{
-      padding: 20px;
-    }
-    &--out{
-      animation-name: slideout;
-      animation-duration: 0.4s;
+    &.selected{
+      background-color:#36647d;
+      color:white;
     }
   }
 }
 
-#notification-overlay{
-  &>.notification{
-    border-radius: 5px;
-    button{
-      border:none;
-      border-radius: 30px;
-      font-size: 20px;
-      padding: 0;
-    }
-    .notification__notification-caption{
-      font-weight: bold;
-      font-size: 15px;
-    }
-    &--toast{
-      background-color: #41758aad;
-      .notification__notification-caption{
-        color: #fafdff;
-        border-bottom: 2px solid #fafdff;
-      }
-      button{
-        background-color: #41758aad;
-        color: #fafdff;
-      }
-    }
-    &--error{
-      background-color: #a71b1bad;
-      .notification__notification-caption{
-        color: #fff1f1;
-        border-bottom: 2px solid #fff1f1;
-      }
-      button{
-        background-color: #a71b1bad;
-        color: #fff1f1;
-      }
-    }
+.plaque.warning{
+  margin: 2px 2px 10px;
+padding: 12px;
+background-color: #dc4444;
+color: white;
+font-size: 14px;
+}
+
+.confirmator-question{
+  margin: 2px 2px 10px;
+padding: 12px;
+background-color: #dc4444;
+color: white;
+font-size: 14px;
+animation: foldout 0.5s;
+}
+
+i.fas{
+  padding-right: 5px;
+}
+
+button{
+  @include button-view();
+  &.active{
+    color:white !important;
+    background-color: #366479 !important;
   }
 }
 
-@keyframes slidein {
-  from {
-    margin-left: 1000px;
-    }
-  to {
-    margin-left: 0px;
-    }
-}
-
-@keyframes slideout {
-  from {
-    margin-left: 0px;
-    }
-  to {
-    margin-left: 1000px;
-    }
-}
-
-@keyframes rotation {
-		from {
-				transform: rotate(0deg);
-		}
-		to {
-				transform: rotate(359deg);
-		}
-}
-
-@keyframes unfold {
-  from {
-      width: 0%;
-  }
-  to {
-      width: 100%;
+.link-add-form, .resource-search-form{
+  @include form();
+  input[type='checkbox']{
+    width:auto
   }
 }
