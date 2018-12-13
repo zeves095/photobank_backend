@@ -10,6 +10,7 @@ export default {
         title:"",
         properties: {
           width: {
+            description:"Это ширина",
             type: "number",
             title: "Ширина"
           },
@@ -43,11 +44,11 @@ export default {
     }
   },
   uiSchema: {
+    target: {"ui:widget": "text"},
     size:{
-      width: {"ui:widget": "updown"},
+      width: {"ui:widget": "updown", "ui:help":"Соотношение полей должно быть в диапазоне 1-2.3"},
       height: {"ui:widget": "updown"}
     },
-    target: {"ui:widget": "text"},
     max_requests: {"ui:widget": "hidden"},
     expires_by: {"ui:widget": "hidden"},
     access: {"ui:widget": "hidden"},

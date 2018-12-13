@@ -14,8 +14,9 @@ export class LinkResource extends React.Component{
     };
   }
 
-  handleRemoveChosenResource = (e)=>{
-    this.props.removeResourceFromPool(e.target.dataset['res']);
+  handleRemoveChosenResource = (id)=>{
+        //this.props.removeResourceFromPool(e.target.dataset['res']);
+    this.props.removeResourceFromPool(id);
   }
 
   handleModalImage = (link)=>{
@@ -36,7 +37,7 @@ export class LinkResource extends React.Component{
     :this.props.resources.map((res)=>{
       return(
         <div className="resource list-item">
-          <i className="fas fa-minus-circle add-res" data-res={res.id} onClick={this.handleRemoveChosenResource}></i>
+          <i className="fas fa-minus-circle add-res" data-res={res.id} onClick={()=>{this.handleRemoveChosenResource(res.id)}}></i>
         <span className={"resource-preview"+(typeof res.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+res.thumbnail+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+res.id+".jpg")}}></span>
             {res.item.name+"("+res.item.id+")"}
             {res.size_px}

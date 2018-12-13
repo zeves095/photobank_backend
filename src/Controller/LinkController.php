@@ -54,17 +54,18 @@ class LinkController extends AbstractController
         return $response;
       }
       $sizeIsSet = isset($data['size']['width']) && isset($data['size']['height']);
-      $sizeWithinBounds = $sizeIsSet&&($data['size']['width']>0&&$data['size']['height']>0);
-      $ratioOk = $sizeWithinBounds&&($data['size']['height']/$data['size']['width'] < 2.3 || $data['size']['width']/$data['size']['height'] > 1);
-      if(!$ratioOk){
-        $response = new JsonResponse();
-        $response->setData([
-          'error'=>'Неверное соотношение высоты/ширины'
-        ]);
-        $response->setStatusCode(400);
-        return $response;
+      if($sizeIsSet){
+        $sizeWithinBounds = ($data['size']['width']>0&&$data['size']['height']>0);
+        $ratioOk = $sizeWithinBounds&&($data['size']['height']/$data['size']['width'] < 2.3 || $data['size']['width']/$data['size']['height'] > 1);
+        if(!$ratioOk){
+          $response = new JsonResponse();
+          $response->setData([
+            'error'=>'Неверное соотношение высоты/ширины'
+          ]);
+          $response->setStatusCode(400);
+          return $response;
+        }
       }
-
       foreach($resourceIds as $res_id){
         $post = $data;
         $user = $this->getUser();

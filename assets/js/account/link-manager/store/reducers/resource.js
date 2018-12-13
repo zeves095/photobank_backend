@@ -40,9 +40,7 @@ export default (resource = defaultState, action) => {
         resource = {...resource, resource_chosen:resPool};
         break;
       case RESOURCE_REMOVE:
-        let removingResource = resource.resources_found.find((res)=>res.id===action.payload);
-        resPool.pop(removingResource);
-        resPool = resPool.slice();
+        resPool = resPool.filter((res)=>{return res.id!==action.payload}).slice();
         resource = {...resource, resource_chosen:resPool};
         break;
       case RESOURCE_THUMBNAIL+SUCCESS:
