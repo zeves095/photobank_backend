@@ -35,7 +35,8 @@ export default (resource = defaultState, action) => {
       case RESOURCE_ADD:
         let addingResource = resource.resources_found.find((res)=>res.id===action.payload);
         resPool.push(addingResource);
-        resPool = resPool.slice();
+        resPool = Array.from(new Set(resPool));
+        // resPool = resPool.slice();
         resource = {...resource, resource_chosen:resPool};
         break;
       case RESOURCE_REMOVE:

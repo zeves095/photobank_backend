@@ -48,10 +48,10 @@ export class LinkResource extends React.Component{
         {this.state.modal_image_url !== ""?<ModalImage image_url={this.state.modal_image_url} closeModalHandler={this.handleModalClose} width={320} height={180}/>:null}
         <div className="component-header component-header--subcomponent">
           <h2 className="component-title">
-            Выбранный ресурс
+            Выбранные ресурсы
           </h2>
         </div>
-        <div className="component-body component-body--subcomponent">
+        <div className="component-body component-body--subcomponent search-results">
             {resource}
         </div>
       </div>

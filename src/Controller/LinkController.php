@@ -53,7 +53,10 @@ class LinkController extends AbstractController
         $response->setStatusCode(400);
         return $response;
       }
-      if(isset($data['size']['width']) && isset($data['size']['height']) && ($data['size']['height']/$data['size']['width'] > 2.3 || $data['size']['width']/$data['size']['height'] < 1)){
+      $sizeIsSet = isset($data['size']['width']) && isset($data['size']['height']);
+      $sizeWithinBounds = $sizeIsSet&&($data['size']['width']>0&&$data['size']['height']>0);
+      $ratioOk = $sizeWithinBounds&&($data['size']['height']/$data['size']['width'] < 2.3 || $data['size']['width']/$data['size']['height'] > 1);
+      if(!$ratioOk){
         $response = new JsonResponse();
         $response->setData([
           'error'=>'Неверное соотношение высоты/ширины'

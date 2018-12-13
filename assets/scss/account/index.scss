@@ -7,18 +7,68 @@
   font-size: 1.2em;
 }
 
-.account-wrapper{
-  display: flex;
-  #link-manager-wrapper{
-    flex:5;
+.link-section, .resource-section{
+  flex:1;
+  overflow: hidden;
+  .component-body{
+    margin: 0 10px;
   }
-  .account-info{
-    flex:1;
+  .component-header{
+    margin: 0 -10px;
   }
+}
+
+.adder-controls{
+  background-color: #e9ebed;
+  flex-basis: 100%;
+  width:100%;
+  .button-block{
+    float: right;
+  }
+}
+
+.resource-section{
+  min-width: 200px;
+  .resource-explorer{
+    display:flex;
+    flex-direction: column;
+    height:96vh;
+    .resource-search-form{
+      flex: 1;
+    }
+    .resource-search-results{
+      flex: 1;
+      flex-grow: 2;
+      overflow: auto;
+    }
+  }
+}
+.link-section{
+  min-width: 200px;
+    display:flex;
+    flex-direction: column;
+    height:96vh;
+    .link-add-form{
+      transition: 0.5s;
+      flex: 0;
+      padding: 0;
+      overflow: hidden;
+      &.open{
+        overflow: visible;
+        padding: 30px;
+        flex:1;
+      }
+    }
+    .link-resource{
+      flex: 1;
+      flex-grow: 2;
+      overflow: auto;
+    }
 }
 
 .flex-wrapper{
   display:flex;
+  flex-wrap: wrap;
   .link-list{
     overflow: auto;
     padding: 0 10px;
@@ -36,8 +86,7 @@
     overflow: auto;
     flex:0;
     &.open{
-      padding: 0 10px;
-      flex:1;
+      flex:2;
     }
   }
 }
@@ -58,6 +107,9 @@
 }
 
 .link-list{
+  &.shrunk{
+    opacity: 0.6;
+  }
   .component-title{
     background-color: #f9f9f9;
     @include component-title();
@@ -81,12 +133,15 @@
       font-size: 1.5em;
       cursor: pointer;
     }
+    .link-info{
+      width:80%;
+    }
   }
 }
 
 .draggable{
   width: 2px;
-  height: 90vh;
+  height: 100vh;
   cursor:col-resize;
   display: block;
   flex-shrink: 0;
@@ -120,28 +175,25 @@
 }
 
 .flex-wrapper{
-  height: 92vh;
+  height: 100vh;
 }
 
-.account-info{
-  overflow: auto;
-  text-align: center;
-  font-size: 20px;
-  color: #FFF;
-  background-color: #777;
-  .user-info{
-    margin: 20px 0;
-  }
-  .account-name{
-    display: inline-block;
-  }
-  .account-image{
-    display: inline-block;
-  }
-  .logout-btn{
-
-  }
-}
+// .link-adder .link-adder__inneropen{
+//   display: -webkit-flex;
+//   display: -ms-flex;
+//   display: flex;
+//   .component-header{
+//     display:block;
+//   }
+//   .column1{
+//     margin:10px;
+//     flex:1;
+//   }
+//   .column2{
+//     margin:10px;
+//     flex:1;
+//   }
+// }
 
 .resource-search-results, .link-resource{
   .list-item{
@@ -152,6 +204,10 @@
     cursor: pointer;
     i{
       pointer-events: all;
+    }
+    &.selected{
+      background-color:#36647d;
+      color:white;
     }
   }
 }
@@ -175,10 +231,6 @@ animation: foldout 0.5s;
 
 i.fas{
   padding-right: 5px;
-}
-
-.account-info{
-  display: none;
 }
 
 button{

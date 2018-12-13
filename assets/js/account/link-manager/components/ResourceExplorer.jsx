@@ -14,17 +14,15 @@ export class ResourceExplorer extends React.Component{
   }
   render(){
     return (
-      <div className="resource-explorer">
-        <div className="component-header component-header--subcomponent">
-          <h2 className="component-title">
-            Поиск ресурса
-          </h2>
-        </div>
-        <div className="component-body component-body--subcomponent">
+        <div className="component-body component-body--subcomponent resource-explorer">
+          <div className="component-header component-header--subcomponent">
+            <h2 className="component-title">
+              Поиск ресурса
+            </h2>
+          </div>
             <ResourceSearchForm />
             <ResourceSearchResults />
         </div>
-      </div>
     );
   }
 
