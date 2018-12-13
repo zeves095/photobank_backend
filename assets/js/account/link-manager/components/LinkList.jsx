@@ -100,7 +100,7 @@ export class LinkList extends React.Component{
             <div><b>Ссылка:</b>{link.external_url}</div>
           <div><b>Товар: </b>{link.item_name}({link.item_id})</div>
           </div>
-        <span className={"resource-preview"+(typeof thumb === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:typeof thumb === 'undefined'?"none":"url(/catalogue/node/item/resource/"+thumb.thumb_id+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+thumb.thumb_id+".jpg")}}></span>
+        <span className={"resource-preview"+(typeof thumb === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:typeof thumb === 'undefined'?"none":"url(/catalogue/node/item/resource/"+thumb.thumb_id+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+thumb.id+".jpg")}}></span>
           </div>
         )
       }
@@ -112,7 +112,7 @@ export class LinkList extends React.Component{
     })
     return(
       <div className={"link-list "+(this.props.adding||this.props.editing?"shrunk":"")}>
-        {this.state.modal_image_url !== ""?<ModalImage image_url={this.state.modal_image_url} closeModalHandler={this.handleModalClose} width={320} height={180}/>:null}
+        {this.state.modal_image_url !== ""?<ModalImage image_url={this.state.modal_image_url} closeModalHandler={this.handleModalClose} />:null}
         <div className="component-header">
           <h2 className="component-title">
             Ссылки
