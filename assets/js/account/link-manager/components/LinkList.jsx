@@ -89,7 +89,8 @@ export class LinkList extends React.Component{
   }
 
   render(){
-    let links = this.props.links.map(
+    let filter = <input type="search" onChange={(e)=>{this.setState({f : e.target.value})}} />
+    let links = this.props.links.filter((item)=>{if(!this.state.f) return true; return JSON.stringify(item).includes(this.state.f);}).map(
       (link)=>{
         if(link.target !== this.state.target && this.state.target !== "Все"){return false;}
         let thumb = this.props.thumbs.find((thumb)=>thumb.id === link.resource_id);
@@ -117,6 +118,7 @@ export class LinkList extends React.Component{
           <h2 className="component-title">
             Ссылки
           </h2>
+          {filter}
         </div>
         <div className="component-body">
           <div className="component-body__top-section">
