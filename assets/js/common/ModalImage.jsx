@@ -18,7 +18,12 @@ export class ModalImage extends React.Component{
       width, height,
       backgroundImage: "url("+this.props.image_url+")",
       margin: "20vw auto",
-      pointerEvents: "none"
+      pointerEvents: "none",
+      backgroundSize: "contain",
+      margin: "10vw auto",
+      pointerEvents: "none",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
     }
     console.warn(style);
     return (

@@ -13,7 +13,7 @@ export class ResourceSearchForm extends React.Component {
     this.state={
       defaults:{
         "item_search_search_nested":true,
-        "resource_search_preset":1,
+        "resource_search_preset":0,
         "resource_search_type": 1,
       }
     };

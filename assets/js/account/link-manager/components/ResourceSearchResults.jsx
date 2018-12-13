@@ -48,7 +48,7 @@ export class ResourceSearchResults extends React.Component{
       let colorclass = this.props.resources_chosen.find((res)=>{return res.id === resource.id})?"selected":"default";
       return(
         <div data-res={resource.id} key={"resource"+resource.id} className={"resource list-item "+colorclass} onClick={this.handleResourceChoice}>
-          <span className={"resource-preview"+(typeof resource.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+resource.thumbnail+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+resource.thumbnail+".jpg")}}></span>
+          <span className={"resource-preview"+(typeof resource.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+resource.thumbnail+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+resource.id+".jpg")}}></span>
         <i className="fas fa-plus-circle add-res" data-res={resource.id} onClick={this.handleAddResourceToPool}></i>
         {resource.item.name+"("+resource.item.id+")"}
         {resource.size_px}
@@ -57,7 +57,7 @@ export class ResourceSearchResults extends React.Component{
     });
     return (
       <div className="resource-search-results">
-        {this.state.modal_image_url !== ""?<ModalImage image_url={this.state.modal_image_url} closeModalHandler={this.handleModalClose} width={320} height={180}/>:null}
+        {this.state.modal_image_url !== ""?<ModalImage image_url={this.state.modal_image_url} closeModalHandler={this.handleModalClose} />:null}
         <div className="component-header component-header--subcomponent">
           <h2 className="component-title">
             Результаты поиска
