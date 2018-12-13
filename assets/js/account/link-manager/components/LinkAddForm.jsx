@@ -18,6 +18,17 @@ export class LinkAddForm extends React.Component {
     };
   }
 
+  componentDidMount(){
+    if(this.props.resource_chosen !== null){
+      let defaults = this.state.defaults;
+      let resources = this.props.resource_chosen.map((resource)=>{return resource.id}).join(',');
+      defaults.resource = resources;
+      this.setState({
+        defaults
+      });
+    }
+  }
+
   componentDidUpdate(prevProps){
     if(prevProps.resource_chosen !== this.props.resource_chosen){
       let defaults = this.state.defaults;

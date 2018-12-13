@@ -8,7 +8,7 @@
 }
 
 .link-section, .resource-section{
-  flex:1;
+  flex:1 0 30%;
   overflow: hidden;
   .component-body{
     margin: 0 10px;
@@ -34,12 +34,11 @@
     flex-direction: column;
     height:96vh;
     .resource-search-form{
-      flex: 1;
+      flex: 1 0 auto;
       flex-grow: 0;
     }
     .resource-search-results{
-      flex: 1;
-      flex-grow: 2;
+      flex: 1 0 auto;
       overflow: auto;
     }
   }
@@ -51,31 +50,30 @@
     height:96vh;
     .link-add-form{
       transition: 0.5s;
-      flex: 0;
+      flex: 0 0 0;
       padding: 0;
       overflow: hidden;
       &.open{
         overflow: visible;
         padding: 30px;
-        flex:1;
+        flex:0 0 auto;
         flex-grow: 0;
       }
     }
     .link-resource{
-      flex: 1;
-      flex-grow: 2;
+      flex: 2 0 auto;
       overflow: auto;
     }
 }
 
 .flex-wrapper{
   display:flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   .link-list{
     overflow: auto;
     padding: 0 10px;
     width:auto;
-    flex:1;
+    flex:1 1 30%;
   }
   .link-adder{
     .component-title{
@@ -86,11 +84,16 @@
     transition:flex 0.5s;
     width:auto;
     overflow: auto;
-    flex:0;
+    flex:0 0 0;
     &.open{
-      flex:2;
+      flex:1 1 70%;
     }
   }
+}
+
+.link-adder__inner{
+  display:flex;
+  flex-wrap: wrap;
 }
 
 .resource{
@@ -110,7 +113,7 @@
 
 .link-list{
   &.shrunk{
-    opacity: 0.6;
+    opacity: 0.25;
   }
   .component-title{
     background-color: #f9f9f9;
