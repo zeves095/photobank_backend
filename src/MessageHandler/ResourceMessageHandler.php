@@ -39,7 +39,7 @@ class ResourceMessageHandler implements MessageSubscriberInterface
 
     public function processPreset(ResourcePresetNotification $message)
     {
-      if($message->resourceId){
+      if($message->resourceId && $message->presetId){
         $this->imageProcessor->processPreset($message->resourceId, $message->presetId, $message->createdOn);
       }
     }

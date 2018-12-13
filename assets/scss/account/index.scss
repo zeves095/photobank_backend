@@ -35,6 +35,7 @@
     height:96vh;
     .resource-search-form{
       flex: 1;
+      flex-grow: 0;
     }
     .resource-search-results{
       flex: 1;
@@ -57,6 +58,7 @@
         overflow: visible;
         padding: 30px;
         flex:1;
+        flex-grow: 0;
       }
     }
     .link-resource{
