@@ -5,6 +5,7 @@ import {
   RESOURCE_TYPES_FETCH,
   LINK_CHOICE,
   LINK_ADD,
+  LINK_STOP_EDITING,
   RESOURCE_SEARCH,
   RESOURCE_CHOICE,
   RESOURCE_THUMBNAIL,
@@ -79,6 +80,13 @@ export function chooseLink(id){
 export function addLink(){
   return {
     type: LINK_ADD,
+    payload: ''
+  }
+}
+
+export function stopEditing(){
+  return {
+    type: LINK_STOP_EDITING,
     payload: ''
   }
 }

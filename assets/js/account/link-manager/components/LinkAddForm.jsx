@@ -55,7 +55,7 @@ export class LinkAddForm extends React.Component {
   render() {
     let confirmator = (<Confirmator questions={this.state.confirmatorQuestions} onConfirm={()=>{}} buttonTitle={"Добавить"} />);
     return (
-      <div className="link-add-form">
+      <div className={"link-add-form "+(this.props.resource_chosen.length>0?"open":"")}>
         <FormWrapper form="link-add" onChange={this.handleInputChange} onSubmit={this.handleFormSubmit} onError={this.handleFormError} defaults={this.state.defaults} submit={confirmator} />
       </div>);
   }

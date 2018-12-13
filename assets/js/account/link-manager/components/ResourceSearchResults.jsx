@@ -44,8 +44,10 @@ export class ResourceSearchResults extends React.Component{
   render(){
     let tooManyResources = this.props.resources_found.length == 100;
     let resources = this.props.resources_found.map((resource)=>{
+      console.log(this.props.resources_chosen.find((res)=>{return res.id === resource.id}));
+      let colorclass = this.props.resources_chosen.find((res)=>{return res.id === resource.id})?"selected":"default";
       return(
-        <div data-res={resource.id} key={"resource"+resource.id} className="resource list-item" onClick={this.handleResourceChoice}>
+        <div data-res={resource.id} key={"resource"+resource.id} className={"resource list-item "+colorclass} onClick={this.handleResourceChoice}>
           <span className={"resource-preview"+(typeof resource.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+resource.thumbnail+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+resource.thumbnail+".jpg")}}></span>
         <i className="fas fa-plus-circle add-res" data-res={resource.id} onClick={this.handleAddResourceToPool}></i>
         {resource.item.name+"("+resource.item.id+")"}
@@ -64,7 +66,9 @@ export class ResourceSearchResults extends React.Component{
         </div>
         <div className="component-body component-body--subcomponent">
           {tooManyResources?(<div className="resource plaque warning"><i className="fas fa-times-circle left-icon"></i>Показаны не все результаты. Необходимо сузить критерии поиска.</div>):null}
+          <div className="search-results">
           {this.props.resources_found.length==0?"Нет ресурсов":resources}
+          </div>
         </div>
       </div>
     );
@@ -73,7 +77,8 @@ export class ResourceSearchResults extends React.Component{
 }
 const mapStateToProps = (state) =>{
   return {
-    resources_found: getResourcesWithThumbnails(state)
+    resources_found: getResourcesWithThumbnails(state),
+    resources_chosen: state.resource.resource_chosen
   }
 }
 

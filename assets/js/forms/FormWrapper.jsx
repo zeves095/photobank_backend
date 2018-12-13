@@ -33,12 +33,12 @@ class FormWrapper extends Component {
       case "link-add":
         formSchema = LinkAddFormSchema['schema'];
         formUiSchema = LinkAddFormSchema['uiSchema'+(this.props.isAdmin?"_admin":"")];
-        submit = (<span><i className="fas fa-check"></i>"Добавить"</span>);
+        submit = (<span><i className="fas fa-check"></i>Добавить</span>);
         break;
       case "resource-search":
         formSchema = ResourceSearchFormSchema['schema'];
         formUiSchema = ResourceSearchFormSchema['uiSchema'+(this.props.isAdmin?"_admin":"")];
-        submit = (<span><i className="fas fa-search"></i>"Поиск"</span>);
+        submit = (<span><i className="fas fa-search"></i>Поиск</span>);
         break;
       default:
         formSchema = {}

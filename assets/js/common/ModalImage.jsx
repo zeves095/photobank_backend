@@ -17,11 +17,12 @@ export class ModalImage extends React.Component{
     let style = {
       width, height,
       backgroundImage: "url("+this.props.image_url+")",
-      margin: "20vw auto"
+      margin: "20vw auto",
+      pointerEvents: "none"
     }
     console.warn(style);
     return (
-      <div className="modal-image-wrapper">
+      <div className="modal-image-wrapper" onClick={this.handleClose}>
         <div className="modal-image" style={style}>
           <i className="fas fa-times-circle close-modal" onClick={this.handleClose}></i>
         </div>

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import { getLinkTargets } from '../selectors';
-import { chooseLink, addLink, fetchLinks, deleteLink } from '../actionCreator'
+import { chooseLink, addLink, fetchLinks, deleteLink, stopEditing } from '../actionCreator'
 import {NotificationService} from '../../../services/NotificationService';
 import {ModalImage} from '../../../common/ModalImage';
 export class LinkList extends React.Component{
@@ -23,11 +23,11 @@ export class LinkList extends React.Component{
   // }
 
   handleLinkClick = (id)=>{
-    this.props.chooseLink(id);
+    //this.props.chooseLink(id);
   }
 
   handleLinkAdd = (e)=>{
-    this.props.addLink();
+    this.props.editing||this.props.adding?this.props.stopEditing():this.props.addLink();
   }
 
   handleTargetChoice = (e)=>{
@@ -61,6 +61,7 @@ export class LinkList extends React.Component{
         return(link.link_id);
       }
     );
+    if(links.length === 0){NotificationService.toast("custom", "Нет ссылок"); return;}
     let linkTxtForm = document.createElement("form");
     linkTxtForm.target = "_blank";
     linkTxtForm.method = "POST";
@@ -95,8 +96,10 @@ export class LinkList extends React.Component{
         return(
           <div data-linkid={link.link_id} key={"link"+link.link_id} className="link " onClick={()=>{this.handleLinkClick(link.link_id)}}>
             <i className="fas fa-trash-alt delete-link" data-link={link.link_id} onClick={this.handleLinkDelete}></i>
+            <div className="link-info">
             <div><b>Ссылка:</b>{link.external_url}</div>
           <div><b>Товар: </b>{link.item_name}({link.item_id})</div>
+          </div>
         <span className={"resource-preview"+(typeof thumb === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:typeof thumb === 'undefined'?"none":"url(/catalogue/node/item/resource/"+thumb.thumb_id+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+thumb.thumb_id+".jpg")}}></span>
           </div>
         )
@@ -108,7 +111,7 @@ export class LinkList extends React.Component{
         )
     })
     return(
-      <div className="link-list  ">
+      <div className={"link-list "+(this.props.adding||this.props.editing?"shrunk":"")}>
         {this.state.modal_image_url !== ""?<ModalImage image_url={this.state.modal_image_url} closeModalHandler={this.handleModalClose} width={320} height={180}/>:null}
         <div className="component-header">
           <h2 className="component-title">
@@ -118,7 +121,7 @@ export class LinkList extends React.Component{
         <div className="component-body">
           <div className="component-body__top-section">
             <div className="button-block">
-              <button onClick={this.handleLinkAdd} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-plus-circle"></i>Добавить</button>
+              <button onClick={this.handleLinkAdd} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button">{this.props.adding||this.props.editing?(<span><i className="fas fa-ban"></i>Отмена</span>):(<span><i className="fas fa-plus-circle"></i>Добавить</span>)}</button>
               <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-copy"></i>Скопировать все</button>
             <button onClick={this.handleGetTxt} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-align-justify"></i>Скачать ссылки</button>
             </div>
@@ -148,7 +151,8 @@ const mapDispatchToProps = {
     chooseLink,
     addLink,
     fetchLinks,
-    deleteLink
+    deleteLink,
+    stopEditing
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LinkList);

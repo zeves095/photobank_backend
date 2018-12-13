@@ -5,6 +5,7 @@ import {
   LINK_FETCH,
   LINK_DELETE,
   LINK_UPDATE,
+  LINK_STOP_EDITING,
   SUCCESS,
   FAIL
  } from '../../constants'
@@ -23,6 +24,9 @@ export default (link = defaultState, action) => {
       break;
     case LINK_ADD:
       return {...link, link_adding:true, link_editing:false, link_editing_id:null}
+      break;
+    case LINK_STOP_EDITING:
+      return {...link, link_adding:false, link_editing:false, link_editing_id:null}
       break;
     case LINK_FETCH+SUCCESS:
       return {...link, links_done:action.payload}
