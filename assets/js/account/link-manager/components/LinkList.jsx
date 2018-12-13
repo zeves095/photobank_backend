@@ -46,7 +46,7 @@ export class LinkList extends React.Component{
     let links = [];
     this.props.links.forEach((link)=>{
       if(link.target !== this.state.target && this.state.target !== "Все"){return false;}
-      links.push(link.external_url);
+      links.push('https://photobank.domfarfora.ru'+link.external_url);
     });
     if(typeof navigator.clipboard !== "undefined"){navigator.clipboard.writeText(links.join(",\n"))}else{NotificationService.throw('clipboard-error')};
     NotificationService.toast("link-copied");
@@ -97,7 +97,7 @@ export class LinkList extends React.Component{
           <div data-linkid={link.link_id} key={"link"+link.link_id} className="link " onClick={()=>{this.handleLinkClick(link.link_id)}}>
             <i className="fas fa-trash-alt delete-link" data-link={link.link_id} onClick={this.handleLinkDelete}></i>
             <div className="link-info">
-            <div><b>Ссылка:</b>{link.external_url}</div>
+            <div><b>Ссылка:</b><a href={'https://photobank.domfarfora.ru'+link.external_url}>{'https://photobank.domfarfora.ru'+link.external_url}</a></div>
           <div><b>Товар: </b>{link.item_name}({link.item_id})</div>
           </div>
         <span className={"resource-preview"+(typeof thumb === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:typeof thumb === 'undefined'?"none":"url(/catalogue/node/item/resource/"+thumb.thumb_id+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+thumb.id+".jpg")}}></span>
