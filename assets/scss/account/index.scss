@@ -38,7 +38,7 @@
       flex-grow: 0;
     }
     .resource-search-results{
-      flex: 1 0 auto;
+      flex: 1 1 auto;
       overflow: auto;
     }
   }
@@ -61,7 +61,7 @@
       }
     }
     .link-resource{
-      flex: 2 0 auto;
+      flex: 2 1 auto;
       overflow: auto;
     }
 }
