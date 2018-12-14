@@ -208,7 +208,7 @@ export function deleteLink(id){
   return (dispatch)=>{
     dispatch({
       type: LINK_DELETE+START,
-      payload: response,
+      payload: "",
     });
     let params = {
       method: "GET",
