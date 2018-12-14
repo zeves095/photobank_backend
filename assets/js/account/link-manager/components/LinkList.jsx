@@ -120,7 +120,7 @@ export class LinkList extends React.Component{
           </h2>
           {filter}
         </div>
-        <div className="component-body">
+        <div className={"component-body" + (this.props.loading?" loading":"")}>
           <div className="component-body__top-section">
             <div className="button-block">
               <button onClick={this.handleLinkAdd} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button">{this.props.adding||this.props.editing?(<span><i className="fas fa-ban"></i>Отмена</span>):(<span><i className="fas fa-plus-circle"></i>Добавить</span>)}</button>
@@ -145,7 +145,8 @@ const mapStateToProps = (state) =>{
     editing: state.link.link_editing,
     adding: state.link.link_adding,
     targets: getLinkTargets(state),
-    thumbs: state.resource.resources_thumbnails
+    thumbs: state.resource.resources_thumbnails,
+    loading: state.ui.loading.link_list
   }
 }
 
