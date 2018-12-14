@@ -45,9 +45,10 @@ export class ResourceSearchResults extends React.Component{
     let tooManyResources = this.props.resources_found.length == 100;
     let resources = this.props.resources_found.map((resource)=>{
       let colorclass = this.props.resources_chosen.find((res)=>{return res.id === resource.id})?"selected":"default";
+      let thumb_style = typeof resource.thumbnail === 'undefined'?{}:{backgroundImage:"url(/catalogue/node/item/resource/"+resource.thumbnail+".jpg)"};
       return(
         <div data-res={resource.id} key={"resource"+resource.id} className={"resource list-item "+colorclass} onClick={this.handleResourceChoice}>
-          <span className={"resource-preview"+(typeof resource.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+resource.thumbnail+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+resource.id+".jpg")}}></span>
+          <span className={"resource-preview"+(typeof resource.thumbnail === 'undefined'?" resource-preview--loading":"")} style={thumb_style}  onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+resource.id+".jpg")}}></span>
         <i className="fas fa-plus-circle add-res" data-res={resource.id} onClick={this.handleAddResourceToPool}></i>
         {resource.item.name+"("+resource.item.id+")"}
         {resource.size_px}
