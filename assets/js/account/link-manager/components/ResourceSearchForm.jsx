@@ -17,7 +17,6 @@ export class ResourceSearchForm extends React.Component {
         "resource_search_type": 1,
       }
     };
-    console.log(this.state);
   }
 
   componentDidMount(){
@@ -44,7 +43,6 @@ export class ResourceSearchForm extends React.Component {
   }
 
   handleFormError = (errors) =>{
-    console.log(errors);
   }
 
   render() {

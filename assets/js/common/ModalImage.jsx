@@ -25,7 +25,6 @@ export class ModalImage extends React.Component{
       backgroundRepeat: "no-repeat",
       backgroundPosition: "center",
     }
-    console.warn(style);
     return (
       <div className="modal-image-wrapper" onClick={this.handleClose}>
         <div className="modal-image" style={style}>

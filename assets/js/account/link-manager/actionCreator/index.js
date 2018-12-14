@@ -109,7 +109,6 @@ export function stopEditing(){
 //             },
 //           });
 //       }).catch((error)=>{
-//         console.error(error);
 //         }
 //       );
 //     });
@@ -283,7 +282,6 @@ export function submitLink(form){
     }
     fetch("/api/links/submit", params)
     .then((response)=>{
-      console.log(response);
       if(response.status === 200){
         dispatch({
           type: LINK_SUBMIT+SUCCESS,
@@ -298,12 +296,9 @@ export function submitLink(form){
               type: LINK_SUBMIT+FAIL,
               payload: form,
             });
-            console.log(typeof response.error !== 'undefined');
             if(typeof response.error !== 'undefined'){
-              console.log("CUSTOM");
               NotificationService.throw("custom", response.error);
             }else{
-              console.log("NOT CUSTOM NOT CUSTOM");
               NotificationService.throw("link-add-error");
             }
           });
