@@ -18,13 +18,9 @@ let defaultState = {
 
 export default (ui = defaultState, action) => {
   let loading = ui.loading;
+  console.log(action.type);
   switch(action.type){
     case RESOURCE_SEARCH+START:
-      loading.resource_search_results = true;
-      loading = Object.assign(loading);
-      return {...ui, loading}
-      break;
-    case RESOURCE_THUMBNAIL+START:
       loading.resource_search_results = true;
       loading = Object.assign(loading);
       return {...ui, loading}
@@ -43,12 +39,8 @@ export default (ui = defaultState, action) => {
       loading.link_list = true;
       loading = Object.assign(loading);
       return {...ui, loading}
-    case RESOURCE_SEARCH+SUCCESS:
-      loading.resource_search_results = false;
-      loading = Object.assign(loading);
-      return {...ui, loading}
       break;
-    case RESOURCE_THUMBNAIL+SUCCESS:
+    case RESOURCE_SEARCH+SUCCESS:
       loading.resource_search_results = false;
       loading = Object.assign(loading);
       return {...ui, loading}
@@ -68,11 +60,6 @@ export default (ui = defaultState, action) => {
       loading = Object.assign(loading);
       return {...ui, loading}
     case RESOURCE_SEARCH+FAIL:
-      loading.resource_search_results = false;
-      loading = Object.assign(loading);
-      return {...ui, loading}
-      break;
-    case RESOURCE_THUMBNAIL+FAIL:
       loading.resource_search_results = false;
       loading = Object.assign(loading);
       return {...ui, loading}

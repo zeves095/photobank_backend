@@ -23,10 +23,6 @@ import {
 
 export function init(){
   return (dispatch)=>{
-    dispatch({
-      type: RESOURCE_PRESETS_FETCH+START,
-      payload: "",
-    });
     let params = {
       method: "GET",
     }
@@ -122,10 +118,6 @@ export function stopEditing(){
 
 export function getResourceThumbnails(resources){
   return (dispatch)=>{
-    dispatch({
-      type: RESOURCE_THUMBNAIL+START,
-      payload: "",
-    });
     let request = {resources:[]};
     resources.forEach((resource)=>{
       request.resources.push(resource.id);
@@ -157,16 +149,16 @@ export function getResourceThumbnails(resources){
 
 export function searchResources(searchObject={}){
   return (dispatch)=>{
+    dispatch({
+      type: RESOURCE_SEARCH+START,
+      payload: "",
+    });
     let params = {
       method: "GET",
     }
     // Object.keys(searchObject).forEach((key)=>{
     //   searchObject[key] = searchObject[key].toLowerCase();
     // });
-    dispatch({
-      type: RESOURCE_SEARCH+START,
-      payload: "",
-    });
     fetch("/catalogue/search/resources"+"?"+Object.keys(searchObject).map(
       key=>{if(typeof searchObject[key] === 'undefined'){return "";}return key + '=' + searchObject[key]}).join('&'),
       params)
@@ -214,6 +206,10 @@ export function removeResourceFromPool(id){
 
 export function deleteLink(id){
   return (dispatch)=>{
+    dispatch({
+      type: LINK_DELETE+START,
+      payload: response,
+    });
     let params = {
       method: "GET",
     }
