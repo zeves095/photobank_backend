@@ -8,9 +8,10 @@ class SizeField extends React.Component {
   onChange(name) {
     return (event) => {
       let val = event.target.value;
-      if(val.match(/(\d+)?/)){
+      let intVal = parseInt(val, 10);
+      if(val.match(/(\d+)?/)&&intVal!==this.state[name]){
         this.setState({
-          [name]: parseFloat(val)
+          [name]: !isNaN(intVal)?intVal:undefined
         }, () => this.props.onChange(this.state));
       }
     };
@@ -18,9 +19,7 @@ class SizeField extends React.Component {
 
   onBlur(name) {
     return (event) => {
-      this.setState({
-        [name]: parseFloat(event.target.value)
-      }, () => this.props.onBlur(this.state));
+      this.props.onBlur(this.state);
     };
   }
 

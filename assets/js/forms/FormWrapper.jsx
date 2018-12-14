@@ -21,9 +21,11 @@ class FormWrapper extends Component {
   handleInputChange = (data)=>{
     console.log(data.formData);
     this.props.onChange(data.formData);
-    this.setState({
-      formData: data.formData
-    });
+    if(data.formData !== this.state.formData){
+      this.setState({
+        formData: data.formData
+      });
+    }
   }
 
   handleSubmit = (data)=>{
