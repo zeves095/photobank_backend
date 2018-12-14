@@ -218,10 +218,12 @@ class LinkService{
     $sizeIsSet = isset($data['size']['width']) && isset($data['size']['height']);
     if($sizeIsSet){
       $sizeWithinBounds = ($data['size']['width']>=32&&$data['size']['height']>=32&&$data['size']['width']<=4096&&$data['size']['height']<=2160);
-      $ratioOk = $sizeWithinBounds&&($data['size']['width']/$data['size']['height'] < 2.3 || $data['size']['width']/$data['size']['height'] > 1);
+      $ratioOk = $sizeWithinBounds&&($data['size']['width']/$data['size']['height'] <= 2.3 && $data['size']['width']/$data['size']['height'] >= 1);
       if(!$ratioOk){
         return [false, "Неверное соотношение высоты/ширины"];
       }
+    }elseif(isset($data['size']['width'])||isset($data['size']['height'])){
+      return [false, "Указано только одно из значений ширина/высота"];
     }
     return [true, ""];
   }
