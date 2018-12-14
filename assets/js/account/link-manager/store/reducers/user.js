@@ -10,10 +10,8 @@ let defaultState = {
 export default (user = defaultState, action) => {
   switch(action.type){
     case USER_INFO_FETCH+SUCCESS:
-      console.log(action.payload);
       //let roles = action.payload.user_roles.match("/\b[a-zA-Z]+_[a-zA-Z+]+(_[a-zA-Z]+)?\b/");
       let roles = action.payload.user_roles;
-      console.warn(roles);
       let isAdmin = roles.includes("ROLE_ADMIN")||roles.includes("ROLE_SUPER_ADMIN");
       return {...user, isAdmin}
       break;

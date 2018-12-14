@@ -52,7 +52,6 @@ export default (resource = defaultState, action) => {
         //   found[resourceIndex] = {...found[resourceIndex], thumbnail:actionResource.thumb_id};
         // });
         // found = found.slice();
-        // console.log(found);
         resource = {...resource, resources_thumbnails:Array.from(new Set(action.payload.concat(resource.resources_thumbnails)))};
     }
     return resource;

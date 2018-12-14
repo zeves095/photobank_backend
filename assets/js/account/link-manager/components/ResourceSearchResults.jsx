@@ -44,7 +44,6 @@ export class ResourceSearchResults extends React.Component{
   render(){
     let tooManyResources = this.props.resources_found.length == 100;
     let resources = this.props.resources_found.map((resource)=>{
-      console.log(this.props.resources_chosen.find((res)=>{return res.id === resource.id}));
       let colorclass = this.props.resources_chosen.find((res)=>{return res.id === resource.id})?"selected":"default";
       return(
         <div data-res={resource.id} key={"resource"+resource.id} className={"resource list-item "+colorclass} onClick={this.handleResourceChoice}>

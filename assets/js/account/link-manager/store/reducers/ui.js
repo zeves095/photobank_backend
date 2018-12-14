@@ -18,7 +18,6 @@ let defaultState = {
 
 export default (ui = defaultState, action) => {
   let loading = ui.loading;
-  console.log(action.type);
   switch(action.type){
     case RESOURCE_SEARCH+START:
       loading.resource_search_results = true;
