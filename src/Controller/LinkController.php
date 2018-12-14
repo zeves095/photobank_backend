@@ -42,30 +42,28 @@ class LinkController extends AbstractController
           $request->getContent(),
           true
       );
-
-      if(isset($data['resource'])){
-        $resourceIds = explode(',',$data['resource']);
-      }else{
+      $validationRespone = $linkService->validateForm($data);
+      if($validationRespone[0] === false){
         $response = new JsonResponse();
         $response->setData([
-          'error'=>'Необходимо указать ресурс'
+          'error'=>$validationRespone[1]
         ]);
         $response->setStatusCode(400);
         return $response;
       }
-      $sizeIsSet = isset($data['size']['width']) && isset($data['size']['height']);
-      if($sizeIsSet){
-        $sizeWithinBounds = ($data['size']['width']>0&&$data['size']['height']>0);
-        $ratioOk = $sizeWithinBounds&&($data['size']['height']/$data['size']['width'] < 2.3 || $data['size']['width']/$data['size']['height'] > 1);
-        if(!$ratioOk){
-          $response = new JsonResponse();
-          $response->setData([
-            'error'=>'Неверное соотношение высоты/ширины'
-          ]);
-          $response->setStatusCode(400);
-          return $response;
-        }
-      }
+      // $sizeIsSet = isset($data['size']['width']) && isset($data['size']['height']);
+      // if($sizeIsSet){
+      //   $sizeWithinBounds = ($data['size']['width']>0&&$data['size']['height']>0&&$data['size']['width']<4096&&$data['size']['height']<2160);
+      //   $ratioOk = $sizeWithinBounds&&($data['size']['width']/$data['size']['height'] < 2.3 || $data['size']['width']/$data['size']['height'] > 1);
+      //   if(!$ratioOk){
+      //     $response = new JsonResponse();
+      //     $response->setData([
+      //       'error'=>'Неверное соотношение высоты/ширины'
+      //     ]);
+      //     $response->setStatusCode(400);
+      //     return $response;
+      //   }
+      // }
       foreach($resourceIds as $res_id){
         $post = $data;
         $user = $this->getUser();
@@ -90,6 +88,29 @@ class LinkController extends AbstractController
       }
       return new Response();
     }
+
+    /**
+     * @Route("/validateform/", name="links_validate_add_form")
+     */
+     public function validateForm(Request $request, LinkService $linkService){
+       $data = json_decode(
+           $request->getContent(),
+           true
+       );
+       $response = new JsonResponse();
+       $validationRespone = $linkService->validateForm($data);
+       if($validationRespone[0] === false){
+         $response->setData([
+           'error'=>$validationRespone[1]
+         ]);
+         $response->setStatusCode(400);
+         return $response;
+       }
+       $response->setData([
+         'error'=>null
+       ]);
+       return $response;
+     }
 
     /**
      * @Route("/txt/", name="links_get_txt")

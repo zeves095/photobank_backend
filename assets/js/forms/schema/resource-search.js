@@ -35,6 +35,12 @@ export default {
       },
     }
   },
+  widgets:{
+
+  },
+  fields:{
+
+  },
   uiSchema: {
     item_search_name: {"ui:widget": "text"},
     item_search_parent_name: {"ui:widget": "text"},

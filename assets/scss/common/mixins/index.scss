@@ -188,3 +188,12 @@
     z-index: 100;
   }
 }
+
+
+@mixin plaque-warning{
+  margin: 2px 2px 10px;
+padding: 12px;
+background-color: #dc4444;
+color: white;
+font-size: 14px;
+}

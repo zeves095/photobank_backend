@@ -1,3 +1,5 @@
+import {SizeField} from '../fields/';
+
 export default {
   schema: {
     title: "",
@@ -11,11 +13,13 @@ export default {
         properties: {
           width: {
             type: "number",
-            title: "Ширина"
+            title: "Ширина",
+            description: "Значения от 32 до 4096"
           },
           height: {
             type: "number",
-            title: "Высота"
+            title: "Высота",
+            description: "Значения от 32 до 2106"
           }
         }
       },
@@ -44,20 +48,28 @@ export default {
   },
   uiSchema: {
     target: {"ui:widget": "text"},
-    size:{
-      width: {"ui:widget": "updown"},
-      height: {"ui:widget": "updown"}
-    },
+    size: {"ui:field":SizeField},
+    // {
+    //   width: {
+    //     "ui:widget": "updown",
+    //     "ui:help": "Значения от 32 до 4096"
+    //   },
+    //   height: {
+    //     "ui:widget": "updown",
+    //     "ui:help": "Значения от 32 до 2160"
+    //   }
+    // },
     max_requests: {"ui:widget": "hidden"},
     expires_by: {"ui:widget": "hidden"},
     access: {"ui:widget": "hidden"},
     resource: {"ui:widget": "hidden"},
   },
   uiSchema_admin:{
-    size:{
-      width: {"ui:widget": "updown"},
-      height: {"ui:widget": "updown"}
-    },
+    size: {"ui:field":SizeField},
+    // {
+    //   width: {"ui:widget": "updown"},
+    //   height: {"ui:widget": "updown"}
+    // },
     target: {"ui:widget": "text"},
     max_requests: {"ui:widget": "updown"},
     expires_by: {"ui:widget": "date"},

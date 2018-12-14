@@ -10,13 +10,20 @@ class FormWrapper extends Component {
     this.state = {
       formSchema: {},
       formUiSchema: {},
+      formFields: {},
+      formWidgets: {},
       defaults: {},
-      submit: ""
+      submit: "",
+      formData:{}
     }
   }
 
   handleInputChange = (data)=>{
+    console.log(data.formData);
     this.props.onChange(data.formData);
+    this.setState({
+      formData: data.formData
+    });
   }
 
   handleSubmit = (data)=>{
@@ -25,6 +32,10 @@ class FormWrapper extends Component {
 
   handleError = (data)=>{
     this.props.onError(data.errors);
+  }
+
+  handleBlur = (data)=>{
+    this.props.onBlur(this.state.formData);
   }
 
   componentWillMount(){
@@ -61,6 +72,7 @@ class FormWrapper extends Component {
         onChange={this.handleInputChange}
         onSubmit={this.handleSubmit}
         onError={this.handleError}
+        onBlur={this.handleBlur}
         formData={this.props.defaults}
       >
       <div className="button-block">

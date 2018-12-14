@@ -209,4 +209,21 @@ class LinkService{
     return $urls;
   }
 
+  public function validateForm($data){
+    if(isset($data['resource'])){
+      $resourceIds = explode(',',$data['resource']);
+    }else{
+        return [false, 'Необходимо указать ресурс'];
+    }
+    $sizeIsSet = isset($data['size']['width']) && isset($data['size']['height']);
+    if($sizeIsSet){
+      $sizeWithinBounds = ($data['size']['width']>=32&&$data['size']['height']>=32&&$data['size']['width']<=4096&&$data['size']['height']<=2160);
+      $ratioOk = $sizeWithinBounds&&($data['size']['width']/$data['size']['height'] < 2.3 || $data['size']['width']/$data['size']['height'] > 1);
+      if(!$ratioOk){
+        return [false, "Неверное соотношение высоты/ширины"];
+      }
+    }
+    return [true, ""];
+  }
+
 }

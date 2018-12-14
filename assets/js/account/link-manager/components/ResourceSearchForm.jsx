@@ -45,9 +45,13 @@ export class ResourceSearchForm extends React.Component {
   handleFormError = (errors) =>{
   }
 
+  handleFormBlur = (data)=>{
+    
+  }
+
   render() {
     return (<div className="resource-search-form">
-      <FormWrapper form="resource-search" onChange={this.handleInputChange} onSubmit={this.handleFormSubmit} onError={this.handleFormError} defaults={this.state.defaults} />
+      <FormWrapper form="resource-search" onChange={this.handleInputChange} onBlur={this.handleFormBlur}  onSubmit={this.handleFormSubmit} onError={this.handleFormError} defaults={this.state.defaults} />
     </div>);
   }
 
