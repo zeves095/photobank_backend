@@ -16,12 +16,17 @@ import {
   LINK_DELETE,
   LINK_UPDATE,
   LINKS_TXT_DOWNLOAD,
+  START,
   SUCCESS,
   FAIL
 } from '../constants';
 
 export function init(){
   return (dispatch)=>{
+    dispatch({
+      type: RESOURCE_PRESETS_FETCH+START,
+      payload: "",
+    });
     let params = {
       method: "GET",
     }
@@ -117,6 +122,10 @@ export function stopEditing(){
 
 export function getResourceThumbnails(resources){
   return (dispatch)=>{
+    dispatch({
+      type: RESOURCE_THUMBNAIL+START,
+      payload: "",
+    });
     let request = {resources:[]};
     resources.forEach((resource)=>{
       request.resources.push(resource.id);
@@ -154,6 +163,10 @@ export function searchResources(searchObject={}){
     // Object.keys(searchObject).forEach((key)=>{
     //   searchObject[key] = searchObject[key].toLowerCase();
     // });
+    dispatch({
+      type: RESOURCE_SEARCH+START,
+      payload: "",
+    });
     fetch("/catalogue/search/resources"+"?"+Object.keys(searchObject).map(
       key=>{if(typeof searchObject[key] === 'undefined'){return "";}return key + '=' + searchObject[key]}).join('&'),
       params)
@@ -228,6 +241,10 @@ export function deleteLink(id){
 
 export function fetchLinks(){
   return (dispatch)=>{
+    dispatch({
+      type: LINK_FETCH+START,
+      payload: "",
+    });
     let params = {
       method: "GET",
     }
@@ -260,6 +277,10 @@ export function fetchLinks(){
 
 export function submitLink(form){
   return (dispatch)=>{
+    dispatch({
+      type: LINK_SUBMIT+START,
+      payload: "",
+    });
     let params = {
       method: "POST",
       body: JSON.stringify(form)

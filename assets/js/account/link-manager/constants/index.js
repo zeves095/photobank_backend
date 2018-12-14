@@ -15,5 +15,6 @@ export const RESOURCE_PRESETS_FETCH = 'RESOURCE_PRESETS_FETCH';
 export const RESOURCE_TYPES_FETCH = 'RESOURCE_TYPES_FETCH';
 export const USER_INFO_FETCH = 'USER_INFO_FETCH';
 
+export const START = '_START';
 export const SUCCESS = '_SUCCESS';
 export const FAIL = '_FAIL';

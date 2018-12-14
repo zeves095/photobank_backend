@@ -56,7 +56,7 @@ export class ResourceSearchResults extends React.Component{
       )
     });
     return (
-      <div className="resource-search-results">
+      <div className={"resource-search-results" + (this.props.loading?" loading":"")}>
         {this.state.modal_image_url !== ""?<ModalImage image_url={this.state.modal_image_url} closeModalHandler={this.handleModalClose} />:null}
         <div className="component-header component-header--subcomponent">
           <h2 className="component-title">
@@ -78,7 +78,8 @@ export class ResourceSearchResults extends React.Component{
 const mapStateToProps = (state) =>{
   return {
     resources_found: getResourcesWithThumbnails(state),
-    resources_chosen: state.resource.resource_chosen
+    resources_chosen: state.resource.resource_chosen,
+    loading: state.ui.loading.resource_search_results
   }
 }
 

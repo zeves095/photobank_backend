@@ -252,3 +252,7 @@ button{
     width:auto
   }
 }
+
+.loading{
+  @include loading();
+}
