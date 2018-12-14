@@ -98,7 +98,7 @@ export class LinkList extends React.Component{
           <div data-linkid={link.link_id} key={"link"+link.link_id} className="link " onClick={()=>{this.handleLinkClick(link.link_id)}}>
             <i className="fas fa-trash-alt delete-link" data-link={link.link_id} onClick={this.handleLinkDelete}></i>
             <div className="link-info">
-            <div><b>Ссылка:</b><a href={'https://photobank.domfarfora.ru'+link.external_url}>{'https://photobank.domfarfora.ru'+link.external_url}</a></div>
+            <div><b>Ссылка:</b><a href={'https://photobank.domfarfora.ru'+link.external_url} target="_blank" >{'https://photobank.domfarfora.ru'+link.external_url}</a></div>
           <div><b>Товар: </b>{link.item_name}({link.item_id})</div>
           </div>
         <span className={"resource-preview"+(typeof thumb === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:typeof thumb === 'undefined'?"none":"url(/catalogue/node/item/resource/"+thumb.thumb_id+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+thumb.id+".jpg")}}></span>
