@@ -102,12 +102,11 @@ class LinkService{
     $link = $this->entityManager->getRepository(Link::class)->findOneBy([
       'hash'=>$hash
     ]);
-    $user_id = $user->getId();
     $created_by = $link->getCreatedBy()->getId();
-    if($created_by!=$user_id && !$this->_checkAccess($link, $request)){
+    if(is_null($user) && !$this->_checkAccess($link, $request)){
       throw new HttpException(403);
     }
-    if($created_by!=$user_id && (!$this->_countRequests($link) || !$this->_isNotExpired($link)))
+    if(is_null($user) && (!$this->_countRequests($link) || !$this->_isNotExpired($link)))
     {
       throw new HttpException(410);
     }
