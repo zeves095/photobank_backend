@@ -4,6 +4,7 @@ import {
   LINK_FETCH,
   LINK_SUBMIT,
   LINK_DELETE,
+  FORM_VALIDATE,
   START,
   SUCCESS,
   FAIL
@@ -13,12 +14,26 @@ let defaultState = {
   loading:{
     link_list:false,
     resource_search_results: false
+  },
+  form:{
+    resource_search:{
+      error: null
+    },
+    link_add:{
+      error: null
+    }
   }
 }
 
 export default (ui = defaultState, action) => {
   let loading = ui.loading;
+  let form = ui.form;
   switch(action.type){
+    case FORM_VALIDATE+SUCCESS:
+      form.link_add.error = action.payload;
+      form = Object.assign({}, form);
+      return {...ui, form};
+      break;
     case RESOURCE_SEARCH+START:
       loading.resource_search_results = true;
       loading = Object.assign({}, loading);

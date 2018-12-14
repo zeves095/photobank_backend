@@ -16,6 +16,7 @@ import {
   LINK_DELETE,
   LINK_UPDATE,
   LINKS_TXT_DOWNLOAD,
+  FORM_VALIDATE,
   START,
   SUCCESS,
   FAIL
@@ -114,6 +115,46 @@ export function stopEditing(){
 //     });
 //   }
 // }
+
+export function validateLinkAddForm(formData){
+  return (dispatch)=>{
+    dispatch({
+      type: FORM_VALIDATE+START,
+      formData
+    });
+    let params = {
+      method: "POST",
+      body: JSON.stringify(formData)
+    }
+    fetch("/api/links/validateform/",params)
+    .then((response)=>response.json())
+    .then((response)=>{
+        let message = response.error;
+        if(message === ""){
+          dispatch({
+            type: FORM_VALIDATE+SUCCESS,
+            payload: null
+          });
+        }else{
+          dispatch({
+            type: FORM_VALIDATE+SUCCESS,
+            payload: message
+          });
+        }
+    })
+    // .catch((error)=>{
+    //   dispatch({
+    //     type: FORM_VALIDATE+FAIL,
+    //     payload:error
+    //   });
+    //   if(typeof error.error !== 'undefined'){
+    //     NotificationService.throw("custom", error.error);
+    //   }else{
+    //     NotificationService.throw("custom", "Ошибка вылидации формы");
+    //   }
+    // });
+  }
+}
 
 export function getResourceThumbnails(resources){
   return (dispatch)=>{
@@ -294,18 +335,19 @@ export function submitLink(form){
         setTimeout(()=>{dispatch(fetchLinks())}, 400);
         return;
       }else{
-          response.json().then((response)=>{
-            dispatch({
-              type: LINK_SUBMIT+FAIL,
-              payload: form,
-            });
-            if(typeof response.error !== 'undefined'){
-              NotificationService.throw("custom", response.error);
-            }else{
-              NotificationService.throw("link-add-error");
-            }
+          dispatch({
+            type: LINK_SUBMIT+FAIL,
+            payload: form,
           });
+            NotificationService.throw("link-add-error");
       }
+    }).catch((error)=>{
+      console.log(error);
+      dispatch({
+        type: LINK_SUBMIT+FAIL,
+        payload: error,
+      });
+        NotificationService.throw("link-add-error");
     });
   }
 }
