@@ -121,6 +121,9 @@ export function getResourceThumbnails(resources){
     resources.forEach((resource)=>{
       request.resources.push(resource.id);
     });
+    if(request.resources.length === 0){
+      return false;
+    }
     let params = {
       method: "POST",
       body: JSON.stringify(request)
