@@ -25,6 +25,7 @@ export class Confirmator extends React.Component{
       return;
     }
     e.preventDefault();
+    console.log(this.state.step+1);
     this.setState({
       step:this.state.step+1
     });
