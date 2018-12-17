@@ -19,7 +19,7 @@ class FormWrapper extends Component {
   }
 
   handleInputChange = (data)=>{
-    console.log(data.formData);
+    this.props.onError(data.errors);
     this.props.onChange(data.formData);
     if(data.formData !== this.state.formData){
       this.setState({
@@ -76,6 +76,9 @@ class FormWrapper extends Component {
         onError={this.handleError}
         onBlur={this.handleBlur}
         formData={this.props.defaults}
+        validate={this.props.validate}
+        liveValidate={true}
+        showErrorList={false}
       >
       <div className="button-block">
         {submit}

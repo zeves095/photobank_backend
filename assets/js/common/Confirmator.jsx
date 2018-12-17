@@ -9,7 +9,16 @@ export class Confirmator extends React.Component{
     };
   };
 
+  componentDidUpdate(){
+    if(!this.props.active && this.state.step !== 0){
+      this.setState({
+          step:0
+      });
+    }
+  }
+
   progress = (e)=>{
+    this.props.prehook();
     if(this.state.step>=this.props.questions.length){
       this.props.onConfirm();
       this.cancel();

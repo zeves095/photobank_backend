@@ -10,16 +10,26 @@ export class LinkList extends React.Component{
   constructor(props){
     super(props);
     this.state={
+      links:[],
       target:"Все",
       modal_image_url:"",
       confirmatorQuestions:[
         "Вы уверены?"
-      ]
+      ],
     };
+    this.eventHandler = {};
   }
 
   componentDidMount(){
     this.props.fetchLinks();
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.links !== this.props.links || prevState.f !== this.state.f ){
+      this.setState({
+        links:this.props.links.filter((item)=>{if(!this.state.f) return true; return JSON.stringify(item).includes(this.state.f);})
+      });
+    }
   }
 
   // handleLinkClick = (e)=>{
@@ -47,7 +57,7 @@ export class LinkList extends React.Component{
 
   handleCopyAllToClipboard = ()=>{
     let links = [];
-    this.props.links.forEach((link)=>{
+    this.state.links.forEach((link)=>{
       if(link.target !== this.state.target && this.state.target !== "Все"){return false;}
       links.push('https://photobank.domfarfora.ru'+link.external_url);
     });
@@ -56,7 +66,7 @@ export class LinkList extends React.Component{
   }
 
   handleGetTxt =()=>{
-    let links = this.props.links
+    let links = this.state.links
     .filter((link)=>{
         return link.target == this.state.target || this.state.target == "Все";
     })
@@ -91,21 +101,43 @@ export class LinkList extends React.Component{
     });
   }
 
+  listener = (e)=>{
+    e = e || window.event;
+    var key = e.which || e.keyCode; // keyCode detection
+    var ctrl = e.ctrlKey ? e.ctrlKey : ((key === 17) ? true : false); // ctrl detection
+
+    if ( key == 67 && ctrl ) {
+        this.handleCopyAllToClipboard();
+      }else if ( key == 83 && ctrl ) {
+        e.preventDefault();
+        this.handleGetTxt();
+        return false;
+      }
+  }
+
+  handleFocus = ()=>{
+    document.body.addEventListener("keydown",this.listener);
+  }
+
+  handleBlur = ()=>{
+    document.body.removeEventListener('keydown', this.listener);
+  }
+
   render(){
-    let filter = <input type="search" onChange={(e)=>{this.setState({f : e.target.value})}} />
-    let links = this.props.links.filter((item)=>{if(!this.state.f) return true; return JSON.stringify(item).includes(this.state.f);}).map(
+    let filter = <input type="search" className="link-filter" onChange={(e)=>{this.setState({f : e.target.value})}}  placeholder="Фильтр"/>
+    let links = this.state.links.map(
       (link)=>{
         if(link.target !== this.state.target && this.state.target !== "Все"){return false;}
         let delete_btn = <i className="fas fa-trash-alt"></i>;
         let thumb = this.props.thumbs.find((thumb)=>thumb.id === link.resource_id);
         return(
           <div data-linkid={link.link_id} key={"link"+link.link_id} className="link " onClick={()=>{this.handleLinkClick(link.link_id)}}>
-            <Confirmator questions={this.state.confirmatorQuestions} onConfirm={()=>{this.handleLinkDelete(link.link_id)}} inline={true} customClass={"delete-link"} disabled={false} buttonTitle={delete_btn} />
+            <Confirmator questions={this.state.confirmatorQuestions} prehook={()=>{}} onConfirm={()=>{this.handleLinkDelete(link.link_id)}} inline={true} customClass={"delete-link"} disabled={false} buttonTitle={delete_btn} />
             <div className="link-info">
             <div><b>Ссылка:</b><a href={'https://photobank.domfarfora.ru'+link.external_url} target="_blank" >{'https://photobank.domfarfora.ru'+link.external_url}</a></div>
           <div><b>Товар: </b>{link.item_name}({link.item_id})</div>
           </div>
-        <span className={"resource-preview"+(typeof thumb === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:typeof thumb === 'undefined'?"none":"url(/catalogue/node/item/resource/"+thumb.thumb_id+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+thumb.id+".jpg")}}></span>
+        <span className={"resource-preview"+(typeof thumb === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:typeof thumb === 'undefined'?"none":"url(/catalogue/node/item/resource/"+thumb.thumb_id+".jpg)"}} onClick={(e)=>{e.stopPropagation();this.handleModalImage("/catalogue/node/item/resource/"+thumb.id+".jpg")}}></span>
           </div>
         )
       }
@@ -116,7 +148,7 @@ export class LinkList extends React.Component{
         )
     })
     return(
-      <div className={"link-list "+(this.props.adding||this.props.editing?"shrunk":"")}>
+      <div className={"link-list "+(this.props.adding||this.props.editing?"shrunk":"")} onMouseEnter={this.handleFocus} onMouseLeave={this.handleBlur}>
         {this.state.modal_image_url !== ""?<ModalImage image_url={this.state.modal_image_url} closeModalHandler={this.handleModalClose} />:null}
         <div className="component-header">
           <h2 className="component-title">
@@ -128,8 +160,8 @@ export class LinkList extends React.Component{
           <div className="component-body__top-section">
             <div className="button-block">
               <button onClick={this.handleLinkAdd} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button">{this.props.adding||this.props.editing?(<span><i className="fas fa-ban"></i>Отмена</span>):(<span><i className="fas fa-plus-circle"></i>Добавить</span>)}</button>
-            <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-copy"></i>Скопировать в буфер(Ctrl+C)</button>
-            <button onClick={this.handleGetTxt} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-align-justify"></i>Скачать ссылки</button>
+            <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-copy"></i>Скопировать в буфер {!this.props.adding&&!this.props.editing&&(<span className="help-text">&lt;Ctrl&gt;+&lt;C&gt;</span>)}</button>
+          <button onClick={this.handleGetTxt} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-align-justify"></i>Скачать ссылки {!this.props.adding&&!this.props.editing&&(<span className="help-text">&lt;Ctrl&gt;+&lt;S&gt;</span>)}</button>
             </div>
             <div className="link-list__tabs button-block">
               {tabs}

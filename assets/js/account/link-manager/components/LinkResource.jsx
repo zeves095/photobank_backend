@@ -40,10 +40,11 @@ export class LinkResource extends React.Component{
     ?(<div className="resource plaque warning"><i className="fas fa-times-circle left-icon"></i>Не выбран ресурс</div>)
     :this.props.resources.map((res)=>{
       return(
-        <div className={"resource list-item"+(res.link_exists?" existing-link":"")}>
-          <i className="fas fa-minus-circle add-res" data-res={res.id} onClick={()=>{this.handleRemoveChosenResource(res.id)}}></i>
-        <span className={"resource-preview"+(typeof res.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+res.thumbnail+".jpg)"}} onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+res.id+".jpg")}}></span>
-            {res.item.name+"("+res.item.id+")"}
+        <div className={"resource list-item"} onClick={()=>{this.handleRemoveChosenResource(res.id)}}>
+
+        <span className={"resource-preview"+(typeof res.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+res.thumbnail+".jpg)"}} onClick={(e)=>{e.stopPropagation();this.handleModalImage("/catalogue/node/item/resource/"+res.id+".jpg")}}></span>
+      {(res.link_exists?<i className="fas fa-check-circle link-exists"></i>:null)}
+        {res.item.name+"("+res.item.id+")"}
             {res.size_px}
         </div>
       );
@@ -54,10 +55,10 @@ export class LinkResource extends React.Component{
         <div className="component-header component-header--subcomponent">
           <h2 className="component-title">
             Выбранные ресурсы
-            <button className="remove-all-resources" onClick={this.handleRemoveAll}>Удалить все</button>
+            {this.props.resources.length>0?<div className="button-block"><button className="remove-all-resources" onClick={this.handleRemoveAll}>Удалить все</button></div>:null}
           </h2>
         </div>
-        <div className="component-body component-body--subcomponent search-results">
+        <div className="component-body component-body--subcomponent">
             {resource}
         </div>
       </div>
