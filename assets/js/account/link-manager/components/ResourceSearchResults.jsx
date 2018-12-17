@@ -14,10 +14,6 @@ export class ResourceSearchResults extends React.Component{
     };
   }
 
-  handleResourceChoice = (e)=>{
-    //this.props.chooseResource(parseInt(e.target.dataset['res'], 10));
-  }
-
   handleAddResourceToPool = (e)=>{
     e.stopPropagation();
     this.props.addResourceToPool(parseInt(e.target.dataset['res'], 10));
@@ -47,9 +43,9 @@ export class ResourceSearchResults extends React.Component{
       let colorclass = this.props.resources_chosen.find((res)=>{return res.id === resource.id})?"selected":"default";
       let thumb_style = typeof resource.thumbnail === 'undefined'?{}:{backgroundImage:"url(/catalogue/node/item/resource/"+resource.thumbnail+".jpg)"};
       return(
-        <div data-res={resource.id} key={"resource"+resource.id} className={"resource list-item "+colorclass} onClick={this.handleResourceChoice}>
-          <span className={"resource-preview"+(typeof resource.thumbnail === 'undefined'?" resource-preview--loading":"")} style={thumb_style}  onClick={()=>{this.handleModalImage("/catalogue/node/item/resource/"+resource.id+".jpg")}}></span>
-        <i className="fas fa-plus-circle add-res" data-res={resource.id} onClick={this.handleAddResourceToPool}></i>
+        <div data-res={resource.id} key={"resource"+resource.id} className={"resource list-item "+colorclass} onClick={this.handleAddResourceToPool}>
+          <span className={"resource-preview"+(typeof resource.thumbnail === 'undefined'?" resource-preview--loading":"")} style={thumb_style}  onClick={(e)=>{e.stopPropagation();this.handleModalImage("/catalogue/node/item/resource/"+resource.id+".jpg")}}></span>
+
         {resource.item.name+"("+resource.item.id+")"}
         {resource.size_px}
         </div>
@@ -62,7 +58,7 @@ export class ResourceSearchResults extends React.Component{
           <h2 className="component-title">
             Результаты поиска
           </h2>
-          <div className="button-block"><button className=" waves-effect hoverable waves-light btn" type="button" name="button" onClick={this.handleChooseAll}>Выбрать все</button></div>
+          {this.props.resources_found.length>0?<div className="button-block"><button className=" waves-effect hoverable waves-light btn" type="button" name="button" onClick={this.handleChooseAll}>Выбрать все</button></div>:null}
         </div>
         <div className="component-body component-body--subcomponent">
           {tooManyResources?(<div className="resource plaque warning"><i className="fas fa-times-circle left-icon"></i>Показаны не все результаты. Необходимо сузить критерии поиска.</div>):null}

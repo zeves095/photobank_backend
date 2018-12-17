@@ -313,7 +313,6 @@ export function submitLink(form){
             NotificationService.throw("link-add-error");
       }
     }).catch((error)=>{
-      console.log(error);
       dispatch({
         type: LINK_SUBMIT+FAIL,
         payload: error,
