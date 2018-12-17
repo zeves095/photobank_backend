@@ -32,10 +32,6 @@ export class LinkList extends React.Component{
     }
   }
 
-  // handleLinkClick = (e)=>{
-  //   this.props.chooseLink(e.target.dataset['linkid']);
-  // }
-
   handleLinkClick = (id)=>{
     //this.props.chooseLink(id);
   }
@@ -132,7 +128,7 @@ export class LinkList extends React.Component{
         let thumb = this.props.thumbs.find((thumb)=>thumb.id === link.resource_id);
         return(
           <div data-linkid={link.link_id} key={"link"+link.link_id} className="link " onClick={()=>{this.handleLinkClick(link.link_id)}}>
-            <Confirmator questions={this.state.confirmatorQuestions} prehook={()=>{}} onConfirm={()=>{this.handleLinkDelete(link.link_id)}} inline={true} customClass={"delete-link"} disabled={false} buttonTitle={delete_btn} />
+            <Confirmator questions={this.state.confirmatorQuestions} prehook={()=>{}} active={true} onConfirm={()=>{this.handleLinkDelete(link.link_id)}} inline={true} customClass={"delete-link"} disabled={false} buttonTitle={delete_btn} />
             <div className="link-info">
             <div><b>Ссылка:</b><a href={'https://photobank.domfarfora.ru'+link.external_url} target="_blank" >{'https://photobank.domfarfora.ru'+link.external_url}</a></div>
           <div><b>Товар: </b>{link.item_name}({link.item_id})</div>
