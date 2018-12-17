@@ -4,13 +4,17 @@ import { getLinkTargets } from '../selectors';
 import { chooseLink, addLink, fetchLinks, deleteLink, stopEditing } from '../actionCreator'
 import {NotificationService} from '../../../services/NotificationService';
 import {ModalImage} from '../../../common/ModalImage';
+import {Confirmator} from '../../../common/Confirmator';
 export class LinkList extends React.Component{
 
   constructor(props){
     super(props);
     this.state={
       target:"Все",
-      modal_image_url:""
+      modal_image_url:"",
+      confirmatorQuestions:[
+        "Вы уверены?"
+      ]
     };
   }
 
@@ -37,9 +41,8 @@ export class LinkList extends React.Component{
     });
   }
 
-  handleLinkDelete = (e)=>{
-    e.preventDefault();
-    this.props.deleteLink(e.target.dataset['link']);
+  handleLinkDelete = (id)=>{
+    this.props.deleteLink(id);
   }
 
   handleCopyAllToClipboard = ()=>{
@@ -93,10 +96,11 @@ export class LinkList extends React.Component{
     let links = this.props.links.filter((item)=>{if(!this.state.f) return true; return JSON.stringify(item).includes(this.state.f);}).map(
       (link)=>{
         if(link.target !== this.state.target && this.state.target !== "Все"){return false;}
+        let delete_btn = <i className="fas fa-trash-alt"></i>;
         let thumb = this.props.thumbs.find((thumb)=>thumb.id === link.resource_id);
         return(
           <div data-linkid={link.link_id} key={"link"+link.link_id} className="link " onClick={()=>{this.handleLinkClick(link.link_id)}}>
-            <i className="fas fa-trash-alt delete-link" data-link={link.link_id} onClick={this.handleLinkDelete}></i>
+            <Confirmator questions={this.state.confirmatorQuestions} onConfirm={()=>{this.handleLinkDelete(link.link_id)}} inline={true} customClass={"delete-link"} disabled={false} buttonTitle={delete_btn} />
             <div className="link-info">
             <div><b>Ссылка:</b><a href={'https://photobank.domfarfora.ru'+link.external_url} target="_blank" >{'https://photobank.domfarfora.ru'+link.external_url}</a></div>
           <div><b>Товар: </b>{link.item_name}({link.item_id})</div>
@@ -124,7 +128,7 @@ export class LinkList extends React.Component{
           <div className="component-body__top-section">
             <div className="button-block">
               <button onClick={this.handleLinkAdd} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button">{this.props.adding||this.props.editing?(<span><i className="fas fa-ban"></i>Отмена</span>):(<span><i className="fas fa-plus-circle"></i>Добавить</span>)}</button>
-              <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-copy"></i>Скопировать все</button>
+            <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-copy"></i>Скопировать в буфер(Ctrl+C)</button>
             <button onClick={this.handleGetTxt} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-align-justify"></i>Скачать ссылки</button>
             </div>
             <div className="link-list__tabs button-block">

@@ -11,6 +11,7 @@ import {
   RESOURCE_THUMBNAIL,
   RESOURCE_ADD,
   RESOURCE_REMOVE,
+  RESOURCE_REMOVE_ALL,
   LINK_FETCH,
   LINK_SUBMIT,
   LINK_DELETE,
@@ -93,29 +94,6 @@ export function stopEditing(){
   }
 }
 
-// export function getResourceThumbnails(resources){
-//   return (dispatch)=>{
-//     let params = {
-//       method: "GET",
-//     }
-//     resources.forEach((resource)=>{
-//       fetch("/catalogue/node/item/resource/thumbnail/"+resource.gid,params)
-//       .then((response)=>response.json())
-//       .then((response)=>{
-//           dispatch({
-//             type: RESOURCE_THUMBNAIL+SUCCESS,
-//             payload: {
-//                 'id':resource.id,
-//                 'thumbnail_id':response.id
-//             },
-//           });
-//       }).catch((error)=>{
-//         }
-//       );
-//     });
-//   }
-// }
-
 export function validateLinkAddForm(formData){
   return (dispatch)=>{
     dispatch({
@@ -141,18 +119,7 @@ export function validateLinkAddForm(formData){
             payload: message
           });
         }
-    })
-    // .catch((error)=>{
-    //   dispatch({
-    //     type: FORM_VALIDATE+FAIL,
-    //     payload:error
-    //   });
-    //   if(typeof error.error !== 'undefined'){
-    //     NotificationService.throw("custom", error.error);
-    //   }else{
-    //     NotificationService.throw("custom", "Ошибка вылидации формы");
-    //   }
-    // });
+    });
   }
 }
 
@@ -199,9 +166,6 @@ export function searchResources(searchObject={}){
     let params = {
       method: "GET",
     }
-    // Object.keys(searchObject).forEach((key)=>{
-    //   searchObject[key] = searchObject[key].toLowerCase();
-    // });
     fetch("/catalogue/search/resources"+"?"+Object.keys(searchObject).map(
       key=>{if(typeof searchObject[key] === 'undefined'){return "";}return key + '=' + searchObject[key]}).join('&'),
       params)
@@ -243,6 +207,13 @@ export function addResourceToPool(id){
 export function removeResourceFromPool(id){
   return{
     type: RESOURCE_REMOVE,
+    payload: id
+  }
+}
+
+export function removeAllFromPool(id){
+  return{
+    type: RESOURCE_REMOVE_ALL,
     payload: id
   }
 }
