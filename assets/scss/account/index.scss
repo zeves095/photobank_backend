@@ -114,6 +114,7 @@
 .link-list{
   &.shrunk{
     opacity: 0.25;
+    pointer-events: none;
   }
   .component-title{
     background-color: #f9f9f9;
@@ -126,17 +127,18 @@
     position: relative;
     background-color: #f9f9f9;
     margin: 8px 0;
-    i.delete-link{
-      padding: 8.5px;
-      background-color: #36647d;
-      color: white;
-      width: 18px;
-      text-align: center;
+    .delete-link{
       position: absolute;
       right: 55px;
       top:4px;
-      font-size: 1.5em;
-      cursor: pointer;
+      button{
+        padding: 8.5px;
+        background-color: #36647d;
+        color: white;
+        text-align: center;
+        font-size: 1.5em;
+        cursor: pointer;
+      }
     }
     .link-info{
       width:80%;
@@ -183,22 +185,11 @@
   height: 100vh;
 }
 
-// .link-adder .link-adder__inneropen{
-//   display: -webkit-flex;
-//   display: -ms-flex;
-//   display: flex;
-//   .component-header{
-//     display:block;
-//   }
-//   .column1{
-//     margin:10px;
-//     flex:1;
-//   }
-//   .column2{
-//     margin:10px;
-//     flex:1;
-//   }
-// }
+.existing-link{
+  i{
+    color: #33e67b;
+  }
+}
 
 .resource-search-results, .link-resource{
   .list-item{
@@ -244,6 +235,14 @@ background-color: #dc4444;
 color: white;
 font-size: 14px;
 animation: foldout 0.5s;
+  &-inline{
+    margin: 2px 2px 10px;
+  padding: 12px;
+  background-color: #dc4444;
+  color: white;
+  font-size: 14px;
+    display: inline-block;
+  }
 }
 
 i.fas{

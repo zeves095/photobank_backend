@@ -68,7 +68,7 @@ export class LinkAddForm extends React.Component {
   }
 
   render() {
-    let confirmator = (<Confirmator questions={this.state.confirmatorQuestions} onConfirm={()=>{}} disabled={this.props.form_error!==null} buttonTitle={"Добавить"} />);
+    let confirmator = (<Confirmator questions={this.state.confirmatorQuestions} onConfirm={()=>{}} inline={false} disabled={this.props.form_error!==null} buttonTitle={"Добавить"} />);
     return (
       <div className={"link-add-form "+(this.props.resource_chosen.length>0?"open":"")}>
         {this.props.form_error !== null?<div className="form-error">{this.props.form_error}</div>:null}

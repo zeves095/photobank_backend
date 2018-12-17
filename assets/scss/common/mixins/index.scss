@@ -64,6 +64,7 @@
   margin:2px;
   border-radius: $bordrad;
   font-size: 12pt;
+  cursor: pointer;
 }
 
 @mixin icon-upload(){
@@ -145,6 +146,9 @@
     background-color: white !important;
     &:hover{
       background-color: #366479 !important;
+    }
+    &:disabled{
+      background-color: white !important;
     }
   }
   padding:30px;

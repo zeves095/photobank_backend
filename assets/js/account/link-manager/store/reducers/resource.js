@@ -3,6 +3,7 @@ import { RESOURCE_SEARCH,
   RESOURCE_THUMBNAIL,
   RESOURCE_ADD,
   RESOURCE_REMOVE,
+  RESOURCE_REMOVE_ALL,
   RESOURCE_PRESETS_FETCH,
   RESOURCE_TYPES_FETCH,
   SUCCESS
@@ -41,6 +42,10 @@ export default (resource = defaultState, action) => {
         break;
       case RESOURCE_REMOVE:
         resPool = resPool.filter((res)=>{return res.id!==action.payload}).slice();
+        resource = {...resource, resource_chosen:resPool};
+        break;
+      case RESOURCE_REMOVE_ALL:
+        resPool = [];
         resource = {...resource, resource_chosen:resPool};
         break;
       case RESOURCE_THUMBNAIL+SUCCESS:

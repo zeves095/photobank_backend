@@ -14,12 +14,16 @@ export default {
           width: {
             type: "number",
             title: "Ширина",
-            description: "Значения от 32 до 4096"
+            description: "Значения от 32 до 4096",
+            maximum: 4096,
+            minimum: 32
           },
           height: {
             type: "number",
             title: "Высота",
-            description: "Значения от 32 до 2106"
+            description: "Значения от 32 до 2160",
+            maximum: 2160,
+            minimum: 32
           }
         }
       },

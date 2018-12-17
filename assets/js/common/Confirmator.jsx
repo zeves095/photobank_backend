@@ -28,11 +28,12 @@ export class Confirmator extends React.Component{
   }
 
   render(){
-    let button = (<button type="submit" disabled={this.props.disabled} onClick={this.progress} className="confirmator-button">{this.state.step>0?"Да":this.props.buttonTitle}</button>);
+    let button_content = this.state.step>0?"Да":this.props.buttonTitle;
+    let button = (<button type="submit" disabled={this.props.disabled} onClick={this.progress} className="confirmator-button">{button_content}</button>);
     let cancelButton = (<button onClick={this.cancel} className="confirmator-button-cancel"><i className="fas fa-times-circle"></i></button>);
     let confirmator = (
-      <div className="confirmator">
-        {this.state.step>0?<div className="confirmator-question">{this.props.questions[this.state.step-1]}</div>:null}
+      <div className={"confirmator "+this.props.customClass}>
+        {this.state.step>0?<div className={"confirmator-question"+(this.props.inline?"-inline":"")}>{this.props.questions[this.state.step-1]}</div>:null}
         {button}
         {this.state.step>0?cancelButton:null}
       </div>
