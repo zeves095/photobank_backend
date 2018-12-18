@@ -111,11 +111,19 @@ class ResourceRepository extends ServiceEntityRepository
         }
         if($queryObject->getField("item_query")->getField("code") != ""){
           $queryBuilder->innerJoin('r.item', 'ic');
-          $codeCounter = 0;
-          foreach($queryObject->getField("item_query")->getField("code") as $code){
-              $queryBuilder->orWhere('ic.id LIKE :iccode'.++$codeCounter)
-              ->setParameter('iccode'.$codeCounter, '%'.$code);
+          $codes = $queryObject->getField("item_query")->getField("code");
+          if(sizeof($codes)===1){
+            $queryBuilder->orWhere('ic.id LIKE :iccode')
+            ->setParameter('iccode', '%'.$codes[0]);
+          }else{
+            $codeCounter = 0;
+            foreach($codes as $code){
+              $queryBuilder->orWhere('ic.id = :iccode'.++$codeCounter)
+              ->setParameter('iccode'.$codeCounter, $code);
+            }
           }
+          $codeCounter = 0;
+
         }
         if($queryObject->getField("item_query")->getField("parent_name") != "" && $queryObject->getField("item_query")->getField("search_nested") == false){
           $queryBuilder->innerJoin('r.item', 'in')
@@ -166,6 +174,7 @@ class ResourceRepository extends ServiceEntityRepository
        }
         //var_dump($queryBuilder->getDQL());
         //var_dump($queryObject);
+        //var_dump($queryBuilder->setMaxResults(100)->getQuery());
         return $queryBuilder->setMaxResults(100)->getQuery()->getResult();
 
       }
