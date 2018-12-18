@@ -110,11 +110,11 @@ class ResourceRepository extends ServiceEntityRepository
           ->setParameter('iname', '%'.$queryObject->getField("item_query")->getField("name").'%');
         }
         if($queryObject->getField("item_query")->getField("code") != ""){
+          $queryBuilder->innerJoin('r.item', 'ic');
           $codeCounter = 0;
           foreach($queryObject->getField("item_query")->getField("code") as $code){
-              $queryBuilder->innerJoin('r.item', 'ic'.++$codeCounter)
-              ->orWhere('ic'.$codeCounter.'.id LIKE :iccode'.$codeCounter)
-              ->setParameter('iccode'.$codeCounter++, '%'.$code);
+              $queryBuilder->orWhere('ic.id LIKE :iccode'.++$codeCounter)
+              ->setParameter('iccode'.$codeCounter, '%'.$code);
           }
         }
         if($queryObject->getField("item_query")->getField("parent_name") != "" && $queryObject->getField("item_query")->getField("search_nested") == false){
