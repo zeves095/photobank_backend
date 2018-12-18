@@ -117,7 +117,7 @@ class ResourceRepository extends ServiceEntityRepository
               ->setParameter('iccode'.$codeCounter++, '%'.$code);
           }
         }
-        if($queryObject->getField("item_query")->getField("parent_name") != "" && $queryObject->getField("item_query")->getField("search_nested") == 0){
+        if($queryObject->getField("item_query")->getField("parent_name") != "" && $queryObject->getField("item_query")->getField("search_nested") == false){
           $queryBuilder->innerJoin('r.item', 'in')
           ->leftJoin('in.node', 'n')
           ->andWhere('n.name LIKE :nname')
@@ -125,7 +125,7 @@ class ResourceRepository extends ServiceEntityRepository
           ->setParameter('nname', '%'.$queryObject->getField("item_query")->getField("parent_name").'%')
           ->setParameter('ncode', '%'.$queryObject->getField("item_query")->getField("parent_name"));
         }
-        if($queryObject->getField("item_query")->getField("parent_name") != "" && $queryObject->getField("item_query")->getField("search_nested") == 1){
+        if($queryObject->getField("item_query")->getField("parent_name") != "" && $queryObject->getField("item_query")->getField("search_nested") == true){
           $queryBuilder->innerJoin('r.item', 'parent')
           ->leftJoin('parent.node', 'parent1')
          ->leftJoin('parent1.parent', 'parent2')
