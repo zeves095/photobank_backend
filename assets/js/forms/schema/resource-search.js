@@ -18,7 +18,7 @@ export default {
         title: "Искать во вложенных разделах"
       },
       item_search_code: {
-        type: "number",
+        type: "string",
         title: "Код 1С товара"
       },
       resource_search_id: {
@@ -45,7 +45,7 @@ export default {
     item_search_name: {"ui:widget": "text"},
     item_search_parent_name: {"ui:widget": "text"},
     item_search_search_nested: {"ui:widget": "hidden"},
-    item_search_code: {"ui:widget": "updown"},
+    item_search_code: {"ui:widget": "text"},
     resource_search_id: {"ui:widget": "hidden"},
     resource_search_preset: {"ui:widget": "hidden"},
     resource_search_type: {"ui:widget": "hidden"},
@@ -53,7 +53,7 @@ export default {
   uiSchema_admin: {
     item_search_name: {"ui:widget": "text"},
     item_search_parent_name: {"ui:widget": "text"},
-    item_search_code: {"ui:widget": "updown"},
+    item_search_code: {"ui:widget": "text"},
     resource_search_id: {"ui:widget": "updown"},
     resource_search_preset: {"ui:widget": "text"},
     resource_search_type: {"ui:widget": "text"},
