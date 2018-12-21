@@ -86,10 +86,12 @@ class UploadReceiver
 
   protected function compileFile(){
     $filepath = $this->uploadParams['tempchunkdir'].'/'.$this->uploadParams['filename'];
-    $this->fileSystem->dumpFile($filepath,'');
+    $pidfilepath = $filepath.getmypid();
+    $this->fileSystem->dumpFile($pidfilepath,'');
     for ($i=1; $i<=$this->uploadParams['resumablevars']['resumableTotalChunks']; $i++) {
-      $this->fileSystem->appendToFile($filepath,file_get_contents($this->uploadParams['tempchunkdir'].'/'.$this->uploadParams['filename'].'.part'.$i));
+      $this->fileSystem->appendToFile($pidfilepath,file_get_contents($this->uploadParams['tempchunkdir'].'/'.$this->uploadParams['filename'].'.part'.$i));
     }
+    $this->fileSystem->rename($pidfilepath, $filepath);
     $this->response['completed'] = true;
     return $this->response;
   }
