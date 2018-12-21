@@ -39,6 +39,7 @@ class UploadRecordManager
   }
 
   public function remove($upload){
+    var_dump($upload);
     $toBeDeleted = $this->entityManager
     ->getRepository(Upload::class)
     ->findBy([

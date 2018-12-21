@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use \Symfony\Component\HttpKernel\Exception\HttpException;
 
 // use Symfony\Component\Serializer\SerializerInterface; // use AppSerializer instead
 use App\Serializer\AppSerializer;
@@ -325,9 +326,13 @@ class CatalogueController extends AbstractController
              $request->getContent(),
              true
          );
-         $thumbnailids = array();
-         $repo = $entityManager->getRepository(Resource::class);
-         $thumbnails = $repo->getThumbnailIds($data['resources']);
+         if(sizeof($data['resources'])){
+           $thumbnailids = array();
+           $repo = $entityManager->getRepository(Resource::class);
+           $thumbnails = $repo->getThumbnailIds($data['resources']);
+         }else{
+           $thumbnails = [];
+         }
          $response = new JsonResponse();
          $response->setData($thumbnails);
          return $response;
@@ -343,42 +348,21 @@ class CatalogueController extends AbstractController
      *      }
      * )
      */
-    public function patchResource(Resource $resource, Request $request, AppSerializer $serializer, ContainerInterface $container, EntityManagerInterface $entityManager,MessageBusInterface $bus, ResourceService $resourceService)
+    public function patchResource(Resource $resource, Request $request, AppSerializer $serializer, ResourceService $resourceService)
     {
         $data = json_decode(
             $request->getContent(),
             true
         );
 
-        $resourceService->dispatchPresetMessages($data['id'], $data['type']);
-
-        //Validation for limited resource types
-        $maxMain = $container->getParameter('max_main_resources');
-        $maxAdd = $container->getParameter('max_additional_resources');
-        $currMain = sizeof($entityManager->getRepository(Resource::class)->findBy(['type'=>1, 'gid'=>$resource->getGid()]));
-        $currAdd = sizeof($entityManager->getRepository(Resource::class)->findBy(['type'=>2, 'gid'=>$resource->getGid()]));
-        if(($maxMain==$currMain && $data['type']==1)||($maxAdd==$currAdd && $data['type']==2)){
-          throw new \Exception('Bad data');
-          return new Response();
+        if(!isset($data['id'])){
+          throw new HttpException(400, 'Bad data');
         }
 
-        $priority = $data['priority']??$resource->getPriority();
-        $resource->setPriority(intval($priority));
-
-        $type = $data['type']??$resource->getType();
-        $resource->setType(intval($type));
-
-        $Is1c = $data['1c']??$resource->getIs1c();
-        $resource->setIs1c(intval($Is1c));
-
-        $IsDeleted = $data['deleted']??$resource->getIsDeleted();
-        $resource->setIsDeleted(intval($IsDeleted));
-
-        $IsDefault = $data['default']??$resource->getIsDefault();
-        $resource->setIsDefault(intval($IsDefault));
-
-        $em = $this->getDoctrine()->getManager();
-        $em->flush($resource);
+        if(!$resourceService->patchResource($resource,$data)){
+          throw new HttpException(400,'Bad data');
+        }
+        $resourceService->dispatchPresetMessages($data['id'], $data['type']);
 
         $response = new JsonResponse();
         $resourceArray = $serializer->normalize($resource, null, array());
