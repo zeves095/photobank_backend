@@ -36,6 +36,9 @@ class UploadReceiver
       $uploadParams['resumablevars']["resumableChunkNumber"] = '';
     }
     if (file_exists($uploadParams['tempchunkdir'].'/'.$uploadParams['filename'].$uploadParams['partstring'])) {
+      if($total_files_on_server_size >= $this->uploadParams['resumablevars']['resumableTotalSize']){
+        $this->compileFile();
+      }
       return true;
     } else {
       return false;
