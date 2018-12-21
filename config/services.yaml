@@ -56,3 +56,8 @@ services:
             1:
                 - '@app.encoder.json'
                 - '@app.encoder.xml'
+
+    App\Service\FilesystemDecorator:
+          decorates: 'Symfony\Component\Filesystem\Filesystem'
+          arguments: ['@App\Service\FilesystemDecorator.inner']
+          decoration_priority: 500

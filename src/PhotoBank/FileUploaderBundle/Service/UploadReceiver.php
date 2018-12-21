@@ -8,11 +8,12 @@ class UploadReceiver
 {
   protected $requestStack;
   protected $ContainerInterface;
+  protected $fileSystem;
 
-  public function __construct(ContainerInterface $container)
+  public function __construct(ContainerInterface $container, Filesystem $fileSystem)
   {
       $this->container = $container;
-      $this->fileSystem = new Filesystem();
+      $this->fileSystem = $fileSystem;
       $this->response = array(
         'completed' => false,
         'chunk_written' => false,
