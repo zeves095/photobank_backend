@@ -98,6 +98,35 @@ class ResourceService{
     return $resource;
   }
 
+  public function patchResource($resource, $data){
+    //Validation for limited resource types
+    $maxMain = $this->container->getParameter('max_main_resources');
+    $maxAdd = $this->container->getParameter('max_additional_resources');
+    $currMain = sizeof($this->entityManager->getRepository(Resource::class)->findBy(['type'=>1, 'gid'=>$resource->getGid()]));
+    $currAdd = sizeof($this->entityManager->getRepository(Resource::class)->findBy(['type'=>2, 'gid'=>$resource->getGid()]));
+    if(($maxMain==$currMain && $data['type']==1)||($maxAdd==$currAdd && $data['type']==2)){
+      return false;
+    }
+
+    $priority = $data['priority']??$resource->getPriority();
+    $resource->setPriority(intval($priority));
+
+    $type = $data['type']??$resource->getType();
+    $resource->setType(intval($type));
+
+    $Is1c = $data['1c']??$resource->getIs1c();
+    $resource->setIs1c(intval($Is1c));
+
+    $IsDeleted = $data['deleted']??$resource->getIsDeleted();
+    $resource->setIsDeleted(intval($IsDeleted));
+
+    $IsDefault = $data['default']??$resource->getIsDefault();
+    $resource->setIsDefault(intval($IsDefault));
+
+    $this->entityManager->flush($resource);
+    return true;
+  }
+
   public function getUniqueIdentifier($file, $itemId, $filesize){
     $fileHash = crc32($file);
     $identifier = md5($fileHash.$itemId.$filesize);

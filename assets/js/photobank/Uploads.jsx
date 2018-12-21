@@ -40,7 +40,6 @@ export class Uploads extends React.Component{
       let file = this.props.resumable.files[i];
       if(file.isComplete()){
         this.props.resumable.files.splice(i,1);
-        this.handleDelete(file.uniqueIdentifier);
         i--;
       }
       this.setState({"loading" : false});

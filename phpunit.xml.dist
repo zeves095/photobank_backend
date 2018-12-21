@@ -14,7 +14,18 @@
         <env name="APP_DEBUG" value="1" />
         <env name="APP_SECRET" value="s$cretf0rt3st" />
         <env name="SHELL_VERBOSITY" value="-1" />
+        <env name="APP_HOST" value="localhost" />
         <!-- define your env variables for the test env here -->
+
+        <env name="MESSENGER_TRANSPORT_DSN_PRESETS" value="amqp://rabbitmq:rabbitmq@localhost:5672/%2f/presets_test" />
+        <env name="MESSENGER_TRANSPORT_DSN_LINKS" value="amqp://rabbitmq:rabbitmq@localhost:5672/%2f/links_test" />
+        <env name="MESSENGER_TRANSPORT_DSN_LINKS_DEL" value="amqp://rabbitmq:rabbitmq@localhost:5672/%2f/links_delete_test" />
+
+        <env name="MAILER_URL" value="null://localhost" />
+
+        <env name="DATABASE_URL" value="mysql://user:password@127.0.0.1:3306/prod_dump2" />
+
+        <env name="UPLOADS_PARENT" value="private" />
 
         <!-- ###+ symfony/messenger ### -->
         <!-- MESSENGER_TRANSPORT_DSN=amqp://guest:guest@localhost:5672/%2f/messages -->
