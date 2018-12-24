@@ -34,6 +34,11 @@ class CatalogueNodeItem
      */
     private $resources;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $Article;
+
     public function __construct()
     {
         $this->resources = new ArrayCollection();
@@ -95,6 +100,18 @@ class CatalogueNodeItem
                 $resource->setItem(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getArticle(): ?string
+    {
+        return $this->Article;
+    }
+
+    public function setArticle(?string $Article): self
+    {
+        $this->Article = $Article;
 
         return $this;
     }
