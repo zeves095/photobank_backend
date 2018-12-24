@@ -34,7 +34,8 @@ class ResourceService{
     $this->messageBus = $messageBus;
   }
 
-  public function generatePath($item_code){
+  public function generatePath($item_code)
+  {
     $splitId = array();
     for($i=0; $i<=strlen($item_code)/2; $i++){
       $splitId[] = substr($item_code, $i*2, 2);
@@ -44,7 +45,8 @@ class ResourceService{
     return $splitIdPath;
   }
 
-  public function processCompletedUpload($resourceParameters){
+  public function processCompletedUpload($resourceParameters)
+  {
     $filepath = $resourceParameters['path'];
     $item_code = $resourceParameters['item_id'];
     $destinationPath = '/'.$this->generatePath($item_code).$resourceParameters['filename'];
@@ -57,7 +59,8 @@ class ResourceService{
     }
   }
 
-  public function persistResource($resourceParameters){
+  public function persistResource($resourceParameters)
+  {
     $resource = new Resource();
     $repository = $this->entityManager->getRepository(CatalogueNodeItem::class);
     $item_id = $resourceParameters['item_id'];
@@ -98,7 +101,8 @@ class ResourceService{
     return $resource;
   }
 
-  public function patchResource($resource, $data){
+  public function patchResource($resource, $data)
+  {
     //Validation for limited resource types
     $maxMain = $this->container->getParameter('max_main_resources');
     $maxAdd = $this->container->getParameter('max_additional_resources');
@@ -127,13 +131,15 @@ class ResourceService{
     return true;
   }
 
-  public function getUniqueIdentifier($file, $itemId, $filesize){
+  public function getUniqueIdentifier($file, $itemId, $filesize)
+  {
     $fileHash = crc32($file);
     $identifier = md5($fileHash.$itemId.$filesize);
     return $identifier;
   }
 
-  public function dispatchPresetMessages($resource, $type){
+  public function dispatchPresetMessages($resource, $type)
+  {
     $presetCollections = $this->container->getParameter('preset_collections');
     $presetCollection = array();
     foreach($presetCollections as $collection){
@@ -151,7 +157,8 @@ class ResourceService{
     }
   }
 
-  public function getResourceInfo($id){
+  public function getResourceInfo($id)
+  {
     $returnParams = [
       'path'=>'',
       'size_px'=>'',
@@ -164,6 +171,25 @@ class ResourceService{
     $returnParams['size_px'] = $resource->getSizePx();
     $returnParams['size_bytes'] = $resource->getSizeBytes();
     return $returnParams;
+  }
+
+  public function getByItemAndPriority($itemId, $priority = 1)
+  {
+    $repo = $this->entityManager->getRepository(Resource::class);
+    if($priority == 1){
+      $findParams = [
+        'item'=>$itemId,
+        'type'=>1
+      ];
+    }else{
+      $findParams = [
+        'item'=>$itemId,
+        'type'=>2,
+        'priority'=>$priority-1
+      ];
+    }
+    $resource = $repo->findOneBy($findParams);
+    return $resource;
   }
 
   // private function _getItemCode($itemId){

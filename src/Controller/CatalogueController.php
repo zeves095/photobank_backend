@@ -277,6 +277,46 @@ class CatalogueController extends AbstractController
 
     /**
      * @Route(
+     *      "/catalogue/node/item/resource/{_code}_{_priority}.{_format}",
+     *      methods={"GET"},
+     *      name="catalogue_node_item_resource_by_priority_raw",
+     *      requirements={
+     *          "id"="\d+",
+     *          "_priority"="\d{1,2}",
+     *          "_format": "jpg|json"
+     *      }
+     * )
+     */
+    public function getResourceByPriorityRaw($_format, $_priority, $_code, ResourceService $resourceService)
+    {
+        $resource = $resourceService->getByItemAndPriority($_code, $_priority);
+
+        if($_format == 'json'){
+            return $this->redirect(
+                $this->generateUrl(
+                    'catalogue_node_item_resource',
+                    array('id' => $resource->getId())
+                )
+            );
+        }
+
+        if($resource == null){
+          throw new HttpException(404, "Ресурс не найден");
+        }
+
+        $upload_directory = $this->getParameter('upload_directory');
+        // @TODO: DELETE and use service|utils methods to get $fileDirectory
+        $item_code = $resource->getItem()->getId();
+        $fileDirectory = $upload_directory .'/'. $resourceService->generatePath($item_code);
+        $filename = $resource->getFilename();
+        $fullFilePath = $fileDirectory . $filename;
+        $src_filename = $resource->getSrcFilename()?:'noName';
+
+        return $this->file($fullFilePath, $src_filename, ResponseHeaderBag::DISPOSITION_INLINE);
+    }
+
+    /**
+     * @Route(
      *      "/catalogue/node/item/resource/{rid}/{pid}",
      *      methods={"GET"},
      *      name="catalogue_node_item_resource_preset",
