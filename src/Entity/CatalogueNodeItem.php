@@ -37,7 +37,7 @@ class CatalogueNodeItem
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $Article;
+    private $article;
 
     public function __construct()
     {
@@ -106,12 +106,12 @@ class CatalogueNodeItem
 
     public function getArticle(): ?string
     {
-        return $this->Article;
+        return $this->article;
     }
 
-    public function setArticle(?string $Article): self
+    public function setArticle(?string $article): self
     {
-        $this->Article = $Article;
+        $this->article = $article;
 
         return $this;
     }
