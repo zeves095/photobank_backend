@@ -1,5 +1,6 @@
 security:
     access_control:
+        #- { path: '^/catalogue/node/item/resource/\d\{11\}_\d\{1,3\}.bool', requires_channel: http }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
         - { path: ^/catalogue/node/item/resource/thumbnails, roles: ROLE_USER, requires_channel: http }
         - { path: ^/catalogue/node/item/resource, methods: [PATCH], roles: ROLE_WRITER, requires_channel: http }
