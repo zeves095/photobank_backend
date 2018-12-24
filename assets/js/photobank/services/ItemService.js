@@ -39,7 +39,7 @@ class ItemService{
           resolve(data);
         }).fail((e)=>{reject([])});
       }else{
-        let data = {"item_search_name":queryObject.name,"item_search_code":queryObject.code,"item_search_parent_name":queryObject.parent_name,"item_search_search_nested":queryObject.search_nested}
+        let data = {"item_search_name":queryObject.name,"item_search_code":queryObject.code,"item_search_parent_name":queryObject.parent_name,"item_search_search_nested":queryObject.search_nested, "item_search_article":queryObject.article}
         $.get(window.config.item_search_url,data).done((data)=>{
           resolve(data);
         }).fail((e)=>{reject([])});

@@ -18,6 +18,10 @@ class SearchQueryBuilder {
         preg_match_all("/[0-9]{1,11}/", $value, $value);
         $value = $value[0];
       }
+      if($key == "article"){
+        $value = str_replace(' ','', $value);
+        $value = explode(",", $value);
+      }
       if(in_array($key, $fields)){
         $queryObject->setField($key, $value);
       }
