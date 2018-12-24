@@ -209,7 +209,7 @@ class LinkService{
   }
 
   public function validateForm($data){
-    if(isset($data['resource'])){
+    if(isset($data['resource']) && $data['resource'] !== ''){
       $resourceIds = explode(',',$data['resource']);
     }else{
         return [false, 'Необходимо указать ресурс'];
