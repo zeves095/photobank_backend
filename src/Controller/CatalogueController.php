@@ -282,14 +282,22 @@ class CatalogueController extends AbstractController
      *      name="catalogue_node_item_resource_by_priority_raw",
      *      requirements={
      *          "id"="\d+",
-     *          "_priority"="\d{1,2}",
-     *          "_format": "jpg|json"
+     *          "_priority"="\d{1,3}",
+     *          "_format": "jpg|json|bool"
      *      }
      * )
      */
     public function getResourceByPriorityRaw($_format, $_priority, $_code, ResourceService $resourceService)
     {
         $resource = $resourceService->getByItemAndPriority($_code, $_priority);
+
+        if($_format == 'bool'){
+            return new Response(($resource?1:0));
+        }
+
+        if($resource == null){
+          throw new HttpException(404, "Ресурс не найден");
+        }
 
         if($_format == 'json'){
             return $this->redirect(
@@ -298,10 +306,6 @@ class CatalogueController extends AbstractController
                     array('id' => $resource->getId())
                 )
             );
-        }
-
-        if($resource == null){
-          throw new HttpException(404, "Ресурс не найден");
         }
 
         $upload_directory = $this->getParameter('upload_directory');
