@@ -125,6 +125,15 @@ class ResourceRepository extends ServiceEntityRepository
           $codeCounter = 0;
 
         }
+        if($queryObject->getField("item_query")->getField("article") != ""){
+          $articleCounter = 0;
+          $queryBuilder->innerJoin('r.item', 'ia');
+          foreach($queryObject->getField("item_query")->getField("article") as $article){
+              $queryBuilder
+              ->orWhere('ia.article = :article'.$articleCounter)
+              ->setParameter('article'.$articleCounter++, $article);
+          }
+        }
         if($queryObject->getField("item_query")->getField("parent_name") != "" && $queryObject->getField("item_query")->getField("search_nested") == false){
           $queryBuilder->innerJoin('r.item', 'in')
           ->leftJoin('in.node', 'n')

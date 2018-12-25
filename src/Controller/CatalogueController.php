@@ -272,6 +272,8 @@ class CatalogueController extends AbstractController
         $fullFilePath = $fileDirectory . $filename;
         $src_filename = $resource->getSrcFilename()?:'noName';
 
+        if(!file_exists($fullFilePath)){throw new HttpException(503, "Ресурс временно недоступен");}
+
         return $this->file($fullFilePath, $src_filename, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
@@ -315,6 +317,8 @@ class CatalogueController extends AbstractController
         $filename = $resource->getFilename();
         $fullFilePath = $fileDirectory . $filename;
         $src_filename = $resource->getSrcFilename()?:'noName';
+
+        if(!file_exists($fullFilePath)){throw new HttpException(503, "Ресурс временно недоступен");}
 
         return $this->file($fullFilePath, $src_filename, ResponseHeaderBag::DISPOSITION_INLINE);
     }

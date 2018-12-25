@@ -21,6 +21,10 @@ export default {
         type: "string",
         title: "Код 1С товара"
       },
+      item_search_article: {
+        type: "string",
+        title: "Артикул"
+      },
       resource_search_id: {
         type: "number",
         title: "ID Ресурса"
@@ -46,6 +50,7 @@ export default {
     item_search_parent_name: {"ui:widget": "text"},
     item_search_search_nested: {"ui:widget": "hidden"},
     item_search_code: {"ui:widget": "text"},
+    item_search_article: {"ui:widget": "text"},
     resource_search_id: {"ui:widget": "hidden"},
     resource_search_preset: {"ui:widget": "hidden"},
     resource_search_type: {"ui:widget": "hidden"},
@@ -54,6 +59,7 @@ export default {
     item_search_name: {"ui:widget": "text"},
     item_search_parent_name: {"ui:widget": "text"},
     item_search_code: {"ui:widget": "text"},
+    item_search_article: {"ui:widget": "text"},
     resource_search_id: {"ui:widget": "updown"},
     resource_search_preset: {"ui:widget": "text"},
     resource_search_type: {"ui:widget": "text"},

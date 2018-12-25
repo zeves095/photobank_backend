@@ -125,25 +125,19 @@ class LinkControllerTest extends WebTestCase
     $this->assertEquals(302, $response->getStatusCode());
   }
 
-  public function updateLink($link_id, Request $request, LinkService $linkService)
-  {
-
-  }
-
-  public function getResource($link_hash, Request $request, LinkService $linkService)
-  {
-
-  }
-
-  public function fetchAll(Request $request, LinkService $linkService, AppSerializer $serializer)
-  {
-
-  }
-
-  public function delete($link, Request $request, LinkService $linkService, AppSerializer $serializer, MessageBusInterface $bus)
-  {
-
-  }
+  // public function testFetchAll()
+  // {
+  //   $client = $this->createAuthenticatedClient();
+  //   $crawler = $client->request('GET', '/api/links/fetchall');
+  //   $response = $client->getResponse();
+  //   $this->assertEquals(200, $response->getStatusCode());
+  //   $this->assertTrue(is_array(json_decode($response->getContent())));
+  //
+  //   $client = $this->createAnnonymousClient();
+  //   $crawler = $client->request('GET', '/api/links/fetchall');
+  //   $response = $client->getResponse();
+  //   $this->assertEquals(302, $response->getStatusCode());
+  // }
 
   private function createAuthenticatedClient()
   {

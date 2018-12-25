@@ -1,6 +1,9 @@
 .photobank-main {
 
   max-width: 100vw;
+  .catalogue-tree,.view-inner__item-section,.view-inner__item-section{
+    transition: width 0s;
+  }
 }
 
   .photobank-main__butt-wrapper{
