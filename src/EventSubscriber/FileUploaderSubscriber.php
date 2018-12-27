@@ -3,8 +3,8 @@
 namespace App\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use App\PhotoBank\FileUploaderBundle\Event\FileUploadedEvent;
-use App\PhotoBank\FileUploaderBundle\Service\UploadRecordManager;
+use PhotoBank\FileUploaderBundle\Event\FileUploadedEvent;
+use PhotoBank\FileUploaderBundle\Service\UploadRecordManager;
 use App\Service\ResourceService;
 use Symfony\Component\Translation\TranslatorInterface;
 

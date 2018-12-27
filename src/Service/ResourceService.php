@@ -3,7 +3,7 @@
 namespace App\Service;
 use Symfony\Component\Translation\TranslatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use App\PhotoBank\FileUploaderBundle\Event\FileUploadedEvent;
+use PhotoBank\FileUploaderBundle\Event\FileUploadedEvent;
 use App\Entity\Resource;
 use App\Entity\CatalogueNodeItem;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

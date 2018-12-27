@@ -5,9 +5,11 @@
 /private/uploads/
 /private/uploads3/
 /private/uploads_old/
+/private/test/uploads/
 /private/generated/
 /var/
 /vendor/
+/tests/dump/
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###

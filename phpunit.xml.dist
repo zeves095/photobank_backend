@@ -23,9 +23,9 @@
 
         <env name="MAILER_URL" value="null://localhost" />
 
-        <env name="DATABASE_URL" value="mysql://user:password@127.0.0.1:3306/prod_dump2" />
+        <env name="DATABASE_URL" value="mysql://user:password@127.0.0.1:3306/phototest" />
 
-        <env name="UPLOADS_PARENT" value="private" />
+        <env name="UPLOADS_PARENT" value="private/test/" />
 
         <!-- ###+ symfony/messenger ### -->
         <!-- MESSENGER_TRANSPORT_DSN=amqp://guest:guest@localhost:5672/%2f/messages -->

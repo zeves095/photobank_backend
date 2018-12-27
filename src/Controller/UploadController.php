@@ -5,7 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use App\PhotoBank\FileUploaderBundle\Service\UploadRecordManager;
+use PhotoBank\FileUploaderBundle\Service\UploadRecordManager;
 
 class UploadController extends AbstractController
 {

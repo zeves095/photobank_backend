@@ -7,6 +7,7 @@ imports:
     - { resource: fileuploader.yaml }
     - { resource: user.yaml }
     - { resource: links.yaml }
+    - { resource: tests.yaml }
 
 services:
     _defaults:
@@ -21,6 +22,9 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    App\Tests\Service\:
+        resource: '../tests/Service'
 
 
     # JSON Encoder

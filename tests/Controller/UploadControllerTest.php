@@ -2,11 +2,11 @@
 
 namespace App\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\Controller\BaseTest;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ObjectRepository;
 
-class UploadControllerTest extends WebTestCase
+class UploadControllerTest extends BaseTest
 {
 
   public function testIndex()
@@ -29,27 +29,6 @@ class UploadControllerTest extends WebTestCase
     $response = $client->getResponse();
     $this->assertEquals(302, $response->getStatusCode());
 
-  }
-
-  private function createAuthenticatedClient()
-  {
-      return static::createClient(array(), array(
-        'PHP_AUTH_USER' => 'user',
-        'PHP_AUTH_PW'   => 'password',
-      ));
-  }
-
-  private function createWriterClient()
-  {
-      return static::createClient(array(), array(
-        'PHP_AUTH_USER' => 'writer',
-        'PHP_AUTH_PW'   => 'password',
-      ));
-  }
-
-  private function createAnnonymousClient()
-  {
-      return static::createClient(array(), array());
   }
 
 }

@@ -45,7 +45,6 @@ class UsermanagerController extends AbstractController
     public function setUser(UserService $userService, RequestStack $requestStack){
       $response = new JsonResponse();
       $request = $requestStack->getCurrentRequest()->request;
-      //var_dump($request["parameters"]);
       $response->setData($userService->setUser($request->all()));
       return $response;
     }

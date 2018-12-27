@@ -2,11 +2,11 @@
 
 namespace App\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\Controller\BaseTest;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ObjectRepository;
 
-class LinkControllerTest extends WebTestCase
+class LinkControllerTest extends BaseTest
 {
 
   public function testValidateForm()
@@ -104,16 +104,15 @@ class LinkControllerTest extends WebTestCase
 
   public function testGetTxt()
   {
-    $mockText = ["links"=>["link1", "link2"]];
+    $mockText = ["links"=>$this->sampleData->links];
     $client = $this->createAuthenticatedClient();
-    // $crawler = $client->request('POST', '/api/links/txt/', $mockText);
-    // $response = $client->getResponse();
-    // var_dump($response->headers);
-    // $this->assertEquals(200, $response->getStatusCode());
-    // $this->assertTrue($response->headers->contains(
-    //     'Content-Type',
-    //     'binary/octet-stream'
-    // ));
+    $crawler = $client->request('POST', '/api/links/txt/', $mockText);
+    $response = $client->getResponse();
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertTrue($response->headers->contains(
+        'Content-Type',
+        'binary/octet-stream'
+    ));
 
     $crawler = $client->request('POST', '/api/links/txt/', []);
     $response = $client->getResponse();
@@ -125,39 +124,84 @@ class LinkControllerTest extends WebTestCase
     $this->assertEquals(302, $response->getStatusCode());
   }
 
-  // public function testFetchAll()
-  // {
-  //   $client = $this->createAuthenticatedClient();
-  //   $crawler = $client->request('GET', '/api/links/fetchall');
-  //   $response = $client->getResponse();
-  //   $this->assertEquals(200, $response->getStatusCode());
-  //   $this->assertTrue(is_array(json_decode($response->getContent())));
-  //
-  //   $client = $this->createAnnonymousClient();
-  //   $crawler = $client->request('GET', '/api/links/fetchall');
-  //   $response = $client->getResponse();
-  //   $this->assertEquals(302, $response->getStatusCode());
-  // }
-
-  private function createAuthenticatedClient()
+  public function testFetchAll()
   {
-      return static::createClient(array(), array(
-        'PHP_AUTH_USER' => 'user',
-        'PHP_AUTH_PW'   => 'password',
-      ));
+    $client = $this->createRealAdmin();
+    $crawler = $client->request('GET', '/api/links/fetchall');
+    //var_dump($crawler->filter('h1.exception-message')->text());
+    $response = $client->getResponse();
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertTrue(is_array(json_decode($response->getContent())));
+
+    $client = $this->createAnnonymousClient();
+    $crawler = $client->request('GET', '/api/links/fetchall');
+    $response = $client->getResponse();
+    $this->assertEquals(302, $response->getStatusCode());
   }
 
-  private function createWriterClient()
+  public function testLinkCreate()
   {
-      return static::createClient(array(), array(
-        'PHP_AUTH_USER' => 'writer',
-        'PHP_AUTH_PW'   => 'password',
-      ));
+    $nonCustomLinkData = [
+      "resource"=>implode(',', $this->sampleData->resources),
+      "size"=>[]
+    ];
+
+    $customLinkData = [
+      "resource"=>implode(',', $this->sampleData->resources),
+      "size"=>["width"=>"100","height"=>"100"],
+      "target"=>"sample_group"
+    ];
+
+    $invalidLinkData = [
+      "resource"=>"",
+      "size"=>["width"=>"100","height"=>"100"],
+      "target"=>"sample_group"
+    ];
+
+    $client = $this->createRealAdmin();
+
+    $crawler = $client->request('GET', '/api/links/fetchall');
+    $response = $client->getResponse();
+    $baseLinkCount = sizeof(json_decode($response->getContent()));
+
+    $crawler = $client->request('POST', '/api/links/submit', array(), array(), array('CONTENT_TYPE' => 'application/json'),json_encode($nonCustomLinkData));
+    $response = $client->getResponse();
+    $this->assertEquals(200, $response->getStatusCode());
+
+    $crawler = $client->request('GET', '/api/links/fetchall');
+    $response = $client->getResponse();
+    $baseLinkCount = $baseLinkCount+sizeof($this->sampleData->resources);
+    $this->assertEquals($baseLinkCount, sizeof(json_decode($response->getContent())));
+
+    $crawler = $client->request('POST', '/api/links/submit', array(), array(), array('CONTENT_TYPE' => 'application/json'),json_encode($customLinkData));
+    $response = $client->getResponse();
+    $this->assertEquals(200, $response->getStatusCode());
+
+    $crawler = $client->request('GET', '/api/links/fetchall');
+    $response = $client->getResponse();
+    $baseLinkCount = $baseLinkCount+sizeof($this->sampleData->resources);
+    $this->assertEquals($baseLinkCount, sizeof(json_decode($response->getContent())));
+
+    $crawler = $client->request('POST', '/api/links/submit', array(), array(), array('CONTENT_TYPE' => 'application/json'),json_encode($invalidLinkData));
+    $response = $client->getResponse();
+    //var_dump($crawler->filter('h1.exception-message')->text());
+    $this->assertEquals(400, $response->getStatusCode());
+
   }
 
-  private function createAnnonymousClient()
+  public function testLinkDelete()
   {
-      return static::createClient(array(), array());
+    $client = $this->createRealAdmin();
+
+    $crawler = $client->request('GET', '/api/links/fetchall');
+    $response = $client->getResponse();
+    $this->assertEquals(200, $response->getStatusCode());
+    $links = json_decode($response->getContent());
+
+    $crawler = $client->request('GET', '/api/links/delete/'.$links[0]->link_id);
+    $response = $client->getResponse();
+    $this->assertEquals(200, $response->getStatusCode());
+
   }
 
 }

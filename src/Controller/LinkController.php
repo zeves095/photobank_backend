@@ -169,7 +169,6 @@ class LinkController extends AbstractController
       public function fetchAll(Request $request, LinkService $linkService, AppSerializer $serializer)
       {
          $user = $this->getUser();
-
          $links = $linkService->fetchAllWithExtraFields($user);
 
          // Альтернативный способ получения линков если нет нужды в полях, привязанных к сущностям Resource и CatalogueNodeItem

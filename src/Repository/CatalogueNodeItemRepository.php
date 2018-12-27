@@ -46,11 +46,11 @@ class CatalogueNodeItemRepository extends ServiceEntityRepository
         }
       }
       if($queryObject->getField("parent_name") != "" && $queryObject->getField("search_nested") == 0){
-        $queryBuilder->leftJoin('c.node', 'parent')
-        ->where('parent.name LIKE :pname')
-        ->orWhere('parent.id LIKE :pcode')
-        ->setParameter('pname', '%'.$queryObject->getField("parent_name").'%')
-        ->setParameter('pcode', '%'.$queryObject->getField("parent_name"));
+        $queryBuilder->leftJoin('c.node', 'parentn')
+        ->andwhere('parentn.name LIKE :pnamen')
+        ->orWhere('parentn.id LIKE :pcoden')
+        ->setParameter('pnamen', '%'.$queryObject->getField("parent_name").'%')
+        ->setParameter('pcoden', '%'.$queryObject->getField("parent_name"));
       }
       if($queryObject->getField("parent_name") != "" && $queryObject->getField("search_nested") == 1){
         $queryBuilder->leftJoin('c.node', 'parent')
@@ -59,7 +59,7 @@ class CatalogueNodeItemRepository extends ServiceEntityRepository
        ->leftJoin('parent3.parent', 'parent4')
        ->leftJoin('parent4.parent', 'parent5')
        ->leftJoin('parent5.parent', 'parent6')
-       ->where('parent.name LIKE :pname')
+       ->andwhere('parent.name LIKE :pname')
        ->orWhere('parent2.name LIKE :pname')
        ->orWhere('parent3.name LIKE :pname')
        ->orWhere('parent4.name LIKE :pname')
