@@ -9,21 +9,9 @@ security:
         App\Entity\Security\User: plaintext
 
     providers:
-        in_memory:
-            memory:
-                users:
-                    root:
-                        password: password
-                        roles: 'ROLE_SUPER_ADMIN'
-                    admin:
-                        password: password
-                        roles: 'ROLE_ADMIN'
-                    writer:
-                        password: password
-                        roles: 'ROLE_WRITER'
-                    user:
-                        password: password
-                        roles: 'ROLE_USER'
+        database_user_provider:
+            entity:
+                class: App\Entity\Security\User
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -35,7 +23,7 @@ security:
             logout:
                 path:   /logout
                 target: /
-            provider: in_memory
+            provider: database_user_provider
 
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }

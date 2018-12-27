@@ -36,8 +36,6 @@ class LinkService{
     $external_url = $this->container->getParameter('link_url_prefix').'/'.$hash.".jpg";
 
     $expires = $params['expires_by']==""?NULL:date_create_from_format("Y-m-d", $params['expires_by']);
-    //date_create_from_format('Y-m-d', $params['expires_by']);
-
 
     $link->setAccess($params['access'])
     ->setTarget($params['target'])

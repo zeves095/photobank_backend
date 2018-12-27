@@ -65,6 +65,7 @@ class FormWrapper extends Component {
   }
 
   render(){
+    console.log("render");
     let submit = (typeof this.props.submit !== 'undefined'?this.props.submit:<button type="submit">{this.state.submit}</button>);
     return (
       <div className="form-wrapper">
