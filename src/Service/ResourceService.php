@@ -1,5 +1,7 @@
 <?php
-
+/**
+  * Сервис для создания, обновления, удаления и получения информации по объектам типа "Resource"
+  */
 namespace App\Service;
 use Symfony\Component\Translation\TranslatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,13 +15,44 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Symfony\Component\Messenger\MessageBusInterface;
 use App\Message\ResourcePresetNotification;
+/**
+  * Сервис для создания, обновления, удаления и получения информации по объектам типа "Resource"
+  */
 class ResourceService{
 
+  /**
+  * Инструмент работы с сущностями Doctrine ORM
+  */
   private $entityManager;
-  private $recordManager;
+  /**
+  * Сервис перевода
+  */
+  private $translator;
+  /**
+  * Сервис работы с файловой системой Symfony
+  */
+  private $fileSystem;
+  /**
+  * Сервис-контейнер Symfony
+  */
   private $container;
+  /**
+  * Сервис работы с компонентом messenger
+  */
   private $messageBus;
+  /**
+  * Сервис работы с записями о загрузках
+  */
+  private $recordManager;
 
+/**
+ * Конструктор класса
+ * @param EntityManagerInterface $entityManager Инструмент работы с сущностями Doctrine ORM
+ * @param TranslatorInterface    $translator    Сервис перевода
+ * @param Filesystem             $fileSystem    Сервис работы с файловой системой Symfony
+ * @param ContainerInterface     $container     Сервис-контейнер Symfony
+ * @param MessageBusInterface    $messageBus    Сервис работы с компонентом messenger
+ */
   public function __construct(
       EntityManagerInterface $entityManager,
       TranslatorInterface $translator,
@@ -34,6 +67,10 @@ class ResourceService{
     $this->messageBus = $messageBus;
   }
 
+/**
+ * Разбивает код 1C товара на 2-значниые названия директорий с разделителем /
+ * @param string $item_code 1С код товара
+ */
   public function generatePath($item_code)
   {
     $splitId = array();
@@ -45,6 +82,10 @@ class ResourceService{
     return $splitIdPath;
   }
 
+/**
+ * Обрабатывает успешно законченную загрузку файла
+ * @param mixed[] $resourceParameters Параметры загруженного файла
+ */
   public function processCompletedUpload($resourceParameters)
   {
     $filepath = $resourceParameters['path'];
@@ -59,6 +100,12 @@ class ResourceService{
     }
   }
 
+/**
+ * Созраняет запись о ресурсе в базе данных
+ * @param mixed[] $resourceParameters Параметры загруженного файла
+ *
+ * TODO Да из контроллера же http-ошибки
+ */
   public function persistResource($resourceParameters)
   {
     $resource = new Resource();
@@ -101,6 +148,11 @@ class ResourceService{
     return $resource;
   }
 
+/**
+ * Обновляет запись о ресурсе
+ * @param Resource $resource Ресурс, который нужно обновить
+ * @param  mixed[] $data     Новые данные для ресурса [ключ=>значение]
+ */
   public function patchResource($resource, $data)
   {
     //Validation for limited resource types
@@ -131,6 +183,13 @@ class ResourceService{
     return true;
   }
 
+  /**
+   * Создает md5-hash для ресурса, который станет названием файла в конечной файловой системе
+   * @param  string $file     Контент файла
+   * @param  int $itemId   Идентификатор товара
+   * @param  int $filesize Размер файла в байтах
+   * @return string $identifier Сгенерированный идентификатор
+   */
   public function getUniqueIdentifier($file, $itemId, $filesize)
   {
     $fileHash = crc32($file);
@@ -138,6 +197,11 @@ class ResourceService{
     return $identifier;
   }
 
+/**
+ * Отправляет сообщения о необходимости создать все пресеты, которые подразумевает тип ресурса
+ * @param Resource $resource Ресурс, для которого необходимо сгенерировть пресеты
+ * @param int $type Тип ресурса
+ */
   public function dispatchPresetMessages($resource, $type)
   {
     $presetCollections = $this->container->getParameter('preset_collections');
@@ -157,6 +221,13 @@ class ResourceService{
     }
   }
 
+/**
+ * Получает инфомацию о ресурсе по его id
+ * @param  int $id Идентификатор ресурса
+ * @return mixed[] $returnParams Возвращаемая информация о ресурсе
+ *
+ * TODO возвращать нормализованный объект
+ */
   public function getResourceInfo($id)
   {
     $returnParams = [
@@ -173,6 +244,13 @@ class ResourceService{
     return $returnParams;
   }
 
+
+  /**
+   * Получает ресурс по товару, к которому он привязан и приоритету. Приоритет будет соответствовать проиритету в базе данных -1 при значении отличном от 1. При запросе с приоритетом 1 вернется основное изображение
+   * @param  int  $itemId  Идентификатор товара
+   * @param  integer $priority Приоритет ресурса
+   * @return Resource $resource Найденный ресурс
+   */
   public function getByItemAndPriority($itemId, $priority = 1)
   {
     $repo = $this->entityManager->getRepository(Resource::class);
@@ -191,12 +269,5 @@ class ResourceService{
     $resource = $repo->findOneBy($findParams);
     return $resource;
   }
-
-  // private function _getItemCode($itemId){
-  //   $itemRepository = $this->entityManager->getRepository(CatalogueNodeItem::class);
-  //   $item = $itemRepository->findOneBy(['id'=>$itemId]);
-  //   return $item->getItemCode();
-  // }
-
 
 }

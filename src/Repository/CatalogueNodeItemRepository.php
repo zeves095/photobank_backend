@@ -1,5 +1,7 @@
 <?php
-
+/**
+* Репозиторий Doctrine ORM для работы с сущностями типа "CatalogueNodeItem"
+*/
 namespace App\Repository;
 
 use App\Entity\CatalogueNodeItem;
@@ -8,6 +10,8 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use App\Entity\Search\ItemQueryObject;
 
 /**
+* Репозиторий Doctrine ORM для работы с сущностями типа "CatalogueNodeItem"
+*
  * @method CatalogueNodeItem|null find($id, $lockMode = null, $lockVersion = null)
  * @method CatalogueNodeItem|null findOneBy(array $criteria, array $orderBy = null)
  * @method CatalogueNodeItem[]    findAll()
@@ -15,12 +19,18 @@ use App\Entity\Search\ItemQueryObject;
  */
 class CatalogueNodeItemRepository extends ServiceEntityRepository
 {
+    /**
+     * Конструктор класса
+     * @param RegistryInterface $registry Внутренний инструмент работы с подключениями Doctrine ORM
+     */
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, CatalogueNodeItem::class);
     }
 
   /**
+   * Выполняет поиск сущностей по заданным полям
+   * @param ItemQueryObject $queryObject Объект поиска
     * @return CatalogueNodeItem[] Returns an array of CatalogueNodeItem objects
     */
 

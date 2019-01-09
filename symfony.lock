@@ -104,6 +104,9 @@
     "pagerfanta/pagerfanta": {
         "version": "v2.0.1"
     },
+    "photobank/file-uploader-bundle": {
+        "version": "dev-master"
+    },
     "phpdocumentor/reflection-common": {
         "version": "1.0.1"
     },

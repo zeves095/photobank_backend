@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Репозиторий для работы с объектами типа "User"
+ */
 namespace App\Repository\Security;
 
 use App\Entity\Security\User;
@@ -9,6 +11,8 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 
 /**
+ * Репозиторий для работы с объектами типа "User"
+ *
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
  * @method User|null findOneBy(array $criteria, array $orderBy = null)
  * @method User[]    findAll()
@@ -16,11 +20,20 @@ use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements UserLoaderInterface
 {
+    /**
+     * Конструктор класса
+     * @param RegistryInterface $registry Внутренний инструмент работы с подключениями Doctrine ORM
+     */
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, User::class);
     }
 
+    /**
+     * Находит объект пользователя по его имени
+     * @param  string $username Имя пользователья, которго необходимо найти
+     * @return User найденный пользователь, если есть
+     */
     public function loadUserByUsername($username)
     {
         return $this->createQueryBuilder('u')
@@ -30,7 +43,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->getQuery()
             ->getOneOrNullResult();
     }
-    
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

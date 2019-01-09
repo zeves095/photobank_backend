@@ -1,5 +1,7 @@
 <?php
-
+/**
+  * Сервис для работы с генерацией изображений
+  */
 namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,13 +13,36 @@ use \Imagine\Imagick\Imagine;
 use \Imagine\Image\Box;
 use \Imagine\Image\ImageInterface;
 
+
+/**
+  * Сервис для работы с генерацией изображений
+  */
 class ImageProcessorService{
 
-  private $entityManager;
-  private $container;
+  /**
+  * Инструмент работы с сущностями Doctrine ORM
+  */
+private $entityManager;
+  /**
+  * Сервис-контейнер Symfony
+  */
+private $container;
+/**
+ * Сервис для работы с сущностями типа Resource
+ */
   private $resourceService;
-  private $fileSystem;
+  /**
+  * Сервис работы с файловой системой Symfony
+  */
+private $fileSystem;
 
+  /**
+   * Конструктор класса
+   * @param EntityManagerInterface $entityManager   Инструмент для работы с сущностями Doctrine ORM
+   * @param ContainerInterface     $container       Сервис-контейнер Symfony
+   * @param ResourceService        $resourceService Сервис для работы с сущностями типа Resource
+   * @param Filesystem             $fileSystem      Сервис работы с файловой системой Symfony
+   */
   public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container, ResourceService $resourceService, Filesystem $fileSystem)
   {
     $this->entityManager = $entityManager;
@@ -26,11 +51,13 @@ class ImageProcessorService{
     $this->fileSystem = $fileSystem;
   }
 
-  public function queue($resourceId, $preset)
-  {
-    return true;
-  }
-
+  /**
+    * Запускает процесс генерации пресета для конкретного ресурса
+    *
+    * @param int $resourceId Идентификатор ресурса для обработки
+    * @param int $presetId Идентификатор пресета
+    *
+    */
   public function processPreset($resourceId, $presetId)
   {
 
@@ -49,6 +76,14 @@ class ImageProcessorService{
     return true;
   }
 
+  /**
+    * Определяет параметры генерации изображения не по пресету, а с отдельно заданными шириной и высотой. В результате не создается новый ресурс.
+    *
+    * @param int $id Идентификатор ресурса для обработки
+    * @param mixed[] $size_px Размер сгенерированного изображения в формате [ширина, высота]
+    * @param string $targetPath Путь к конечному файлу
+    *
+    */
   public function processCustom($id, $size_px, $targetPath)
   {
       $resource = $this->entityManager->getRepository(Resource::class)->findOneBy([
@@ -65,6 +100,14 @@ class ImageProcessorService{
       $this->_generateImage($params);
   }
 
+  /**
+    * Определяет параметры генерации изображения по пресету и создания нового ресурса.
+    *
+    * @param Resource $resource Идентификатор ресурса для обработки
+    * @param int $presetId Размер сгенерированного изображения в формате [ширина, высота]
+    * @param mixed $createdOn Дата создания ресурса
+    *
+    */
   private function _savePreset($resource, $presetId, $createdOn = NULL)
   {
     $extension = $resource->getExtension();
@@ -82,16 +125,7 @@ class ImageProcessorService{
       'target'=>$targetPath,
       'mode'=>1
     ]);
-    // $imageProcessor = new Imagine();
-    // $size = new Box($preset['width'],$preset['height']);
-    // $mode = ImageInterface::THUMBNAIL_OUTBOUND;
-    // $processorDirectory = $this->container->getParameter('upload_directory').'/imgproc/';
-    // if(!$this->fileSystem->exists($processorDirectory)){$this->fileSystem->mkDir($processorDirectory);}
-    // $targetPath = $processorDirectory.$resource->getId().'_'.$preset['name'].'.'.'jpeg';
-    // $imageProcessor->open($this->container->getParameter('upload_directory').$resource->getPath())
-    // ->thumbnail($size, $mode)
-    // ->save($targetPath);
-    // $imageProcessor = null;
+
     $filename = $this->resourceService->getUniqueIdentifier(file_get_contents($targetPath), $resource->getItem()->getId(),filesize($targetPath)).'.'.$extension;
 
     $resourceParameters = [
@@ -114,6 +148,13 @@ class ImageProcessorService{
     $this->fileSystem->remove($targetPath);
   }
 
+
+  /**
+    * Создает изображение на основе существующего файла и входных параметров с помощью ImageMagick
+    *
+    * @param mixed[] $params Параметры генерации. Включают в себя путь к источнику, конечному файлу, размеру и режиму генерации
+    *
+    */
   private function _generateImage($params){
     $imageProcessor = new Imagine();
     $size = new Box($params['width'],$params['height']);

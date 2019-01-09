@@ -1,5 +1,8 @@
 <?php
-
+/**
+  * Скрипт для bulk-импорта ресурсов из файловой системы. Ожидает директорию с файлами, названия которых соответствуют
+  * паттерну 00000000000_0.jpg, так как в этом виде данные были предоставлены при первоначальном импорте. Нежелательно использовать этот сервис в будущем, он предназначался как хак на один раз
+  */
 namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,13 +13,36 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+  * Скрипт для bulk-импорта ресурсов из файловой системы. Ожидает директорию с файлами, названия которых соответствуют
+  * паттерну 00000000000_0.jpg, так как в этом виде данные были предоставлены при первоначальном импорте. Нежелательно использовать этот сервис в будущем, он предназначался как хак на один раз
+  */
 class ImportResourceService{
 
-  private $entityManager;
-  private $container;
+  /**
+  * Инструмент работы с сущностями Doctrine ORM
+  */
+private $entityManager;
+  /**
+  * Сервис-контейнер Symfony
+  */
+private $container;
+/**
+ * Сервис для работы с сущностями типа Resource
+ */
   private $resourceService;
-  private $fileSystem;
+  /**
+  * Сервис работы с файловой системой Symfony
+  */
+private $fileSystem;
 
+  /**
+   * Конструктор класса
+   * @param EntityManagerInterface $entityManager   Инструмент работы с сущностями Doctrine ORM
+   * @param ContainerInterface     $container       Сервис-контейнер Symfony
+   * @param ResourceService        $resourceService  Сервис для работы с сущностями типа Resource
+   * @param Filesystem             $fileSystem      Сервис работы с файловой системой Symfony
+   */
   public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container, ResourceService $resourceService, Filesystem $fileSystem){
     $this->entityManager = $entityManager;
     $this->container = $container;
@@ -24,6 +50,9 @@ class ImportResourceService{
     $this->fileSystem = $fileSystem;
   }
 
+  /**
+   * Выполняет импорт ресурсов.
+   */
   public function import(){
 
     $resRepo = $this->entityManager->getRepository(Resource::class);

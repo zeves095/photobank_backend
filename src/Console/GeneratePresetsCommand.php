@@ -1,5 +1,7 @@
 <?php
-
+/**
+  * Создает все необходимые пресеты для ресурса по типу
+  */
 namespace App\Console;
 
 use Symfony\Component\Console\Command\Command;
@@ -11,20 +13,40 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use App\Service\ResourceService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Resource;
-
+/**
+  * Создает все необходимые пресеты для ресурса по типу
+  */
 class GeneratePresetsCommand extends Command
 {
+  /**
+   * Сервис для работы с сущностями типа Resource
+   */
     private $resourceService;
-    private $container;
-    private $entityManager;
-
+    /**
+  * Сервис-контейнер Symfony
+  */
+private $container;
+    /**
+  * Инструмент работы с сущностями Doctrine ORM
+  */
+private $entityManager;
+/**
+  * Конструктор класса
+  *
+  * @param ContainerInterface $container Для получения конфигурации, в частности пути к дампу тестовой базы и бэкапу файлов
+  * @param EntityManagerInterface $entityManager Инструмент работы с сущностями Doctrine ORM
+  * @param ResourceService $resourceService Сервис для работы с сущностями типа Resource
+  *
+  */
     public function __construct(ContainerInterface $container, EntityManagerInterface $entityManager, ResourceService $resourceService){
       $this->container = $container;
       $this->entityManager = $entityManager;
       $this->resourceService = $resourceService;
       parent::__construct();
     }
-
+    /**
+     * Конфигуратор консольной команды
+     */
     protected function configure()
     {
         $this
@@ -42,7 +64,11 @@ class GeneratePresetsCommand extends Command
             )
         ;
     }
-
+    /**
+     * Вызывается при выполнении консольной команды
+     * @param  InputInterface  $input  Входные данные, параметры
+     * @param  OutputInterface $output Ответ в консоли
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
       set_time_limit(0);

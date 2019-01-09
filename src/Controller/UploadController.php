@@ -1,5 +1,8 @@
 <?php
-
+/**
+  * Контроллер для получения страниц интерфейса загрузки файлов
+  *
+  */
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -7,9 +10,17 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use PhotoBank\FileUploaderBundle\Service\UploadRecordManager;
 
+/**
+  * Контроллер для получения страниц интерфейса загрузки файлов
+  */
 class UploadController extends AbstractController
 {
     /**
+      * Рендерит страницу загрузки. Получает конфигурацию из контейнера и пишет ее в data-config обертки react-компонента.
+      *
+      * @param ContainerInterface $container Сервис-контейнер Symfony
+      * @param UploadRecordManager $recordManager Сервис управления данными по загрузкам
+      *
      * @Route("/upload", name="upload")
      */
     public function index(ContainerInterface $container, UploadRecordManager $recordManager)

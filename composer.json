@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "imagine/imagine": "^0.7.1",
+        "photobank/file-uploader-bundle": "dev-master",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "*",
         "symfony/console": "*",
@@ -47,8 +48,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/",
-            "PhotoBank\\FileUploaderBundle\\": "vendor/photobank/file-uploader-bundle"
+            "App\\": "src/"
         }
     },
     "autoload-dev": {

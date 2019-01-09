@@ -1,4 +1,7 @@
 <?php
+/**
+ * Выполняет проверку на предмет того, можно ли авторизовать пользователя
+ */
 namespace App\Security;
 
 use App\Exception\AccountBlockedException;
@@ -7,9 +10,15 @@ use App\Entity\Security\User as AppUser;
 use Symfony\Component\Security\Core\Exception\AccountExpiredException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-
+/**
+ * Выполняет проверку на предмет того, можно ли авторизовать пользователя
+ */
 class UserChecker implements UserCheckerInterface
 {
+    /**
+     * Выполняет проверку до факта аутентификации
+     * @param  UserInterface $user Пользователь, для которого выполняется проверка
+     */
     public function checkPreAuth(UserInterface $user)
     {
         if (!$user instanceof AppUser) {
@@ -21,6 +30,10 @@ class UserChecker implements UserCheckerInterface
         }
     }
 
+    /**
+     * Выполняет проверку после факта аутентификации
+     * @param  UserInterface $user Пользователь, для которого выполняется проверка
+     */
     public function checkPostAuth(UserInterface $user)
     {
         if (!$user instanceof AppUser) {

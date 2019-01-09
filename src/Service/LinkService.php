@@ -1,4 +1,7 @@
 <?php
+/**
+  * Сервис для создания, обновления, удаления и получения информации по объектам типа "Link"
+  */
 
 namespace App\Service;
 
@@ -12,12 +15,32 @@ use \Imagine\Image\Box;
 use \Imagine\Image\ImageInterface;
 use \Symfony\Component\HttpKernel\Exception\HttpException;
 
+
+/**
+  * Сервис для создания, обновления, удаления и получения информации по объектам типа "Link"
+  *
+  */
 class LinkService{
+  /**
+  * Инструмент работы с сущностями Doctrine ORM
+  */
+private $entityManager;
+  /**
+  * Сервис-контейнер Symfony
+  */
+private $container;
+  /**
+  * Сервис работы с файловой системой Symfony
+  */
+private $fileSystem;
 
-  private $entityManager;
-  private $container;
-  private $fileSystem;
-
+  /**
+    * Конструктор класса
+    *
+    * @param EntityManagerInterface $entityManager Для создания и обновления сущностей в базе данных
+    * @param ContainerInterface $container Для получения параметров конфигурации
+    * @param Filesystem $fileSystem Для удаления ранее созданных изображений, не привязанных к ресурсу
+    */
   public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container, Filesystem $fileSystem)
   {
     $this->entityManager = $entityManager;
@@ -25,6 +48,14 @@ class LinkService{
     $this->fileSystem = $fileSystem;
   }
 
+  /**
+    * Создает новую запись типа "Link"  базе данных без ряда полей, так что впоследствии запись должна быть обновлена для полноценной работы
+    *
+    * @param mixed[] $params Параметры из формы для создания новой ссылки
+    *
+    * @return $link объект сгенерированной ссылки
+    *
+    */
   public function createLink($params)
   {
     $link = new Link();
@@ -59,6 +90,13 @@ class LinkService{
     return $link;
   }
 
+  /**
+    * Обновляет ранее созданную ссылку и добавляет в нее необходимые поля, либо после создания нового изображения, либо после выбора существующего ресурса
+    *
+    * @param mixed[] $params Параметры для обновления ссылки
+    *
+    * TODO выставлять ready=true для обработанных ссылок
+    */
   public function updateLink($params)
   {
     $link = $this->entityManager->getRepository(Link::class)->findOneBy([
@@ -77,6 +115,15 @@ class LinkService{
     $this->entityManager->flush();
   }
 
+  /**
+    * Делает проверку на предмет того, является ли кнкретный пользователь создателем ссылки
+    *
+    * @param int $link_id Идентификатор ссылки
+    * @param int $user_id Идентификтор польователя
+    *
+    * @return bool true в случае, если пользователь является создателем, false в обратном случае
+    *
+    */
   public function userIsOwner($link_id, $user_id)
   {
     $repo = $this->entityManager->getRepository(Link::class);
@@ -89,11 +136,34 @@ class LinkService{
     return false;
   }
 
+  /**
+    * Генерирует уникальный идентификатор ссылки
+    *
+    * @param mixed Все аргументы этой функции станут основой для генерации
+    *
+    * @return string Сгенерированная строка-идентификатор
+    *
+    * TODO привести к стандарту параметры для создания идентификатора
+    *
+    */
   private function _generateHash()
   {
     $src_string = implode('', func_get_args());
     return md5($src_string);
   }
+
+  /**
+    * Получает изображение по запрошенной ссылке, сделав проверку на ограничения по количеству запросов, сроку действия и допустимым IP-адресам
+    *
+    * @param string $hash Идентификатор ссылки
+    * @param Request $request Обхект запроса, по которому необходимо отдать изображение
+    * @param User $user Пользователь, если есть, который сделал запрос
+    *
+    * @return string Сгенерированная строка-идентификатор
+    *
+    * TODO вынести http ошибки в контроллер
+    *
+    */
 
   public function getImageData($hash, $request, $user)
   {
@@ -118,6 +188,14 @@ class LinkService{
     ];
   }
 
+  /**
+    * Проверяет, истек ли срок действия ссылки
+    *
+    * @param Link $link Объект ссылки
+    *
+    * @return bool true если срок не истек, false если истек
+    *
+    */
   private function _isNotExpired($link)
   {
     $currentDate = date_create();
@@ -131,6 +209,15 @@ class LinkService{
     return true;
   }
 
+  /**
+    * Проверяет, входит ли IP-адрес запросившенго ссылку в список разрешенных для этой ссылки
+    *
+    * @param Link $link Объект ссылки
+    * @param Request $request Обхект запроса, по которому необходимо отдать изображение
+    *
+    * @return bool true если дотуп для адреса разрешен, false сли нет
+    *
+    */
   private function _checkAccess($link, $request)
   {
     $access = $link->getAccess();
@@ -144,6 +231,14 @@ class LinkService{
     return false;
   }
 
+  /**
+    * Ведет подсчет в базе данных о количестве проведенных запросов, и сообщает о превышении лимита
+    *
+    * @param Link $link Объект ссылки
+    *
+    * @return bool true если лимит запросов не превышен, false ли превышен
+    *
+    */
   private function _countRequests($link)
   {
     $doneRequests = $link->getDoneRequests();
@@ -157,6 +252,14 @@ class LinkService{
     return true;
   }
 
+  /**
+    * Получает все ссылки, привязанные к конкретному пользователю
+    *
+    * @param User $user Объект пользователя
+    *
+    * @return Link[] $links Массив полученных ссылок
+    *
+    */
   public function fetchAllForUser($user)
   {
     $links = $this->entityManager->getRepository(Link::class)->findBy([
@@ -165,12 +268,31 @@ class LinkService{
     return $links;
   }
 
+  /**
+    * Получает все ссылки, привязанные к конкретному пользователю, включая дополнительные поля о привязанном ресурсе и товаре
+    *
+    * @param User $user Объект пользователя
+    *
+    * @return mixed[] $links Массив полученных ссылок
+    *
+    */
   public function fetchAllWithExtraFields($user)
   {
     $links = $this->entityManager->getRepository(Link::class)->fetchWithResourceAndItemInfo($user->getId());
     return $links;
   }
 
+  /**
+    * Отправляет в messenger сообщение для удаления ссылки
+    *
+    * @param int $link Идентификатор ссылки
+    * @param int $user Идентификатор пользователя
+    *
+    * @return bool true в случае успешного удаления
+    *
+    * TODO Вынести http ошибку в контроллер
+    *
+    */
   public function deleteLink($link, $user)
   {
     $link = $this->entityManager->getRepository(Link::class)->findOneBy([
@@ -190,6 +312,16 @@ class LinkService{
     return true;
   }
 
+  /**
+    * Получает plaintext-список ссылок из массива идентификаторов
+    *
+    * @param string $ids Идентификаторы ссылок через запятую
+    *
+    * @return string $urls Список ссылок
+    *
+    * TODO вынести префикс ссылки в конфигурацию
+    *
+    */
   public function getUrls($ids){
     if(!is_array($ids)){
       $ids = explode(",", $ids);
@@ -206,6 +338,14 @@ class LinkService{
     return $urls;
   }
 
+  /**
+    * Проводит валидацию полей формы для добавления ссылки
+    *
+    * @param mixed[] $data Идентификатор ссылки
+    *
+    * @return mixed[] Ответ валидации в формате [успешно, текст_ошибки]
+    *
+    */
   public function validateForm($data){
     if(isset($data['resource']) && $data['resource'] !== ''){
       $resourceIds = explode(',',$data['resource']);
