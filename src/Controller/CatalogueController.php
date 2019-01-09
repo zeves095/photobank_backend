@@ -1,7 +1,10 @@
 <?php
-
+/**
+  * Контроллер для получения и обновления информации о сущностях каталога CatalogueNode, CatalogueNodeItem, Resource
+  *
+  */
 namespace App\Controller;
-
+// TODO Разбить на разные файлы, оч жирный
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -30,9 +33,17 @@ use App\Message\ResourcePresetNotification;
 use App\Service\Search\SearchQueryBuilder;
 use App\Service\Search\SearchService;
 
+/**
+  * Контроллер для получения и обновления информации о сущностях каталога CatalogueNode, CatalogueNodeItem, Resource
+  */
 class CatalogueController extends AbstractController
 {
     /**
+     * Получает нормализованный объект с информацией о разделе каталога
+     *
+     * @param CatalogueNode $cnode Обьект раздела, подтягивается через wildcard {id}
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
      * @Route("/catalogue/node/{id}",
      * methods={"GET"},
      * name="catalogue_node")
@@ -49,6 +60,12 @@ class CatalogueController extends AbstractController
         return $response;
     }
     /**
+     * Получает нормализованный объект с информацией о дочерних разделах каталога
+     *
+     * @param int $id Идентификатор раздела каталога, подтягивается через wildcard {id}
+     * @param CatalogueNode $cnode Обьект раздела, подтягивается через wildcard {id}
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
      * @Route("/catalogue/nodes/{id}",
      * methods={"GET"},
      * name="catalogue_nodes",
@@ -92,6 +109,11 @@ class CatalogueController extends AbstractController
         return $response;
     }
     /**
+     * Получает нормализованный объект с информацией о товаре по коду 1С
+     *
+     * @param CatalogueNodeItem $citem Объект товара, подтягивается через wildcard {id}
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
      * @Route("/catalogue/node/item/{item}",
      * requirements={"item" = "\d{11}"},
      * methods={"GET"},
@@ -114,6 +136,11 @@ class CatalogueController extends AbstractController
     }
 
     /**
+     * Получает нормализованный объект с информацией о товаре
+     *
+     * @param CatalogueNodeItem $citem Объект товара, подтягивается через wildcard {id}
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
      * @Route("/catalogue/node/item/{id}",
      * methods={"GET"},
      * name="catalogue_node_item")
@@ -131,7 +158,13 @@ class CatalogueController extends AbstractController
         $response->setData($citemArray);
         return $response;
     }
+
     /**
+     * Получает нормализованный объект с информацией о дочерних товарах от раздела каталога
+     *
+     * @param CatalogueNode $cnode Обьект раздела, подтягивается через wildcard {id}
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
      * @Route("/catalogue/node/items/{id}",
      * methods={"GET"},
      * name="catalogue_node_items")
@@ -151,6 +184,13 @@ class CatalogueController extends AbstractController
     }
 
     /**
+     * Осуществляет поиск среди товаров
+     *
+     * @param Request $request Объект актуального запроса
+     * @param SearchQueryBuilder $queryBuilder Сервис создания поискового объекта
+     * @param SearchService $searchService Сервис, осуществляющий поиск через репозиторий
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
      * @Route("/catalogue/search/items",
      * methods={"GET"},
      * name="catalogue_search_items")
@@ -169,6 +209,13 @@ class CatalogueController extends AbstractController
     }
 
     /**
+     * Осуществляет поиск среди ресурсов
+     *
+     * @param Request $request Объект актуального запроса
+     * @param SearchQueryBuilder $queryBuilder Сервис создания поискового объекта
+     * @param SearchService $searchService Сервис, осуществляющий поиск через репозиторий
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
      * @Route("/catalogue/search/resources",
      * methods={"GET"},
      * name="catalogue_search_resources")
@@ -188,6 +235,11 @@ class CatalogueController extends AbstractController
     }
 
     /**
+     * Получает нормализованный объект с информацией о ресурсе
+     *
+     * @param Resource $resource Объект ресурса, подтягивается через wildcard {id}
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
      * @Route(
      *      "/catalogue/node/item/resource/{id}",
      *      methods={"GET"},
@@ -206,6 +258,11 @@ class CatalogueController extends AbstractController
     }
 
     /**
+     * Получает нормализованный объект с информацией о ресурсе вместе с товаром, к которому он привязан
+     *
+     * @param Resource $resource Объект ресурса, подтягивается через wildcard {id}
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
      * @Route(
      *      "/catalogue/node/item/resource/full/{id}",
      *      methods={"GET"},
@@ -224,6 +281,12 @@ class CatalogueController extends AbstractController
     }
 
     /**
+     * Получает нормализованный объект с информацией о ресурсе по идентификатору товара
+     *
+     * @param CatalogueNodeItem $citem Объект товара, подтягивается через wildcard {id}
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     * @param EntityManagerInterface $entityManager Инструмент работы с сущностями Doctrine ORM
+     *
      * @Route(
      *      "/catalogue/node/item/resources/{id}",
      *      methods={"GET"},
@@ -232,6 +295,7 @@ class CatalogueController extends AbstractController
      */
     public function getResources(CatalogueNodeItem $citem, AppSerializer $serializer, EntityManagerInterface $entityManager)
     {
+      // TODO Убрать работу с базой в сервис
         $response = new JsonResponse();
 
         //$resources = $citem->getResources();
@@ -243,6 +307,12 @@ class CatalogueController extends AbstractController
     }
 
     /**
+     * Получает изображение ресурса, если указан jpg как формат, и нормализованный объект с информацией о ресурсе, если json
+     *
+     * @param string $_format Формат возвращаемого ресурса, подтягивется через wildcard {_format}
+     * @param Resource $resource Объект ресурса, подтягивается через wildcard {id}
+     * @param ResourceService $resourceService Сервис для работы с ресурсами
+     *
      * @Route(
      *      "/catalogue/node/item/resource/{id}.{_format}",
      *      methods={"GET"},
@@ -265,7 +335,7 @@ class CatalogueController extends AbstractController
         }
 
         $upload_directory = $this->getParameter('upload_directory');
-        // @TODO: DELETE and use service|utils methods to get $fileDirectory
+        // TODO: DELETE and use service|utils methods to get $fileDirectory
         $item_code = $resource->getItem()->getId();
         $fileDirectory = $upload_directory .'/'. $resourceService->generatePath($item_code);
         $filename = $resource->getFilename();
@@ -278,6 +348,13 @@ class CatalogueController extends AbstractController
     }
 
     /**
+     * Получает по коду 1С и приоритету изображение ресурса, если указан jpg как формат, и нормализованный объект с информацией о ресурсе, если json
+     *
+     * @param string $_format Формат возвращаемого ресурса, подтягивется через wildcard {_format}
+     * @param string $_priority Приоритет изображения в группе, 1 соответсвует основному, 2 и далее соотвествуют приоритету дополнительного изображения -1
+     * @param string $_code Код 1С товара, подтягивается через wildcard {_code}
+     * @param ResourceService $resourceService Сервис для работы с ресурсами
+     *
      * @Route(
      *      "/catalogue/node/item/resource/{_code}_{_priority}.{_format}",
      *      methods={"GET"},
@@ -311,7 +388,7 @@ class CatalogueController extends AbstractController
         }
 
         $upload_directory = $this->getParameter('upload_directory');
-        // @TODO: DELETE and use service|utils methods to get $fileDirectory
+        // TODO: DELETE and use service|utils methods to get $fileDirectory
         $item_code = $resource->getItem()->getId();
         $fileDirectory = $upload_directory .'/'. $resourceService->generatePath($item_code);
         $filename = $resource->getFilename();
@@ -324,6 +401,13 @@ class CatalogueController extends AbstractController
     }
 
     /**
+     * Получает нормализованный объект с информацией о ресурсом, который является конкретным пресетом в той же группе ресурсов, что и переданный в url идентификатор
+     *
+     * @param int $rid Идентификатор ресурса
+     * @param int $pid Идентификатор пресета
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     * @param EntityManagerInterface $entityManager Инструмент работы с сущностями Doctrine ORM
+     *
      * @Route(
      *      "/catalogue/node/item/resource/{rid}/{pid}",
      *      methods={"GET"},
@@ -333,6 +417,7 @@ class CatalogueController extends AbstractController
      */
      public function getResourcePreset($rid, $pid, AppSerializer $serializer, EntityManagerInterface $entityManager)
      {
+       // TODO Убрать работу с базой в сервис
        $response = new JsonResponse();
        $resourceGroup = $entityManager->getRepository(Resource::class)->findBy(['gid'=>$rid]);
        foreach($resourceGroup as $resource){
@@ -345,6 +430,12 @@ class CatalogueController extends AbstractController
      }
 
      /**
+      * Получает нормализованный объект с информацией о ресурсе, который является пресетом 1(thumbnail) по идентификатору группы ресурсов
+      *
+      * @param int $gid Идентификатор группы ресурсов
+      * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+      * @param EntityManagerInterface $entityManager Инструмент работы с сущностями Doctrine ORM
+      *
       * @Route(
       *      "/catalogue/node/item/resource/thumbnail/{gid}",
       *      methods={"GET"},
@@ -354,6 +445,7 @@ class CatalogueController extends AbstractController
       */
       public function getResourceThumbnail($gid, AppSerializer $serializer, EntityManagerInterface $entityManager)
       {
+        // TODO Убрать работу с базой в сервис
         $response = new JsonResponse();
         $thumbnail = $entityManager->getRepository(Resource::class)->getThumbnail($gid);
         $resourceData = $serializer->normalize($thumbnail, null, array());
@@ -362,6 +454,12 @@ class CatalogueController extends AbstractController
       }
 
       /**
+       * Получает массив с нормализованными объектами с информацией о ресурсах, которые являются пресетом 1(thumbnail) по массиву из идентификаторов ресурсов
+       *
+       * @param Request $request Объект актуального запроса
+       * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+       * @param EntityManagerInterface $entityManager Инструмент работы с сущностями Doctrine ORM
+       *
        * @Route(
        *      "/catalogue/node/item/resource/thumbnails/",
        *      methods={"POST"},
@@ -370,6 +468,7 @@ class CatalogueController extends AbstractController
        */
        public function getResourceThumbnails(Request $request, AppSerializer $serializer, EntityManagerInterface $entityManager)
        {
+       // TODO Убрать работу с базой в сервис
          $data = json_decode(
              $request->getContent(),
              true
@@ -386,77 +485,94 @@ class CatalogueController extends AbstractController
          return $response;
        }
 
-    /**
-     * @Route(
-     *      "/catalogue/node/item/resource/{id}",
-     *      methods={"PATCH"},
-     *      name="patch_resource",
-     *      requirements={
-     *          "id"="\d+"
-     *      }
-     * )
-     */
-    public function patchResource(Resource $resource, Request $request, AppSerializer $serializer, ResourceService $resourceService)
-    {
-        $data = json_decode(
-            $request->getContent(),
-            true
-        );
+       /**
+        * Обновляет запись о ресурсе
+        *
+        * @param Resource $resource Объект ресурса, подтягивается через wildcard {id}
+        * @param Request $request Объект актуального запроса
+        * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+        * @param ResourceService $resourceService Сервис для работы с ресурсами
+        *
+        * @Route(
+        *      "/catalogue/node/item/resource/{id}",
+        *      methods={"PATCH"},
+        *      name="patch_resource",
+        *      requirements={
+        *          "id"="\d+"
+        *      }
+        * )
+        */
+        public function patchResource(Resource $resource, Request $request, AppSerializer $serializer, ResourceService $resourceService)
+        {
+          $data = json_decode(
+              $request->getContent(),
+              true
+            );
 
-        if(!isset($data['id'])){
-          throw new HttpException(400, 'Bad data');
+            if(!isset($data['id'])){
+              throw new HttpException(400, 'Bad data');
+            }
+
+            if(!$resourceService->patchResource($resource,$data)){
+              throw new HttpException(400,'Bad data');
+            }
+            $resourceService->dispatchPresetMessages($data['id'], $data['type']);
+
+            $response = new JsonResponse();
+            $resourceArray = $serializer->normalize($resource, null, array());
+            $response->setData($resourceArray);
+            return $response;
         }
 
-        if(!$resourceService->patchResource($resource,$data)){
-          throw new HttpException(400,'Bad data');
+        /**
+        * Получает список возможных пресетов
+        *
+        * @param ContainerInterface $container Контейнер сервисов Symfony, для получения конфигурации
+        *
+        * @Route(
+        *      "/catalogue/resource/presets",
+        *      methods={"GET"},
+        *      name="catalogue_resource_presets"
+        * )
+        */
+        public function getResourcePresets(ContainerInterface $container)
+        {
+          $response = new JsonResponse();
+          $presets = array();
+          foreach($container->getParameter('presets') as $preset){
+            $presets[$preset['id']] = [
+              'name'=>$preset['name'],
+              'id'=>$preset['id'],
+              'height'=>$preset['height'],
+              'width'=>$preset['width'],
+            ];
+          }
+          $response->setData($presets);
+          return $response;
         }
-        $resourceService->dispatchPresetMessages($data['id'], $data['type']);
 
-        $response = new JsonResponse();
-        $resourceArray = $serializer->normalize($resource, null, array());
-        $response->setData($resourceArray);
-        return $response;
-    }
+        /**
+        * Получает список возможных типов ресурсов
+        *
+        * @param ContainerInterface $container Контейнер сервисов Symfony, для получения конфигурации
+        *
+        * @Route(
+        *      "/catalogue/resource/types",
+        *      methods={"GET"},
+        *      name="catalogue_resource_types"
+        * )
+        */
+        public function getResourceTypes(ContainerInterface $container)
+        {
 
-    /**
-     * @Route(
-     *      "/catalogue/resource/presets",
-     *      methods={"GET"},
-     *      name="catalogue_resource_presets"
-     * )
-     */
-     public function getResourcePresets(ContainerInterface $container)
-     {
-       $response = new JsonResponse();
-       $presets = array();
-       foreach($container->getParameter('presets') as $preset){
-         $presets[$preset['id']] = [
-           'name'=>$preset['name'],
-           'id'=>$preset['id'],
-           'height'=>$preset['height'],
-           'width'=>$preset['width'],
-         ];
-       }
-       $response->setData($presets);
-       return $response;
-     }
-
-     /**
-      * @Route(
-      *      "/catalogue/resource/types",
-      *      methods={"GET"},
-      *      name="catalogue_resource_types"
-      * )
-      */
-      public function getResourceTypes(ContainerInterface $container)
-      {
-        $response = new JsonResponse();
-        $presets = [
-            1=>'Основное',
-            2=>'Дополнительное',
-            3=>'Исходник'
+          // TODO Типы прописаны хардом, надо поменять
+          $response = new JsonResponse();
+          $presets = [
+              1=>'Основное',
+              2=>'Дополнительное',
+              3=>'Исходник'
           ];
-        $response->setData($presets);
-        return $response;
-      }
+          $response->setData($presets);
+          return $response;
+        }
 }

@@ -1,13 +1,22 @@
 <?php
-
+/**
+ * Сервис для генерации объекта поиска
+ */
 namespace App\Service\Search;
 
 use App\Entity\Search\ItemQueryObject;
 use App\Entity\Search\ResourceQueryObject;
 use Symfony\Component\HttpFoundation\Request;
-
+/**
+ * Сервис для генерации объекта поиска
+ */
 class SearchQueryBuilder {
 
+  /**
+   * Создает объект поиска товаров каталога
+   * @param  Request $request Объект текущего http-запроса
+   * @return ItemQueryObject Полученный объект поиска
+   */
   public function makeItemQuery(Request $request){
     $query = $request->query;
     $queryObject = new ItemQueryObject();
@@ -28,7 +37,11 @@ class SearchQueryBuilder {
     }
     return $queryObject;
   }
-
+  /**
+   * Создает объект поиска ресурсов
+   * @param  Request $request Объект текущего http-запроса
+   * @return ResourceQueryObject Полученный объект поиска
+   */
   public function makeResourceQuery(Request $request){
     $query = $request->query;
     $queryObject = new ResourceQueryObject();

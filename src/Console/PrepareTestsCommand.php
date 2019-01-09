@@ -1,4 +1,7 @@
 <?php
+/**
+  * Проводит подготовку тестовой файловой системы и базы данных для проведения тестов
+  */
 
 namespace App\Console;
 
@@ -16,11 +19,28 @@ use Doctrine\ORM\Tools\Setup;
 use Symfony\Component\Filesystem\Filesystem;
 use App\Tests\Service\TestService;
 
+/**
+  * Проводит подготовку тестовой файловой системы и базы данных для проведения тестов
+  */
 class PrepareTestsCommand extends Command
 {
-    private $container;
-    private $fileSystem;
+    /**
+  * Сервис-контейнер Symfony
+  */
+private $container;
+    /**
+  * Сервис работы с файловой системой Symfony
+  */
+private $fileSystem;
 
+    /**
+      * Конструктор класса
+      *
+      * @param ContainerInterface $container Для получения конфигурации, в частности пути к дампу тестовой базы и бэкапу файлов
+      * @param FileSystem $fileSystem Для удаления и записи файлов в директорию для проведения тестов, также для записи файла с выборкой для тестов
+      * @param TestService $testService Для получения выборки данных для тестов
+      *
+      */
     public function __construct(ContainerInterface $container, Filesystem $fileSystem, TestService $testService){
       $this->fileSystem = $fileSystem;
       $this->container = $container;
@@ -28,6 +48,9 @@ class PrepareTestsCommand extends Command
       parent::__construct();
     }
 
+    /**
+     * Конфигуратор консольной команды
+     */
     protected function configure()
     {
         $this
@@ -42,6 +65,13 @@ class PrepareTestsCommand extends Command
         ;
     }
 
+    /**
+      * Исполняет команду. Сбрасывает тестовую базу, затем делает импорт тестовой базы и файловой системы, создает выборку данных для тестов.
+      *
+      * @param InputInterface $input Входные данные команды
+      * @param OutputInterface $output Вывод данных в консоль
+      *
+      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
       set_time_limit(0);

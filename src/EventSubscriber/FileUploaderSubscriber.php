@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Обработчик события после успешной загрузки файла.
+ */
 namespace App\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -7,21 +9,39 @@ use PhotoBank\FileUploaderBundle\Event\FileUploadedEvent;
 use PhotoBank\FileUploaderBundle\Service\UploadRecordManager;
 use App\Service\ResourceService;
 use Symfony\Component\Translation\TranslatorInterface;
-
+/**
+ * Обработчик события после успешной загрузки файла.
+ */
 class FileUploaderSubscriber implements EventSubscriberInterface
 {
+  /**
+   * Сервис работы с сущнстями типа "Resource"
+   */
   private $resourceService;
 
+  /**
+   * Конструктор класса
+   * @param ResourceService $resourceService Для работы с сущностями типа "Resource"
+   */
   public function __construct(ResourceService $resourceService){
     $this->resourceService = $resourceService;
   }
 
+/**
+ * Присваивает ключам сообщений соответсвующие методы
+ */
   public static function getSubscribedEvents()
   {
     return array(
      'fileuploader.uploaded' => array('processUpload',0),
     );
   }
+
+  /**
+   * Собирает параметры для создания нового ресурса и отправляет их в resourceService
+   *
+   * @param  FileUploadedEvent $event Событие, создаваемое при успешной загрузке файла
+   */
   public function processUpload(FileUploadedEvent $event)
   {
     $resourceParameters = [

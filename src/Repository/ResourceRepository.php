@@ -1,5 +1,7 @@
 <?php
-
+/**
+* Репозиторий Doctrine ORM для работы с сущностями типа "Resource"
+*/
 namespace App\Repository;
 
 use App\Entity\Resource;
@@ -8,6 +10,8 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use App\Entity\Search\ResourceQueryObject;
 
 /**
+* Репозиторий Doctrine ORM для работы с сущностями типа "Resource"
+*
  * @method Resource|null find($id, $lockMode = null, $lockVersion = null)
  * @method Resource|null findOneBy(array $criteria, array $orderBy = null)
  * @method Resource[]    findAll()
@@ -15,11 +19,23 @@ use App\Entity\Search\ResourceQueryObject;
  */
 class ResourceRepository extends ServiceEntityRepository
 {
+  /**
+   * Конструктор класса
+   * @param RegistryInterface $registry Внутренний инструмент работы с подключениями Doctrine ORM
+   */
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Resource::class);
     }
 
+    /**
+    * Выполняет поиск главного ресурса в группе
+    *
+    * @param CatalogueNodeItem $item Товар, которому принадлежит искомый ресурс
+    *
+    * @return Resource Найденный ресурс
+    *
+    */
     public function findOriginalResources($item)
     {
 
@@ -33,6 +49,14 @@ class ResourceRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+    * Выполняет поиск ресурса по разделу каталога во вложенных разделах
+    *
+    * @param CatalogueNode $node Раздел каталога, в котором проводится поиск
+    *
+    * @return Resource[] результат поиска
+    *
+    */
     public function getNestedResourcesByParent($node)
     {
       $queryBuilder = $this->createQueryBuilder('r');
@@ -54,6 +78,14 @@ class ResourceRepository extends ServiceEntityRepository
 
     }
 
+    /**
+    * Получает ресурс с пресетом thumbnail(1) привязанный к ресурсу
+    *
+    * @param int $id Идентификатор ресурса
+    *
+    * @return Resource Найденный ресурс
+    *
+    */
     public function getThumbnail($id)
     {
       $queryBuilder = $this->createQueryBuilder('r')
@@ -65,6 +97,14 @@ class ResourceRepository extends ServiceEntityRepository
       return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
+    /**
+    * Создает массив идентификаторов пресетов tumbnail(1) для ряда ресурсов
+    *
+    * @param int[] $ids Идентификаторы ресурсов, для которых необходимо найти пресеты
+    *
+    * @return mixed[] Найденный ресурс
+    *
+    */
     public function getThumbnailIds($ids)
     {
       $query = $this->getEntityManager()->createQuery(
@@ -78,28 +118,15 @@ class ResourceRepository extends ServiceEntityRepository
       return $query->execute();
     }
 
-    // public function getThumbnails($ids)
-    // {
-      // $queryBuilder = $this->createQueryBuilder('r')
-      // ->join($this->_entityName, 'r2')
-      // ->andWhere('r2.id IN ('.implode(',',$ids).')')
-      // ->andWhere('r.gid = r2.gid')
-      // ->andWhere('r.preset = 1');
-      // return $queryBuilder->setMaxResults(100)->getQuery()->getResult();
-    // }
-
-    // public function getThumbnail($gid)
-    // {
-      // $queryBuilder = $this->createQueryBuilder('r')
-      // ->andWhere('r.gid = :gid')
-      // ->andWhere('r.preset = 1')
-      // ->setParameter('gid', $gid);
-      // return $queryBuilder->getQuery()->getOneOrNullResult();
-    // }
-
     /**
-      * @return Resource[] Returns an array of Resource objects
-      */
+    * Выполняет поиск ресурсов по ряду полей из формы
+    *
+    * @param ResourceQueryObject $queryObject Объект поиска
+    * @see App\Entity\Search\ResourceQueryObject
+    *
+    * @return Resource[] Найденные ресурсы
+    *
+    */
 
       public function search(ResourceQueryObject $queryObject)
       {

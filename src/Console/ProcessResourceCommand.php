@@ -1,5 +1,7 @@
 <?php
-
+/**
+  * Создает пресет для ресурса по id ресурса и пресета
+  */
 namespace App\Console;
 
 use Symfony\Component\Console\Command\Command;
@@ -10,18 +12,34 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use App\Service\ImageProcessorService;
-
+/**
+  * Создает пресет для ресурса по id ресурса и пресета
+  */
 class ProcessResourceCommand extends Command
 {
+    /**
+     * Сервис для работы с изображениями
+     */
     private $imageProcessor;
-    private $container;
+    /**
+  * Сервис-контейнер Symfony
+  */
+private $container;
 
+    /**
+     * Конструктор класса
+     * @param ImageProcessorService $imageProcessor Сервис для работы с изображениями
+     * @param ContainerInterface    $container      Сервис-контейнер Symfony
+     */
     public function __construct(ImageProcessorService $imageProcessor, ContainerInterface $container){
       $this->imageProcessor = $imageProcessor;
       $this->container = $container;
       parent::__construct();
     }
 
+    /**
+     * Конфигуратор консольной команды
+     */
     protected function configure()
     {
         $this
@@ -46,6 +64,11 @@ class ProcessResourceCommand extends Command
         ;
     }
 
+    /**
+     * Вызывается при выполнении консольной команды
+     * @param  InputInterface  $input  Входные данные, параметры
+     * @param  OutputInterface $output Ответ в консоли
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
       $result = "";
@@ -64,6 +87,10 @@ class ProcessResourceCommand extends Command
       $output->writeln($result);
     }
 
+    /**
+     * Создает пресет изображения в сервисе обработки изображений
+     * @return string Ответ для вывода в консоль
+     */
     private function processImage(){
       $text = "Calling image processor for resource with id ".$resource." with preset ".$preset."\n";
       $response = $this->imageProcessor->processPreset($resource, $preset);

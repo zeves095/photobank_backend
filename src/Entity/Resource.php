@@ -8,9 +8,12 @@ use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 
 /**
+ *  Сущность Ресурс
+ *
+ *
  * @ORM\Entity(repositoryClass="App\Repository\ResourceRepository")
  * @ORM\HasLifecycleCallbacks()
- */
+  */
 class Resource
 {
     /**

@@ -1,5 +1,8 @@
 <?php
-
+/**
+  * Контроллер для работы с записями о пользователях и рендера страници управления пользователями
+  *
+  */
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -7,11 +10,18 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use App\Service\UserService;
-use Symfony\Component\HttpFoundation\RequestStack;
-
+use Symfony\Component\HttpFoundation\Request;
+/**
+  * Контроллер для работы с записями о пользователях и рендера страници управления пользователями
+  *
+  */
 class UsermanagerController extends AbstractController
 {
     /**
+      * Рендерит страницу панели управления пользователями
+      *
+      * @param ContainerInterface $container Для получения конфигурации
+      *
      * @Route("/usermanager", name="usermanager")
      */
     public function index(ContainerInterface $container)
@@ -31,6 +41,10 @@ class UsermanagerController extends AbstractController
     }
 
     /**
+      * Отдает объекты пользователей
+      *
+      * @param UserService Сервис для работы с записями пользователей
+      *
      * @Route("/usermanager/get", methods={"GET"}, name="getusers")
      */
     public function getUsers(UserService $userService){
@@ -40,12 +54,16 @@ class UsermanagerController extends AbstractController
     }
 
     /**
+      * Обновляет запись о пользователе
+      *
+      * @param UserService Сервис для работы с записями пользователей
+      * @param Request Объект текущего запроса
+      *
      * @Route("/usermanager/set", methods={"POST"}, name="setuser")
      */
-    public function setUser(UserService $userService, RequestStack $requestStack){
+    public function setUser(UserService $userService, Request $request){
       $response = new JsonResponse();
-      $request = $requestStack->getCurrentRequest()->request;
-      $response->setData($userService->setUser($request->all()));
+      $response->setData($userService->setUser($request->request->all()));
       return $response;
     }
 }

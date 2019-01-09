@@ -1,4 +1,7 @@
 <?php
+/**
+ * Обработчик сообщений, связанных с сущностями типа Resource
+ */
 namespace App\MessageHandler;
 
 use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
@@ -11,15 +14,40 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Service\ImageProcessorService;
 use App\Service\ResourceService;
 use App\Service\LinkService;
-
+/**
+* Обработчик сообщений, связанных с сущностями типа Resource
+*/
 class ResourceMessageHandler implements MessageSubscriberInterface
 {
-    private $imageProcessor;
-    private $linkService;
-    private $container;
-    private $resourceService;
-    private $entityManager;
+    /**
+    * Сервис для работы с изображениями
+    */
+      private $imageProcessor;
+      /**
+      * Сервис для работы с сущностями типа Link
+      */
+      private $linkService;
+      /**
+      * Сервис-контейнер Symfony
+      */
+      private $container;
+      /**
+      * Сервис для работы с сущностями типа Resource
+      */
+      private $resourceService;
+      /**
+      * Инструмент работы с сущностями Doctrine ORM
+      */
+      private $entityManager;
 
+      /**
+      * Конструктор класса
+      * @param ImageProcessorService  $imageProcessor  Сервис для работы с изображениями
+      * @param LinkService            $linkService     Сервис для работы с сущностями типа Link
+      * @param ContainerInterface     $container       Сервис-контейнер Symfony
+      * @param ResourceService        $resourceService Сервис для работы с сущностями типа Resource
+      * @param EntityManagerInterface $entityManager   Инструмент работы с сущностями Doctrine ORM
+      */
     public function __construct(ImageProcessorService $imageProcessor, LinkService $linkService, ContainerInterface $container, ResourceService $resourceService, EntityManagerInterface $entityManager){
       $this->imageProcessor = $imageProcessor;
       $this->linkService = $linkService;
@@ -28,6 +56,9 @@ class ResourceMessageHandler implements MessageSubscriberInterface
       $this->entityManager = $entityManager;
     }
 
+    /**
+     * Присваивает сообщениям соответвующие метода
+     */
     public static function getHandledMessages(): iterable
     {
         return array(
@@ -37,6 +68,10 @@ class ResourceMessageHandler implements MessageSubscriberInterface
         );
     }
 
+    /**
+     * Создает пресет для конкретного ресурса
+     * @param ResourcePresetNotification $message Сообщение с информацией, необходимой для создания ресурса. Если createdOn в сообщении не будет выставлено, далее будет поставлено текущее время.
+     */
     public function processPreset(ResourcePresetNotification $message)
     {
       if($message->resourceId && $message->presetId){
@@ -44,6 +79,10 @@ class ResourceMessageHandler implements MessageSubscriberInterface
       }
     }
 
+    /**
+     * Создает ссылку для конкретного ресурса
+     * @param  LinkCreatedMessage $message Сообщение с инфомацией для создания ссылки
+     */
     public function processLink(LinkCreatedMessage $message)
     {
       $resource = $message->resource;
@@ -68,6 +107,10 @@ class ResourceMessageHandler implements MessageSubscriberInterface
       }
     }
 
+    /**
+     * Удаляет ссылку
+     * @param  LinkDeletedMessage $message Сообщение с информацией для удаления ссылки
+     */
     public function processLinkDelete(LinkDeletedMessage $message)
     {
       $id = $message->linkId;

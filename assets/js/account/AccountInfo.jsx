@@ -4,6 +4,9 @@ import {UserEditor} from './../usermanager/UserEditor';
 import {UserService} from './../usermanager/services/UserService';
 import {NotificationService} from '../services/NotificationService';
 
+/**
+ * Обертка для компонента интерфейса личного кабинета
+ */
 export class AccountInfo extends React.Component {
 
   constructor(props){

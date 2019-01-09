@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Нормализатор для вывода данных о ресурсах
+ */
 namespace App\Serializer\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -7,18 +9,31 @@ use Symfony\Component\Serializer\Normalizer\CustomNormalizer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use App\Entity\Resource;
-
+/**
+ * Нормализатор для вывода данных о ресурсах
+ */
 class ResourceNormalizer extends CustomNormalizer implements NormalizerInterface
 {
 
-    private $container;
+    /**
+  * Сервис-контейнер Symfony
+  */
+private $container;
 
+    /**
+     * Конструктор класса
+     * @param ContainerInterface $container Сервис-контейнер Symfony
+     */
     public function __construct(ContainerInterface $container){
       $this->container = $container;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param Resource $object Объект, который нужно нормализовать
+     * @param  string $format  Формат, в котором будет получен ответ
+     * @param  array  $context Опции контекста для нормализации
      */
     public function normalize($object, $format = null, array $context = array())
     {
@@ -54,6 +69,10 @@ class ResourceNormalizer extends CustomNormalizer implements NormalizerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param $data Данные для проверки
+     * @param $format Формат сериализации/десериализации
+     *
      */
     public function supportsNormalization($data, $format = null)
     {

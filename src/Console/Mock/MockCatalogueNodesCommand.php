@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Генерирует простые fixtures для проверки работы с разделами каталога без актуальных данных
+ *
+ * @deprecated
+ */
 namespace App\Console\Mock;
 
 use Symfony\Component\Console\Command\Command;
@@ -12,16 +16,30 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 use App\Entity\CatalogueNode;
-
+/**
+ * Генерирует простые fixtures для проверки работы с разделами каталога без актуальных данных
+ *
+ * @deprecated
+ */
 class MockCatalogueNodesCommand extends Command
 {
-    private $entityManager;
-
+    /**
+  * Инструмент работы с сущностями Doctrine ORM
+  */
+private $entityManager;
+/**
+  * Конструктор класса
+  *
+* @param EntityManagerInterface $entityManager Инструмент работы с сущностями Doctrine ORM
+  *
+  */
     public function __construct(EntityManagerInterface $entityManager){
       $this->entityManager = $entityManager;
       parent::__construct();
     }
-
+    /**
+     * Конфигуратор консольной команды
+     */
     protected function configure()
     {
         $this
@@ -50,8 +68,12 @@ class MockCatalogueNodesCommand extends Command
             );
     }
 
-    
-    
+
+    /**
+     * Вызывается при выполнении консольной команды
+     * @param  InputInterface  $input  Входные данные, параметры
+     * @param  OutputInterface $output Ответ в консоли
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
@@ -78,9 +100,10 @@ class MockCatalogueNodesCommand extends Command
 
         $this->_getNextLevel($root_catalogue_node, $deep, $count, $name_prefix, $flush_level, $output);
 
-        $output->writeln('Заверщено'); 
+        $output->writeln('Заверщено');
     }
-    
+
+
     private function _getNextLevel($parent, int $deep = 1, int $count = 5, $name_prefix = 'Раздел ', $flush_level = 1, OutputInterface $output = null)
     {
         $deep--;
@@ -93,7 +116,7 @@ class MockCatalogueNodesCommand extends Command
 
             $this->entityManager->persist($catalogue_node);
             if($output) $output->writeln('Добавлен раздел: ' . $catalogue_node->getName());
-            
+
             if($deep > 0)
             {
                 $this->_getNextLevel($catalogue_node, $deep, $count, $catalogue_name . '-', $flush_level, $output);
@@ -109,6 +132,12 @@ class MockCatalogueNodesCommand extends Command
 
     /**
      *  http://qaru.site/questions/70489/explicitly-set-id-with-doctrine-when-using-auto-strategy
+     */
+    /**
+     * Создает сущность раздела каталога
+     * @param  EntityManagerInterface $em     Инструмент для работы с сущностями Doctrine ORM
+     * @param  CatalogueNode          $entity Сущность для сохранения
+     * @param  int                    $id     Идентификатор для нового ресурса
      */
     private function createEntity(EntityManagerInterface $em, $entity, $id = null)
     {

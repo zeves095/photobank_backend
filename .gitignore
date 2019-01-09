@@ -10,6 +10,9 @@
 /var/
 /vendor/
 /tests/dump/
+/docs/api/
+/bin/phpDocumentor*
+/build/api-cache/
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###

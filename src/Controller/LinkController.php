@@ -1,5 +1,8 @@
 <?php
-
+/**
+  * Контроллер для получения и обновления информации о сущностях каталога Link
+  *
+  */
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,13 +21,17 @@ use App\Serializer\AppSerializer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 /**
+  * Контроллер для получения и обновления информации о сущностях каталога Link
+  *
   * @Route("/api/links")
   */
 class LinkController extends AbstractController
 {
     /**
-     * @Route("/test", name="links")
-     */
+      * Рендерит тестовую страницу
+      *
+      * @Route("/test", name="links")
+      */
     public function index()
     {
         return $this->render('link/index.html.twig', [
@@ -33,8 +40,14 @@ class LinkController extends AbstractController
     }
 
     /**
-     * @Route("/submit", name="links_create")
-     */
+      * Создает новую сущность Link
+      *
+      * @param Request $request Текущий объект клиентского запроса
+      * @param LinkService $linkService Сервис для работы с сущностями типа "Link"
+      * @param MessageBusInterface $bus Сервис для отправки сообщений в RabbitMQ
+      *
+      * @Route("/submit", name="links_create")
+      */
     public function create(Request $request, LinkService $linkService, MessageBusInterface $bus)
     {
 
@@ -80,8 +93,13 @@ class LinkController extends AbstractController
     }
 
     /**
-     * @Route("/validateform/", name="links_validate_add_form")
-     */
+      * Проводит фалидацию полей формы для добавления ссылки
+      *
+      * @param Request $request Текущий объект клиентского запроса
+      * @param LinkService $linkService Сервис для работы с сущностями типа "Link"
+      *
+      * @Route("/validateform/", name="links_validate_add_form")
+      */
      public function validateForm(Request $request, LinkService $linkService){
        $data = json_decode(
            $request->getContent(),
@@ -103,13 +121,14 @@ class LinkController extends AbstractController
      }
 
     /**
-     * @Route("/txt/", name="links_get_txt")
-     */
+      * Отдает текстовый файл с ссылками
+      *
+      * @param Request $request Текущий объект клиентского запроса
+      * @param LinkService $linkService Сервис для работы с сущностями типа "Link"
+      *
+      * @Route("/txt/", name="links_get_txt")
+      */
      public function getTxt(Request $request, LinkService $linkService){
-       // $data = json_decode(
-       //     $request->getContent(),
-       //     true
-       // );
        $links = $request->request->get('links');
        if(!isset($links)){
          throw new HttpException(400);
@@ -130,8 +149,14 @@ class LinkController extends AbstractController
      }
 
     /**
-     * @Route("/update/{link_id}", name="links_update")
-     */
+      * Обновляет запись о ссылке
+      *
+      * @param int $link_id id бъекта ссылки в базе данных
+      * @param Request $request Текущий объект клиентского запроса
+      * @param LinkService $linkService Сервис для работы с сущностями типа "Link"
+      *
+      * @Route("/update/{link_id}", name="links_update")
+      */
      public function updateLink($link_id, Request $request, LinkService $linkService)
      {
         $user = $this->getUser();
@@ -150,8 +175,14 @@ class LinkController extends AbstractController
      }
 
     /**
-     * @Route("/get/{link_hash}.jpg", name="links_get")
-     */
+      * Возвращает изображение по ссылке
+      *
+      * @param string $link_hash Уникальный идентификатор ссылки
+      * @param Request $request Текущий объект клиентского запроса
+      * @param LinkService $linkService Сервис для работы с сущностями типа "Link"
+      *
+      * @Route("/get/{link_hash}.jpg", name="links_get")
+      */
      public function getResource($link_hash, Request $request, LinkService $linkService)
      {
         $user = $this->getUser();
@@ -164,8 +195,15 @@ class LinkController extends AbstractController
      }
 
      /**
-      * @Route("/fetchall", name="links_fetch_all")
-      */
+       *
+       * Получает список всех ссылок для текущего пользователя
+       *
+       * @param Request $request Текущий объект клиентского запроса
+       * @param LinkService $linkService Сервис для работы с сущностями типа "Link"
+       * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+       *
+       * @Route("/fetchall", name="links_fetch_all")
+       */
       public function fetchAll(Request $request, LinkService $linkService, AppSerializer $serializer)
       {
          $user = $this->getUser();
@@ -182,8 +220,16 @@ class LinkController extends AbstractController
       }
 
       /**
-       * @Route("/delete/{link}", name="links_delete")
-       */
+        * Удаляет запись о ссылке, и, если она не указывала на ресурс, сгенерированный файл
+        *
+        * @param int $link
+        * @param Request $request Текущий объект клиентского запроса
+        * @param LinkService $linkService Сервис для работы с сущностями типа "Link"
+        * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+        * @param MessageBusInterface $bus Сервис для отправки сообщений в RabbitMQ
+        *
+        * @Route("/delete/{link}", name="links_delete")
+        */
        public function delete($link, Request $request, LinkService $linkService, AppSerializer $serializer, MessageBusInterface $bus)
        {
           $user = $this->getUser()->getId();

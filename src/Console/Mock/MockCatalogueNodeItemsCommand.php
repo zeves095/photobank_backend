@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Генерирует простые fixtures для проверки работы с товарами каталога без актуальных данных
+  * @deprecated
+ */
 namespace App\Console\Mock;
 
 use Symfony\Component\Console\Command\Command;
@@ -12,16 +15,30 @@ use Doctrine\ORM\EntityManagerInterface;
 
 use App\Entity\CatalogueNode;
 use App\Entity\CatalogueNodeItem;
-
+/**
+ * Генерирует простые fixtures для проверки работы с товарами каталога без актуальных данных
+ *
+ * @deprecated
+ */
 class MockCatalogueNodeItemsCommand extends Command
 {
-    private $entityManager;
-
+    /**
+  * Инструмент работы с сущностями Doctrine ORM
+  */
+private $entityManager;
+/**
+  * Конструктор класса
+  *
+* @param EntityManagerInterface $entityManager Инструмент работы с сущностями Doctrine ORM
+  *
+  */
     public function __construct(EntityManagerInterface $entityManager){
       $this->entityManager = $entityManager;
       parent::__construct();
     }
-
+    /**
+     * Конфигуратор консольной команды
+     */
     protected function configure()
     {
         $this
@@ -40,8 +57,12 @@ class MockCatalogueNodeItemsCommand extends Command
             );
     }
 
-    
-    
+
+    /**
+     * Вызывается при выполнении консольной команды
+     * @param  InputInterface  $input  Входные данные, параметры
+     * @param  OutputInterface $output Ответ в консоли
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
@@ -49,7 +70,7 @@ class MockCatalogueNodeItemsCommand extends Command
         $random = $input->getOption('random')??false;
 
         $catalogue_repository = $this->entityManager->getRepository(CatalogueNode::class);
-        
+
         $last_item = $this->entityManager->getRepository(CatalogueNodeItem::class)->findBy([],['id'=>'DESC'],1);
 
         if(!$last_item){
@@ -57,12 +78,12 @@ class MockCatalogueNodeItemsCommand extends Command
         }else{
             $i = $last_item[0]->getId();
         }
-        
+
         foreach($catalogue_repository->findAll() as $catalogue_node)
         {
 
-            $output->writeln('Подготовка товаров для категории: ' . $catalogue_node->getName()); 
-            
+            $output->writeln('Подготовка товаров для категории: ' . $catalogue_node->getName());
+
             $cnt = $random ? random_int(1, $count) : $count;
 
             while($cnt-- > 0)
@@ -72,9 +93,9 @@ class MockCatalogueNodeItemsCommand extends Command
                 $itemCode = str_pad($i, 11, "0", STR_PAD_LEFT);
                 $catalogue_node_item->setItemCode($itemCode);
                 $catalogue_node_item->setNode($catalogue_node);
-                
-                $output->writeln('Подготовлен товар: ' . $catalogue_node_item->getName()); 
-                
+
+                $output->writeln('Подготовлен товар: ' . $catalogue_node_item->getName());
+
                 $this->entityManager->persist($catalogue_node_item);
                 $this->entityManager->flush();
 
@@ -83,7 +104,7 @@ class MockCatalogueNodeItemsCommand extends Command
             }
         }
 
-        
-        $output->writeln('Заверщено'); 
+
+        $output->writeln('Заверщено');
     }
 }

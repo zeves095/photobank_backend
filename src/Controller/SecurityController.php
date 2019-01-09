@@ -1,13 +1,22 @@
 <?php
+/**
+  * Контроллер для аутентификации пользователей
+  */
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-
+/**
+  * Контроллер для аутентификации пользователей
+  */
 class SecurityController extends AbstractController
 {
     /**
+      * Рендерит страницу авторизации
+      *
+      * @param AuthenticationUtils $authenticationUtils Для работы с авторизацией в системе
+      *
      * @Route("/login", name="login")
      */
     public function login(AuthenticationUtils $authenticationUtils)
