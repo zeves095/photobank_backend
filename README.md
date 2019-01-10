@@ -1,3 +1,4 @@
+## [Документация](./docs/index.md)
 
 %env(resolve:UPLOADS_PARENT)% - мы выбрали "private/"
 
