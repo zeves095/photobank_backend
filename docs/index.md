@@ -282,6 +282,10 @@ ItemList отражает список товаров в выбранном ра
 
 ItemSection содержит в себе интерфейс загрузки(Uploads, UploadPool), выгрузки(DownlaodPool), просмотра существующих ресурсов(ExistingResources), менеджмента прерванных загрузок(Uploads->UnfinishedUploads).
 
+##### Инициализация компонента
+
+![alt text](./img/photobank-main-init-sequence.png)
+
 #### Интерфейс создания внешних ссылок /account
 
 Иерархия react-компонентов:
