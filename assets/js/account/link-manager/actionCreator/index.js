@@ -23,6 +23,9 @@ import {
   FAIL
 } from '../constants';
 
+/**
+ * Действия при инициализации приложения. Получает типы ресурсов, типы пресетов и информацию о пользователе
+ */
 export function init(){
   return (dispatch)=>{
     let params = {
@@ -73,6 +76,10 @@ export function init(){
   }
 }
 
+/**
+ * Выбор ссылки для редактирования (не используется)
+ * @param {int} id Идентификатор ссылки
+ */
 export function chooseLink(id){
   return {
     type: LINK_CHOICE,
@@ -80,6 +87,9 @@ export function chooseLink(id){
   }
 }
 
+/**
+ * Начало создания новой ссылки
+ */
 export function addLink(){
   return {
     type: LINK_ADD,
@@ -87,6 +97,9 @@ export function addLink(){
   }
 }
 
+/**
+ * Прекражение процесса создания/редактирования ссылки
+ */
 export function stopEditing(){
   return {
     type: LINK_STOP_EDITING,
@@ -94,6 +107,10 @@ export function stopEditing(){
   }
 }
 
+/**
+ * Валидация формы для создания ссылки
+ * @param  {Object} formData Данные из формы
+ */
 export function validateLinkAddForm(formData){
   return (dispatch)=>{
     dispatch({
@@ -123,6 +140,10 @@ export function validateLinkAddForm(formData){
   }
 }
 
+/**
+ * Получение пресетов типа thumbnail для списка ресурсов
+ * @param  {int[]} resources Список ресурсов, для которых нужны превью
+ */
 export function getResourceThumbnails(resources){
   return (dispatch)=>{
     let request = {resources:[]};
@@ -157,6 +178,10 @@ export function getResourceThumbnails(resources){
   }
 }
 
+/**
+ * Отправляет на сервер запрос на поиск ресурсов
+ * @param  {Object} Объект поискка
+ */
 export function searchResources(searchObject={}){
   return (dispatch)=>{
     dispatch({
