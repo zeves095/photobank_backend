@@ -50,7 +50,7 @@ export class LinkList extends React.Component{
 
   /**
    * Обработчик клика на ссылку. Пока не используется, в будущем планируется редактировать выбранную ссылку по клику
-   * @param  {int} id Идентификатор ссылки
+   * @param  {Number} id Идентификатор ссылки
    */
   handleLinkClick = (id)=>{
     //this.props.chooseLink(id);
@@ -77,7 +77,7 @@ export class LinkList extends React.Component{
 
   /**
    * Обработчик удаления ссылки
-   * @param  {int} id Идентификатор ссылки для удаления
+   * @param  {Number} id Идентификатор ссылки для удаления
    */
   handleLinkDelete = (id)=>{
     this.props.deleteLink(id);
@@ -125,7 +125,7 @@ export class LinkList extends React.Component{
 
   /**
    * Обработчик открытия модального окна с превью изображения ресурса
-   * @param  {int} link Идентификатор ссылки
+   * @param  {Number} link Идентификатор ссылки
    */
   handleModalImage = (link)=>{
     this.setState({

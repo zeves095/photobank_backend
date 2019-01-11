@@ -6,8 +6,16 @@ import {UserEditor} from './UserEditor';
 import {UserService} from './services/UserService';
 import {NotificationService} from '../services/NotificationService';
 
+/**
+ * Интерфейс работы с поьзователями
+ */
 export class UserManager extends React.Component {
 
+  /**
+   * Конструктор компонента
+   * users - Список существующих пользователей
+   * current_user - Пользователь, который редактируется в данный момент
+   */
   constructor(props) {
     super(props);
     this.state ={
@@ -19,6 +27,9 @@ export class UserManager extends React.Component {
     this.handleUserChoice = this.handleUserChoice.bind(this);
   }
 
+  /**
+   * Запрашивает список пользователей
+   */
   fetchUsers(){
     UserService.fetchUsers().then((users)=>{
       this.setState({
@@ -29,6 +40,10 @@ export class UserManager extends React.Component {
     });
   }
 
+  /**
+   * Обработчик обновления/создания пользователя
+   * @param  {Object} user Объект пользователя
+   */
   handleUserUpdate(user){
     UserService.submitUser(user).then(()=>{
       this.fetchUsers();
@@ -39,6 +54,10 @@ export class UserManager extends React.Component {
     });
   }
 
+  /**
+   * Обработчик выбора пользователя для редктирования
+   * @param  {Number} id Идентификатор полльзователя
+   */
   handleUserChoice(id){
     let user;
     if(typeof id == "undefined"){

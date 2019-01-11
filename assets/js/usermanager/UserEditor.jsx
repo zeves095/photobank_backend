@@ -1,7 +1,16 @@
 import React from 'react';
 
+/**
+ * Компонент для отображения интерфейса редактирования или создания пользователя
+ */
 export class UserEditor extends React.Component {
 
+  /**
+   * Конструктор компонента
+   * user - Объект текущего пользователя
+   * sent - Была ли отправлена форма с этими данными
+   * hide_password - Отображать ли пароль как plaintext или скрывать
+   */
   constructor(props) {
     super(props);
     this.state ={
@@ -13,6 +22,10 @@ export class UserEditor extends React.Component {
     this.hidePassword = this.hidePassword.bind(this);
   }
 
+  /**
+   * Обработчик отправки формы с данными пользователя
+   * @param  {Event} e Событие клика
+   */
   handleSubmit(e){
     e.preventDefault();
     let newUser={
@@ -29,6 +42,10 @@ export class UserEditor extends React.Component {
     });
   }
 
+  /**
+   * Скрывает/открывает поле пароль
+   * @param  {Event} e Событие клика
+   */
   hidePassword(e){
     e.preventDefault();
     this.setState({

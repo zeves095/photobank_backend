@@ -93,7 +93,7 @@ export class ExistingResources extends React.Component{
   /**
    * Обработчик обновления данных о ресурсе
    * @param  {Event} e Событие клика
-   * @param  {int} [id=null] Опциональный идентификатор ресурса для обновления. Если не указан, будет взят из элемента, по которому кликнул пользователь
+   * @param  {Number} [id=null] Опциональный идентификатор ресурса для обновления. Если не указан, будет взят из элемента, по которому кликнул пользователь
    */
   handleResourceUpdate(e, id=null){
     if(!this.props.authorized){return}
