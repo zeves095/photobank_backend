@@ -1,7 +1,15 @@
 import React from 'react';
 
+/**
+ * Компонент, который задает вопросы из разряда "Вы уверены?" перед отправкой формы
+ */
 export class Confirmator extends React.Component{
 
+  /**
+   * Конструктор компонента
+   * step - шаг валидации
+   * @param {Object} props Входные данные
+   */
   constructor(props){
     super(props);
     this.state={
@@ -9,6 +17,9 @@ export class Confirmator extends React.Component{
     };
   };
 
+  /**
+   * Сбрасывает прогресс валидации
+   */
   componentDidUpdate(){
     if(!this.props.active && this.state.step !== 0){
       this.setState({
@@ -17,6 +28,10 @@ export class Confirmator extends React.Component{
     }
   }
 
+  /**
+   * Продвигает подтверждение отправки на шаг вперед
+   * @param  {Event} e Событие клика
+   */
   progress = (e)=>{
     this.props.prehook();
     if(this.state.step>=this.props.questions.length){
@@ -31,6 +46,9 @@ export class Confirmator extends React.Component{
     });
   }
 
+  /**
+   * Выполняет отмену отправки
+   */
   cancel = ()=>{
     this.setState({
       step:0

@@ -1,0 +1,10 @@
+{
+  "source": "./assets/js",
+  "destination": "./docs/js",
+  "includes": [".*\\.js", ".*\\.jsx"],
+  "excludes": ["vendor.+\\.js"],
+  "plugins": [{"name": "esdoc-standard-plugin"},
+   {"name": "esdoc-ecmascript-proposal-plugin", "option": {"all": true}},
+   {"name": "esdoc-jsx-plugin", "option": {"enable": true}}
+ ]
+}

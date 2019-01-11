@@ -1,3 +1,6 @@
+/**
+ * Объект поиска товаров каталога для отправки на сервер
+ */
 class ItemQueryObject{
 
   constructor(){

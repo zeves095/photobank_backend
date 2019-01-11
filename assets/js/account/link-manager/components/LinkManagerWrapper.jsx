@@ -3,6 +3,9 @@ import LinkManager from './LinkManager';
 import {Provider} from 'react-redux';
 import {store} from '../store';
 
+/**
+ * Обертка для основного компонента, служит для коннекта к Redux
+ */
 class LinkManagerWrapper extends Component {
   render() {
     return (

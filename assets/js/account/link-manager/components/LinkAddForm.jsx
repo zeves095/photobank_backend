@@ -7,8 +7,18 @@ import {getLinkTargets, getChosenResource} from '../selectors';
 import {Confirmator} from '../../../common/Confirmator';
 import {validateLinkAddForm} from '../../../common/utils/validation';
 
+/**
+ * Форма для добавления ссылки
+ */
 export class LinkAddForm extends React.Component {
-
+  /**
+   * Конструктор компонента
+   * form_error - Текст ошибки формы
+   * defaults - Данные формы по умолчанию
+   * confirmatorQuestions - вопросы для компонента Confirmator
+   *
+   * @param {Object} props Входные данные из коннекта Redux
+   */
   constructor(props) {
     super(props);
     this.state={
@@ -20,48 +30,75 @@ export class LinkAddForm extends React.Component {
     };
   }
 
+  /**
+   * Делает проверку на факт существования выбранного ресурса на момент маунта выбранного ресурса
+   */
   componentDidMount(){
     if(this.props.resource_chosen !== null){
-      let defaults = this.state.defaults;
-      let resources = this.props.resource_chosen.map((resource)=>{return resource.id}).join(',');
-      defaults.resource = resources;
-      this.setState({
-        defaults
-      });
+      this.handleSetResource();
     }
   }
 
+  /**
+   * Делает проверку на факт изменения выбранного ресурса
+   */
   componentDidUpdate(prevProps){
     if(prevProps.resource_chosen !== this.props.resource_chosen){
-      let defaults = this.state.defaults;
-      let resources = this.props.resource_chosen.map((resource)=>{return resource.id}).join(',');
-      defaults.resource = resources;
-      this.setState({
-        defaults
-      });
+      this.handleSetResource();
     }
   }
 
+  /**
+   * Проставляет поле resource для формы из данных redux
+   */
+  handleSetResource = ()=>{
+    let defaults = this.state.defaults;
+    let resources = this.props.resource_chosen.map((resource)=>{return resource.id}).join(',');
+    defaults.resource = resources;
+    this.setState({
+      defaults
+    });
+  }
+
+  /**
+   * Обработчик изменений формы. Обновляет состояние формы после изменения поля
+   * @param  {Object} data Данные формы
+   */
   handleInputChange = (data)=>{
     this.setState({
       defaults:data
     });
   }
 
+  /**
+   * Обработчик отправки формы. Отправляет action с данными формы для создания ссылки
+   * @param  {Object} data Данные формы
+   */
   handleFormSubmit = (data) =>{
     this.props.submitLink(data);
   }
 
+  /**
+   * Обработчик ошибок формы.
+   * @param  {string[]} errors [description]
+   */
   handleFormError = (errors) =>{
     this.setState({
       form_error: errors.length>0
     });
   }
 
+  /**
+   * Обработчик потери фокуса формы. Сейчас не испоьзуется, но пусть будет пока.
+   * @param  {Object} data Данные формы
+   */
   handleFormBlur = (data)=>{
     //this.props.validateLinkAddForm(data);
   }
 
+  /**
+   * Создает список вопросов для подтвердждения в компоненте Confirmator. Проверяет, пытается ли юзер создать ссылки для ресурсов, у которых уже есть ссылки, либо добавить ссылки в уже существующую группу
+   */
   getConfirmatorQuestions= ()=>{
     let defaults = this.state.defaults;
     let confirmatorQuestions = this.state.confirmatorQuestions;

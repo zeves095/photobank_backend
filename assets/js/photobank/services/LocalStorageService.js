@@ -1,8 +1,15 @@
 import $ from 'jquery';
 
+/**
+ * Сервис для работы с данными, сохраненными в localstorage браузера пользователя
+ */
 class LocalStorageService{
   constructor(){
   }
+  /**
+   * Возвращает массив, устанавливающий соответствие между ключми хранящихся значений и названиями переменных в localstorage
+   * @return {string[]} Массив в виде [ключ=>переменная]
+   */
   static _getKeys(){
     let keys = {
       "current_node": "pb_data_catalogue_current_node",
@@ -14,6 +21,9 @@ class LocalStorageService{
     }
     return keys;
   }
+  /**
+   * Устанавливает изначальные значения переменных для корректной работы
+   */
   static init(){
     if(window.localStorage.photobank_data != "1"){
       window.localStorage.photobank_data = "1";
@@ -25,6 +35,11 @@ class LocalStorageService{
     }
   }
 
+  /**
+   * Устанавливает значение одной переменной
+   * @param {string} key Ключ, соответсвующий переменной localstorage
+   * @param {string} value Значение переменной для редактирования
+   */
   static set(key, value){
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(key) != -1){
@@ -32,6 +47,10 @@ class LocalStorageService{
     }
   }
 
+  /**
+   * Получает значение одной переменной
+   * @param {string} key Ключ, соответсвующий переменной localstorage
+   */
   static get(key){
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(key) != -1 && typeof window.localStorage[keys[key]] != "undefined"){
@@ -41,6 +60,11 @@ class LocalStorageService{
     }
   }
 
+  /**
+   * Конкатенирует строковое значение переменной с входящей строкой через пробел
+   * @param {[type]} list  [description]
+   * @param {string} value Значение переменной для редактирования
+   */
   static addTo(list, value){
     if(typeof value == 'undefined'){return null}
     let keys = this._getKeys();
@@ -50,6 +74,11 @@ class LocalStorageService{
     }
   }
 
+  /**
+   * Удаляет часть строки переменной
+   * @param {[type]} list [description]
+   * @param {string} value Значение переменной для редактирования
+   */
   static removeFrom(list, value){
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
@@ -65,6 +94,11 @@ class LocalStorageService{
     }
   }
 
+  /**
+   * Получает строковое значение переменной localstorage в виде массива
+   * @param {string} list Ключ переменной localstorage
+   * @param {string} [delimiter=" "] Разделитель для разбора массива
+   */
   static getList(list, delimiter=" "){
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
@@ -82,6 +116,10 @@ class LocalStorageService{
     }
   }
 
+  /**
+   * Удаляет переменную из localstorage
+   * @param {string} key Ключ, соответсвующий переменной localstorage
+   */
   static unset(key){
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(key) != -1 && typeof window.localStorage[keys[key]] != "undefined"){

@@ -25,6 +25,9 @@ let defaultState = {
   }
 }
 
+/**
+ * Отвечает за отображения заглушки во время загрузки информации
+ */
 export default (ui = defaultState, action) => {
   let loading = ui.loading;
   let form = ui.form;

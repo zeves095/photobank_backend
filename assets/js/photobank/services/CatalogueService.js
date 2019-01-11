@@ -1,10 +1,19 @@
+// TODO убрать джейквеееееееерииии
 import $ from 'jquery';
 
+/**
+ * Сервис для получения и обновления данных по структуре каталога
+ */
 class CatalogueService{
   constructor(){
 
   }
 
+  /**
+   * Рекурсивно получает структуру каталога от раздела, сохраненного в браузере до верхнего уровня
+   * @param  {int} [currentNode=null] Текущий раздел каталога
+   * @param  {Array}  [prevresult=[]] Предыдущий результат выполнения функции
+   */
   static fetchRootNodes(currentNode = null, prevresult = []){
     let result = prevresult;
     return new Promise((resolve, reject)=>{
@@ -27,6 +36,13 @@ class CatalogueService{
     });
   }
 
+  /**
+   * Строит структуру каталога для отображения через компонент jstree
+   * @param  {Object[]} data Данные каталога
+   * @param  {int} currentNode Идентификатор текущего выбранного раздела каталога
+   *
+   * @return {Object} Данные для отображения в компоненте jstree
+   */
   static makeTree(data, currentNode){
     let tree={ core: { data: [] }, 'selected':[]};
     for(var node in data){
@@ -62,6 +78,12 @@ class CatalogueService{
     return tree;
   }
 
+  /**
+   * Запрашивает данные о дочерних элементах каталога от раздела каталога
+   * @param  {Object[]} data Уже полученная структура каталога
+   * @param  {int[]} tracked Список разделов каталога, по которым уже есть данные
+   * @param  {int} node Идентификатор раздела каталога, дочерние элементы которого необходимо найти
+   */
   static fetchNodes(data, tracked, node){
     let result = data;
     return new Promise((resolve,reject)=>{
@@ -84,6 +106,13 @@ class CatalogueService{
     });
   }
 
+  /**
+   * Получает один уровень разделов каталога
+   * @param  {Object[]} data Уже полученная структура каталога
+   * @param  {int} currentNode Текущий выбранный раздел каталога
+   *
+   * @return {Object[]} Массив разделов каталога, находящихся на уровне каталога
+   */
   static fetchLevel(data, currentNode){
 
     let parent = this._getNodeById(data, currentNode);
@@ -91,6 +120,13 @@ class CatalogueService{
     return children;
   }
 
+  /**
+   * Получает список хлебных крошек из имеющейся структуры каталога и текущего выбранного раздела каталога
+   * @param  {Object[]} data Уже полученная структура каталога
+   * @param  {int} currentNode Текущий выбранный раздел каталога
+   *
+   * @return {Object[]} Массив из последовательности разделов катталога к верхенему уровню
+   */
   static getCrumbs(data, currentNode){
     let crumbs = [];
     if(currentNode == null){return crumbs;}
@@ -106,6 +142,10 @@ class CatalogueService{
     return crumbs.reverse();
   }
 
+  /**
+   * Получает родительский раздел каталога по идентификатору дочернего с сервера
+   * @param  {int} id Идентификатор дочернего разделы каталога
+   */
   static _fetchNodeParent(id){
     return new Promise((resolve,reject)=>{
       $.getJSON("/catalogue/node/"+id, (data)=>{
@@ -116,6 +156,13 @@ class CatalogueService{
     });
   }
 
+  /**
+   * Получает родительский раздел каталога по идентификатору дочернего из имеющихся данных
+   * @param  {Object[]} data Уже полученная структура каталога
+   * @param  {Object} node Объект дочернего ресурса каталога
+   *
+   * @return {Object} Родительский ресурс
+   */
   static _getNodeParent(data, node){
     for(var i = 0; i<data.length; i++){
       if(node.parent == data[i].id){
@@ -125,6 +172,13 @@ class CatalogueService{
     return null;
   }
 
+  /**
+   * Получает список дочерних ресурсов от раздела каталога
+   * @param  {Object[]} data Уже полученная структура каталога
+   * @param  {Object} node Объект родительского ресурса
+   *
+   * @return {Object[]} Дочерние разделы каталога
+   */
   static _getNodeChildren(data, node){
     let children = [];
     let nodeId = null;
@@ -137,6 +191,12 @@ class CatalogueService{
     return children;
   }
 
+  /**
+   * Полуачет объект раздела каталога по его идентификатору
+   * @param  {Object} data Уже полученная структура каталога
+   * @param  {int} id Идентификатор раздела каталога
+   * @return {Object} Объект раздела каталога
+   */
   static _getNodeById(data, id){
     for(var i = 0; i<data.length; i++){
       if(id == data[i].id){
@@ -145,7 +205,6 @@ class CatalogueService{
     }
     return null;
   }
-
 
 }
 

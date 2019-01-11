@@ -108,7 +108,8 @@ export function stopEditing(){
 }
 
 /**
- * Валидация формы для создания ссылки
+ * Валидация формы для создания ссылки через сервер (не используется, см. js/common/utils/validation.js)
+ * @see js/common/utils/validation.js
  * @param  {Object} formData Данные из формы
  */
 export function validateLinkAddForm(formData){
@@ -215,6 +216,10 @@ export function searchResources(searchObject={}){
   }
 }
 
+/**
+ * Выбор ресурса для создания ссылки
+ * @param  {int} id Идентификатор ресурса для ссылки
+ */
 export function chooseResource(id){
   return{
     type: RESOURCE_CHOICE,
@@ -222,6 +227,10 @@ export function chooseResource(id){
   }
 }
 
+/**
+ * Добавить ресурс в список ресурсов для создания группы ссылок
+ * @param {int} id Идентификатор ресурса для ссылки
+ */
 export function addResourceToPool(id){
   return{
     type: RESOURCE_ADD,
@@ -229,6 +238,10 @@ export function addResourceToPool(id){
   }
 }
 
+/**
+ * Исключить ресурс из списка для создания группы ссылок
+ * @param  {int} id Идентификатор ресурса для удаления
+ */
 export function removeResourceFromPool(id){
   return{
     type: RESOURCE_REMOVE,
@@ -236,6 +249,10 @@ export function removeResourceFromPool(id){
   }
 }
 
+/**
+ * Очистить список ресурсов для добавления группы ссылок
+ * @param  {int} id Тут null что ли обычно?
+ */
 export function removeAllFromPool(id){
   return{
     type: RESOURCE_REMOVE_ALL,
@@ -243,6 +260,10 @@ export function removeAllFromPool(id){
   }
 }
 
+/**
+ * Удалить ссылку
+ * @param  {int} id Идентификатор ссылки для удаления
+ */
 export function deleteLink(id){
   return (dispatch)=>{
     dispatch({
@@ -274,6 +295,9 @@ export function deleteLink(id){
   }
 }
 
+/**
+ * Получить список ссылок для текущего пользователя
+ */
 export function fetchLinks(){
   return (dispatch)=>{
     dispatch({
@@ -310,6 +334,10 @@ export function fetchLinks(){
   }
 }
 
+/**
+ * Отправить форму для создания ссылки
+ * @param  {Object} form Данные из формы
+ */
 export function submitLink(form){
   return (dispatch)=>{
     dispatch({
@@ -347,6 +375,11 @@ export function submitLink(form){
   }
 }
 
+/**
+ * Обновить запись о ссылке (не используется)
+ * @param  {Object} form Данные формы
+ * @param  {int} link Идентификатор ссылки для обновления
+ */
 export function updateLink(form, link){
   return (dispatch)=>{
     form['id'] = link;

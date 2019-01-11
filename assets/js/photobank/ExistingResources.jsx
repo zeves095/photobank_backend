@@ -5,14 +5,28 @@ import {ResourceService} from './../services/ResourceService';
 import {NotificationService} from '../services/NotificationService';
 import {LocalStorageService} from './services/LocalStorageService';
 
+/**
+ * Компонент интерфейса для отображения существующих ресурсов для товара
+ */
 export class ExistingResources extends React.Component{
+  /**
+   * Конструктор компонента
+   * existing - Массив существующих ресурсов товара
+   * view_type - Текущий тип отображения
+   * finished_presets - Массив обработаных пресетов ресурса
+   * loading - Находится ли компонент в состоянии ожидания
+   * list_start - Индекс первого элемента для пагинации
+   * list_end - Индекс последнего элемента для пагинации
+   * list_current_page - Номер текущей страницы пагинации
+   * list_total_pages - Общее количество страниц пагинации
+   * priority_active - Индекс ресурса, для которого в данный момент нужно отобразить окно выбора приоритета
+   */
   constructor(props) {
     super(props);
     this.state={
       "existing": [],
       "view_type": this.props.default_view,
       "finished_presets": [],
-      "busy" : false,
       "loading" : true,
       "list_start": 0,
       "list_limit": 20,
@@ -43,6 +57,9 @@ export class ExistingResources extends React.Component{
 
   }
 
+  /**
+   * Запрашивает список существующих ресурсов для товара
+   */
   fetchExisting(){
     ResourceService.fetchExisting(this.props.item_id).then((data)=>{
       this.setState({
@@ -53,6 +70,9 @@ export class ExistingResources extends React.Component{
     });
   }
 
+  /**
+   * Запрашивает список сгенерированных пресетов для ресурсов товара
+   */
   fetchPresets(){
     ResourceService.fetchExistingPresets(
       this.props.item_id,
@@ -70,6 +90,11 @@ export class ExistingResources extends React.Component{
     });
   }
 
+  /**
+   * Обработчик обновления данных о ресурсе
+   * @param  {Event} e Событие клика
+   * @param  {int} [id=null] Опциональный идентификатор ресурса для обновления. Если не указан, будет взят из элемента, по которому кликнул пользователь
+   */
   handleResourceUpdate(e, id=null){
     if(!this.props.authorized){return}
     let form = {};
@@ -88,6 +113,10 @@ export class ExistingResources extends React.Component{
     });
   }
 
+  /**
+   * Обработчик событий пагинации. Определяет количество элементов на странице, текущую страницу
+   * @param  {Event} e Событие, по которому выполняется функция
+   */
   handlePagination(e){
     let changed = false;
     let start = this.state.list_start;
@@ -98,7 +127,7 @@ export class ExistingResources extends React.Component{
         target = target.parentNode;
       }
       if(target.dataset.direction == 0){
-        if((start-=limit)<0){start=0};
+        if((start-=limit) < 0){start=0};
         changed = true;
       }else{
         if(!(start+limit>this.state.existing.length)){start = parseInt(start+limit)};
@@ -113,10 +142,10 @@ export class ExistingResources extends React.Component{
           if(limit!=this.state.list_limit){changed = true;}
           break;
         case 37:
-          if((start-=limit)<0){start=0;}else{changed = true;};
+          if((start-=limit) < 0){start=0;} else{changed = true;};
           break;
         case 39:
-          if(!(start+limit>this.state.existing.length)){start = parseInt(start+limit);changed = true;};
+          if(!(start+limit > this.state.existing.length)){start = parseInt(start+limit);changed = true;};
           break;
       }
     }
@@ -133,6 +162,10 @@ export class ExistingResources extends React.Component{
     }
   }
 
+  /**
+   * Обработчик копирования ссылки для авторизованных пользователей в буфер обмена
+   * @param  {Event} e Событие клика
+   */
   handleCopyToClipboard(e){
     e.preventDefault();
     let resource = e.target.dataset["resource"];
@@ -140,18 +173,30 @@ export class ExistingResources extends React.Component{
     NotificationService.toast("link-copied");
   }
 
+  /**
+   * Обработчик открытия изображения в новой вкладке
+   * @param  {Event} e Событие клика
+   */
   handleOpenInTab(e){
     e.preventDefault();
     let resource = e.target.dataset["resource"];
     ResourceService.openInTab(resource);
   }
 
+  /**
+   * Обработчик скачивания изображения ресурса
+   * @param  {[type]} e Событие клика
+   */
   handleDownloadResource(e){
     e.preventDefault();
     let resource = e.target.dataset["resource"];
     ResourceService.downloadResource(resource);
   }
 
+  /**
+   * Обработчик добавления изображения в очередь загрузок
+   * @param  {[type]} e Событие клика
+   */
   handleAddToDownloads(e){
     e.preventDefault();
     let resource = e.target.dataset["resource"];
@@ -159,6 +204,10 @@ export class ExistingResources extends React.Component{
     NotificationService.toast("dl-queued");
   }
 
+  /**
+   * Обработчик начала установки приоритета ресурса
+   * @param  {[type]} e Событие клика
+   */
   handlePriority(e){
     if(!this.props.authorized){return}
     let file = e.target.dataset["file"];
@@ -168,6 +217,10 @@ export class ExistingResources extends React.Component{
     });
   }
 
+  /**
+   * Обработчик начала установки приоритета ресурса
+   * @param  {[type]} e Событие клика
+   */
   handlePriorityUpdate(e){
     if(!this.props.authorized){return}
     let priority = e.target.dataset["priority"];
@@ -178,6 +231,9 @@ export class ExistingResources extends React.Component{
     this.handleResourceUpdate(e, id)
   }
 
+  /**
+   * Собирает список доступных пресетов и получает существующие ресурсы для товара
+   */
   componentDidMount(){
     let presets = [];
     for(var preset in window.config['presets']){

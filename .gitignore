@@ -11,6 +11,7 @@
 /vendor/
 /tests/dump/
 /docs/api/
+/docs/js/
 /bin/phpDocumentor*
 /build/api-cache/
 ###< symfony/framework-bundle ###

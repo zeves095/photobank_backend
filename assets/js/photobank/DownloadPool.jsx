@@ -3,8 +3,16 @@ import React from 'react';
 import {ResourceService} from './../services/ResourceService';
 import {NotificationService} from '../services/NotificationService';
 
+/**
+ * Компонент интерфейса bulk-загрузки файлов с сервера
+ */
 export class DownloadPool extends React.Component{
 
+  /**
+   * Конструктор компонента
+   * downloads - Массив данных о готовых загрузках
+   * loading - Находится ли компонент в состоянии ожидания
+   */
   constructor(props){
     super(props);
     this.state = {
@@ -16,11 +24,18 @@ export class DownloadPool extends React.Component{
     this.populateDownloads = this.populateDownloads.bind(this);
   };
 
+  /**
+   * Обработчик начала загрузки файлов
+   */
   handleDownload(){
     ResourceService.downloadResource(this.props.resources);
     this.props.addDownloadHandler();
   }
 
+  /**
+   * Обработчик удаления файла из очереди загрузок
+   * @param  {Event} e Событие клика
+   */
   handleRemoveDownload(e){
     let id = e.target.dataset["download"];
     this.props.removeDownloadHandler(id);
@@ -39,6 +54,9 @@ export class DownloadPool extends React.Component{
     }
   }
 
+  /**
+   * Создает массив данных о загрузках для отображения
+   */
   populateDownloads(){
     let downloads = [];
     ResourceService.getResource(this.props.resources).then((res)=>{

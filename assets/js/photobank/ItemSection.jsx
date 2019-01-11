@@ -6,7 +6,19 @@ import { Uploads } from './Uploads';
 import {ItemService} from './services/ItemService';
 import {NotificationService} from '../services/NotificationService';
 
+/**
+ * Компонент интерфейса работы с определенным товаром
+ */
 export class ItemSection extends React.Component{
+  /**
+   * Конструктор компонента
+   * resumable - Инстанс resumable.js для текущего товара
+   * item_id - Код 1c товара
+   * open - Открыт ли интерфейс
+   * ready - Готовы ли загрузки для данного товара к отправке
+   * view_type - Тип представления элементов списка
+   * need_refresh - Нуждается ли компонент в обновлении
+   */
   constructor(props) {
     super(props);
     if(typeof window.resumableContainer[this.props.item_id] == 'undefined'){
@@ -29,6 +41,10 @@ export class ItemSection extends React.Component{
     this.handleUpload = this.handleUpload.bind(this);
   }
 
+  /**
+   * Обработчик выбора типа представления для элементов списка
+   * @param  {Event} e Событие клика
+   */
   handleViewChoice(e){
     let viewBtn = $(e.target).is("button")?$(e.target):$(e.target).parent();
     let view = viewBtn.data("view");
@@ -36,6 +52,9 @@ export class ItemSection extends React.Component{
     this.props.viewChoiceHandler(view);
   }
 
+  /**
+   * Запрашивает информацию о текуще товаре
+   */
   componentWillMount(){
     ItemService.getIdentity(this.props.item_id).then((data)=>{
       this.setState({
@@ -61,6 +80,9 @@ export class ItemSection extends React.Component{
     }
   }
 
+  /**
+   * Обработчик начала загрузки файлов на сервер
+   */
   handleUpload(){
     NotificationService.toast("up-done");
     this.setState({

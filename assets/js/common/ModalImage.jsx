@@ -1,11 +1,16 @@
 import React from 'react';
-
+/**
+ * Простой компонент для отображения изображения в модальном окне
+ */
 export class ModalImage extends React.Component{
 
   constructor(props){
     super(props);
   };
 
+  /**
+   * Обработчик закрытия модального окна
+   */
   handleClose =()=>{
     this.props.closeModalHandler();
   }

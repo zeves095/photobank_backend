@@ -1,9 +1,15 @@
 import React from 'react';
 
 import {ItemQueryObject} from './services/ItemQueryObject';
-
+/**
+ * Компонент интерфейса поиска товаров
+ */
 export class ItemSearch extends React.Component {
 
+  /**
+   * Конструктор класса
+   * query - ItemQueryObject объект поиска
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -14,6 +20,10 @@ export class ItemSearch extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   };
 
+  /**
+   * Обработчик изменения значения полей формы
+   * @param  {Event} e Событие
+   */
   handleChange(e) {
     let field = e.target.name;
     let query = this.state.query;
@@ -24,11 +34,17 @@ export class ItemSearch extends React.Component {
     }
   }
 
+  /**
+   * Обработчик отправки формы поиска
+   */
   handleSubmit() {
     let newQuery = Object.assign({}, this.state.query);
     this.props.searchQueryHandler(newQuery);
   }
 
+  /**
+   * Создает объект поиска и определяет отслеживаемые события на странице
+   */
   componentDidMount() {
     let queryObject = new ItemQueryObject();
     for (var i = 1; i < 5; i++) {
