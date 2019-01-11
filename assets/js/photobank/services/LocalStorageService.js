@@ -37,8 +37,8 @@ class LocalStorageService{
 
   /**
    * Устанавливает значение одной переменной
-   * @param {string} key Ключ, соответсвующий переменной localstorage
-   * @param {string} value Значение переменной для редактирования
+   * @param {String} key Ключ, соответсвующий переменной localstorage
+   * @param {String} value Значение переменной для редактирования
    */
   static set(key, value){
     let keys = this._getKeys();
@@ -49,7 +49,7 @@ class LocalStorageService{
 
   /**
    * Получает значение одной переменной
-   * @param {string} key Ключ, соответсвующий переменной localstorage
+   * @param {String} key Ключ, соответсвующий переменной localstorage
    */
   static get(key){
     let keys = this._getKeys();
@@ -63,7 +63,7 @@ class LocalStorageService{
   /**
    * Конкатенирует строковое значение переменной с входящей строкой через пробел
    * @param {[type]} list  [description]
-   * @param {string} value Значение переменной для редактирования
+   * @param {String} value Значение переменной для редактирования
    */
   static addTo(list, value){
     if(typeof value == 'undefined'){return null}
@@ -77,7 +77,7 @@ class LocalStorageService{
   /**
    * Удаляет часть строки переменной
    * @param {[type]} list [description]
-   * @param {string} value Значение переменной для редактирования
+   * @param {String} value Значение переменной для редактирования
    */
   static removeFrom(list, value){
     let keys = this._getKeys();
@@ -96,8 +96,8 @@ class LocalStorageService{
 
   /**
    * Получает строковое значение переменной localstorage в виде массива
-   * @param {string} list Ключ переменной localstorage
-   * @param {string} [delimiter=" "] Разделитель для разбора массива
+   * @param {String} list Ключ переменной localstorage
+   * @param {String} [delimiter=" "] Разделитель для разбора массива
    */
   static getList(list, delimiter=" "){
     let keys = this._getKeys();
@@ -118,7 +118,7 @@ class LocalStorageService{
 
   /**
    * Удаляет переменную из localstorage
-   * @param {string} key Ключ, соответсвующий переменной localstorage
+   * @param {String} key Ключ, соответсвующий переменной localstorage
    */
   static unset(key){
     let keys = this._getKeys();

@@ -254,7 +254,7 @@
     /**
      * processes a single upload item (file or directory)
      * @param {Object} item item to upload, may be file or directory entry
-     * @param {string} path current file path
+     * @param {String} path current file path
      * @param {File[]} items list of files to append new items to
      * @param {Function} cb callback invoked when item is processed
      */
@@ -314,7 +314,7 @@
     /**
      * recursively traverse directory and collect files to upload
      * @param  {Object}   directory directory to process
-     * @param  {string}   path      current path
+     * @param  {String}   path      current path
      * @param  {File[]}   items     target list of items
      * @param  {Function} cb        callback invoked after traversing directory
      */

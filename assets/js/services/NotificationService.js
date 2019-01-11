@@ -1,8 +1,14 @@
 import $ from 'jquery';
 
+/**
+ * Сервис для отображения сообщений и ошибок пользователю
+ */
 class NotificationService{
   constructor(){
   }
+  /**
+   * Возарвщает массив с сообщениями в виде [ключ=>сообщение]
+   */
   static _getKeys(){
     let keys = {
       "unknown-error": "Неизвестная ошибка",
@@ -29,6 +35,11 @@ class NotificationService{
     return keys;
   }
 
+  /**
+   * Показывает оповещение
+   * @param  {String} key                Ключ сообщения
+   * @param  {String} [customMessage=""] Опциональный параметр с произвольным сообщением, не определенным в списке. Для отображение такого сообщения в параметре key должена быть передана строка "custom"
+   */
   static toast(key, customMessage = ""){
     let keys = this._getKeys();
     if(key === "custom"){
@@ -40,6 +51,11 @@ class NotificationService{
     }
   }
 
+  /**
+   * Показывает ошибку
+   * @param  {String} key                Ключ сообщения
+   * @param  {String} [customMessage=""] Опциональный параметр с произвольным сообщением, не определенным в списке. Для отображение такого сообщения в параметре key должена быть передана строка "custom"
+   */
   static throw(key, customMessage = ""){
     let keys = this._getKeys();
     if(key === "custom"){
@@ -51,6 +67,12 @@ class NotificationService{
     }else{this._makeNotification(keys["unknown-error"], 1);}
   }
 
+  /**
+   * Создает элемент с оповещением
+   * @param  {String} text     текст сообщения
+   * @param  {Number} type     Тип сообщения, 0 - сообщение, 1 - ошибка
+   * @param  {Number} [time=0] Время, через которое сообщение исчезает в секундах. 0 - не исчезает
+   */
   static _makeNotification(text, type ,time=0){
       let id = (((1+Math.random())*0x10000)|0).toString(16).substring(1);
       let overlay = document.getElementById('notification-overlay');
@@ -66,6 +88,11 @@ class NotificationService{
       if(time!=0){setTimeout(()=>{this._slideOut(notification)},time*1000)};
   }
 
+  /**
+   * Удаляет сообщение, перед этим поставив ему класс для анимации
+   * @param  {[type]} el [description]
+   * @return {[type]}    [description]
+   */
   static _slideOut(el){
     el.className += " notification--out";
     setTimeout(()=>{el.parentNode.removeChild(el)}, 400);

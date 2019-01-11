@@ -1,7 +1,13 @@
 import React from 'react';
 
+/**
+ * Компонент для отображения списка существующих пользователей
+ */
 export class UserList extends React.Component {
 
+  /**
+   * Конструктор компонента
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -13,6 +19,10 @@ export class UserList extends React.Component {
     this.showInactive = this.showInactive.bind(this);
   }
 
+  /**
+   * Обработчик выбора пользователя для редактирования
+   * @param  {Event} e Событие клика
+   */
   handleUserChoice(e){
     if(typeof e == "undefined"){
       this.setState({
@@ -27,11 +37,17 @@ export class UserList extends React.Component {
     });
   }
 
+  /**
+   * Добавляет нового пользователя
+   */
   addUser(){
     this.props.userChoiceHandler();
     this.handleUserChoice();
   }
 
+  /**
+   * Показать/скрыть список неактивных пользователей
+   */
   showInactive(){
     this.setState({
       "show_inactive":!this.state.show_inactive

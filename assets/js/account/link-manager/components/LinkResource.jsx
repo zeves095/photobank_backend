@@ -23,7 +23,7 @@ export class LinkResource extends React.Component{
 
   /**
    * Обработчик удаления ресурса из списка на добавление шруппы ссылок
-   * @param  {int} id Идентификатор ресурса
+   * @param  {Number} id Идентификатор ресурса
    */
   handleRemoveChosenResource = (id)=>{
         //this.props.removeResourceFromPool(e.target.dataset['res']);
@@ -32,7 +32,7 @@ export class LinkResource extends React.Component{
 
   /**
    * Обработчик открытия модального окна с превью изображения ресурса
-   * @param  {int} link Идентификатор ссылки
+   * @param  {Number} link Идентификатор ссылки
    */
   handleModalImage = (link)=>{
     this.setState({

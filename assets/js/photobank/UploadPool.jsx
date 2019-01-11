@@ -5,16 +5,26 @@ import { ItemSection } from './ItemSection';
 import { ListFilter } from './ListFilter';
 import {NotificationService} from '../services/NotificationService';
 
+/**
+ * Компонент работы с очередью отправки файлов на сервер
+ */
 export class UploadPool extends React.Component{
 
+  /**
+   * Конструктор компонента
+   * resumable_container - Объект, содержащий в себе инстансы resumable.js для всех товаров с активными и незаконченными загрузками
+   * item_list - Список идентификаторов товаров с активными и незаконченными загрузками
+   * item_list_filtered - Отфильтрованный список идентификаторов товаров с активными и незаконченными загрузками
+   * view_type - Тип отображения элементов списка
+   * filter_query - Строка фильтрации
+   * collapse_all - Нужно ли свернуть все секции товаров в очереди
+   */
   constructor(props){
     super(props);
     this.state = {
       "resumable_container": window.resumableContainer,
-      "item_sections": [],
       "item_list": [],
       "item_list_filtered": [],
-      "pool":[],
       "view_type":this.props.default_view,
       "filter_query": "",
       "collapse_all": false,
@@ -27,6 +37,9 @@ export class UploadPool extends React.Component{
     this.handleCollapseAll = this.handleCollapseAll.bind(this);
   };
 
+  /**
+   * Фильтрует список товаров в очереди по строке
+   */
   filterData(){
     let items = this.state.item_list;
     let filtered = [];
@@ -38,6 +51,9 @@ export class UploadPool extends React.Component{
     return filtered;
   }
 
+  /**
+   * Создает список товаров для первого рендера компонента.
+   */
   getInitialList(){
     let pool = [];
     for(var itemId in this.state.resumable_container){
@@ -61,12 +77,19 @@ export class UploadPool extends React.Component{
     this.getInitialList();
   }
 
+  /**
+   * Обработчик отправки всех файлов для активных товаров на сервер
+   */
   handleSubmit(){
     for(var res in this.state.resumable_container){
       this.state.resumable_container[res].upload();
     }
   }
 
+  /**
+   * Обработчик выбора типа представления для элементов списка
+   * @param  {Event} e Событие клика
+   */
   handleViewChoice(e){
     let viewBtn = $(e.target).is("button")?$(e.target):$(e.target).parent();
     let view = viewBtn.data("view");
@@ -75,6 +98,11 @@ export class UploadPool extends React.Component{
     this.getResumableList();
   }
 
+  /**
+   * Обрабатывает ответ с расширенной информацией о конкретном товаре
+   * @param  {String} id   Идентиффикатор товара
+   * @param  {String} name Наименование товара
+   */
   handleItemIdentity(id, name){
     let itlist = this.state.item_list;
     itlist[id] = {
@@ -86,12 +114,19 @@ export class UploadPool extends React.Component{
     });
   }
 
+  /**
+   * Обработчик обновления строки фильтрации списка товаров
+   * @param  {String} query Строка фильтрации
+   */
   filterQueryHandler(query){
     this.setState({
       "filter_query": query
     });
   }
 
+  /**
+   * Обработчик сворачивания всех товаров в очереди
+   */
   handleCollapseAll(){
     this.setState({
       "collapse_all": !this.state.collapse_all

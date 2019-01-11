@@ -4,13 +4,22 @@ import { hex_md5 } from '../vendor/md5';
 import {UploadService} from './services/UploadService';
 import {NotificationService} from '../services/NotificationService';
 
+/**
+ * Компонент интерфейса работы с незаконченными загрузками
+ */
 export class UnfinishedUploads extends React.Component{
+  /**
+   * Конструктор компонента
+   * uploads - Массив загрузок
+   * unfinished - Массив незавершенных загрузок
+   * loading - Находится ли компонент в состоянии ожидания
+   * unfinished_hidden - Скрыты ли в приложении незаконченные загрузки
+   */
   constructor(props) {
     super(props);
     this.state={
       "uploads":[],
       "unfinished":[],
-      "busy" : false,
       "loading" : true,
       "unfinished_hidden":false
     };
@@ -28,6 +37,9 @@ export class UnfinishedUploads extends React.Component{
     this.hideUnfinished = this.hideUnfinished.bind(this);
   }
 
+  /**
+   * Запрашивает список незаконченных загрузок для текущего товара
+   */
   fetchUnfinished(){
     this.setState({"loading" : true});
     UploadService.fetchUnfinished(this.props.item.id, this.props.uploads).then((data)=>{
@@ -35,6 +47,10 @@ export class UnfinishedUploads extends React.Component{
     });
   }
 
+  /**
+   * Удаляет из списка незавершенных загрузки, которые были продолжены
+   * @param  {Object[]} [data=this.state.unfinished] Опциональный массив незаконченных загрузок. Если не указан, будет взят из state
+   */
   resolveResumedUploads(data = this.state.unfinished){
     let unfinished = UploadService.resolveResumed(data, this.props.uploads);
     this.setState({
@@ -43,6 +59,10 @@ export class UnfinishedUploads extends React.Component{
     });
   }
 
+  /**
+   * Обработчик удаления записи о незавершенной загрузке с сервера
+   * @param  {Event} e обытие клика
+   */
   handleDelete(e){
     let filehash = $(e.target).data("item");
     this.props.deleteHandler(filehash);
@@ -61,6 +81,9 @@ export class UnfinishedUploads extends React.Component{
     }
   }
 
+  /**
+   * Удаляет все незавершенные загрузки для текущего товара
+   */
   clearAllUnfinished(){
     if(this.state.unfinished.length == 0){return null}
     this.setState({"loading":true});
@@ -75,6 +98,9 @@ export class UnfinishedUploads extends React.Component{
     NotificationService.toast("unfinished-cleared");
   }
 
+  /**
+   * Скрывает отображение незаконченных загрузок
+   */
   hideUnfinished(){
     this.setState({
       "unfinished_hidden" : !this.state.unfinished_hidden

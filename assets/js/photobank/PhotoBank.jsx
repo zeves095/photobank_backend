@@ -12,8 +12,18 @@ import {LocalStorageService} from './services/LocalStorageService';
 import {NotificationService} from '../services/NotificationService';
 import {UtilityService} from './services/UtilityService';
 
+/**
+ * Верхнеуровневый компонент интерфейса загрузки/выгрузки ресурсов
+ */
 export class PhotoBank extends React.Component {
 
+  /**
+   * Конструктор компонента
+   * crumb_string - Строка хлебных крошек, разделенная / для отображения в ItemSection
+   * item_query_object - Объект поиска товаров
+   * ls_node - Сохраненный в localstorage идентификатор выбранного раздела каталога
+   * authorized - Имеет ли текущий пользователь права редактора
+   */
   constructor(props) {
     super(props);
     this.state ={
@@ -29,6 +39,9 @@ export class PhotoBank extends React.Component {
     LocalStorageService.init();
   }
 
+  /**
+   * Запрашивает список незаконченных загрузок
+   */
   fetchUnfinished(){
     UploadService.fetchUnfinishedItems().then((items)=>{
       for(var item in items){
@@ -39,6 +52,10 @@ export class PhotoBank extends React.Component {
     });
   }
 
+  /**
+   * Обработчик поиска товаров
+   * @param  {ItemQueryObject} queryObject Объект поиска
+   */
   handleCatalogueQuery(queryObject){
     this.setState({
       "selected_node": queryObject.nodeId,
@@ -46,6 +63,10 @@ export class PhotoBank extends React.Component {
     });
   }
 
+  /**
+   * Обработчик обновления списка хлебных крошек. Создает строку для отображения в ItemSection
+   * @param  {Object[]} crumbs Массив разделов каталога для хлебных крошек
+   */
   handleCrumbUpdate(crumbs){
     let crumbsClone = crumbs.slice(0);//.reverse();
     let needElipsis = false;
@@ -56,6 +77,9 @@ export class PhotoBank extends React.Component {
     })
   }
 
+  /**
+   * Получает сохраненные значения из localstorage
+   */
   componentWillMount(){
     let prevnode = LocalStorageService.get("current_node");
     let previtem = LocalStorageService.get("current_item");
