@@ -1,7 +1,14 @@
 import React from 'react';
 
+/**
+ * Компоент фильтра
+ */
 export class ListFilter extends React.Component{
 
+  /**
+   * Конструктор компонента
+   * query - строка фильтрации
+   */
   constructor(props){
     super(props);
     this.state={
@@ -14,6 +21,10 @@ export class ListFilter extends React.Component{
     this.filterTimeout = null;
   };
 
+  /**
+   * Обработчик изменения строки фильтрации
+   * @param  {Event} e Событие
+   */
   handleChange(e){
     let query = e.target.value;
     this.state.query = query;
@@ -23,10 +34,16 @@ export class ListFilter extends React.Component{
     this.filterTimeout = setTimeout(this.handleSubmit, 400);
   }
 
+  /**
+   * Обработчик отправки строки фильтрации
+   */
   handleSubmit(){
     this.props.filterHandler(this.state.query);
   }
 
+  /**
+   * Устанавливает слушателя на нажатие Enter
+   */
   componentDidMount(){
     let input = document.getElementById(this.props.filterid+"inpt");
     input.addEventListener("keyup", (event)=> {

@@ -1,10 +1,18 @@
 import React from 'react';
+/**
+ * Кастомное поле размера изображения для jsonschema-form
+ */
 class SizeField extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {...props.formData, hidden:true};
   }
 
+  /**
+   * Обработчик изменения данных в поле. Валидирует значение
+   * @param  {string} name Имя конкретного поля
+   */
   onChange(name) {
     return (event) => {
       let val = event.target.value;
@@ -17,12 +25,19 @@ class SizeField extends React.Component {
     };
   }
 
+  /**
+   * Обработчик разфокуса поля формы
+   * @param  {string} name Имя конкретного поля
+   */
   onBlur(name) {
     return (event) => {
       this.props.onBlur(this.state);
     };
   }
 
+  /**
+   * Обработчик скрытия поля
+   */
   handleHide=()=>{
     this.setState({
       hidden: !this.state.hidden,

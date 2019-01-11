@@ -1,11 +1,20 @@
 import {ItemQueryObject} from './ItemQueryObject';
 import $ from 'jquery';
 
+/**
+ * Сервис для получения и обновления данных о товарах каталога
+ */
 class ItemService{
   constructor(){
 
   }
-
+  /**
+   * Получает список товаров, при необходимости запрашивает с сервера, фильтрует полученные данные
+   * @param  {ItemQueryObject}  query  Объект поискового запроса
+   * @param  {string}  filter Значение фильтра
+   * @param  {Object}  items  Уде полученный список товаров
+   * @param  {Boolean} [need_refresh=true] Необходимость повторного обращения к серверу
+   */
   static fetchItems(query, filter, items,need_refresh = true){
     return new Promise((resolve, reject)=>{
       if(!need_refresh){
@@ -23,6 +32,10 @@ class ItemService{
     });
   }
 
+  /**
+   * Получает все данные товара каталога по его идентификатору
+   * @param  {int} id Идентификатор товара
+   */
   static getIdentity(id){
     return new Promise((resolve,reject)=>{
         $.ajax({url: window.config['item_url']+id, method: 'GET'}).done((data)=>{
@@ -31,6 +44,10 @@ class ItemService{
     });
   }
 
+  /**
+   * Получает с сервера список товаров по поисковому объекту
+   * @param  {ItemQueryObject}  queryObject  Объект поискового запроса
+   */
   static _getItems(queryObject){
     return new Promise((resolve,reject)=>{
       if(!queryObject instanceof ItemQueryObject){reject("Invalid query object")}
@@ -47,6 +64,11 @@ class ItemService{
     })
   }
 
+  /**
+   * Фильтрует полученные данные
+   * @param  {Object[]} data Данные о товарах
+   * @param  {string} query Строка фильтра
+   */
   static _filterData(data, query){
     let filtered = [];
     if(query == ""){

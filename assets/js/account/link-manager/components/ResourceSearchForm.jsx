@@ -6,8 +6,15 @@ import {searchResources} from '../actionCreator';
 import FormWrapper from '../../../forms/FormWrapper';
 import  M  from 'materialize-css';
 
+/**
+ * Форма для поиска ресурсов
+ */
 export class ResourceSearchForm extends React.Component {
-
+  /**
+   * Конструктор компонента
+   * defaults - Данные по умолчанию для отображения в форме
+   * @param {Object} props Входные данные из коннекта Redux
+   */
   constructor(props) {
     super(props);
     this.state={
@@ -19,6 +26,9 @@ export class ResourceSearchForm extends React.Component {
     };
   }
 
+  /**
+   * Создает варианты для селекта типа и пресета ресурса в поиске
+   */
   componentDidMount(){
     let presets = Object.keys(this.props.resource_presets).map((key)=>{
       return(
@@ -32,19 +42,32 @@ export class ResourceSearchForm extends React.Component {
     })
   }
 
+  /**
+   * Обработчик изменений формы. Обновляет состояние формы после изменения поля
+   * @param  {Object} data Данные формы
+   */
   handleInputChange = (data)=>{
     this.setState({
       defaults:data
     });
   }
-
+  /**
+   * Обработчик отправки формы. Отправляет action с данными формы для создания ссылки
+   * @param  {Object} data Данные формы
+   */
   handleFormSubmit = (data) =>{
     this.props.searchResources(data);
   }
-
+  /**
+   * Обработчик ошибок формы.
+   * @param  {string[]} errors [description]
+   */
   handleFormError = (errors) =>{
   }
-
+  /**
+   * Обработчик потери фокуса формы. Сейчас не испоьзуется, но пусть будет пока.
+   * @param  {Object} data Данные формы
+   */
   handleFormBlur = (data)=>{
 
   }

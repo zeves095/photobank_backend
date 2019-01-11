@@ -5,8 +5,15 @@ import {getChosenResource} from '../selectors';
 import { removeResourceFromPool, removeAllFromPool } from '../actionCreator';
 import {ModalImage} from '../../../common/ModalImage';
 
+/**
+ * Список выбранных ресурсов для добавления ссылок
+ */
 export class LinkResource extends React.Component{
-
+  /**
+   * Конструктор компонента
+   * modal_image_url - Ссылка на изображения для модального окна превью
+   * @param {Object} props Входные данные из коннекта Redux
+   */
   constructor(props){
     super(props);
     this.state={
@@ -14,23 +21,37 @@ export class LinkResource extends React.Component{
     };
   }
 
+  /**
+   * Обработчик удаления ресурса из списка на добавление шруппы ссылок
+   * @param  {int} id Идентификатор ресурса
+   */
   handleRemoveChosenResource = (id)=>{
         //this.props.removeResourceFromPool(e.target.dataset['res']);
     this.props.removeResourceFromPool(id);
   }
 
+  /**
+   * Обработчик открытия модального окна с превью изображения ресурса
+   * @param  {int} link Идентификатор ссылки
+   */
   handleModalImage = (link)=>{
     this.setState({
       modal_image_url: link
     });
   }
 
+  /**
+   * Обработчик закрытия модального окна
+   */
   handleModalClose = ()=>{
     this.setState({
       modal_image_url: ""
     });
   }
 
+  /**
+   * Обработчик удаления всех ресурсов из списка для добавления группы ссылок
+   */
   handleRemoveAll = ()=>{
     this.props.removeAllFromPool();
   }

@@ -1,6 +1,9 @@
 import { SUCCESS, FAIL } from '../../constants';
 import { fetchLinks } from '../../actionCreator';
 
+/**
+ * Не делает НИЧЕГО
+ */
 export default (store) => (next) => (action) => {
   next(action);return;
   // const{meta, type, payload} = action;

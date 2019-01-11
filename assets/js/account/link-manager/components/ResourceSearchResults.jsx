@@ -5,8 +5,14 @@ import { getResourcesWithThumbnails } from '../selectors';
 import { chooseResource, addResourceToPool } from '../actionCreator';
 import {ModalImage} from '../../../common/ModalImage';
 
+/**
+ * Результаты поиска ресурсов
+ */
 export class ResourceSearchResults extends React.Component{
-
+  /**
+   * Конструктор компонента
+   * @param {Object} props Входные данные из коннекта Redux
+   */
   constructor(props){
     super(props);
     this.state={
@@ -14,23 +20,38 @@ export class ResourceSearchResults extends React.Component{
     };
   }
 
+  /**
+   * Обработчик добавления ресурса в список для создания группы ссылок
+   * @param  {Event} e Событие клика на ресурс
+   */
   handleAddResourceToPool = (e)=>{
     e.stopPropagation();
     this.props.addResourceToPool(parseInt(e.target.dataset['res'], 10));
   }
 
+  /**
+   * Обработчик добавления всех найденных в поиске ресурсов в список для создания группы ссылок
+   * @param  {Event} e Событие клика
+   */
   handleChooseAll = (e)=>{
     this.props.resources_found.forEach((resource)=>{
       this.props.addResourceToPool(parseInt(resource.id, 10));
     });
   }
 
+  /**
+   * Обработчик открытия модаьного окна с превью изображения ресурса
+   * @param  {int} link Идентификатор ссылки
+   */
   handleModalImage = (link)=>{
     this.setState({
       modal_image_url: link
     });
   }
 
+  /**
+   * Обработчик закрытия модального окна
+   */
   handleModalClose = ()=>{
     this.setState({
       modal_image_url: ""

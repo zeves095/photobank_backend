@@ -5,8 +5,18 @@ import { chooseLink, addLink, fetchLinks, deleteLink, stopEditing } from '../act
 import {NotificationService} from '../../../services/NotificationService';
 import {ModalImage} from '../../../common/ModalImage';
 import {Confirmator} from '../../../common/Confirmator';
+/**
+ * Список существующих ссылок для текущего пользователя
+ */
 export class LinkList extends React.Component{
-
+  /**
+   * Конструктор компонента
+   * links - Существующие ссылки для отображения
+   * target - Целевая группа ссылок
+   * modal_image_url - Ссылка на изображение для отображения в модальном окне предпросмотра
+   * confirmatorQuestions - вопросы для компонента Confirmator
+   * @param {Object} props Входные данные из коннекта Redux
+   */
   constructor(props){
     super(props);
     this.state={
@@ -20,10 +30,16 @@ export class LinkList extends React.Component{
     this.eventHandler = {};
   }
 
+  /**
+   * Запрашивает существующие ссылки для текущего пользователя
+   */
   componentDidMount(){
     this.props.fetchLinks();
   }
 
+  /**
+   * Фильтрует ссылки
+   */
   componentDidUpdate(prevProps, prevState){
     if(prevProps.links !== this.props.links || prevState.f !== this.state.f ){
       this.setState({
@@ -32,14 +48,26 @@ export class LinkList extends React.Component{
     }
   }
 
+  /**
+   * Обработчик клика на ссылку. Пока не используется, в будущем планируется редактировать выбранную ссылку по клику
+   * @param  {int} id Идентификатор ссылки
+   */
   handleLinkClick = (id)=>{
     //this.props.chooseLink(id);
   }
 
+  /**
+   * Обработчик добавления новой ссылки
+   * @param  {Event} e Событие клика
+   */
   handleLinkAdd = (e)=>{
     this.props.editing||this.props.adding?this.props.stopEditing():this.props.addLink();
   }
 
+  /**
+   * Обработчик клика но группу ссылок
+   * @param  {Event} e Событие клика
+   */
   handleTargetChoice = (e)=>{
     e.preventDefault();
     this.setState({
@@ -47,10 +75,17 @@ export class LinkList extends React.Component{
     });
   }
 
+  /**
+   * Обработчик удаления ссылки
+   * @param  {int} id Идентификатор ссылки для удаления
+   */
   handleLinkDelete = (id)=>{
     this.props.deleteLink(id);
   }
 
+  /**
+   * Обработчик копирования всех отображаемых ссылок в буфер обмена
+   */
   handleCopyAllToClipboard = ()=>{
     let links = [];
     this.state.links.forEach((link)=>{
@@ -61,6 +96,9 @@ export class LinkList extends React.Component{
     NotificationService.toast("link-copied");
   }
 
+  /**
+   * Обработчик скачивания txt-файла с текстом всех отображаемых ссылок
+   */
   handleGetTxt =()=>{
     let links = this.state.links
     .filter((link)=>{
@@ -85,18 +123,29 @@ export class LinkList extends React.Component{
     linkTxtForm.remove();
   }
 
+  /**
+   * Обработчик открытия модального окна с превью изображения ресурса
+   * @param  {int} link Идентификатор ссылки
+   */
   handleModalImage = (link)=>{
     this.setState({
       modal_image_url: link
     });
   }
 
+  /**
+   * Обработчик закрытия модального окна
+   */
   handleModalClose = ()=>{
     this.setState({
       modal_image_url: ""
     });
   }
 
+  /**
+   * Подписчик на события на странице для отлавливания комбинаций клавиш
+   * @param  {Event} e Событие
+   */
   listener = (e)=>{
     e = e || window.event;
     var key = e.which || e.keyCode; // keyCode detection
@@ -111,10 +160,16 @@ export class LinkList extends React.Component{
       }
   }
 
+  /**
+   * Обработчик появления курсора мыши на области компонента, для ограничения событий нажатия клавиатурных сокращений
+   */
   handleFocus = ()=>{
     document.body.addEventListener("keydown",this.listener);
   }
 
+  /**
+   * Обработчик исчезновения курсора мыши с области компонента, для ограничения событий нажатия клавиатурных сокращений
+   */
   handleBlur = ()=>{
     document.body.removeEventListener('keydown', this.listener);
   }

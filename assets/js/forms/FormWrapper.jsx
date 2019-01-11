@@ -3,8 +3,21 @@ import {connect} from 'react-redux';
 import Form from "react-jsonschema-form";
 import {LinkAddFormSchema, ResourceSearchFormSchema} from './schema';
 
+/**
+ * Обертка над jsonschema-form. Предназначена для простоты изменения компонента, генерирующего форму, при необходимости
+ */
 class FormWrapper extends Component {
 
+  /**
+   * Конструктор класса
+   * formSchema - Json-схема формы
+   * formUiSchema - Ui-схема для отрисовки формы
+   * formFields - Кастомные поля формы
+   * formWidgets - Кастомные виджеты формы
+   * defaults - Данные формы по умолчанию
+   * submit - Текст/элемент кнопки отправки формы
+   * formData - Данные формы
+   */
   constructor(props){
     super(props);
     this.state = {
@@ -18,6 +31,10 @@ class FormWrapper extends Component {
     }
   }
 
+  /**
+   * Обработчик изменения данных формы.
+   * @param  {Object} data Данные из компонента react-jsonschema-form
+   */
   handleInputChange = (data)=>{
     this.props.onError(data.errors);
     this.props.onChange(data.formData);
@@ -28,18 +45,31 @@ class FormWrapper extends Component {
     }
   }
 
+  /**
+   * Обработчик отправки формы
+   * @param  {Object} data Данные из компонента react-jsonschema-form
+   */
   handleSubmit = (data)=>{
     this.props.onSubmit(data.formData);
   }
-
+  /**
+   * Обработчик ошибок формы
+   * @param  {Object} data Данные из компонента react-jsonschema-form
+   */
   handleError = (data)=>{
     this.props.onError(data.errors);
   }
-
+  /**
+   * Обработчик потери фокуса формы
+   * @param  {Object} data Данные из компонента react-jsonschema-form
+   */
   handleBlur = (data)=>{
     this.props.onBlur(this.state.formData);
   }
 
+  /**
+   * Подставляет нужную JSON-схему для формы по ключу
+   */
   componentWillMount(){
     let formSchema, formUiSchema, submit;
     switch(this.props.form){

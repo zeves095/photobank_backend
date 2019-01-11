@@ -1,12 +1,18 @@
 import $ from 'jquery';
 import { hex_md5 } from '../../vendor/md5';
 
+/**
+ * Сервис для работы с загрузками на сервер
+ */
 class UploadService{
 
   constructor(){
     this.fileHashStack = [];
   }
 
+  /**
+   * Получает список товаров каталога, для которых есть начатые, но не законченные загрузки
+   */
   static fetchUnfinishedItems(){
     let items = [];
     return new Promise((resolve, reject)=>{
@@ -23,6 +29,11 @@ class UploadService{
     });
   }
 
+  /**
+   * Получает список начатых, но не законченных загрузок для конкретного товара
+   * @param  {Object} item Объект товара, для которого необходимо найти незаконченные загрузки
+   * @param  {Object[]} existing Массив объектов загруженных на сервер ресурсов
+   */
   static fetchUnfinished(item, existing){
     let unfinished = [];
     return new Promise((resolve, reject)=>{
@@ -42,6 +53,12 @@ class UploadService{
     });
   }
 
+  /**
+   * Удаляет загрузки из списка незавершенных, если они были продолжены
+   * @param  {Object[]} unfinished Массив объектов незаконченных загрузок
+   * @param  {Object[]} pending Массив загрузок, готовых к отправке
+   * @return {Object[]} Массив незаконченных загрузок, для которых нет соответствующего говотого к отправке файла
+   */
   static resolveResumed(unfinished, pending){
     let resolved = unfinished.filter((unfin)=>{
       for(var i = 0; i<pending.length; i++){
@@ -54,6 +71,11 @@ class UploadService{
     return resolved;
   }
 
+  /**
+   * Выполняет обработку файла перед загрузкой на сервер
+   * @param  {string} file Содержание файла, который нужно отправить на сервер
+   * @param  {Object[]} existingUploads Массив сужествующих готовых к отправке файлов
+   */
   static processFile(file, existingUploads){
     return new Promise((resolve, reject)=>{
       let hashResponse = this._getHash(file);
@@ -66,6 +88,11 @@ class UploadService{
     });
   }
 
+  /**
+   * Удаляет запись о незаконченной загрузке с сервера
+   * @param  {string} filehash Уникальная строка-идентификатор файла
+   * @param  {string} itemId Код 1С товара
+   */
   static deleteUpload(filehash, itemId){
     return new Promise((resolve, reject)=>{
       let obj = {
@@ -78,6 +105,10 @@ class UploadService{
     });
   }
 
+  /**
+   * Получает сгенерированный ключ md5 для загружаемого файла
+   * @param  {string} file Содержание файла, который нужно отправить на сервер
+   */
   static _getHash(file){
     return new Promise((resolve, reject)=>{
       let fileObj = file.file;
@@ -93,6 +124,11 @@ class UploadService{
     });
   }
 
+  /**
+   * Отправляет запрос на создание записи о начатой загрузке на сервер
+   * @param  {string} file Содержание файла, который нужно отправить на сервер
+   * @param  {Object[]} existingUploads Массив существующих готовых к отправке файлов
+   */
   static _commitUpload(file, existingUploads){
     return new Promise((resolve, reject)=>{
       let allowed = true;
@@ -119,6 +155,9 @@ class UploadService{
     });
   }
 
+  /**
+   * Получает полный список незавершенных загрузок с сервера
+   */
   static _getAllUnfinished(){
     return new Promise((resolve, reject)=>{
       $.getJSON(window.config.unfinished_uploads_url, (data)=>{

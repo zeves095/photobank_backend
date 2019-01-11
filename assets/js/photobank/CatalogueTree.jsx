@@ -6,20 +6,30 @@ import {ItemQueryObject} from './services/ItemQueryObject';
 import {CatalogueService} from './services/CatalogueService';
 import {LocalStorageService} from './services/LocalStorageService';
 import {NotificationService} from '../services/NotificationService';
+/**
+ * [state description]
+ * @type {Object}
+ */
 export class CatalogueTree extends React.Component {
 
+  /**
+   * Конструктор компонета
+   * catalogue_data - Полные данные структуры каталога
+   * tracked_nodes - Массив идентификаторов разделов каталога, которые уже отслеживаются в состоянии компонента
+   * current_node - Текущий выбранный раздел каталога
+   * crumbs - Массив объектов разделов каталога для хлебных крошек
+   * view - Текущий выбранный тип отображения структуры каталога
+   * loading - Находится ли компонент в состоянии загрузки
+   */
   constructor(props) {
     super(props);
     this.state ={
       "catalogue_data": [],
-      "catalogue_list": [],
-      "catalogue_tree": {},
       "tracked_nodes": [],
       "current_node": null,
       "crumbs": [],
       "view": this.props.default_view,
       "loading": false,
-      "draw_tree":false
     }
     this.getCatalogueNodes = this.getCatalogueNodes.bind(this);
     this.getCrumbs = this.getCrumbs.bind(this);
@@ -31,13 +41,15 @@ export class CatalogueTree extends React.Component {
     this.handleQuery = this.handleQuery.bind(this);
   }
 
+  /**
+   * Запрашивает структуру каталога с сервера
+   */
   getCatalogueNodes(){
     this.setState({"loading":true});
     let nodesResponse = CatalogueService.fetchNodes(this.state.catalogue_data, this.state.tracked_nodes, this.state.current_node);
     nodesResponse.then((cat_data)=>{
       this.setState({
         "catalogue_data": cat_data,
-        "draw_tree":true,
         "loading":false
       });
     }).catch((error)=>{
@@ -45,6 +57,9 @@ export class CatalogueTree extends React.Component {
     });
   }
 
+  /**
+   * Запрашивает массив объектов разделов каталога для отображения хлебных крошек
+   */
   getCrumbs(){
     let crumbs = CatalogueService.getCrumbs(this.state.catalogue_data, this.state.current_node);
     this.setState({
@@ -54,6 +69,10 @@ export class CatalogueTree extends React.Component {
     this.props.crumb_handler(crumbs);
   }
 
+  /**
+   * Обработчик события выбора раздела каталога
+   * @param  {Event} e Событие клика
+   */
   listClickHandler(e){
     e.stopPropagation();
     let curr_id = e.target.getAttribute('data-node');
@@ -62,6 +81,11 @@ export class CatalogueTree extends React.Component {
     });
   }
 
+  /**
+   * Обработчик события выбора раздела каталога из древовидного представления
+   * @param  {Event} e Событие клика
+   * @param  {Object} data Данные, полученные из jstree
+   */
   handleTreeClick(e,data){
     if(data.selected[0] != this.state.current_node && data.action == "select_node"){
       this.setState({
@@ -70,6 +94,9 @@ export class CatalogueTree extends React.Component {
     }
   }
 
+  /**
+   * Обработчик выбора активного раздела каталога
+   */
   handleNodeChoice(){
     if(this.state.current_node == null){LocalStorageService.unset("current_node");}else{
       LocalStorageService.set("current_node", this.state.current_node);
@@ -79,6 +106,9 @@ export class CatalogueTree extends React.Component {
     this.props.queryHandler(queryObject);
   }
 
+  /**
+   * Запрашивает структуру каталога от созраненного выбранного раздела до верхнего уровня каталога
+   */
   componentWillMount(){
     //let currentNode = LocalStorageService.get("current_node");
     CatalogueService.fetchRootNodes(this.props.node).then((data)=>{
@@ -93,6 +123,9 @@ export class CatalogueTree extends React.Component {
     });
   }
 
+  /**
+   * Обрабатывает выбор раздела каталога
+   */
   componentDidUpdate(prevProps,prevState){
     if(this.state.current_node != prevState.current_node){
       this.handleNodeChoice();
@@ -101,12 +134,19 @@ export class CatalogueTree extends React.Component {
     }
   }
 
+  /**
+   * Обработчик выбора типа предаставления
+   * @param  {Event} e Событие клика
+   */
   handleViewChoice(e){
     let view = $(e.target).attr("data-view");
     LocalStorageService.set("catalogue_view", view);
     this.setState({'view':view});
   }
 
+  /**
+   * Смещает выбор текущего уровня каталога на уровень выше (для кнопки "../" в представлении списка)
+   */
   traverseUp(){
     let curNode = this.state.catalogue_data.filter((node)=>{return parseInt(node.id)==parseInt(this.state.current_node)})[0];
     if(typeof curNode!= "undefined"){
@@ -117,6 +157,10 @@ export class CatalogueTree extends React.Component {
     }
   }
 
+  /**
+   * Обработчик отправки объекта поиска на сервер
+   * @param  {ItemQueryObject} queryObject Объект поиска
+   */
   handleQuery(queryObject){
     this.props.queryHandler(queryObject);
   }
@@ -130,7 +174,7 @@ export class CatalogueTree extends React.Component {
         let children = CatalogueService.fetchLevel(this.state.catalogue_data, this.state.current_node)
         let list = [];
         list.push(<div onClick={this.traverseUp} className="list-view__cat_item list-view__cat_item--parent">../</div>);
-        for(var i = 0; i<children.length; i++){
+        for(var i = 0; i< children.length; i++){
           let child = children[i];
           list.push(
             <div key={child.id} title={child.id} className="list-view__cat_item list-view__cat_item--parent" onClick={this.listClickHandler} data-node={child.id}><b data-node={child.id}>{child.name}</b></div>

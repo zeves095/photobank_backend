@@ -7,13 +7,23 @@ import ResourceExplorer from './ResourceExplorer';
 
 import { stopEditing } from '../actionCreator'
 
+/**
+ * Правые две колонки интерфейса добавления ссылок, включает в себя поиск ресурсов и форму добавления ссылки
+ */
 export class LinkAdder extends React.Component{
 
+  /**
+   * Конструктор компонента
+   * @param {Object} props Входные данные из коннекта Redux
+   */
   constructor(props){
     super(props);
     this.state={};
   }
 
+  /**
+   * Обработчик скрытия этой части интерфейса
+   */
   handleCloseAdder = ()=>{
     this.props.stopEditing();
   }

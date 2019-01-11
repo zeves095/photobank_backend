@@ -6,8 +6,14 @@ import ResourceSearchResults from './ResourceSearchResults';
 
 import { doAction } from '../actionCreator'
 
+/**
+ * Браузер ресурсов с поиском
+ */
 export class ResourceExplorer extends React.Component{
-
+  /**
+   * Конструктор компонента
+   * @param {Object} props Входные данные из коннекта Redux
+   */
   constructor(props){
     super(props);
     this.state={};

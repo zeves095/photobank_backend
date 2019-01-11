@@ -8,7 +8,26 @@ import { Draggable } from './../common/Draggable';
 import {LocalStorageService} from './services/LocalStorageService';
 import {NotificationService} from '../services/NotificationService';
 
+/**
+ * Компонент интерфейса работы с конкретным разделом каталога (ItemList+ItemSection)
+ */
 export class NodeViewer extends React.Component{
+  /**
+   * Конструктор компонента
+   * catalogue_data - Данные каталога
+   * node - Теккущий раздел каталога
+   * prev_node_id - Идентификатор предыдущего выбранного раздлела каталога
+   * node_items - Список товаров для данного раздела каталога
+   * node_items_filtered - Отфильтрованный список товаров для данного раздела каталога
+   * filter_query - Строка фильтрации
+   * current_item - Идентификатор текущего выбранного товара каталога
+   * view_pool - Показывать ли очередь загрузки/выгрузки
+   * view_type - Тип представления элементов списка
+   * product_crumbs - Хлебные крошки, соответствующие данному товару
+   * loading - Находтся ли компонент в состоянии ожидания
+   * downloads - Список ресурсов в очереди загрузок
+   * query - Поисковый объект для списка товаров
+   */
   constructor(props) {
     super(props);
     this.state ={
@@ -19,7 +38,6 @@ export class NodeViewer extends React.Component{
       "node_items_filtered": [],
       "filter_query": "",
       "current_item": null,
-      "item_section": "Не выбран товар",
       "view_pool": 0,
       "view_type": this.props.default_view,
       "product_crumbs": this.props.crumb_string,
@@ -35,6 +53,10 @@ export class NodeViewer extends React.Component{
     this.handleAddToDownloads = this.handleAddToDownloads.bind(this);
   }
 
+  /**
+   * Обработчик открытия интерфейса очереди загрузки/выгрузки
+   * @param  {Event} e Событие клика
+   */
   handlePoolClick(e){
     let poolVal = '';
     poolVal = this.state.view_pool == e.target.dataset["pool"]?0:e.target.dataset["pool"];
@@ -43,6 +65,10 @@ export class NodeViewer extends React.Component{
     })
   }
 
+  /**
+   * Обработчик выбора типа представления элементов списка
+   * @param  {int} view Идентификатор представления
+   */
   handleViewChoice(view){
     LocalStorageService.set("list_view_type", view);
     this.setState({
@@ -50,6 +76,10 @@ export class NodeViewer extends React.Component{
     });
   }
 
+  /**
+   * Обработчик выбора товара
+   * @param  {string} item Мдентификатор товара
+   */
   handleItemChoice(item){
     this.setState({
       'view_pool':0,
@@ -58,6 +88,10 @@ export class NodeViewer extends React.Component{
     });
   }
 
+  /**
+   * Обрабочик добавления ресурса в очерез выгрузки
+   * @param  {int} id Идентификатор ресурса
+   */
   handleAddToDownloads(id){
     if(this.state.downloads.indexOf(id)==-1){
       let downloads = this.state.downloads.slice(0);
@@ -69,6 +103,10 @@ export class NodeViewer extends React.Component{
     }
   }
 
+  /**
+   * Обработчик удаления ресурса из очереди выгрузки
+   * @param  {int} id Идентификатор ресурса
+   */
   handleRemoveDownload(id){
     let downloads = this.state.downloads.slice(0);
     let index = downloads.indexOf(id);
@@ -81,6 +119,9 @@ export class NodeViewer extends React.Component{
     }
   }
 
+  /**
+   * Обработчик начала выгрузки
+   */
   handleDownload(){
     for(var dl in this.state.downloads){
       this.handleRemoveDownload(this.state.downloads[dl]);
@@ -91,6 +132,9 @@ export class NodeViewer extends React.Component{
     })
   }
 
+  /**
+   * Получает список ресурсов для выгрузки из localstorage
+   */
   componentDidMount(){
     let downloads = LocalStorageService.getList("pending_downloads");
     this.setState({

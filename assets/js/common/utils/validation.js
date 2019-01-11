@@ -1,3 +1,8 @@
+/**
+ * Функция для валидации форм
+ * @param  {Object} formData Данные формы
+ * @param  {string[]} errors Ошибки валидации
+ */
 export function validateLinkAddForm(formData, errors){
 
   let min_width = 32;

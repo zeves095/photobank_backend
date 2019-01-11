@@ -4,8 +4,21 @@ import {ItemService} from './services/ItemService';
 
 import {LocalStorageService} from './services/LocalStorageService';
 import {NotificationService} from '../services/NotificationService';
-
+/**
+ * Компонент интерфейса для работы со списком товаров раздела каталога
+ */
 export class ItemList extends React.Component{
+  /**
+   * Конструктор компонента
+   * node - текущий выбранный раздел каталога
+   * node_items - Список товаров для текущего раздела каталога
+   * node_items_filtered - Отфильтрованный список товаров текущего раздела каталога
+   * filter_query - Строка для фильтрации товаров
+   * current_item - Выбранный товар
+   * previtem_id - Идентификатор предудущего товара
+   * loading - Находится ли компонент в состоянии ожидания
+   * need_refresh - Нуждается ли компонент в обновлении
+   */
   constructor(props) {
     super(props);
     this.state ={
@@ -23,6 +36,9 @@ export class ItemList extends React.Component{
     this.filterQueryHandler = this.filterQueryHandler.bind(this);
   }
 
+  /**
+   * Запрашивает список товаров для текущего раздела каталога
+   */
   getItems(){
     this.setState({"loading":true});
     ItemService.fetchItems(this.props.query, this.state.filter_query, this.state.node_items, this.state.need_refresh).then((data)=>{
@@ -45,12 +61,20 @@ export class ItemList extends React.Component{
     });
   }
 
+  /**
+   * Обработчик фильтрации товаров
+   * @param  {string} query Строка фильтрации
+   */
   filterQueryHandler(query){
     this.setState({
       "filter_query" : query
     });
   }
 
+  /**
+   * Обработчик клика по товару из списка
+   * @param  {Event} e Событие клика
+   */
   itemClickHandler(e){
     let itemId = "";
     if(e.target){
