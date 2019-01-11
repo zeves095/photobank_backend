@@ -19,14 +19,19 @@
         "@symfony/webpack-encore": "^0.20.0",
         "autoprefixer": "^9.1.5",
         "babel-preset-react": "^6.24.1",
+        "chai": "^4.2.0",
+        "chromedriver": "^2.45.0",
         "esdoc": "^1.1.0",
         "esdoc-ecmascript-proposal-plugin": "^1.0.0",
         "esdoc-jsx-plugin": "^1.0.0",
         "esdoc-standard-plugin": "^1.0.0",
         "jquery": "^3.3.1",
+        "mocha": "^5.2.0",
         "node-sass": "^4.9.3",
         "postcss-loader": "^3.0.0",
+        "promise-retry": "^1.1.1",
         "sass-loader": "^7.1.0",
+        "selenium-webdriver": "^4.0.0-alpha.1",
         "webpack-notifier": "^1.6.0"
     },
     "license": "UNLICENSED",
@@ -35,7 +40,8 @@
         "dev-server": "encore dev-server",
         "dev": "encore dev",
         "watch": "encore dev --watch",
-        "build": "encore production"
+        "build": "encore production",
+        "e2e": "mocha 'e2e/tests/**/*.spec.js'"
     },
     "browserslist": [
         "last 2 versions",
