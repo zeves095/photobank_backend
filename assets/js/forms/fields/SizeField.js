@@ -11,7 +11,7 @@ class SizeField extends React.Component {
 
   /**
    * Обработчик изменения данных в поле. Валидирует значение
-   * @param  {string} name Имя конкретного поля
+   * @param  {String} name Имя конкретного поля
    */
   onChange(name) {
     return (event) => {
@@ -27,7 +27,7 @@ class SizeField extends React.Component {
 
   /**
    * Обработчик разфокуса поля формы
-   * @param  {string} name Имя конкретного поля
+   * @param  {String} name Имя конкретного поля
    */
   onBlur(name) {
     return (event) => {

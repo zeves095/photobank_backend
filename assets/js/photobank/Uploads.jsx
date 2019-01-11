@@ -4,8 +4,18 @@ import { hex_md5 } from '../vendor/md5';
 import { UnfinishedUploads } from './UnfinishedUploads';
 import { UploadService } from './services/UploadService';
 import {NotificationService} from '../services/NotificationService';
-
+/**
+ * Компонент работы с активными и незаконченными загрузками
+ */
 export class Uploads extends React.Component{
+  /**
+   * Конструктор компонента
+   * uploads - Список активных загрузок
+   * busy - Идет ли в данный момент загрузка файлов на сервер
+   * loading - Находится ли компонент в состоянии ожидания
+   * need_refresh - Нуждается ли компонент в обновлении
+   * unfinished_need_refresh - Нуждается ли список незавершенных загрузок в обновлении
+   */
   constructor(props) {
     super(props);
     this.state={
@@ -35,6 +45,9 @@ export class Uploads extends React.Component{
     this.handleClearUnfinished = this.handleClearUnfinished.bind(this);
   }
 
+  /**
+   * Удаляет из списка загрузок успешно завершенные файлы
+   */
   cleanUpDone(){
     for (var i = 0; i < this.props.resumable.files.length; i++) {
       let file = this.props.resumable.files[i];
@@ -46,6 +59,10 @@ export class Uploads extends React.Component{
     }
   }
 
+  /**
+   * Выполняет подготовку файла к отправке
+   * @param  {Object} file объект загрузки, полученный из resumable
+   */
   processFile(file) {
     this.fileHashStack.push(file);
     file.itemId = this.props.item.id;
@@ -64,6 +81,10 @@ export class Uploads extends React.Component{
     });
   }
 
+  /**
+   * Обработчик удаления загрущки из списка и записи с сервера
+   * @param  {Event} e Событие клика
+   */
   handleDelete(e){
     let filehash = "";
     if(e.target){filehash = $(e.target).data("item");}else{filehash = e}
@@ -72,7 +93,7 @@ export class Uploads extends React.Component{
     }
     let deleteResponse = UploadService.deleteUpload(filehash,this.props.item.id);
     deleteResponse.then((response)=>{
-      for(var i = 0; i<this.props.resumable.files.length; i++){
+      for(var i = 0; i< this.props.resumable.files.length; i++){
         if(this.props.resumable.files[i].uniqueIdentifier == filehash){
           this.props.resumable.files.splice(i,1);
         }
@@ -87,6 +108,9 @@ export class Uploads extends React.Component{
     });
   }
 
+  /**
+   * Обработчик начала отправки файлов на сервер
+   */
   handleSubmit(){
     let ready = true;
     for(var i = 0; i< this.props.resumable.files.length; i++){
@@ -99,6 +123,9 @@ export class Uploads extends React.Component{
     }
   }
 
+  /**
+   * Обработчик удаления всех незавершенных загрузок из списка и записей из базы
+   */
   handleClearUnfinished(){
     if(this.state.uploads.length == 0){
       delete window.resumableContainer[this.props.item_id];
@@ -106,6 +133,9 @@ export class Uploads extends React.Component{
     }
   }
 
+  /**
+   * Определяет действия по событиям из resumable
+   */
   assignResumableEvents(){
     this.props.resumable.on('fileAdded', (file, event)=>{
       //this.fileAddQueue.push(file);
@@ -139,6 +169,9 @@ export class Uploads extends React.Component{
     });
   }
 
+  /**
+   * Определяет drag&drop зону и кнопку для выбора файлов в файловой системе, вызывает запуск функции, которая определяет события resumable
+   */
   componentDidMount(){
     this.props.resumable.assignBrowse(document.getElementById("browse" + this.props.item.id));
     this.props.resumable.assignDrop(document.getElementById("drop_target" + this.props.item.id));

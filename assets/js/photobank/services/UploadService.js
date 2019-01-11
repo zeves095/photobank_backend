@@ -73,7 +73,7 @@ class UploadService{
 
   /**
    * Выполняет обработку файла перед загрузкой на сервер
-   * @param  {string} file Содержание файла, который нужно отправить на сервер
+   * @param  {String} file Содержание файла, который нужно отправить на сервер
    * @param  {Object[]} existingUploads Массив сужествующих готовых к отправке файлов
    */
   static processFile(file, existingUploads){
@@ -90,8 +90,8 @@ class UploadService{
 
   /**
    * Удаляет запись о незаконченной загрузке с сервера
-   * @param  {string} filehash Уникальная строка-идентификатор файла
-   * @param  {string} itemId Код 1С товара
+   * @param  {String} filehash Уникальная строка-идентификатор файла
+   * @param  {String} itemId Код 1С товара
    */
   static deleteUpload(filehash, itemId){
     return new Promise((resolve, reject)=>{
@@ -107,7 +107,7 @@ class UploadService{
 
   /**
    * Получает сгенерированный ключ md5 для загружаемого файла
-   * @param  {string} file Содержание файла, который нужно отправить на сервер
+   * @param  {String} file Содержание файла, который нужно отправить на сервер
    */
   static _getHash(file){
     return new Promise((resolve, reject)=>{
@@ -126,7 +126,7 @@ class UploadService{
 
   /**
    * Отправляет запрос на создание записи о начатой загрузке на сервер
-   * @param  {string} file Содержание файла, который нужно отправить на сервер
+   * @param  {String} file Содержание файла, который нужно отправить на сервер
    * @param  {Object[]} existingUploads Массив существующих готовых к отправке файлов
    */
   static _commitUpload(file, existingUploads){

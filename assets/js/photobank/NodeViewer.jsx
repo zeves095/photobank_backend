@@ -67,7 +67,7 @@ export class NodeViewer extends React.Component{
 
   /**
    * Обработчик выбора типа представления элементов списка
-   * @param  {int} view Идентификатор представления
+   * @param  {Number} view Идентификатор представления
    */
   handleViewChoice(view){
     LocalStorageService.set("list_view_type", view);
@@ -78,7 +78,7 @@ export class NodeViewer extends React.Component{
 
   /**
    * Обработчик выбора товара
-   * @param  {string} item Мдентификатор товара
+   * @param  {String} item Мдентификатор товара
    */
   handleItemChoice(item){
     this.setState({
@@ -90,7 +90,7 @@ export class NodeViewer extends React.Component{
 
   /**
    * Обрабочик добавления ресурса в очерез выгрузки
-   * @param  {int} id Идентификатор ресурса
+   * @param  {Number} id Идентификатор ресурса
    */
   handleAddToDownloads(id){
     if(this.state.downloads.indexOf(id)==-1){
@@ -105,7 +105,7 @@ export class NodeViewer extends React.Component{
 
   /**
    * Обработчик удаления ресурса из очереди выгрузки
-   * @param  {int} id Идентификатор ресурса
+   * @param  {Number} id Идентификатор ресурса
    */
   handleRemoveDownload(id){
     let downloads = this.state.downloads.slice(0);

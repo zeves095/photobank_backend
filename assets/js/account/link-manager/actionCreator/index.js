@@ -78,7 +78,7 @@ export function init(){
 
 /**
  * Выбор ссылки для редактирования (не используется)
- * @param {int} id Идентификатор ссылки
+ * @param {Number} id Идентификатор ссылки
  */
 export function chooseLink(id){
   return {
@@ -218,7 +218,7 @@ export function searchResources(searchObject={}){
 
 /**
  * Выбор ресурса для создания ссылки
- * @param  {int} id Идентификатор ресурса для ссылки
+ * @param  {Number} id Идентификатор ресурса для ссылки
  */
 export function chooseResource(id){
   return{
@@ -229,7 +229,7 @@ export function chooseResource(id){
 
 /**
  * Добавить ресурс в список ресурсов для создания группы ссылок
- * @param {int} id Идентификатор ресурса для ссылки
+ * @param {Number} id Идентификатор ресурса для ссылки
  */
 export function addResourceToPool(id){
   return{
@@ -240,7 +240,7 @@ export function addResourceToPool(id){
 
 /**
  * Исключить ресурс из списка для создания группы ссылок
- * @param  {int} id Идентификатор ресурса для удаления
+ * @param  {Number} id Идентификатор ресурса для удаления
  */
 export function removeResourceFromPool(id){
   return{
@@ -251,7 +251,7 @@ export function removeResourceFromPool(id){
 
 /**
  * Очистить список ресурсов для добавления группы ссылок
- * @param  {int} id Тут null что ли обычно?
+ * @param  {Number} id Тут null что ли обычно?
  */
 export function removeAllFromPool(id){
   return{
@@ -262,7 +262,7 @@ export function removeAllFromPool(id){
 
 /**
  * Удалить ссылку
- * @param  {int} id Идентификатор ссылки для удаления
+ * @param  {Number} id Идентификатор ссылки для удаления
  */
 export function deleteLink(id){
   return (dispatch)=>{
@@ -378,7 +378,7 @@ export function submitLink(form){
 /**
  * Обновить запись о ссылке (не используется)
  * @param  {Object} form Данные формы
- * @param  {int} link Идентификатор ссылки для обновления
+ * @param  {Number} link Идентификатор ссылки для обновления
  */
 export function updateLink(form, link){
   return (dispatch)=>{

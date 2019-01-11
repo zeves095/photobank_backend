@@ -11,7 +11,7 @@ class CatalogueService{
 
   /**
    * Рекурсивно получает структуру каталога от раздела, сохраненного в браузере до верхнего уровня
-   * @param  {int} [currentNode=null] Текущий раздел каталога
+   * @param  {Number} [currentNode=null] Текущий раздел каталога
    * @param  {Array}  [prevresult=[]] Предыдущий результат выполнения функции
    */
   static fetchRootNodes(currentNode = null, prevresult = []){
@@ -39,7 +39,7 @@ class CatalogueService{
   /**
    * Строит структуру каталога для отображения через компонент jstree
    * @param  {Object[]} data Данные каталога
-   * @param  {int} currentNode Идентификатор текущего выбранного раздела каталога
+   * @param  {Number} currentNode Идентификатор текущего выбранного раздела каталога
    *
    * @return {Object} Данные для отображения в компоненте jstree
    */
@@ -82,7 +82,7 @@ class CatalogueService{
    * Запрашивает данные о дочерних элементах каталога от раздела каталога
    * @param  {Object[]} data Уже полученная структура каталога
    * @param  {int[]} tracked Список разделов каталога, по которым уже есть данные
-   * @param  {int} node Идентификатор раздела каталога, дочерние элементы которого необходимо найти
+   * @param  {Number} node Идентификатор раздела каталога, дочерние элементы которого необходимо найти
    */
   static fetchNodes(data, tracked, node){
     let result = data;
@@ -109,7 +109,7 @@ class CatalogueService{
   /**
    * Получает один уровень разделов каталога
    * @param  {Object[]} data Уже полученная структура каталога
-   * @param  {int} currentNode Текущий выбранный раздел каталога
+   * @param  {Number} currentNode Текущий выбранный раздел каталога
    *
    * @return {Object[]} Массив разделов каталога, находящихся на уровне каталога
    */
@@ -123,7 +123,7 @@ class CatalogueService{
   /**
    * Получает список хлебных крошек из имеющейся структуры каталога и текущего выбранного раздела каталога
    * @param  {Object[]} data Уже полученная структура каталога
-   * @param  {int} currentNode Текущий выбранный раздел каталога
+   * @param  {Number} currentNode Текущий выбранный раздел каталога
    *
    * @return {Object[]} Массив из последовательности разделов катталога к верхенему уровню
    */
@@ -144,7 +144,7 @@ class CatalogueService{
 
   /**
    * Получает родительский раздел каталога по идентификатору дочернего с сервера
-   * @param  {int} id Идентификатор дочернего разделы каталога
+   * @param  {Number} id Идентификатор дочернего разделы каталога
    */
   static _fetchNodeParent(id){
     return new Promise((resolve,reject)=>{
@@ -194,7 +194,7 @@ class CatalogueService{
   /**
    * Полуачет объект раздела каталога по его идентификатору
    * @param  {Object} data Уже полученная структура каталога
-   * @param  {int} id Идентификатор раздела каталога
+   * @param  {Number} id Идентификатор раздела каталога
    * @return {Object} Объект раздела каталога
    */
   static _getNodeById(data, id){

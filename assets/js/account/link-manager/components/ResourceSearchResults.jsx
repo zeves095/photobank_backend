@@ -41,7 +41,7 @@ export class ResourceSearchResults extends React.Component{
 
   /**
    * Обработчик открытия модаьного окна с превью изображения ресурса
-   * @param  {int} link Идентификатор ссылки
+   * @param  {Number} link Идентификатор ссылки
    */
   handleModalImage = (link)=>{
     this.setState({

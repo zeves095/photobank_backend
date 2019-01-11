@@ -11,7 +11,7 @@ class ItemService{
   /**
    * Получает список товаров, при необходимости запрашивает с сервера, фильтрует полученные данные
    * @param  {ItemQueryObject}  query  Объект поискового запроса
-   * @param  {string}  filter Значение фильтра
+   * @param  {String}  filter Значение фильтра
    * @param  {Object}  items  Уде полученный список товаров
    * @param  {Boolean} [need_refresh=true] Необходимость повторного обращения к серверу
    */
@@ -34,7 +34,7 @@ class ItemService{
 
   /**
    * Получает все данные товара каталога по его идентификатору
-   * @param  {int} id Идентификатор товара
+   * @param  {Number} id Идентификатор товара
    */
   static getIdentity(id){
     return new Promise((resolve,reject)=>{
@@ -67,7 +67,7 @@ class ItemService{
   /**
    * Фильтрует полученные данные
    * @param  {Object[]} data Данные о товарах
-   * @param  {string} query Строка фильтра
+   * @param  {String} query Строка фильтра
    */
   static _filterData(data, query){
     let filtered = [];

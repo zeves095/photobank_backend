@@ -63,7 +63,7 @@ export class ItemList extends React.Component{
 
   /**
    * Обработчик фильтрации товаров
-   * @param  {string} query Строка фильтрации
+   * @param  {String} query Строка фильтрации
    */
   filterQueryHandler(query){
     this.setState({
