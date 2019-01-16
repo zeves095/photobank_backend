@@ -47,7 +47,7 @@ export class ItemSearch extends React.Component {
    */
   componentDidMount() {
     let queryObject = new ItemQueryObject();
-    for (var i = 1; i < 5; i++) {
+    for (var i = 1; i < 6; i++) {
       let input = document.getElementById(this.props.filterid + "inpt" + i);
       input.addEventListener("keyup", (event) => {
         event.preventDefault();
@@ -70,7 +70,7 @@ export class ItemSearch extends React.Component {
       </label>
       <label htmlFor="code">Код 1С</label>
       <input type="text" id={this.props.filterid + "inpt3"} name="code" placeholder="Код 1С" onChange={this.handleChange}></input>
-      <input type="text" id={this.props.filterid + "inpt4"} name="article" placeholder="Артикул" onChange={this.handleChange}></input>
+    <input type="text" id={this.props.filterid + "inpt5"} name="article" placeholder="Артикул" onChange={this.handleChange}></input>
       <button type="button" id={this.props.filterid + "btn"} onClick={this.handleSubmit}>
         <i className="fas fa-search"></i>
       </button>

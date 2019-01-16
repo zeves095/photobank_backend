@@ -18,6 +18,7 @@
     margin-top:10px;
     .list-view__cat_item{
       @include list-item();
+      white-space: pre;
       cursor: pointer;
       b::before{
           font-weight: bold;

@@ -41,18 +41,21 @@ class CatalogueNodeItemRepository extends ServiceEntityRepository
         $queryBuilder->andWhere('c.name LIKE :name')
         ->setParameter('name', '%'.$queryObject->getField("name").'%');
       }
-      if($queryObject->getField("code") != ""){
+      if(sizeof($queryObject->getField("code")) !== 0){
         $codeCounter = 0;
         foreach($queryObject->getField("code") as $code){
             $queryBuilder->orWhere('c.id LIKE :code'.$codeCounter)
             ->setParameter('code'.$codeCounter++, '%'.$code);
         }
       }
-      if($queryObject->getField("article") != ""){
+      if(sizeof($queryObject->getField("article")) !== 0){
         $articleCounter = 0;
         foreach($queryObject->getField("article") as $article){
-            $queryBuilder->orWhere('c.article = :article'.$articleCounter)
-            ->setParameter('article'.$articleCounter++, $article);
+            $articleCounter==0
+            ?$queryBuilder->andWhere('c.article = :article'.$articleCounter)
+              ->setParameter('article'.$articleCounter++, $article)
+            :$queryBuilder->orWhere('c.article = :article'.$articleCounter)
+              ->setParameter('article'.$articleCounter++, $article);
         }
       }
       if($queryObject->getField("parent_name") != "" && $queryObject->getField("search_nested") == 0){
@@ -86,6 +89,8 @@ class CatalogueNodeItemRepository extends ServiceEntityRepository
        ->setParameter('pname', '%'.$queryObject->getField("parent_name").'%')
        ->setParameter('pcode', '%'.$queryObject->getField("parent_name"));
      }
+     //var_dump($queryObject);
+      //var_dump($queryBuilder->getDQL());
       return $queryBuilder->setMaxResults(100)->getQuery()->getResult();
 
     }

@@ -41,7 +41,8 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production",
-        "e2e": "mocha 'e2e/tests/**/*.spec.js'"
+        "e2e": "mocha 'e2e/tests/**/*.spec.js'",
+        "esdoc": "./node_modules/.bin/esdoc"
     },
     "browserslist": [
         "last 2 versions",

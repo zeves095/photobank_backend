@@ -14,10 +14,10 @@ class ItemQueryObject implements SearchQueryInterface{
     */
   private $_searchFields = [
     "name"=>"",
-    "code"=>"",
+    "code"=>[],
     "parent_name"=>"",
     "search_nested"=>"",
-    "article"=>""
+    "article"=>[]
   ];
 
   /**

@@ -173,7 +173,7 @@ export class CatalogueTree extends React.Component {
       case "1":
         let children = CatalogueService.fetchLevel(this.state.catalogue_data, this.state.current_node)
         let list = [];
-        list.push(<div onClick={this.traverseUp} className="list-view__cat_item list-view__cat_item--parent">../</div>);
+        if(this.state.current_node!==null){list.push(<div onClick={this.traverseUp} className="list-view__cat_item list-view__cat_item--parent">../</div>);}
         for(var i = 0; i< children.length; i++){
           let child = children[i];
           list.push(

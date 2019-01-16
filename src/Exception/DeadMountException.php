@@ -6,6 +6,7 @@
 
 namespace App\Exception;
 
+use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Security\Core\Exception\AccountStatusException;
 /**
   * Класс ошибки в случае, когда отваливается маунт директории с загрузками
