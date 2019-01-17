@@ -9,6 +9,7 @@ use App\Entity\Resource;
 use App\Entity\Link;
 use App\Entity\Security\User;
 use App\Entity\CatalogueNodeItem;
+use Symfony\Component\HttpFoundation\Request;
 
 class LinkServiceTest extends WebTestCase
 {
@@ -31,7 +32,10 @@ class LinkServiceTest extends WebTestCase
         'path'=>$correctResource->getPath()
       ];
       $this->correctLink = [
+        'object'=>$correctLink,
         'id'=>$correctLink->getId(),
+        'user'=>$correctLink->getCreatedBy(),
+        'hash'=>$correctLink->getHash()
       ];
   }
 
@@ -54,6 +58,7 @@ class LinkServiceTest extends WebTestCase
       $mockUser->setUsername("phpunit_test_user")
       ->setPassword("s00pers3cr3t")
       ->setEmail("not@an.email")
+      ->setPermissions("ROLE_USER")
       ->setIsActive(true);
       $this->entityManager->persist($mockUser);
       $this->entityManager->flush($mockUser);
@@ -101,54 +106,52 @@ class LinkServiceTest extends WebTestCase
     $this->assertEquals($mockParams['target'],$updatedLink->getTarget());
   }
 
-  // public function testUserIsOwner()
-  // {
-  //   $linkService = $this->getService();
-  //
-  //
-  //   $linkService->userIsOwner();
-  // }
-  //
-  // public function testGetImageData()
-  // {
-  //   $linkService = $this->getService();
-  //
-  //
-  //   $linkService->getImageData();
-  // }
-  //
-  // public function testFetchAllForUser()
-  // {
-  //   $linkService = $this->getService();
-  //
-  //
-  //   $linkService->fetchAllForUser();
-  // }
-  //
-  // public function testFetchAllWithExtraFields()
-  // {
-  //   $linkService = $this->getService();
-  //
-  //
-  //   $linkService->fetchAllWithExtraFields();
-  // }
-  //
-  // public function testDeleteLink()
-  // {
-  //   $linkService = $this->getService();
-  //
-  //
-  //   $linkService->deleteLink();
-  // }
-  //
-  // public function testGetUrls()
-  // {
-  //   $linkService = $this->getService();
-  //
-  //
-  //   $linkService->getUrls();
-  // }
-  //
+  public function testUserIsOwner()
+  {
+    $linkService = $this->getService();
+
+    $response = $linkService->userIsOwner($this->correctLink['id'],$this->correctLink['user']->getId());
+    $this->assertTrue($response);
+  }
+
+  public function testGetImageData()
+  {
+    $linkService = $this->getService();
+    $request = new Request();
+    $response = $linkService->getImageData($this->correctLink['hash'], $request, new User());
+    $this->assertArrayHasKey('filename', $response);
+    $this->assertArrayHasKey('content', $response);
+  }
+
+  public function testFetchAllForUser()
+  {
+    $linkService = $this->getService();
+    $response = $linkService->fetchAllForUser($this->correctLink['user']);
+    $this->assertInstanceOf(Link::class, $response[0]);
+    $this->assertEquals($response[0]->getCreatedBy()->getUsername(), $this->correctLink['user']->getUsername());
+  }
+
+  public function testFetchAllWithExtraFields()
+  {
+    $linkService = $this->getService();
+    $response = $linkService->fetchAllWithExtraFields($this->correctLink['user']);
+    $this->assertArrayHasKey('link_id',$response[0]);
+    $this->assertArrayHasKey('resource_id',$response[0]);
+    $this->assertArrayHasKey('item_id',$response[0]);
+    $this->assertArrayHasKey('item_name',$response[0]);
+    $firstResult = $this->entityManager->getRepository(Link::class)->findOneBy(["id"=>$response[0]['link_id']]);
+    $this->assertEquals($firstResult->getCreatedBy()->getUsername(), $this->correctLink['user']->getUsername());
+  }
+
+  public function testGetUrls()
+  {
+    $linkService = $this->getService();
+    $links = $this->correctLink['id'].", ".$this->correctLink['id'];
+    $response = $linkService->getUrls($links);
+    $this->assertEquals(sizeof(explode("\n",$response)),2);
+  }
+
+  //Валидация формы происходит на фронте, тест пока не нужен
   // public function testValidateForm()
   // {
   //   $linkService = $this->getService();
@@ -156,5 +159,14 @@ class LinkServiceTest extends WebTestCase
   //
   //   $linkService->validateForm();
   // }
+  //
+    public function testDeleteLink()
+    {
+      $linkService = $this->getService();
+
+      $linkService->deleteLink($this->correctLink['object'], $this->correctLink['user']->getId());
+      $deletedLink = $this->entityManager->getRepository(Link::class)->findOneBy(['id'=>$this->correctLink['id']]);
+      $this->assertEquals(NULL,$deletedLink);
+    }
 
 }

@@ -14,6 +14,7 @@
 /docs/js/
 /bin/phpDocumentor*
 /build/api-cache/
+/tests/mock/generated/
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
