@@ -20,6 +20,8 @@ class BaseTest extends WebTestCase
     {
         self::bootKernel();
 
+        $container = self::$container;
+
         $this->sampleData = json_decode(file_get_contents(self::$kernel->getContainer()->getParameter('test_dump_path')."datasample.txt"));
         $this->admin = self::$kernel->getContainer()->get('doctrine')->getRepository('App:Security\User')->findOneByUsername($this->sampleData->admin->name);
     }
