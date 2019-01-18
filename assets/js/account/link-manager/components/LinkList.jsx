@@ -31,13 +31,6 @@ export class LinkList extends React.Component{
   }
 
   /**
-   * Запрашивает существующие ссылки для текущего пользователя
-   */
-  componentDidMount(){
-    this.props.fetchLinks();
-  }
-
-  /**
    * Фильтрует ссылки
    */
   componentDidUpdate(prevProps, prevState){

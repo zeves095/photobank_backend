@@ -270,3 +270,77 @@ export let mockLinksDone=[
     item_name: 'Декантер "Ультра сомельерс" 2000мл',
   }
 ]
+
+export let mockLinkmanagerStore = {
+  resource: {
+    resources_found: [],
+    resources_thumbnails: [],
+    resource_chosen: [],
+    resource_types: [],
+    resource_presets: []
+  },
+  link: {
+    links_done: [],
+    link_adding: null,
+    link_editing: false,
+    link_editing_id: null
+  },
+  user: {
+    isAdmin: false
+  },
+  ui: {
+    loading: {
+      link_list: true,
+      resource_search_results: false
+    },
+
+    form: {
+      resource_search: {
+        error: null
+      },
+      link_add: {
+        error: null
+      }
+    }
+  }
+}
+
+export let mockFetchRequestData = {
+  linkUpdateForm: {
+
+  },
+}
+
+export let mockFetchResponse = {
+  fetchPresetsBody: {
+    "1":{"name":"thumbnail","id":1,"height":180,"width":320},
+    "2":{"name":"medium","id":2,"height":1080,"width":1920},
+    "3":{"name":"large","id":3,"height":2160,"width":3840}
+  },
+  fetchTypesBody: {
+    "1":"\u041e\u0441\u043d\u043e\u0432\u043d\u043e\u0435",
+    "2":"\u0414\u043e\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0435",
+    "3":"\u0418\u0441\u0445\u043e\u0434\u043d\u0438\u043a"
+  },
+  fetchUserInfoBody: {
+    "user_id":2,
+    "user_name":"efimov",
+    "user_email":"efimov@domfarfora.ru",
+    "user_active":true,
+    "user_password":"300ljkkfhjd",
+    "user_roles":["ROLE_SUPER_ADMIN"]
+  },
+  fetchThumbnailsBody: [
+      {"id":5,"thumb_id":111005},
+      {"id":7,"thumb_id":111007},
+      {"id":9,"thumb_id":111009}
+  ],
+  searchResourcesBody: [
+    {"id":70130,"gid":70130,"path":"\/home\/efimov\/WORK\/git\/photobank_backend\/private\/uploads\/\/00\/01\/05\/90\/72\/4\/1995f42debeaaf1455cddaee0ef38cb6.jpg","username":"user","preset":0,"type":1,"chunkPath":" ","created_on":"25-10-2018 13:02:19","filename":"1995f42debeaaf1455cddaee0ef38cb6.jpg","src_filename":"00010590724_2.jpg","size_bytes":36567,"size_px":"1920\/1080","is1c":true,"isDeleted":false,"isDefault":false,"priority":2,"comment":"00010590724","item":
+    {"id":"00010590724","name":"\u0425\u043b\u0435\u0431\u043e\u043f\u0435\u0447\u044c \u0022Panasonic\u0022","itemCode":"00010590724","node":"00010590723"}},
+    {"id":70132,"gid":70132,"path":"\/home\/efimov\/WORK\/git\/photobank_backend\/private\/uploads\/\/00\/01\/05\/90\/72\/5\/d82fa84a97e71a0412130c9ed1c3b090.jpg","username":"user","preset":0,"type":1,"chunkPath":" ","created_on":"25-10-2018 13:02:19","filename":"d82fa84a97e71a0412130c9ed1c3b090.jpg","src_filename":"00010590725_2.jpg","size_bytes":27163,"size_px":"1920\/1080","is1c":true,"isDeleted":false,"isDefault":false,"priority":2,"comment":"00010590725","item":
+    {"id":"00010590725","name":"\u0425\u043b\u0435\u0431\u043e\u043f\u0435\u0447\u044c \u0022Panasonic\u0022 SD-2511WTS","itemCode":"00010590725","node":"00010590723"}},
+    {"id":74155,"gid":74155,"path":"\/home\/efimov\/WORK\/git\/photobank_backend\/private\/uploads\/\/00\/01\/05\/94\/17\/5\/e4ef16d0f46c0057b804e16b3f0cfe38.jpg","username":"user","preset":0,"type":1,"chunkPath":" ","created_on":"25-10-2018 13:02:19","filename":"e4ef16d0f46c0057b804e16b3f0cfe38.jpg","src_filename":"00010594175_2.jpg","size_bytes":37491,"size_px":"1920\/1080","is1c":true,"isDeleted":false,"isDefault":false,"priority":2,"comment":"00010594175","item":
+    {"id":"00010594175","name":"\u0421\u043e\u043a\u043e\u0432\u044b\u0436\u0438\u043c\u0430\u043b\u043a\u0430 \u0448\u043d\u0435\u043a\u043e\u0432\u0430\u044f \u0022Panasonic\u0022","itemCode":"00010594175","node":"00010590723"}}
+  ]
+}

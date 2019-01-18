@@ -591,6 +591,7 @@ async function getVerifiedData(driver){
 
   try{
     await w(driver);
+    await waitForEl(driver, SELECTORS.notloading.NODE_LIST);
     const rootNode = await driver.findElement(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ROOT));
     await rootNode.click();
   }catch(e){}
@@ -611,7 +612,7 @@ async function getVerifiedData(driver){
     await driver.findElements(By.css(SELECTORS.upload.ITEM_LIST_ITEM)).then((items=>{numOfItemsInNode = items.length}));
     await driver.findElements(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM)).then((items=>{numOfSubNodes = items.length}));
     await waitForEl(driver, SELECTORS.notloading.ITEM_LIST);
-    
+
   }while(numOfItemsInNode < 1)
 
   numOfNestedItems = numOfItemsInNode;
