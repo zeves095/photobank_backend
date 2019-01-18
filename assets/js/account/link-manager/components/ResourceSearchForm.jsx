@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {getChosenResource, resourceArr} from '../selectors';
 import {searchResources} from '../actionCreator';
 import FormWrapper from '../../../forms/FormWrapper';
-import  M  from 'materialize-css';
+//import  M  from 'materialize-css';
 
 /**
  * Форма для поиска ресурсов

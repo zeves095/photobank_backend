@@ -6,7 +6,7 @@ import {LinkAddFormSchema, ResourceSearchFormSchema} from './schema';
 /**
  * Обертка над jsonschema-form. Предназначена для простоты изменения компонента, генерирующего форму, при необходимости
  */
-class FormWrapper extends Component {
+export class FormWrapper extends Component {
 
   /**
    * Конструктор класса
@@ -84,7 +84,7 @@ class FormWrapper extends Component {
         submit = (<span><i className="fas fa-search"></i>Поиск</span>);
         break;
       default:
-        formSchema = {}
+        formSchema = null
         break;
     }
     this.setState({
@@ -95,11 +95,10 @@ class FormWrapper extends Component {
   }
 
   render(){
-    console.log("render");
     let submit = (typeof this.props.submit !== 'undefined'?this.props.submit:<button type="submit">{this.state.submit}</button>);
     return (
       <div className="form-wrapper">
-      {this.state.formSchema!={}?<Form
+      {this.state.formSchema!=null?<Form
         schema={this.state.formSchema}
         uiSchema={this.state.formUiSchema}
         onChange={this.handleInputChange}

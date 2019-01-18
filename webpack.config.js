@@ -1,9 +1,9 @@
 var Encore = require('@symfony/webpack-encore');
 
 Encore
-    .configureBabel((config) => {
-      config.presets.push('stage-2');
-    })
+    // .configureBabel((config) => {
+    //   config.presets.push('stage-2');
+    // })
     // directory where compiled assets will be stored
     .setOutputPath('public/build/')
     // public path used by the web server to access the output path
