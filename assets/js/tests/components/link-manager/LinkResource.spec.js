@@ -1,12 +1,12 @@
 import React from 'react';
 import Enzyme, {shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import {store} from '../../account/link-manager/store';
-import {mockResourcesFound} from '../mockdata/';
-import {selectors} from '../selectors';
+import {store} from '../../../account/link-manager/store';
+import {mockResourcesFound} from '../../mockdata/';
+import {selectors} from '../../constants';
 
-import {LinkResource} from '../../account/link-manager/components/LinkResource';
-import {FormWrapper} from '../../forms/FormWrapper';
+import {LinkResource} from '../../../account/link-manager/components/LinkResource';
+import {FormWrapper} from '../../../forms/FormWrapper';
 
 Enzyme.configure({adapter: new Adapter()});
 

@@ -127,6 +127,7 @@ describe('Actions', ()=>{
     };
     expect(actions.chooseResource(mockId)).toEqual(expectedAction);
   });
+
   it('Добавление ресурса в список', ()=>{
     const expectedAction ={
       type: constants.RESOURCE_ADD,
@@ -134,6 +135,7 @@ describe('Actions', ()=>{
     };
     expect(actions.addResourceToPool(mockId)).toEqual(expectedAction);
   });
+
   it('Исключение ресурса из списка', ()=>{
     const expectedAction ={
       type: constants.RESOURCE_REMOVE,
@@ -141,12 +143,118 @@ describe('Actions', ()=>{
     };
     expect(actions.removeResourceFromPool(mockId)).toEqual(expectedAction);
   });
+
   it('Обнуление списка ресурсов', ()=>{
     const expectedAction ={
       type: constants.RESOURCE_REMOVE_ALL,
       payload: mockId
     };
     expect(actions.removeAllFromPool(mockId)).toEqual(expectedAction);
+  });
+
+  it('Удаление ссылки', ()=>{
+    fetchMock.getOnce("/api/links/delete/1",{
+        body:{},
+        headers: { 'content-type': 'application/json' }
+    });
+    fetchMock.get("/api/links/fetchall",{
+        body: [],
+        headers: {}
+    });
+    const expectedActions = [
+      {
+        type:constants.LINK_DELETE+constants.START,
+        payload:""
+      },
+      {
+        type:constants.LINK_DELETE+constants.SUCCESS,
+        payload:{}
+      },
+      {
+        type:constants.LINK_FETCH+constants.START,
+        payload:""
+      },
+    ];
+    const store = mockStore(mockLinkmanagerStore);
+    return store.dispatch(actions.deleteLink("1")).then(()=>{
+      expect(store.getActions()).toEqual(expectedActions);
+    });
+  });
+
+  it('Получение списка ссылок', ()=>{
+    fetchMock.mock("/api/links/fetchall",{
+        body: [],
+        headers: { 'content-type': 'application/json' }
+    });
+    const expectedActions = [
+      {
+        type:constants.LINK_FETCH+constants.START,
+        payload:""
+      },
+      {
+        type:constants.LINK_FETCH+constants.SUCCESS,
+        payload:[]
+      },
+    ];
+    const store = mockStore(mockLinkmanagerStore);
+    return store.dispatch(actions.fetchLinks()).then(()=>{
+      expect(store.getActions()).toEqual(expectedActions);
+    });
+  });
+
+  it('Создание ссылки', ()=>{
+    fetchMock.postOnce("/api/links/submit",{
+        body: {},
+        headers: { 'content-type': 'application/json' }
+    });
+    fetchMock.getOnce("/api/links/fetchall",{
+        body: {},
+        headers: { 'content-type': 'application/json' }
+    });
+    const expectedActions = [
+      {
+        type:constants.LINK_SUBMIT+constants.START,
+        payload:""
+      },
+      {
+        type:constants.LINK_SUBMIT+constants.SUCCESS,
+        payload:{}
+      },
+      {
+        type:constants.LINK_FETCH+constants.START,
+        payload:""
+      },
+    ];
+    const store = mockStore(mockLinkmanagerStore);
+    return store.dispatch(actions.submitLink({})).then(()=>{
+      expect(store.getActions()).toEqual(expectedActions);
+    });
+  });
+
+  it('Обновление ссылки', ()=>{
+    fetchMock.postOnce("/api/links/update/1",{
+        body: {},
+        headers: { 'content-type': 'application/json' }
+    });
+
+    fetchMock.getOnce("/api/links/fetchall",{
+        body: {},
+        headers: { 'content-type': 'application/json' }
+    });
+    const expectedActions = [
+      {
+        type:constants.LINK_UPDATE+constants.SUCCESS,
+        payload:{"id": 1}
+      },
+      {
+        type:constants.LINK_FETCH+constants.START,
+        payload:""
+      },
+    ];
+    const store = mockStore(mockLinkmanagerStore);
+    return store.dispatch(actions.updateLink({},1)).then(()=>{
+      expect(store.getActions()).toEqual(expectedActions);
+    });
   });
 
 });

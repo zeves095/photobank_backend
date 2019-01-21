@@ -33,7 +33,7 @@ export class FormWrapper extends Component {
 
   /**
    * Обработчик изменения данных формы.
-   * @param  {Object} data Данные из компонента react-jsonschema-form
+   * @param {Object} data Данные из компонента react-jsonschema-form
    */
   handleInputChange = (data)=>{
     this.props.onError(data.errors);

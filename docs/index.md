@@ -352,6 +352,10 @@ ItemSection содержит в себе интерфейс загрузки(Upl
 
 ## Тесты
 
+#### Все
+
+Для запуска всех тестов приложения необходимо запустить консольную команду *app:tests:run*. В ствю очередь, эта команда запустит команду *app:tests:prepare*, phpunit, jest и selenium. Для более детального тестирования можно запустить конкретные тесты, описанные ниже, но перед этим все равно нужно запустить *app:tests:prepare*.
+
 #### Backend
 
 Для тестирования необходимо определить в *phpunit.xml.dist* url на дополнительную, тестовую бд. Также параметр *UPLOADS_PARENT* в тестовом окружении должен указывть на дополнительный путь файловой системы, отличный от рабочей папки боевой системы, например *private/test/* вместо *private/*. Дополнительная конфигурация указана в файле конфигурации */config/tests.yaml*.
@@ -363,7 +367,8 @@ ItemSection содержит в себе интерфейс загрузки(Upl
 
 #### Frontend
 
-Тестирование frontend реализовано через стек jest+enzyme. Для работы jest с jsx-кодом и стандартами es2015 в .babelrc должны быть подключены плагины *babel-preset-react*, *babel-preset-es2015* и *babel-preset-stage-2*. Тесты реакт-компонентов и frontend-кода запускаются командой **yarn jest** из корневой директории. Shallow-тесты для компонентов находятся в директории *assets/js/tests/components*. Mock-данные для props компонентов находятся в *assets/js/tests/mockdata*. Селекторы для поиска элементов на странице следует определять в *assets/js/tests/selectors/index.js*.
+Тестирование frontend реализовано через стек jest+enzyme. Команда для запуска тестов - *yarn jest*. Для работы jest с jsx-кодом и стандартами es2015 в .babelrc должны быть подключены плагины *babel-preset-react*, *babel-preset-es2015* и *babel-preset-stage-2*. Тесты реакт-компонентов и frontend-кода запускаются командой **yarn jest** из корневой директории. Shallow-тесты для компонентов находятся в директории *assets/js/tests/components*. Тесты для redux actionCreator и selectors находятся соответственно в диреториях *assets/js/tests/actionCreator* и *assets/js/tests/selectors*. 
+Mock-данные для props компонентов находятся в *assets/js/tests/mockdata*. Селекторы для поиска элементов на странице следует определять в *assets/js/tests/constants/index.js*.
 
 #### End-to-end
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import Enzyme, {shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import {store} from '../../account/link-manager/store';
-import {mockResourcesFound, mockResourcesChosen} from '../mockdata/';
-import {selectors} from '../selectors';
+import {store} from '../../../account/link-manager/store';
+import {mockResourcesFound, mockResourcesChosen} from '../../mockdata/';
+import {selectors} from '../../constants';
 
-import {ResourceSearchResults} from '../../account/link-manager/components/ResourceSearchResults';
+import {ResourceSearchResults} from '../../../account/link-manager/components/ResourceSearchResults';
 
 Enzyme.configure({adapter: new Adapter()});
 

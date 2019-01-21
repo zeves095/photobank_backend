@@ -15,6 +15,8 @@ let RESOURCE_SEARCH_FORM_COMPONENT = 'Connect(ResourceSearchForm)';
 let RESOURCE_SEARCH_RESULTS_COMPONENT = 'Connect(ResourceSearchResults)';
 let FORM_WRAPPER_COMPONENT = 'Connect(FormWrapper)';
 let FORM_SUBCOMPONENT = 'Form';
+let CONFIRMATOR_COMPONENT = 'Confirmator';
+let USER_EDITOR_COMPONENT = 'UserEditor';
 
 let LINK_MANAGER_WRAPPER = '.link-manager';
 let LINK_MANAGER_WRAPPER_WRAPPER = '#link-manager';
@@ -30,7 +32,17 @@ let RESOURCE_LIST_ITEM = '.resource.list-item';
 let RESOURCE_LIST_ITEM_SELECTED = '.resource.list-item.selected';
 let LINK_TARGETS = '.link-list__tabs';
 
+let CONFIRMATOR_WRAPPER = '.confirmator';
 let FORM_WRAPPER_WRAPPER = '.form-wrapper';
+
+let USER_EDITOR_WRAPPER = '.user-editor';
+let USER_LIST_WRAPPER = '.user-list';
+let USER_EDITOR_INPUT_NAME = '.user-editor input[name="name"]';
+let USER_EDITOR_INPUT_ID = '.user-editor input[name="id"]';
+let USER_EDITOR_INPUT_EMAIL = '.user-editor input[name="email"]';
+let USER_EDITOR_INPUT_PASSWORD = '.user-editor input[name="password"]';
+let USER_EDITOR_INPUT_ROLE = '.user-editor select[name="role"]';
+let USER_LIST_ITEM = '.user-item';
 
 export let selectors = {
   NOTIFICATION_OVERLAY,
@@ -51,6 +63,7 @@ export let selectors = {
     RESOURCE_SEARCH_FORM_COMPONENT,
     RESOURCE_SEARCH_RESULTS_COMPONENT,
     FORM_SUBCOMPONENT,
+    CONFIRMATOR_COMPONENT,
   },
   linkmanager:{
     LINK_MANAGER_WRAPPER,
@@ -69,8 +82,19 @@ export let selectors = {
   },
   common:{
     FORM_WRAPPER_WRAPPER,
+    CONFIRMATOR_WRAPPER,
   },
   upload:{
 
+  },
+  usermanager:{
+    USER_EDITOR_WRAPPER,
+    USER_LIST_WRAPPER,
+    USER_EDITOR_INPUT_NAME,
+    USER_EDITOR_INPUT_ID,
+    USER_EDITOR_INPUT_EMAIL,
+    USER_EDITOR_INPUT_PASSWORD,
+    USER_EDITOR_INPUT_ROLE,
+    USER_LIST_ITEM
   }
 }

@@ -19,11 +19,12 @@ use Doctrine\ORM\Tools\Setup;
 use Symfony\Component\Filesystem\Filesystem;
 use App\Tests\Service\TestService;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Input\ArrayInput;
 
 /**
   * Проводит подготовку тестовой файловой системы и базы данных для проведения тестов
   */
-class PrepareTestsCommand extends Command
+class RunTestsCommand extends Command
 {
     /**
   * Сервис-контейнер Symfony
@@ -55,7 +56,7 @@ private $fileSystem;
     protected function configure()
     {
         $this
-            ->setName('app:tests:prepare')
+            ->setName('app:tests:run')
             ->setDescription('Prepare mock data for tests')
             ->addOption(
                 'generated',
@@ -77,64 +78,47 @@ private $fileSystem;
     {
       set_time_limit(0);
 
-      $dumpPath = $this->container->getParameter("test_dump_path");
-      $dbDumpPath = $this->container->getParameter("test_db_dump_path");
-      $fsDumpPath = $this->container->getParameter("test_fs_dump_path");
-      $fsTargetPath = $this->container->getParameter("test_fs_target_path");
-      $phpunitConfigPath = $this->container->getParameter("test_phpunit_config_path");
-      $prodDbUrl = $this->container->getParameter("test_production_db_url");
+      $command = $this->getApplication()->find('app:tests:prepare');
 
-      $crawler = new Crawler(file_get_contents($phpunitConfigPath));
-      $dbLink = $crawler->filter("[name='DATABASE_URL']")->attr('value');
+      $arguments = [
+        'command' => 'app:tests:prepare'
+      ];
 
-      $connection = DriverManager::getConnection(['url'=>$dbLink]);
-      $output->writeln("Database connection established");
+      $prepareInput = new ArrayInput($arguments);
+      $returnCode = $command->run($prepareInput, $output);
 
-      $dbConfig = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src"), true);
-
-      $entityManager = EntityManager::create($connection, $dbConfig);
-      $schemaTool = new SchemaTool($entityManager);
-
-      $dropsql = $schemaTool->dropDatabase();
-
-      $output->writeln("Database dropped");
-
-      $importsql = file($dbDumpPath);
-
-      $templine = '';
-      foreach ($importsql as $line)
-      {
-        // Skip it if it's a comment
-        if (substr($line, 0, 2) == '--' || $line == '')
-        continue;
-
-        // Add this line to the current segment
-        $templine .= $line;
-        // If it has a semicolon at the end, it's the end of the query
-        if (substr(trim($line), -1, 1) == ';')
-        {
-          // Perform the query
-          $stmt = $connection->prepare($templine);
-          $stmt->execute() or print('Error performing query \'<strong>' . $templine . '\': ' . mysql_error() . '<br /><br />');
-          // Reset temp variable to empty
-          $templine = '';
+      $phpunit = new Process('bin/phpunit');
+      $phpunit->setTty(true);      
+      $phpunit->setTimeout(3600);
+      $phpunit->run(function ($type, $buffer) {
+        if (Process::ERR === $type) {
+          echo 'ERR > '.$buffer;
+        } else {
+          echo $buffer;
         }
-      }
-      $output->writeln("Database import complete");
+      });
 
-      $this->fileSystem->remove($fsTargetPath);
+      $e2e = new Process('yarn e2e');
+      $e2e->setTty(true);      
+      $e2e->setTimeout(3600);
+      $e2e->run(function ($type, $buffer) {
+        if (Process::ERR === $type) {
+          echo 'ERR > '.$buffer;
+        } else {
+          echo $buffer;
+        }
+      });
 
-      $output->writeln("Target directory cleared");
-
-      $this->fileSystem->mirror($fsDumpPath, $fsTargetPath);
-
-      $output->writeln("Mock files written to target directory");
-
-      $sample = $this->testService->getDataSample();
-
-      $this->fileSystem->dumpFile($dumpPath."datasample.txt", json_encode($sample));
-
-      $output->writeln("Data sample created");
+      $jest = new Process('yarn jest');
+      $jest->setTty(true);      
+      $jest->setTimeout(3600);
+      $jest->run(function ($type, $buffer) {
+        if (Process::ERR === $type) {
+          echo 'ERR > '.$buffer;
+        } else {
+          echo $buffer;
+        }
+      });
 
     }
 

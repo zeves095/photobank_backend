@@ -1,10 +1,10 @@
 import React from 'react';
 import Enzyme, {shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import {store} from '../../account/link-manager/store';
-import {selectors} from '../selectors';
+import {store} from '../../../account/link-manager/store';
+import {selectors} from '../../constants';
 
-import {LinkManager} from '../../account/link-manager/components/LinkManager';
+import {LinkManager} from '../../../account/link-manager/components/LinkManager';
 
 Enzyme.configure({adapter: new Adapter()});
 

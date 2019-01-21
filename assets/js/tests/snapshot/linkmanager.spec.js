@@ -7,7 +7,7 @@ import { LinkResource } from '../../account/link-manager/components/LinkResource
 import { ResourceExplorer } from '../../account/link-manager/components/ResourceExplorer';
 import { ResourceSearchForm } from '../../account/link-manager/components/ResourceSearchForm';
 import { ResourceSearchResults } from '../../account/link-manager/components/ResourceSearchResults';
-import Enzyme, {render} from 'enzyme';
+import Enzyme, {render, shallow,mount} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import renderer from 'react-test-renderer';
 import {store} from '../../account/link-manager/store/'

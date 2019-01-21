@@ -49,7 +49,7 @@ class ImageProcessorServiceTest extends WebTestCase
     $mockResource = new Resource();
     $mockResource->setItem($this->correctItem['object']);
     $mockResource->setExtension('jpg');
-    $mockResource->setPath('/../../../tests/mock/img/testimg.jpg');
+    $mockResource->setPath('/../../tests/mock/img/testimg.jpg');
     $mockResource->setType('1');
     $mockResource->setUsername('username');
     $mockResource->setSizeBytes('100');

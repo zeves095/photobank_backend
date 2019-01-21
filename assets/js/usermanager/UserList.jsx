@@ -75,7 +75,7 @@ export class UserList extends React.Component {
   <div className={"users-inactive" + (this.state.show_inactive?"":" hidden")}>
         {usersInactiveMarkup}
         </div>
-        <button className="blue-grey waves-effect hoverable waves-light btn" type="button" onClick={this.addUser}><i class="fas fa-user-plus"></i>Добавить</button>
+        <button className="blue-grey waves-effect hoverable waves-light btn" type="button" onClick={this.addUser}><i className="fas fa-user-plus"></i>Добавить</button>
       </div>
     );
   }

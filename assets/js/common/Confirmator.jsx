@@ -60,7 +60,7 @@ export class Confirmator extends React.Component{
     let button = (<button type="submit" disabled={this.props.disabled} onClick={this.progress} className="confirmator-button">{button_content}</button>);
     let cancelButton = (<button onClick={this.cancel} className="confirmator-button-cancel"><i className="fas fa-times-circle"></i></button>);
     let confirmator = (
-      <div className={"confirmator "+this.props.customClass}>
+      <div className={"confirmator"+(typeof this.props.customClass === "undefined"?"":" "+this.props.customClass)}>
         {this.state.step>0?<div className={"confirmator-question"+(this.props.inline?"-inline":"")}>{this.props.questions[this.state.step-1]}</div>:null}
         {button}
         {this.state.step>0?cancelButton:null}

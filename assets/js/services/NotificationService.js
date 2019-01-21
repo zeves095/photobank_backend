@@ -74,6 +74,9 @@ class NotificationService{
    * @param  {Number} [time=0] Время, через которое сообщение исчезает в секундах. 0 - не исчезает
    */
   static _makeNotification(text, type ,time=0){
+      if (typeof document === 'undefined') {
+        return false;
+      }
       let id = (((1+Math.random())*0x10000)|0).toString(16).substring(1);
       let overlay = document.getElementById('notification-overlay');
       let notification = document.createElement("div");

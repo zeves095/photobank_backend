@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e6a01841d8550d0ccaa7492f6b72dd4",
+    "content-hash": "22148f4e34ac001ae2c6c8b7e7cc4e9c",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -944,12 +944,12 @@
             "version": "v2.6.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/doctrine/doctrine2.git",
+                "url": "https://github.com/doctrine/orm.git",
                 "reference": "434820973cadf2da2d66e7184be370084cc32ca8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/434820973cadf2da2d66e7184be370084cc32ca8",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/434820973cadf2da2d66e7184be370084cc32ca8",
                 "reference": "434820973cadf2da2d66e7184be370084cc32ca8",
                 "shasum": ""
             },
@@ -3874,16 +3874,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v4.1.9",
+            "version": "v4.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "471f6e24172366a97365baaae588ddaafbba9b20"
+                "reference": "5bcfa3a267431d95ab723101d2de3f48db1a0800"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/471f6e24172366a97365baaae588ddaafbba9b20",
-                "reference": "471f6e24172366a97365baaae588ddaafbba9b20",
+                "url": "https://api.github.com/repos/symfony/process/zipball/5bcfa3a267431d95ab723101d2de3f48db1a0800",
+                "reference": "5bcfa3a267431d95ab723101d2de3f48db1a0800",
                 "shasum": ""
             },
             "require": {
@@ -3919,7 +3919,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2018-11-20T16:14:00+00:00"
+            "time": "2019-01-03T09:05:57+00:00"
         },
         {
             "name": "symfony/property-access",

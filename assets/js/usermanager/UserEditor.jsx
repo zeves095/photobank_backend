@@ -14,7 +14,6 @@ export class UserEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state ={
-      "user": this.props.current_user,
       "sent": false,
       "hide_password": true
     }

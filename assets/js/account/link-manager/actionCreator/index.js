@@ -279,14 +279,17 @@ export function deleteLink(id){
     let params = {
       method: "GET",
     }
-    fetch("/api/links/delete/"+id, params)
+    return fetch("/api/links/delete/"+id, params)
     .then((response)=>response.json())
     .then((response)=>{
       dispatch({
         type: LINK_DELETE+SUCCESS,
         payload: response,
       });
-      setTimeout(()=>{dispatch(fetchLinks())},400);
+    }).then(()=>{
+      return new Promise((resolve, reject)=>{
+        setTimeout(()=>{dispatch(fetchLinks());resolve()},400);
+      });
     }).catch((error)=>{
       dispatch({
         type: LINK_DELETE+FAIL,
@@ -313,7 +316,7 @@ export function fetchLinks(){
     let params = {
       method: "GET",
     }
-    fetch("/api/links/fetchall", params)
+    return fetch("/api/links/fetchall", params)
     .then((response)=>response.json())
     .then((response)=>{
       dispatch({
@@ -329,7 +332,7 @@ export function fetchLinks(){
     }).catch((error)=>{
       dispatch({
         type: LINK_FETCH+FAIL,
-        payload: "",
+        payload: error,
       });
       if(typeof error.error !== 'undefined'){
         NotificationService.throw("custom", error.error);
@@ -354,7 +357,7 @@ export function submitLink(form){
       method: "POST",
       body: JSON.stringify(form)
     }
-    fetch("/api/links/submit", params)
+    return fetch("/api/links/submit", params)
     .then((response)=>{
       if(response.status === 200){
         dispatch({
@@ -362,8 +365,9 @@ export function submitLink(form){
           payload: form,
         });
         NotificationService.toast("link-added");
-        setTimeout(()=>{dispatch(fetchLinks())}, 400);
-        return;
+        return new Promise((resolve, reject)=>{
+          setTimeout(()=>{dispatch(fetchLinks());resolve()},400);
+        });
       }else{
           dispatch({
             type: LINK_SUBMIT+FAIL,
@@ -393,7 +397,7 @@ export function updateLink(form, link){
       method: "POST",
       body: JSON.stringify(form)
     }
-    fetch("/api/links/update/"+link, params).then((response)=>{
+    return fetch("/api/links/update/"+link, params).then((response)=>{
       if(response.status === 200){
         dispatch({
           type: LINK_UPDATE+SUCCESS,
