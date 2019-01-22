@@ -1,4 +1,6 @@
 ## [Документация](./docs/index.md)
+## [PHP API Reference](./docs/api/index.html)
+## [JS API Reference](./docs/js/index.html)
 
 %env(resolve:UPLOADS_PARENT)% - мы выбрали "private/"
 

@@ -81,7 +81,7 @@ export class UserManager extends React.Component {
 
         </div>
       <nav className="nav-wrapper blue-grey darken-2">
-        <div class="brand-logo"><i className="fas fa-camera"></i>PhotoBank - Редактор пользователей</div>
+        <div className="brand-logo"><i className="fas fa-camera"></i>PhotoBank - Редактор пользователей</div>
         </nav>
         <UserList users={this.state.users} userChoiceHandler={this.handleUserChoice} />
         <UserEditor user={this.state.current_user} userUpdateHandler={this.handleUserUpdate} />

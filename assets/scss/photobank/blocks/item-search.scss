@@ -18,6 +18,11 @@
     }
   }
 
+  input[type="checkbox"]{
+        //Обязательно для тестов selenium
+    width: 1px;
+  }
+
   // input[type="checkbox"]{
   //   width: 0;
   //   &::before{

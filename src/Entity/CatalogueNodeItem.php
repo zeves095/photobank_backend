@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CatalogueNodeItemRepository")
+ * @ORM\Table(indexes={@ORM\Index(name="name_idx", columns={"name"})})
  */
 class CatalogueNodeItem
 {

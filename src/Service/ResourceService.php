@@ -74,10 +74,10 @@ class ResourceService{
   public function generatePath($item_code)
   {
     $splitId = array();
-    for($i=0; $i<=strlen($item_code)/2; $i++){
+    for($i=0; $i<strlen($item_code)/2; $i++){
       $splitId[] = substr($item_code, $i*2, 2);
     }
-    $splitIdPath = implode('/',$splitId)."/";
+    $splitIdPath = implode('/',$splitId).("/");
 
     return $splitIdPath;
   }
@@ -113,7 +113,7 @@ class ResourceService{
     $item_id = $resourceParameters['item_id'];
     $item = $repository->findOneBy( ['id' => $item_id] );
     if (!$item) {
-        $error_string = $this->translator->trans("Product not founded",[],'file_uploader') . '. '. $this->translator->trans("The code is:",[],'file_uploader') . ' ' . $item_code ;
+        $error_string = $this->translator->trans("Product not founded",[],'file_uploader') . '. '. $this->translator->trans("The code is:",[],'file_uploader') . ' ' . $item_id ;
         throw new NotFoundHttpException($error_string);
     }
 

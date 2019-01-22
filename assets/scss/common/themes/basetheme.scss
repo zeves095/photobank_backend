@@ -16,7 +16,8 @@ body {
   }
 
   .photobank-main input[type="checkbox"]{
-    width: 0;
+    //Обязательно для тестов selenium
+    width: 1px;
     color:$color-accent;
     font-size: 13px;
     &::before{

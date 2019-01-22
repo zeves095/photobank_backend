@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 class SearchQueryBuilder {
 
   /**
-   * Создает объект поиска товаров каталога
+   * Создает объект поиска товаров каталога. Конвертирует поля Артикул и Код 1С в массивы для множественного поиска
    * @param  Request $request Объект текущего http-запроса
    * @return ItemQueryObject Полученный объект поиска
    */
@@ -28,8 +28,8 @@ class SearchQueryBuilder {
         $value = $value[0];
       }
       if($key == "article"){
-        $value = str_replace(' ','', $value);
-        $value = explode(",", $value);
+        preg_match_all("/[0-9a-zA-Z\/\-\.]{3,15}/", $value, $value);
+        $value = $value[0];
       }
       if(in_array($key, $fields)){
         $queryObject->setField($key, $value);

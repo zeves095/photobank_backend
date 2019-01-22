@@ -61,7 +61,7 @@ export class LinkResource extends React.Component{
     ?(<div className="resource plaque warning"><i className="fas fa-times-circle left-icon"></i>Не выбран ресурс</div>)
     :this.props.resources.map((res)=>{
       return(
-        <div className={"resource list-item"} onClick={()=>{this.handleRemoveChosenResource(res.id)}}>
+        <div key={"resource-list-"+res.id} className={"resource list-item"} onClick={()=>{this.handleRemoveChosenResource(res.id)}}>
 
         <span className={"resource-preview"+(typeof res.thumbnail === 'undefined'?" resource-preview--loading":"")} style={{backgroundImage:"url(/catalogue/node/item/resource/"+res.thumbnail+".jpg)"}} onClick={(e)=>{e.stopPropagation();this.handleModalImage("/catalogue/node/item/resource/"+res.id+".jpg")}}></span>
       {(res.link_exists?<i className="fas fa-check-circle link-exists"></i>:null)}

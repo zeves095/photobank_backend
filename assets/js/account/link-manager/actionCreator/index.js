@@ -1,3 +1,7 @@
+/**
+  * @TODO Вызовы NotificationService заменить на диспатч событий с FAIL и отрабатывать вызов NotificationService в middleware
+  */
+
 import {NotificationService} from '../../../services/NotificationService';
 import {
   USER_INFO_FETCH,
@@ -25,53 +29,54 @@ import {
 
 /**
  * Действия при инициализации приложения. Получает типы ресурсов, типы пресетов и информацию о пользователе
+ *
  */
 export function init(){
   return (dispatch)=>{
     let params = {
       method: "GET",
     }
-    fetch("/catalogue/resource/presets/", params)
+    let getPresets = fetch("/catalogue/resource/presets/", params)
     .then((response)=>response.json())
     .then((response)=>{
       dispatch({
         type: RESOURCE_PRESETS_FETCH+SUCCESS,
         payload: response,
       });
-      dispatch(fetchLinks());
     }).catch((error)=>{
       dispatch({
         type: RESOURCE_PRESETS_FETCH+FAIL,
         payload: response,
       });
     });
-    fetch("/catalogue/resource/types/", params)
+    let getTypes = fetch("/catalogue/resource/types/", params)
     .then((response)=>response.json())
     .then((response)=>{
       dispatch({
         type: RESOURCE_TYPES_FETCH+SUCCESS,
         payload: response,
       });
-      dispatch(fetchLinks());
     }).catch((error)=>{
       dispatch({
         type: RESOURCE_TYPES_FETCH+FAIL,
         payload: "",
       });
     });
-    fetch("/account/getinfo/", params)
+    let getUserInfo = fetch("/account/getinfo/", params)
     .then((response)=>response.json())
     .then((response)=>{
       dispatch({
         type: USER_INFO_FETCH+SUCCESS,
         payload: response,
       });
-      dispatch(fetchLinks());
     }).catch((error)=>{
       dispatch({
         type: USER_INFO_FETCH+FAIL,
         payload: "",
       });
+    });
+    return Promise.all([getPresets,getTypes,getUserInfo]).then(()=>{
+      dispatch(fetchLinks());
     });
   }
 }
@@ -158,7 +163,7 @@ export function getResourceThumbnails(resources){
       method: "POST",
       body: JSON.stringify(request)
     }
-    fetch("/catalogue/node/item/resource/thumbnails/",params)
+    return fetch("/catalogue/node/item/resource/thumbnails/",params)
     .then((response)=>response.json())
     .then((payload)=>{
         dispatch({
@@ -192,7 +197,7 @@ export function searchResources(searchObject={}){
     let params = {
       method: "GET",
     }
-    fetch("/catalogue/search/resources"+"?"+Object.keys(searchObject).map(
+    return fetch("/catalogue/search/resources"+"?"+Object.keys(searchObject).map(
       key=>{if(typeof searchObject[key] === 'undefined'){return "";}return key + '=' + searchObject[key]}).join('&'),
       params)
     .then((response)=>response.json())
@@ -203,9 +208,10 @@ export function searchResources(searchObject={}){
       });
       dispatch(getResourceThumbnails(response));
     }).catch((error)=>{
+      console.log(error);
       dispatch({
         type: RESOURCE_SEARCH+FAIL,
-        payload: response,
+        payload: error,
       });
       if(typeof error.error !== 'undefined'){
         NotificationService.throw("custom", error.error);
@@ -273,14 +279,17 @@ export function deleteLink(id){
     let params = {
       method: "GET",
     }
-    fetch("/api/links/delete/"+id, params)
+    return fetch("/api/links/delete/"+id, params)
     .then((response)=>response.json())
     .then((response)=>{
       dispatch({
         type: LINK_DELETE+SUCCESS,
         payload: response,
       });
-      setTimeout(()=>{dispatch(fetchLinks())},400);
+    }).then(()=>{
+      return new Promise((resolve, reject)=>{
+        setTimeout(()=>{dispatch(fetchLinks());resolve()},400);
+      });
     }).catch((error)=>{
       dispatch({
         type: LINK_DELETE+FAIL,
@@ -307,7 +316,7 @@ export function fetchLinks(){
     let params = {
       method: "GET",
     }
-    fetch("/api/links/fetchall", params)
+    return fetch("/api/links/fetchall", params)
     .then((response)=>response.json())
     .then((response)=>{
       dispatch({
@@ -323,7 +332,7 @@ export function fetchLinks(){
     }).catch((error)=>{
       dispatch({
         type: LINK_FETCH+FAIL,
-        payload: "",
+        payload: error,
       });
       if(typeof error.error !== 'undefined'){
         NotificationService.throw("custom", error.error);
@@ -348,7 +357,7 @@ export function submitLink(form){
       method: "POST",
       body: JSON.stringify(form)
     }
-    fetch("/api/links/submit", params)
+    return fetch("/api/links/submit", params)
     .then((response)=>{
       if(response.status === 200){
         dispatch({
@@ -356,8 +365,9 @@ export function submitLink(form){
           payload: form,
         });
         NotificationService.toast("link-added");
-        setTimeout(()=>{dispatch(fetchLinks())}, 400);
-        return;
+        return new Promise((resolve, reject)=>{
+          setTimeout(()=>{dispatch(fetchLinks());resolve()},400);
+        });
       }else{
           dispatch({
             type: LINK_SUBMIT+FAIL,
@@ -387,7 +397,7 @@ export function updateLink(form, link){
       method: "POST",
       body: JSON.stringify(form)
     }
-    fetch("/api/links/update/"+link, params).then((response)=>{
+    return fetch("/api/links/update/"+link, params).then((response)=>{
       if(response.status === 200){
         dispatch({
           type: LINK_UPDATE+SUCCESS,

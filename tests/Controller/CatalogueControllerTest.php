@@ -566,7 +566,7 @@ class CatalogueControllerTest extends BaseTest
       $response = $client->getResponse();
       $this->assertEquals(302, $response->getStatusCode());
     }
-    
+
 
 
 }

@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Symfony\Component\Filesystem\Filesystem;
 use App\Tests\Service\TestService;
+use Symfony\Component\Process\Process;
 
 /**
   * Проводит подготовку тестовой файловой системы и базы данных для проведения тестов
@@ -76,8 +77,6 @@ private $fileSystem;
     {
       set_time_limit(0);
 
-      $output->write("Running");
-
       $dumpPath = $this->container->getParameter("test_dump_path");
       $dbDumpPath = $this->container->getParameter("test_db_dump_path");
       $fsDumpPath = $this->container->getParameter("test_fs_dump_path");
@@ -100,50 +99,30 @@ private $fileSystem;
 
       $output->writeln("Database dropped");
 
-      $importsql = file_get_contents($dbDumpPath);
-      $import = $connection->prepare($importsql);
+      $importsql = file($dbDumpPath);
 
-      if ($connection instanceof \Doctrine\DBAL\Driver\PDOConnection) {
-          // PDO Drivers
-          try {
-              $lines = 0;
+      $templine = '';
+      foreach ($importsql as $line)
+      {
+        // Skip it if it's a comment
+        if (substr($line, 0, 2) == '--' || $line == '')
+        continue;
 
-              $stmt = $connection->prepare($importsql);
-              assert($stmt instanceof PDOStatement);
-
-              $stmt->execute();
-
-              do {
-                  // Required due to "MySQL has gone away!" issue
-                  $stmt->fetch();
-                  $stmt->closeCursor();
-
-                  $lines++;
-              } while ($stmt->nextRowset());
-
-              $output->write(sprintf('%d statements executed!', $lines) . PHP_EOL);
-          } catch (\PDOException $e) {
-              $output->write('error!' . PHP_EOL);
-
-              throw new \RuntimeException($e->getMessage(), $e->getCode(), $e);
-          }
-      } else {
-          // Non-PDO Drivers (ie. OCI8 driver)
-          $stmt = $connection->prepare($importsql);
-          $rs = $stmt->execute();
-
-          if ($rs) {
-              $output->writeln('OK!' . PHP_EOL);
-          } else {
-              $error = $stmt->errorInfo();
-
-              $output->write('error!' . PHP_EOL);
-
-              throw new \RuntimeException($error[2], $error[0]);
-          }
-
-          $stmt->closeCursor();
+        // Add this line to the current segment
+        $templine .= $line;
+        // If it has a semicolon at the end, it's the end of the query
+        if (substr(trim($line), -1, 1) == ';')
+        {
+          // Perform the query
+          $stmt = $connection->prepare($templine);
+          $stmt->execute() or print('Error performing query \'<strong>' . $templine . '\': ' . mysql_error() . '<br /><br />');
+          // Reset temp variable to empty
+          $templine = '';
+        }
       }
+
+      $connection->close();
+      $connection = null;
 
       $output->writeln("Database import complete");
 

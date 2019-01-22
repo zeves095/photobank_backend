@@ -20,7 +20,7 @@ export class LinkList extends React.Component{
   constructor(props){
     super(props);
     this.state={
-      links:[],
+      links:this.props.links,
       target:"Все",
       modal_image_url:"",
       confirmatorQuestions:[
@@ -28,13 +28,6 @@ export class LinkList extends React.Component{
       ],
     };
     this.eventHandler = {};
-  }
-
-  /**
-   * Запрашивает существующие ссылки для текущего пользователя
-   */
-  componentDidMount(){
-    this.props.fetchLinks();
   }
 
   /**
@@ -195,7 +188,7 @@ export class LinkList extends React.Component{
     );
     let tabs = ["Все"].concat(this.props.targets).map((target)=>{
         return(
-          <button className={(target===this.state.target?" active":"")} data-target={target} onClick={this.handleTargetChoice}>{target}</button>
+          <button key={"btn-"+target} className={(target===this.state.target?" active":"")} data-target={target} onClick={this.handleTargetChoice}>{target}</button>
         )
     })
     return(
@@ -210,9 +203,9 @@ export class LinkList extends React.Component{
         <div className={"component-body" + (this.props.loading?" loading":"")}>
           <div className="component-body__top-section">
             <div className="button-block">
-              <button onClick={this.handleLinkAdd} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button">{this.props.adding||this.props.editing?(<span><i className="fas fa-ban"></i>Отмена</span>):(<span><i className="fas fa-plus-circle"></i>Добавить</span>)}</button>
-            <button onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-copy"></i>Скопировать в буфер {!this.props.adding&&!this.props.editing&&(<span className="help-text">&lt;Ctrl&gt;+&lt;C&gt;</span>)}</button>
-          <button onClick={this.handleGetTxt} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-align-justify"></i>Скачать ссылки {!this.props.adding&&!this.props.editing&&(<span className="help-text">&lt;Ctrl&gt;+&lt;S&gt;</span>)}</button>
+              <button key="btn-add" onClick={this.handleLinkAdd} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button">{this.props.adding||this.props.editing?(<span><i className="fas fa-ban"></i>Отмена</span>):(<span><i className="fas fa-plus-circle"></i>Добавить</span>)}</button>
+            <button key="btn-copy" onClick={this.handleCopyAllToClipboard} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-copy"></i>Скопировать в буфер {!this.props.adding&&!this.props.editing&&(<span className="help-text">&lt;Ctrl&gt;+&lt;C&gt;</span>)}</button>
+          <button key="btn-dl" onClick={this.handleGetTxt} style={{float:"none"}} className=" waves-effect hoverable waves-light btn add-button" type="button"><i className="fas fa-align-justify"></i>Скачать ссылки {!this.props.adding&&!this.props.editing&&(<span className="help-text">&lt;Ctrl&gt;+&lt;S&gt;</span>)}</button>
             </div>
             <div className="link-list__tabs button-block">
               {tabs}
