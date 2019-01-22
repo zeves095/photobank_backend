@@ -55,13 +55,13 @@ describe('LinkList', ()=>{
     });
     it('Отображаются элементы', ()=>{
       const {component} = setup(bareProps);
-      expect(component.find(selectors.COMPONENT_HEADER).exists()).toBe(true);
-      expect(component.find(selectors.COMPONENT_TITLE).exists()).toBe(true);
-      expect(component.find(selectors.COMPONENT_TOP_SECTION).exists()).toBe(true);
-      expect(component.find(selectors.BUTTON_BLOCK).exists()).toBe(true);
-      expect(component.find(selectors.HELP_TEXT).exists()).toBe(true);
+      expect(component.find(selectors.common.COMPONENT_HEADER).exists()).toBe(true);
+      expect(component.find(selectors.common.COMPONENT_TITLE).exists()).toBe(true);
+      expect(component.find(selectors.common.COMPONENT_TOP_SECTION).exists()).toBe(true);
+      expect(component.find(selectors.common.BUTTON_BLOCK).exists()).toBe(true);
+      expect(component.find(selectors.common.HELP_TEXT).exists()).toBe(true);
       expect(component.find(selectors.linkmanager.LINK_TARGETS).exists()).toBe(true);
-      expect(component.find(selectors.COMPONENT_HEADER).exists()).toBe(true);
+      expect(component.find(selectors.common.COMPONENT_HEADER).exists()).toBe(true);
     });
     it('Отображаются существующие ссылки', ()=>{
       const {component} = setup(linksExistProps);

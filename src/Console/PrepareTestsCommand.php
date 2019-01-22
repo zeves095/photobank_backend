@@ -120,6 +120,10 @@ private $fileSystem;
           $templine = '';
         }
       }
+
+      $connection->close();
+      $connection = null;
+
       $output->writeln("Database import complete");
 
       $this->fileSystem->remove($fsTargetPath);

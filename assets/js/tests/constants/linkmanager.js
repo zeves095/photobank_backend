@@ -1,0 +1,15 @@
+export const linkmanager = {
+  LINK_MANAGER_WRAPPER:'.link-manager',
+  LINK_MANAGER_WRAPPER_WRAPPER:'#link-manager',
+  RESOURCE_EXPLORER_WRAPPER:'.resource-explorer',
+  LINK_LIST_WRAPPER:'.link-list',
+  LINK_RESOURCE_WRAPPER:'.link-resource',
+  RESOURCE_SEARCH_FORM_WRAPPER:'.resource-search-form',
+  RESOURCE_SEARCH_RESULTS_WRAPPER:'.resource-search-results',
+  LINK_LIST_ITEM:'.link-list div[data-linkid]',
+  LINK_ADDER_WRAPPER:'.link-adder',
+  LINK_ADD_FORM_WRAPPER:'.link-add-form',
+  RESOURCE_LIST_ITEM:'.resource.list-item',
+  RESOURCE_LIST_ITEM_SELECTED:'.resource.list-item.selected',
+  LINK_TARGETS:'.link-list__tabs',
+}

@@ -29,7 +29,7 @@ describe('LinkManager', ()=>{
     });
     it('Обертка для уведомлений рендерится', ()=>{
       const {component} = setup(bareProps);
-      expect(component.find(selectors.NOTIFICATION_OVERLAY).exists()).toBe(true);
+      expect(component.find(selectors.common.NOTIFICATION_OVERLAY).exists()).toBe(true);
     });
     it('Вызван компонент поиска ресурсов', ()=>{
       const {component} = setup(bareProps);

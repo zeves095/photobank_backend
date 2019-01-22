@@ -32,3 +32,11 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-pack ###
+
+vendor_old/
+
+\.env\.test
+
+test\.php
+
+private/test/

@@ -39,7 +39,7 @@ class CatalogueNodeItemRepository extends ServiceEntityRepository
       $queryBuilder = $this->createQueryBuilder('c');
       if($queryObject->getField("name") != ""){
         $queryBuilder->andWhere('c.name LIKE :name')
-        ->setParameter('name', '%'.$queryObject->getField("name").'%');
+        ->setParameter('name', $queryObject->getField("name").'%');
       }
       if(sizeof($queryObject->getField("code")) !== 0){
         $codeCounter = 0;
@@ -72,18 +72,20 @@ class CatalogueNodeItemRepository extends ServiceEntityRepository
        ->leftJoin('parent3.parent', 'parent4')
        ->leftJoin('parent4.parent', 'parent5')
        ->leftJoin('parent5.parent', 'parent6')
-       ->andwhere('parent.name LIKE :pname')
-       ->orWhere('parent2.name LIKE :pname')
-       ->orWhere('parent3.name LIKE :pname')
-       ->orWhere('parent4.name LIKE :pname')
-       ->orWhere('parent5.name LIKE :pname')
-       ->orWhere('parent6.name LIKE :pname')
-       ->orWhere('parent.id LIKE :pcode')
-       ->orWhere('parent2.id LIKE :pcode')
-       ->orWhere('parent3.id LIKE :pcode')
-       ->orWhere('parent4.id LIKE :pcode')
-       ->orWhere('parent5.id LIKE :pcode')
-       ->orWhere('parent6.id LIKE :pcode')
+       ->andWhere($queryBuilder->expr()->orX(
+        $queryBuilder->expr()->like('parent.name', ':pname')
+        ,$queryBuilder->expr()->like('parent2.name', ':pname')
+        ,$queryBuilder->expr()->like('parent3.name', ':pname')
+        ,$queryBuilder->expr()->like('parent4.name', ':pname')
+        ,$queryBuilder->expr()->like('parent5.name', ':pname')
+        ,$queryBuilder->expr()->like('parent6.name', ':pname')
+        ,$queryBuilder->expr()->like('parent.id', ':pcode')
+        ,$queryBuilder->expr()->like('parent2.id', ':pcode')
+        ,$queryBuilder->expr()->like('parent3.id', ':pcode')
+        ,$queryBuilder->expr()->like('parent4.id', ':pcode')
+        ,$queryBuilder->expr()->like('parent5.id', ':pcode')
+        ,$queryBuilder->expr()->like('parent6.id', ':pcode')
+       ))
        // ->orderBy('parent.name,parent2.name,parent3.name,parent4.name,parent5.name,parent6.name','ASC')
        ->orderBy('c.name', 'ASC')
        ->setParameter('pname', '%'.$queryObject->getField("parent_name").'%')

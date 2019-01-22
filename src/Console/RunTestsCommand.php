@@ -77,7 +77,6 @@ private $fileSystem;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
       set_time_limit(0);
-
       $command = $this->getApplication()->find('app:tests:prepare');
 
       $arguments = [
@@ -85,22 +84,21 @@ private $fileSystem;
       ];
 
       $prepareInput = new ArrayInput($arguments);
-      $returnCode = $command->run($prepareInput, $output);
 
-      $phpunit = new Process('bin/phpunit');
-      $phpunit->setTty(true);      
-      $phpunit->setTimeout(3600);
+      $returnCode = $command->run($prepareInput, $output);
+      $phpunit = new Process(['bin/phpunit']);
+      $phpunit->setTty(true);
       $phpunit->run(function ($type, $buffer) {
         if (Process::ERR === $type) {
           echo 'ERR > '.$buffer;
         } else {
           echo $buffer;
         }
-      });
+      //}, ['UPLOADS_PARENT' => 'private/test']);
+    });
 
       $e2e = new Process('yarn e2e');
-      $e2e->setTty(true);      
-      $e2e->setTimeout(3600);
+      $e2e->setTty(true);
       $e2e->run(function ($type, $buffer) {
         if (Process::ERR === $type) {
           echo 'ERR > '.$buffer;
@@ -110,8 +108,7 @@ private $fileSystem;
       });
 
       $jest = new Process('yarn jest');
-      $jest->setTty(true);      
-      $jest->setTimeout(3600);
+      $jest->setTty(true);
       $jest->run(function ($type, $buffer) {
         if (Process::ERR === $type) {
           echo 'ERR > '.$buffer;
