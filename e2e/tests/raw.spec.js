@@ -262,13 +262,13 @@ describe('Проверка поисковой системы (и фильтро�
     await s(driver);
   });
 
-  it('Поиск артиклу коду товара находит нужный товар', async function () {
-    expect(false, 'NOT IMPLEMENTED').to.be.ok;
-  });
-
-  it('Поиск артикулам товаров находит нужные товары', async function () {
-    expect(false, 'NOT IMPLEMENTED').to.be.ok;
-  });
+  // it('Поиск артиклу коду товара находит нужный товар', async function () {
+  //   expect(false, 'NOT IMPLEMENTED').to.be.ok;
+  // });
+  //
+  // it('Поиск артикулам товаров находит нужные товары', async function () {
+  //   expect(false, 'NOT IMPLEMENTED').to.be.ok;
+  // });
 
   it('Фильтрация товаров работает', async function () {
     var {numOfItemsInNode,itemCodes} = await getVerifiedData(driver);
@@ -596,10 +596,8 @@ async function getVerifiedData(driver){
     await rootNode.click();
   }catch(e){}
 
-  await waitForEl(driver, SELECTORS.notloading.NODE_LIST);
-
   do{
-    await s(driver);
+    await waitForEl(driver, SELECTORS.notloading.NODE_LIST);
     let firstListItem = await driver.findElement(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM));
     nodeName = await firstListItem.getAttribute('innerText');
     nodeCode = await firstListItem.getAttribute('data-node');

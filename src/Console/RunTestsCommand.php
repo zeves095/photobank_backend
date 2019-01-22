@@ -77,6 +77,11 @@ private $fileSystem;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
       set_time_limit(0);
+
+      if ($this->container->get('kernel')->getEnvironment()!=="test") {
+        $output->writeln('Для тестов должно быть определено окружение test в .env !');exit();
+      }
+
       $command = $this->getApplication()->find('app:tests:prepare');
 
       $arguments = [
