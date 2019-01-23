@@ -1,12 +1,14 @@
 import React from 'react';
-import { ItemSection } from './ItemSection';
+import ItemSection from './ItemSection';
 import { ItemList } from './ItemList';
 import { ListFilter } from './ListFilter';
 import { UploadPool } from './UploadPool';
 import { DownloadPool } from './DownloadPool';
-import { Draggable } from './../common/Draggable';
-import {LocalStorageService} from './services/LocalStorageService';
-import {NotificationService} from '../services/NotificationService';
+import { Draggable } from './../../common/Draggable';
+import {LocalStorageService} from '../services/LocalStorageService';
+import {NotificationService} from '../../services/NotificationService';
+
+import {connect} from 'react-redux';
 
 /**
  * Компонент интерфейса работы с конкретным разделом каталога (ItemList+ItemSection)
@@ -144,7 +146,7 @@ export class NodeViewer extends React.Component{
   }
 
   componentDidUpdate(prevProps,prevState){
-    if(this.state.node == prevState.node && this.props.node != this.state.node){
+    if(this.props.node == prevState.node && this.props.node != this.props.node){
       this.setState({
         "node":this.props.node
       });
@@ -184,7 +186,7 @@ export class NodeViewer extends React.Component{
 
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
-          <ItemList node={this.state.node} query={this.state.query} itemChoiceHandler={this.handleItemChoice} item={this.props.item} />
+          <ItemList node={this.props.node} query={this.state.query} itemChoiceHandler={this.handleItemChoice} item={this.props.item} />
           {$(".view-inner__item-section").length>0?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
           <div className="view-inner__item-section" key={this.state.current_item!=null?this.state.current_item.id:""}>
             <span className="titlefix"><h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.state.product_crumbs}</i></h2></span>
@@ -201,3 +203,14 @@ export class NodeViewer extends React.Component{
     );
   }
 }
+
+const mapStateToProps = (state) =>{
+  return {
+    node: catalogue.current_node
+  }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NodeViewer);

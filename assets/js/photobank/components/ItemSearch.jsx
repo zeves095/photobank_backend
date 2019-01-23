@@ -1,6 +1,8 @@
 import React from 'react';
 
-import {ItemQueryObject} from './services/ItemQueryObject';
+import {ItemQueryObject} from '../services/ItemQueryObject';
+
+import {connect} from 'react-redux';
 /**
  * Компонент интерфейса поиска товаров
  */
@@ -77,3 +79,13 @@ export class ItemSearch extends React.Component {
     </div>);
   }
 }
+
+const mapStateToProps = (state) =>{
+  return {
+  }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ItemSearch);

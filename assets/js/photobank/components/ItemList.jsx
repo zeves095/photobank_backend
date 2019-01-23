@@ -1,9 +1,11 @@
 import React, {PureComponent} from 'react';
 import { ListFilter } from './ListFilter';
-import {ItemService} from './services/ItemService';
+import {ItemService} from '../services/ItemService';
 
-import {LocalStorageService} from './services/LocalStorageService';
-import {NotificationService} from '../services/NotificationService';
+import {LocalStorageService} from '../services/LocalStorageService';
+import {NotificationService} from '../../services/NotificationService';
+
+import {connect} from 'react-redux';
 /**
  * Компонент интерфейса для работы со списком товаров раздела каталога
  */
@@ -140,3 +142,13 @@ export class ItemList extends React.Component{
     );
   }
 }
+
+const mapStateToProps = (state) =>{
+  return {
+  }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ItemList);

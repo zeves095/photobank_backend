@@ -3,7 +3,9 @@ import React from 'react';
 
 import { ItemSection } from './ItemSection';
 import { ListFilter } from './ListFilter';
-import {NotificationService} from '../services/NotificationService';
+import {NotificationService} from '../../services/NotificationService';
+
+import {connect} from 'react-redux';
 
 /**
  * Компонент работы с очередью отправки файлов на сервер
@@ -156,3 +158,13 @@ export class UploadPool extends React.Component{
     );
   }
 }
+
+const mapStateToProps = (state) =>{
+  return {
+  }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UploadPool);

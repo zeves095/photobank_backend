@@ -11,47 +11,32 @@ class UploadService{
   }
 
   /**
-   * Получает список товаров каталога, для которых есть начатые, но не законченные загрузки
+   * Получает полный список незавершенных загрузок с сервера
    */
-  static fetchUnfinishedItems(){
-    let items = [];
+  static fetchUnfinished(){
+    let unfinished = [];
     return new Promise((resolve, reject)=>{
-      let unfinishedResponse = this._getAllUnfinished();
-      unfinishedResponse.then((data)=>{
-        for (var i = 0; i < data.length; i++) {
-          let unfinishedUpload = data[i];
-          if(typeof window.resumableContainer[unfinishedUpload[0]] == 'undefined' && items.indexOf(unfinishedUpload[0])==-1){
-            items.push(unfinishedUpload[0]);
-          }
-        }
-        resolve(items);
+      fetch(window.config.unfinished_uploads_url,{'method':'GET'}).then((data)=>{
+        resolve(data);
       });
     });
   }
 
   /**
-   * Получает список начатых, но не законченных загрузок для конкретного товара
-   * @param  {Object} item Объект товара, для которого необходимо найти незаконченные загрузки
-   * @param  {Object[]} existing Массив объектов загруженных на сервер ресурсов
+   * Создает инстансы Resumable.js для товаров, с незаконченными загрузками
+   * @param {Object[]} container Контейнер для всех инстансев Resumable
+   * @param {Object[]} uploads Загрузки, для которых нужно создать Resumable
+   *
+   * TODO сделать конфигурацию неглобальной
    */
-  static fetchUnfinished(item, existing){
-    let unfinished = [];
-    return new Promise((resolve, reject)=>{
-      let unfinishedResponse = this._getAllUnfinished();
-      unfinishedResponse.then((data)=>{
-        for (var i = 0; i < data.length; i++) {
-          let unfinishedUpload = data[i];
-          if(unfinishedUpload[0]==item){
-            unfinished.push({'filename': unfinishedUpload[1], 'filehash': unfinishedUpload[2], 'class': "unfinished", "ready": true, "completed":unfinishedUpload[3],"total":unfinishedUpload[4]});
-          }
-        }
-        let unfinished_filtered = unfinished.filter((unfinished)=>{
-          return existing.filter((upload)=>{return upload.filehash == unfinished.filehash}).length == 0;
-        })
-        resolve(unfinished_filtered);
-      });
-    });
+  static populateResumableContainer(container, uploads, config={}){
+    let newContainer = Object.assign({}, container);
+    for(var upload in uploads){
+      newContainer[uploads[upload]]=new Resumable({target: window.config.upload_target_url});
+    }
+    return newContainer;
   }
+
 
   /**
    * Удаляет загрузки из списка незавершенных, если они были продолжены
@@ -62,7 +47,7 @@ class UploadService{
   static resolveResumed(unfinished, pending){
     let resolved = unfinished.filter((unfin)=>{
       for(var i = 0; i<pending.length; i++){
-        if(unfin.filename == pending[i].fileName && unfin.filehash == pending[i].uniqueIdentifier){
+        if(unfin.file_name == pending[i].fileName && unfin.file_hash == pending[i].uniqueIdentifier){
           return false;
         }
       }
@@ -152,17 +137,6 @@ class UploadService{
           resolve(true);
         });
       }
-    });
-  }
-
-  /**
-   * Получает полный список незавершенных загрузок с сервера
-   */
-  static _getAllUnfinished(){
-    return new Promise((resolve, reject)=>{
-      $.getJSON(window.config.unfinished_uploads_url, (data)=>{
-        resolve(data);
-      });
     });
   }
 

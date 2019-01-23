@@ -1,7 +1,9 @@
 import React from 'react';
 // import $ from 'jquery';
-import {ResourceService} from './../services/ResourceService';
-import {NotificationService} from '../services/NotificationService';
+import {ResourceService} from './../../services/ResourceService';
+import {NotificationService} from '../../services/NotificationService';
+
+import {connect} from 'react-redux';
 
 /**
  * Компонент интерфейса bulk-загрузки файлов с сервера
@@ -112,3 +114,13 @@ export class DownloadPool extends React.Component{
     );
   }
 }
+
+const mapStateToProps = (state) =>{
+  return {
+  }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DownloadPool);

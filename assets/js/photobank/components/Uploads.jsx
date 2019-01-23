@@ -1,9 +1,11 @@
 import React from 'react';
 // import $ from 'jquery';
-import { hex_md5 } from '../vendor/md5';
-import { UnfinishedUploads } from './UnfinishedUploads';
-import { UploadService } from './services/UploadService';
-import {NotificationService} from '../services/NotificationService';
+import { hex_md5 } from '../../vendor/md5';
+import UnfinishedUploads from './UnfinishedUploads';
+import { UploadService } from '../services/UploadService';
+import { NotificationService} from '../../services/NotificationService';
+
+import {connect} from 'react-redux';
 /**
  * Компонент работы с активными и незаконченными загрузками
  */
@@ -270,3 +272,13 @@ export class Uploads extends React.Component{
     );
   }
 }
+
+const mapStateToProps = (state) =>{
+  return {
+  }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Uploads);

@@ -1,9 +1,11 @@
 import React from 'react';
 // import $ from 'jquery';
-import { hex_md5 } from '../vendor/md5';
-import {ResourceService} from './../services/ResourceService';
-import {NotificationService} from '../services/NotificationService';
-import {LocalStorageService} from './services/LocalStorageService';
+import { hex_md5 } from '../../vendor/md5';
+import {ResourceService} from './../../services/ResourceService';
+import {NotificationService} from '../../services/NotificationService';
+import {LocalStorageService} from '../services/LocalStorageService';
+
+import {connect} from 'react-redux';
 
 /**
  * Компонент интерфейса для отображения существующих ресурсов для товара
@@ -420,3 +422,13 @@ export class ExistingResources extends React.Component{
     );
   }
 }
+
+const mapStateToProps = (state) =>{
+  return {
+  }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ExistingResources);

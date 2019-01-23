@@ -1,10 +1,12 @@
 import React from 'react';
 // import $ from 'jquery';
-import { hex_md5 } from '../vendor/md5';
+import { hex_md5 } from '../../vendor/md5';
 import { ExistingResources } from './ExistingResources';
 import { Uploads } from './Uploads';
-import {ItemService} from './services/ItemService';
-import {NotificationService} from '../services/NotificationService';
+import {ItemService} from '../services/ItemService';
+import {NotificationService} from '../../services/NotificationService';
+
+import {connect} from 'react-redux';
 
 /**
  * Компонент интерфейса работы с определенным товаром
@@ -132,3 +134,13 @@ export class ItemSection extends React.Component{
     );
   }
 }
+
+const mapStateToProps = (state) =>{
+  return {
+  }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ItemSection);
