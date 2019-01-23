@@ -29,15 +29,14 @@ class ResourceService{
    * @param  {Number} end             Индекс конца списка товаров, для которых нужны пресеты
    * @param  {Object[]} finishedPresets Уже запрошенные и полученные пресеты
    */
-  static fetchExistingPresets(itemId, existing, start, end, finishedPresets){
+  static fetchExistingPresets(pagination, existing){
     let presets = [];
     return new Promise((resolve,reject)=>{
       if(existing.length==0){resolve([])}
-
       let presetIterable = [];
-      for(var i = start; i<end; i++){
+      for(var i = pagination.start; i<pagination.end; i++){
         if(typeof existing[i] != "undefined"){
-          presetIterable.push(this._getFinishedPresets(existing, i, finishedPresets));
+          presetIterable.push(this._getFinishedPresets(existing[i]));
         }
       }
       Promise.all(presetIterable).then((data)=>{
@@ -46,14 +45,14 @@ class ResourceService{
             presets = presets.concat(data[item]);
           }
         }
-        presets = presets.filter((preset)=>{
-          for(var fin in finishedPresets){
-             if(preset.preset==finishedPresets[fin].preset&&finishedPresets[fin].resource==preset.resource){
-               return false;
-             }
-          }
-          return true;
-        });
+        // presets = presets.filter((preset)=>{
+        //   for(var fin in finishedPresets){
+        //      if(preset.preset==finishedPresets[fin].preset&&finishedPresets[fin].resource==preset.resource){
+        //        return false;
+        //      }
+        //   }
+        //   return true;
+        // });
         resolve(presets);
       }).catch((e)=>{
         reject(e);
@@ -67,20 +66,18 @@ class ResourceService{
    * @param  {Number} id              Идентификатор ресурса
    * @param  {Object[]} finishedPresets Уже запрошенные и полученные пресеты
    */
-  static _getFinishedPresets(existing, id, finishedPresets){
+  static _getFinishedPresets(existing){
     let presetItems = [];
     let presets = [];
     return new Promise((resolve, reject)=>{
-
-      if(typeof existing[id] == 'undefined'){resolve(null)}
-      if(finishedPresets.filter((fin_preset)=>{return fin_preset.resource == existing[id].id}).length >= Object.keys(window.config['presets']).length){resolve(null)}
+      if(typeof existing == 'undefined'){resolve(null)}
+      //if(finishedPresets.filter((fin_preset)=>{return fin_preset.resource == existing.id}).length >= Object.keys(window.config['presets']).length){resolve(null)}
 
       for(var preset in window.config['presets']){
 
         let presetId = window.config['presets'][preset]['id'];
-        let resId = existing[id].id;
-        let url = window.config.resource_url + existing[id].id + "/" + presetId;
-
+        let resId = existing.id;
+        let url = window.config.resource_url + existing.id + "/" + presetId;
         presetItems.push(new Promise((resolvePreset,rejectPreset)=>{
           $.ajax({url: url, method: 'GET'}).done((data)=>{
             if(typeof data.id != "undefined"){

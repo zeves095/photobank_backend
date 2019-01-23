@@ -2,18 +2,24 @@ import {
   CATALOGUE_DATA_FETCH,
   CATALOGUE_ROOT_NODES_FETCH,
   NODE_CHOICE,
+  ITEM_CHOICE,
+  ITEMS_FETCH,
   SUCCESS,
   FAIL
  } from '../../constants'
 
  import {
-   CatalogueService
+   CatalogueService,
+   ItemQueryObject
  } from '../../services/';
+
 
 let defaultState = {
   catalogue_data: [],
+  items: [],
   current_node: null,
-  item_query_object: {}
+  current_item: null,
+  item_query_object: null
 }
 
 export default (catalogue = defaultState, action) => {
@@ -28,7 +34,15 @@ export default (catalogue = defaultState, action) => {
       return {...catalogue, catalogue_data:newData}
       break;
     case NODE_CHOICE:
-      return {...catalogue, current_node:action.payload}
+      let qo = new ItemQueryObject();
+      qo.nodeId = action.payload;
+      return {...catalogue, current_node:action.payload, item_query_object:qo}
+      break;
+    case ITEM_CHOICE:
+      return {...catalogue, current_item:action.payload}
+      break;
+    case ITEMS_FETCH:
+      return {...catalogue, items:action.payload}
       break;
   }
   return catalogue

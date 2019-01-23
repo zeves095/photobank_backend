@@ -1,8 +1,8 @@
 import React from 'react';
 // import $ from 'jquery';
 import { hex_md5 } from '../../vendor/md5';
-import { ExistingResources } from './ExistingResources';
-import { Uploads } from './Uploads';
+import ExistingResources from './ExistingResources';
+import Uploads from './Uploads';
 import {ItemService} from '../services/ItemService';
 import {NotificationService} from '../../services/NotificationService';
 
@@ -23,14 +23,14 @@ export class ItemSection extends React.Component{
    */
   constructor(props) {
     super(props);
-    if(typeof window.resumableContainer[this.props.item_id] == 'undefined'){
+    if(typeof window.resumableContainer[this.props.item.id] == 'undefined'){
       this.resumable = new Resumable({target: window.config.upload_target_url});
     } else {
-      this.resumable = window.resumableContainer[this.props.item_id];
+      this.resumable = window.resumableContainer[this.props.item.id];
     }
     this.state={
       "resumable":this.resumable,
-      "item_id":this.props.item_id,
+      "item_id":this.props.item.id,
       "open":this.props.open_by_default,
       "ready":false,
       "view_type": this.props.default_view,
@@ -58,7 +58,7 @@ export class ItemSection extends React.Component{
    * Запрашивает информацию о текуще товаре
    */
   componentWillMount(){
-    ItemService.getIdentity(this.props.item_id).then((data)=>{
+    ItemService.getIdentity(this.props.item.id).then((data)=>{
       this.setState({
         "item":data
       });
@@ -93,10 +93,9 @@ export class ItemSection extends React.Component{
   }
 
   render() {
-
     return (
       <div className = {"item-view"} >
-      <div className="file-list__drop-target" id={"drop_target" + this.props.item_id}></div>
+      <div className="file-list__drop-target" id={"drop_target" + this.props.item.id}></div>
       {
         !this.props.render_existing
           ? <button type="button" className="item-view__collapse-button" onClick={() => {
@@ -110,9 +109,9 @@ export class ItemSection extends React.Component{
               }</button>
             : null
       } {
-        typeof this.state.item != "undefined"
-          ? <div className="item-view__item-title">Товар #{this.state.item.itemCode}
-              "{this.state.item.name}"</div>
+        typeof this.props.item != "undefined"
+          ? <div className="item-view__item-title">Товар #{this.props.item.itemCode}
+              "{this.props.item.name}"</div>
           : null
       }<div className={"item-view__inner " + (
           this.state.open
@@ -127,9 +126,9 @@ export class ItemSection extends React.Component{
           <button type="button" data-view="2" title="Таблица" className={this.state.view_type==2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
             <i className="fas fa-list-ul"></i>
           </button>
-          {this.props.render_existing?<ExistingResources authorized={this.props.authorized} item_id={this.state.item_id} addDownloadHandler={this.props.addDownloadHandler} need_refresh={this.state.need_refresh} default_view={this.state.view_type} />:null}
-        {((typeof this.state.item=='undefined')||!this.props.authorized)?null:<h4 className="item-view__subheader">Загрузки</h4>}
-      {((typeof this.state.item=='undefined')||!this.props.authorized)?null:<Uploads item={this.state.item} resumable={this.resumable} uploadCompleteHandler={this.handleUpload} />}
+          {this.props.render_existing?<ExistingResources authorized={this.props.authorized} item_id={this.props.item.id} addDownloadHandler={this.props.addDownloadHandler} need_refresh={this.state.need_refresh} default_view={this.state.view_type} />:null}
+        {((typeof this.props.item=='undefined')||!this.props.authorized)?null:<h4 className="item-view__subheader">Загрузки</h4>}
+      {((typeof this.props.item=='undefined')||!this.props.authorized)?null:<Uploads item={this.props.item} resumable={this.resumable} uploadCompleteHandler={this.handleUpload} />}
       </div> < /div>
     );
   }
@@ -137,6 +136,7 @@ export class ItemSection extends React.Component{
 
 const mapStateToProps = (state) =>{
   return {
+    item: state.catalogue.current_item
   }
 }
 

@@ -1,10 +1,13 @@
-import {UploadService, NotificationService, CatalogueService} from '../services/';
+import {UploadService, NotificationService, CatalogueService, ResourceService} from '../services/';
 
 import {
   UPLOADS_UNFINISHED_FETCH,
   CATALOGUE_DATA_FETCH,
   CATALOGUE_ROOT_NODES_FETCH,
+  EXISTING_RESOURCES_FETCH,
+  EXISTING_PRESETS_FETCH,
   NODE_CHOICE,
+  ITEM_CHOICE,
   START,
   SUCCESS,
   FAIL
@@ -39,7 +42,7 @@ export function fetchRootNodes(id){
       type: CATALOGUE_ROOT_NODES_FETCH+START,
       payload: id
     });
-    CatalogueService.fetchRootNodes(id).then((data)=>{
+    return CatalogueService.fetchRootNodes(id).then((data)=>{
       dispatch({
         type: CATALOGUE_ROOT_NODES_FETCH+SUCCESS,
         payload: data
@@ -81,5 +84,75 @@ export function chooseNode(id){
   return {
     type: NODE_CHOICE,
     payload: id
+  }
+}
+
+export function fetchExisting(id){
+  return (dispatch)=>{
+    dispatch({
+      type: EXISTING_RESOURCES_FETCH+START,
+      payload: ''
+    });
+    return ResourceService.fetchExisting(id).then((data)=>{
+      dispatch({
+        type: EXISTING_RESOURCES_FETCH+SUCCESS,
+        payload: data
+      });
+    }).catch((error)=>{
+      dispatch({
+        type: EXISTING_RESOURCES_FETCH+FAIL,
+        payload: ''
+      });
+      NotificationService.throw('custom',error);
+    });
+  }
+}
+
+export function fetchPresets(pagination, existing){
+  return (dispatch)=>{
+    dispatch({
+      type: EXISTING_PRESETS_FETCH+START,
+      payload: ''
+    });
+    return ResourceService.fetchExistingPresets(pagination, existing).then((data)=>{
+      dispatch({
+        type: EXISTING_PRESETS_FETCH+SUCCESS,
+        payload: data
+      });
+    }).catch((error)=>{
+      dispatch({
+        type: EXISTING_PRESETS_FETCH+FAIL,
+        payload: ''
+      });
+      NotificationService.throw('custom',error);
+    });
+  }
+}
+
+export function chooseItem(item){
+  return {
+    type: ITEM_CHOICE,
+    payload: item
+  }
+}
+
+export function fetchItems(query){
+  return (dispatch)=>{
+    dispatch({
+      type: ITEMS_FETCH+START,
+      payload: ''
+    });
+    return ItemService.fetchItems(query).then((data)=>{
+      dispatch({
+        type: ITEMS_FETCH+SUCCESS,
+        payload: data
+      });
+    }).catch((error)=>{
+      dispatch({
+        type: ITEMS_FETCH+FAIL,
+        payload: ''
+      });
+      NotificationService.throw('custom',error);
+    });
   }
 }

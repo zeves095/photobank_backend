@@ -15,20 +15,14 @@ class ItemService{
    * @param  {Object}  items  Уде полученный список товаров
    * @param  {Boolean} [need_refresh=true] Необходимость повторного обращения к серверу
    */
-  static fetchItems(query, filter, items,need_refresh = true){
+  static fetchItems(query){
     return new Promise((resolve, reject)=>{
-      if(!need_refresh){
-        let dataFiltered = this._filterData(items, filter);
-        resolve([items, dataFiltered]);
-      }else{
         this._getItems(query).then((data)=>{
           if(data.length == 0){reject("none-found")}
-          let dataFiltered = this._filterData(data, filter);
-          resolve([data, dataFiltered]);
+          resolve(data);
         }).catch((e)=>{
           reject("none-found");
         });
-      }
     });
   }
 

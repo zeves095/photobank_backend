@@ -5,7 +5,10 @@ import {ItemService} from '../services/ItemService';
 import {LocalStorageService} from '../services/LocalStorageService';
 import {NotificationService} from '../../services/NotificationService';
 
+import {chooseItem, fetchItems} from '../actionCreator';
+
 import {connect} from 'react-redux';
+import {filterItems} from '../selectors';
 /**
  * Компонент интерфейса для работы со списком товаров раздела каталога
  */
@@ -42,12 +45,10 @@ export class ItemList extends React.Component{
    * Запрашивает список товаров для текущего раздела каталога
    */
   getItems(){
-    this.setState({"loading":true});
-    ItemService.fetchItems(this.props.query, this.state.filter_query, this.state.node_items, this.state.need_refresh).then((data)=>{
+    ItemService.fetchItems(this.props.query).then((data)=>{
       this.setState({
         "node_items": data[0],
         "node_items_filtered" : data[1],
-        "loading": false
       });
     }).catch((error)=>{
       if(error == "none-found"){
@@ -55,7 +56,6 @@ export class ItemList extends React.Component{
         this.setState({
           "node_items": [],
           "node_items_filtered" : [],
-          "loading": false
         });
       }else{
         NotificationService.throw(error);
@@ -85,11 +85,11 @@ export class ItemList extends React.Component{
       itemId = e;
     }
     LocalStorageService.set("current_item", itemId);
-    let currItem = this.state.node_items_filtered.filter((item)=>{return item.id == itemId})[0];
+    let currItem = this.props.items_filtered.filter((item)=>{return item.id == itemId})[0];
     this.setState({
       'current_item': currItem,
     });
-    this.props.itemChoiceHandler(currItem);
+    this.props.chooseItem(currItem);
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -106,9 +106,9 @@ export class ItemList extends React.Component{
       });
       this.getItems();
     }
-    if(this.props.node == prevProps.node && prevState.node_items_filtered.length == 0 && this.state.node_items_filtered.length>0){
-      this.itemClickHandler(this.props.item);
-    }
+    // if(this.props.node == prevProps.node && prevState.node_items_filtered.length == 0 && this.props.items_filtered.length>0){
+    //   this.itemClickHandler(this.props.item);
+    // }
   }
 
   componentWillMount(){
@@ -121,19 +121,19 @@ export class ItemList extends React.Component{
 
   render() {
 
-    let nodeItemList = this.state.node_items_filtered.map((item)=>
+    let nodeItemList = this.props.items_filtered.map((item)=>
       <div className={"list-item"+((this.state.current_item!=null&&item.id==this.state.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={this.itemClickHandler}>
         <h4 data-item={item.id} onClick={this.itemClickHandler} title={item.node}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
       </div>
     );
-    let tooBroadMsg = this.state.node_items_filtered.length == 100?"Показаны не все результаты. Необходимо сузить критерии поиска.":"";
+    let tooBroadMsg = this.props.items_filtered.length == 100?"Показаны не все результаты. Необходимо сузить критерии поиска.":"";
     return (
 
       <div className={"view-inner__item-list"}>
         <span className="titlefix"><h2 className="node-viewer__component-title component-title">Товары</h2></span>
       <div className={(this.state.loading?"loading ":"")+"view-inner__container inner-bump"}>
         <ListFilter filterHandler={this.filterQueryHandler} filterid="nodesearch" placeholder="Фильтр по выбранному" />
-      {this.state.node_items_filtered.length>0?null:"Нет товаров в выбранной категории"}
+      {this.props.items_filtered.length>0?null:"Нет товаров в выбранной категории"}
         {tooBroadMsg}
         {nodeItemList}
         {tooBroadMsg}
@@ -145,10 +145,14 @@ export class ItemList extends React.Component{
 
 const mapStateToProps = (state) =>{
   return {
+    items: state.catalogue.items,
+    items_filtered: filterItems(state),
   }
 }
 
 const mapDispatchToProps = {
+  chooseItem,
+  fetchItems
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemList);

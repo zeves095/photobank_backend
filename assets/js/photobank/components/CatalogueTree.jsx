@@ -27,30 +27,11 @@ export class CatalogueTree extends React.Component {
   constructor(props) {
     super(props);
     this.state ={
-      "catalogue_data": [],
-      "tracked_nodes": [],
-      "current_node": null,
       "crumbs": [],
       "view": this.props.default_view,
       "loading": false,
     }
   }
-
-  // /**
-  //  * Запрашивает структуру каталога с сервера
-  //  */
-  // getCatalogueNodes = ()=>{
-  //   this.setState({"loading":true});
-  //   let nodesResponse = CatalogueService.fetchNodes(this.props.catalogue_data, this.state.tracked_nodes, this.props.current_node);
-  //   nodesResponse.then((cat_data)=>{
-  //     this.setState({
-  //       "catalogue_data": cat_data,
-  //       "loading":false
-  //     });
-  //   }).catch((error)=>{
-  //     NotificationService.throw(error);
-  //   });
-  // }
 
   /**
    * Запрашивает массив объектов разделов каталога для отображения хлебных крошек
@@ -60,7 +41,6 @@ export class CatalogueTree extends React.Component {
     this.setState({
       "crumbs" : crumbs
     });
-    //crumbs.reverse();
     this.props.crumb_handler(crumbs);
   }
 
@@ -68,49 +48,18 @@ export class CatalogueTree extends React.Component {
    * Обработчик выбора активного раздела каталога
    */
   handleNodeChoice = (id)=>{
-    console.log(id);
     this.props.chooseNode(id);
     if(!this.props.catalogue_data.find((node)=>node.parent===id)){
       this.props.fetchNodes(id);
     }
-    // if(this.props.current_node == null){LocalStorageService.unset("current_node");}else{
-    //   LocalStorageService.set("current_node", this.props.current_node);
-    // }
-    // let queryObject = new ItemQueryObject();
-    // queryObject.nodeId = this.props.current_node;
-    // this.props.queryHandler(queryObject);
   }
 
   /**
    * Запрашивает структуру каталога от созраненного выбранного раздела до верхнего уровня каталога
    */
   componentWillMount(){
-    //let currentNode = LocalStorageService.get("current_node");
-
     this.props.fetchRootNodes(this.props.current_node);
-
-    // CatalogueService.fetchRootNodes(this.props.node).then((data)=>{
-    //   let tracked = data.slice(0).map((result)=>{return result.id});
-    //   this.setState({
-    //     "tracked_nodes": tracked,
-    //     "current_node": this.props.node,
-    //     "catalogue_data": data,
-    //   });
-    // }).catch((error)=>{
-    //   NotificationService.throw(error);
-    // });
   }
-
-  // /**
-  //  * Обрабатывает выбор раздела каталога
-  //  */
-  // componentDidUpdate(prevProps,prevState){
-  //   if(this.props.current_node != prevState.current_node){
-  //     //this.handleNodeChoice();
-  //     //this.getCatalogueNodes();
-  //     //this.getCrumbs();
-  //   }
-  // }
 
   /**
    * Обработчик выбора типа предаставления
@@ -128,19 +77,8 @@ export class CatalogueTree extends React.Component {
   traverseUp = ()=>{
     let curNode = this.props.catalogue_data.filter((node)=>{return parseInt(node.id)==parseInt(this.props.current_node)})[0];
     if(typeof curNode!= "undefined"){
-      this.setState({
-        "current_node" : curNode.parent
-      });
-      // this.props.nodeChoiceHandler(curNode.parent);
+      this.props.chooseNode(curNode.parent);
     }
-  }
-
-  /**
-   * Обработчик отправки объекта поиска на сервер
-   * @param  {ItemQueryObject} queryObject Объект поиска
-   */
-  handleQuery = (queryObject)=>{
-    this.props.queryHandler(queryObject);
   }
 
   render() {
