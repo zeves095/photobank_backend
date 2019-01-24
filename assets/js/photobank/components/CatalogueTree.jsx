@@ -29,7 +29,6 @@ export class CatalogueTree extends React.Component {
     this.state ={
       "crumbs": [],
       "view": this.props.default_view,
-      "loading": false,
     }
   }
 

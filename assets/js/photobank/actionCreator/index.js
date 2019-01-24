@@ -1,4 +1,4 @@
-import {UploadService, NotificationService, CatalogueService, ResourceService} from '../services/';
+import {UploadService, NotificationService, CatalogueService, ResourceService, ItemQueryObject, ItemService} from '../services/';
 
 import {
   UPLOADS_UNFINISHED_FETCH,
@@ -8,6 +8,7 @@ import {
   EXISTING_PRESETS_FETCH,
   NODE_CHOICE,
   ITEM_CHOICE,
+  ITEMS_FETCH,
   START,
   SUCCESS,
   FAIL
@@ -81,9 +82,14 @@ export function fetchNodes(id){
 }
 
 export function chooseNode(id){
-  return {
-    type: NODE_CHOICE,
-    payload: id
+  return (dispatch)=> {
+    let qo = new ItemQueryObject();
+    qo.nodeId = id;
+    dispatch(fetchItems(qo));
+    dispatch({
+      type: NODE_CHOICE,
+      payload: id
+    })
   }
 }
 
@@ -129,10 +135,10 @@ export function fetchPresets(pagination, existing){
   }
 }
 
-export function chooseItem(item){
+export function chooseItem(id){
   return {
     type: ITEM_CHOICE,
-    payload: item
+    payload: id
   }
 }
 

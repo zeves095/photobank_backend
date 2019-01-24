@@ -18,10 +18,10 @@ class ItemService{
   static fetchItems(query){
     return new Promise((resolve, reject)=>{
         this._getItems(query).then((data)=>{
-          if(data.length == 0){reject("none-found")}
+          if(data.length == 0){resolve([])}
           resolve(data);
         }).catch((e)=>{
-          reject("none-found");
+          reject(e);
         });
     });
   }
@@ -46,14 +46,18 @@ class ItemService{
     return new Promise((resolve,reject)=>{
       if(!queryObject instanceof ItemQueryObject){reject("Invalid query object")}
       if(queryObject.nodeId != null){
-        $.getJSON(window.config.get_items_url+queryObject.nodeId, (data)=>{
+        fetch(window.config.get_items_url+queryObject.nodeId, {'method':'GET'})
+        .then((response)=>response.json())
+        .then((data)=>{
           resolve(data);
-        }).fail((e)=>{reject([])});
+        }).catch((e)=>{reject([])});
       }else{
+        let url = new URL(window.config.item_search_url);
         let data = {"item_search_name":queryObject.name,"item_search_code":queryObject.code,"item_search_parent_name":queryObject.parent_name,"item_search_search_nested":queryObject.search_nested, "item_search_article":queryObject.article}
-        $.get(window.config.item_search_url,data).done((data)=>{
+        Object.keys(data).forEach(key => url.searchParams.append(key, data[key]));
+        fetch(url).then((data)=>{
           resolve(data);
-        }).fail((e)=>{reject([])});
+        }).catch((e)=>{reject([])});
       }
     })
   }

@@ -7,6 +7,7 @@ import {ItemService} from '../services/ItemService';
 import {NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
+import {getItemObject} from '../selectors';
 
 /**
  * Компонент интерфейса работы с определенным товаром
@@ -129,14 +130,14 @@ export class ItemSection extends React.Component{
           {this.props.render_existing?<ExistingResources authorized={this.props.authorized} item_id={this.props.item.id} addDownloadHandler={this.props.addDownloadHandler} need_refresh={this.state.need_refresh} default_view={this.state.view_type} />:null}
         {((typeof this.props.item=='undefined')||!this.props.authorized)?null:<h4 className="item-view__subheader">Загрузки</h4>}
       {((typeof this.props.item=='undefined')||!this.props.authorized)?null:<Uploads item={this.props.item} resumable={this.resumable} uploadCompleteHandler={this.handleUpload} />}
-      </div> < /div>
+      </div> </div>
     );
   }
 }
 
 const mapStateToProps = (state) =>{
   return {
-    item: state.catalogue.current_item
+    item: getItemObject(state)
   }
 }
 

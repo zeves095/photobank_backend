@@ -34,15 +34,18 @@ export default (catalogue = defaultState, action) => {
       return {...catalogue, catalogue_data:newData}
       break;
     case NODE_CHOICE:
-      let qo = new ItemQueryObject();
-      qo.nodeId = action.payload;
-      return {...catalogue, current_node:action.payload, item_query_object:qo}
+      return {...catalogue, current_node:action.payload}
       break;
     case ITEM_CHOICE:
       return {...catalogue, current_item:action.payload}
       break;
-    case ITEMS_FETCH:
-      return {...catalogue, items:action.payload}
+    case ITEMS_FETCH+SUCCESS:
+      let newItems = action.payload;
+      let curItem = catalogue.items.find(item=>item.id===catalogue.current_item);
+      if(curItem&&catalogue.current_node!==curItem.node){
+        newItems.push(curItem);
+      }
+      return {...catalogue, items:newItems}
       break;
   }
   return catalogue

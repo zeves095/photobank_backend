@@ -9,6 +9,7 @@ import {LocalStorageService} from '../services/LocalStorageService';
 import {NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
+import {getItemObject} from '../selectors';
 
 /**
  * Компонент интерфейса работы с конкретным разделом каталога (ItemList+ItemSection)
@@ -185,7 +186,7 @@ const mapStateToProps = (state) =>{
   return {
     node: state.catalogue.current_node,
     item_query_object: state.catalogue.item_query_object,
-    current_item: state.catalogue.current_item
+    current_item: getItemObject(state)
   }
 }
 
