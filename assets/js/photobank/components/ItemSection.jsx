@@ -7,7 +7,8 @@ import {ItemService} from '../services/ItemService';
 import {NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
-import {getItemObject} from '../selectors';
+import selectors from '../selectors';
+import {pushResumable} from '../actionCreator';
 
 /**
  * Компонент интерфейса работы с определенным товаром
@@ -24,11 +25,6 @@ export class ItemSection extends React.Component{
    */
   constructor(props) {
     super(props);
-    if(typeof window.resumableContainer[this.props.item.id] == 'undefined'){
-      this.resumable = new Resumable({target: window.config.upload_target_url});
-    } else {
-      this.resumable = window.resumableContainer[this.props.item.id];
-    }
     this.state={
       "resumable":this.resumable,
       "item_id":this.props.item.id,
@@ -59,6 +55,7 @@ export class ItemSection extends React.Component{
    * Запрашивает информацию о текуще товаре
    */
   componentWillMount(){
+    this.props.pushResumable(this.props.item.id);
     ItemService.getIdentity(this.props.item.id).then((data)=>{
       this.setState({
         "item":data
@@ -137,11 +134,12 @@ export class ItemSection extends React.Component{
 
 const mapStateToProps = (state) =>{
   return {
-    item: getItemObject(state)
+    item: selectors.catalogue.getItemObject(state)
   }
 }
 
 const mapDispatchToProps = {
+  pushResumable
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemSection);

@@ -6,6 +6,8 @@ import { UploadService } from '../services/UploadService';
 import { NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
+import selectors from '../selectors';
+import {prepareFileForUpload, deleteUpload, completeUpload, deleteUnfinishedUploads} from '../actionCreator';
 /**
  * Компонент работы с активными и незаконченными загрузками
  */
@@ -40,87 +42,13 @@ export class Uploads extends React.Component{
       "processing": "Обрабатывается",
       "completed": "Загружен"
     };
-    this.handleDelete = this.handleDelete.bind(this);
-    this.processFile = this.processFile.bind(this);
-    this.cleanUpDone = this.cleanUpDone.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleClearUnfinished = this.handleClearUnfinished.bind(this);
-  }
-
-  /**
-   * Удаляет из списка загрузок успешно завершенные файлы
-   */
-  cleanUpDone(){
-    for (var i = 0; i < this.props.resumable.files.length; i++) {
-      let file = this.props.resumable.files[i];
-      if(file.isComplete()){
-        this.props.resumable.files.splice(i,1);
-        i--;
-      }
-      this.setState({"loading" : false});
-    }
-  }
-
-  /**
-   * Выполняет подготовку файла к отправке
-   * @param  {Object} file объект загрузки, полученный из resumable
-   */
-  processFile(file) {
-    this.fileHashStack.push(file);
-    file.itemId = this.props.item.id;
-    file.itemCode = this.props.item.itemCode;
-    file.ready = false;
-    let processResponse = UploadService.processFile(file, this.props.resumable.files);
-    processResponse.then((response)=>{
-      this.fileHashStack.splice(this.fileHashStack.indexOf(file), 1);
-      if(this.fileHashStack.length == 0){
-        NotificationService.toast("up-ready");
-        this.setState({
-          "need_refresh": true,
-          "unfinished_need_refresh": true
-        });
-      }
-    });
-  }
-
-  /**
-   * Обработчик удаления загрущки из списка и записи с сервера
-   * @param  {Event} e Событие клика
-   */
-  handleDelete(e){
-    let filehash = "";
-    if(e.target){filehash = $(e.target).data("item");}else{filehash = e}
-    if(typeof this.removeUploadStack[filehash] == 'undefined'){
-      this.removeUploadStack.push(filehash);
-    }
-    let deleteResponse = UploadService.deleteUpload(filehash,this.props.item.id);
-    deleteResponse.then((response)=>{
-      for(var i = 0; i< this.props.resumable.files.length; i++){
-        if(this.props.resumable.files[i].uniqueIdentifier == filehash){
-          this.props.resumable.files.splice(i,1);
-        }
-      }
-      this.removeUploadStack.splice(this.removeUploadStack.indexOf(filehash),1);
-      if(this.removeUploadStack.length == 0){
-        this.setState({
-          "need_refresh": true,
-          "unfinished_need_refresh": true
-        });
-      }
-    });
   }
 
   /**
    * Обработчик начала отправки файлов на сервер
    */
-  handleSubmit(){
-    let ready = true;
-    for(var i = 0; i< this.props.resumable.files.length; i++){
-      if (!this.props.resumable.files[i].ready){
-        ready = false;
-      }
-    }
-    if (ready) {
+  handleSubmit=()=>{
+    if (this.props.uploads_ready.length === this.props.uploads.length) {
       this.props.resumable.upload();
     }
   }
@@ -128,21 +56,18 @@ export class Uploads extends React.Component{
   /**
    * Обработчик удаления всех незавершенных загрузок из списка и записей из базы
    */
-  handleClearUnfinished(){
-    if(this.state.uploads.length == 0){
-      delete window.resumableContainer[this.props.item_id];
-      window.resumableContainer.splice(this.props.item_id,1);
-    }
+  handleClearUnfinished=()=>{
+    this.props.deleteUnfinishedUploads()
   }
 
   /**
    * Определяет действия по событиям из resumable
    */
-  assignResumableEvents(){
+  assignResumableEvents=()=>{
     this.props.resumable.on('fileAdded', (file, event)=>{
       //this.fileAddQueue.push(file);
-      this.setState({"loading" : true});
-      this.processFile(file);
+      // this.setState({"loading" : true});
+      this.props.prepareFileForUpload(file,this.props.uploads,this.props.item);
       if(window.resumableContainer[this.props.item.id] == undefined){
         window.resumableContainer[this.props.item.id] = this.props.resumable;
       }
@@ -158,10 +83,10 @@ export class Uploads extends React.Component{
     });
     this.props.resumable.on('complete', ()=>{
       this.state.busy = false;
-      this.cleanUpDone();
-      delete window.resumableContainer[this.props.item_id];
-      window.resumableContainer.splice(this.props.item.id, 1);
-      this.props.uploadCompleteHandler();
+      this.props.completeUpload(this.props.item.id, this.props.resumable.files);
+      // delete window.resumableContainer[this.props.item_id];
+      // window.resumableContainer.splice(this.props.item.id, 1);
+      //this.props.uploadCompleteHandler();
     });
     this.props.resumable.on('fileError', (file,message)=>{
       this.state.busy = false;
@@ -207,11 +132,6 @@ export class Uploads extends React.Component{
         "loading": false,
       });
     }
-    if(this.props.resumable.files.length >0 && this.props.resumable.files.filter((upload)=>{return upload.ready==false}).length==0){
-      this.state.ready = true;
-    } else {
-      this.state.ready = false;
-    }
   }
 
   componentWillUnmount(){
@@ -219,45 +139,45 @@ export class Uploads extends React.Component{
   }
 
   render() {
-
-    let uploads = this.props.resumable.files;
     let uploadsMarkup = [];
-    for(var i = 0; i<uploads.length; i++){
+    for(let i = 0; i< this.props.uploads.length; i++){
       let status = "";
-      if(uploads[i].isComplete()){
+      if(this.props.uploads[i].isComplete()){
         status = "completed";
       }else{
-        if(uploads[i].isUploading()){
+        if(this.props.uploads[i].isUploading()){
           status = "uploading";
-        }else if(!uploads[i].ready){
+        }else if(!this.props.uploads[i].ready){
           status = "processing";
         }else{
           status = "pending";
         }
       }
       uploadsMarkup.push(
-          <div key={uploads[i].fileName+uploads[i].uniqueIdentifier+"pending"} className={"file-list__file-item file-item " + "file-item"+(uploads[i].isComplete()?"--completed":"--pending") +" "+ (uploads[i].ready? "": "file-item--processing ")+ this.fileViewClasses[this.state.view_type]}>
-            <i data-item={uploads[i].uniqueIdentifier} onClick={this.handleDelete} className="fas fa-trash-alt file-item__delete-upload"></i><br />
-          <span className="file-item__file-name">{uploads[i].fileName}</span>
+          <div key={this.props.uploads[i].fileName+this.props.uploads[i].uniqueIdentifier+"pending"} className={"file-list__file-item file-item " + "file-item"+(this.props.uploads[i].isComplete()?"--completed":"--pending") +" "+ (this.props.uploads[i].ready? "": "file-item--processing ")+this.fileViewClasses[this.state.view_type]}>
+            <i data-item={this.props.uploads[i].uniqueIdentifier} onClick={()=>{this.props.deleteUpload(this.props.uploads[i].uniqueIdentifier, this.props.item.id)}} className="fas fa-trash-alt file-item__delete-upload"></i><br />
+          <span className="file-item__file-name">{this.props.uploads[i].fileName}</span>
         <span className="file-item__upload-status">{this.uploadStatus[status]}</span>
-      <span className="progress-bar" id={"progress_bar"+uploads[i].uniqueIdentifier}>
-            <div className="progress-bar__percentage">{Math.round(uploads[i].progress() * 100) + "%"}</div>
-          <div className="progress-bar__bar" style={{"width":Math.round(uploads[i].progress() * 100) + "%"}}></div>
+      <span className="progress-bar" id={"progress_bar"+this.props.uploads[i].uniqueIdentifier}>
+            <div className="progress-bar__percentage">{Math.round(this.props.uploads[i].progress() * 100) + "%"}</div>
+          <div className="progress-bar__bar" style={{"width":Math.round(this.props.uploads[i].progress() * 100) + "%"}}></div>
             </span>
           </div>
       );
     }
 
+    const ready = this.props.uploads_ready.length!==0 && this.props.uploads.length === this.props.uploads_ready.length ;
+
     return (
       <div className={"item-view__file-list file-list"} id={"file_list" + this.props.item.id}>
           <div className="file-list__button-block button-block">
             <button type="button" id={"browse" + this.props.item.id}><i className="fas fa-folder-open"></i>Выбрать файлы</button>
-          <button type="button" disabled={!this.state.ready} onClick={this.handleSubmit} id={"submit" + this.props.item.id}><i className="fas fa-file-upload"></i>Загрузить выбранное</button>
+          <button type="button" disabled={!ready} onClick={this.handleSubmit} id={"submit" + this.props.item.id}><i className="fas fa-file-upload"></i>Загрузить выбранное</button>
 
           </div>
       <div className="item-uploads">
-        {uploads.length>0?<div key={this.props.item.id + "uploads"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загрузки</h4></div>:""}
-        {uploads.length>0?<div className={"item-uploads__upload-wrapper "+(this.state.loading?"loading ":"")}>
+        {this.props.uploads.length>0?<div key={this.props.item.id + "uploads"} className="item-view__subheader-wrapper"><h4 className="item-view__subheader">Загрузки</h4></div>:""}
+        {this.props.uploads.length>0?<div className={"item-uploads__upload-wrapper "+(!ready?"loading ":"")}>
         <div className="item-view__table-header">
           <span className="info__info-field info__info-field--title info__info-field--blank"></span>
           <span className="info__info-field info__info-field--title info__info-field--sizepx">Имя файла</span>
@@ -266,7 +186,7 @@ export class Uploads extends React.Component{
         </div>
         {uploadsMarkup}
       </div>:null}
-        <UnfinishedUploads item={this.props.item} uploads={uploads} deleteHandler={this.handleDelete} clearAllHandler={this.handleClearUnfinished} need_refresh={this.state.unfinished_need_refresh}/>
+        <UnfinishedUploads item={this.props.item} uploads={this.props.uploads} need_refresh={this.state.unfinished_need_refresh}/>
       </div>
     </div>
     );
@@ -275,10 +195,17 @@ export class Uploads extends React.Component{
 
 const mapStateToProps = (state) =>{
   return {
+    resumable: selectors.upload.getResumableInstance(state),
+    uploads: selectors.upload.getUploads(state),
+    uploads_ready: selectors.upload.getReadyUploads(state),
   }
 }
 
 const mapDispatchToProps = {
+  prepareFileForUpload,
+  deleteUpload,
+  completeUpload,
+  deleteUnfinishedUploads
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Uploads);

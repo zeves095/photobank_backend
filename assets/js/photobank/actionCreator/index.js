@@ -9,6 +9,11 @@ import {
   NODE_CHOICE,
   ITEM_CHOICE,
   ITEMS_FETCH,
+  FILE_PROCESSED,
+  RESUMABLE_PUSH,
+  UPLOAD_DELETE,
+  DELETE_ALL_PENDING,
+  DELETE_ALL_UNFINISHED,
   START,
   SUCCESS,
   FAIL
@@ -34,6 +39,13 @@ export function fetchUnfinished(){
       });
       NotificationService.throw('custom',error);
     });
+  }
+}
+
+export function pushResumable(itemId){
+  return {
+    type: RESUMABLE_PUSH,
+    payload: itemId
   }
 }
 
@@ -72,6 +84,7 @@ export function fetchNodes(id){
         payload: data
       });
     }).catch((error)=>{
+      console.log(error);
       dispatch({
         type: CATALOGUE_DATA_FETCH+FAIL,
         payload: ''
@@ -148,17 +161,83 @@ export function fetchItems(query){
       type: ITEMS_FETCH+START,
       payload: ''
     });
-    return ItemService.fetchItems(query).then((data)=>{
+    return ItemService.fetchItems(query)
+    .then((data)=>{
       dispatch({
         type: ITEMS_FETCH+SUCCESS,
         payload: data
       });
     }).catch((error)=>{
+      console.log(error);
       dispatch({
         type: ITEMS_FETCH+FAIL,
         payload: ''
       });
       NotificationService.throw('custom',error);
+    });
+  }
+}
+
+export function prepareFileForUpload(file, existing, item){
+  return (dispatch)=>{
+    const itemId = item.id;
+    const itemCode = item.itemCode;
+    return UploadService.processFile(file, existing).then((uniqueIdentifier)=>{
+      let fileParams = {uniqueIdentifier,itemId,itemCode,file};
+      dispatch({
+        type: FILE_PROCESSED,
+        payload: fileParams
+      });
+      UploadService.commitUpload(fileParams,existing);
+    });
+  }
+}
+
+export function deleteUpload(filehash, item){
+  return (dispatch)=>{
+    return UploadService.deleteUpload(filehash,item).then((response)=>{
+      dispatch({
+        type: UPLOAD_DELETE,
+        payload: {hash:filehash,item}
+      });
+    }).catch((e)=>{
+      console.log(e);
+      NotificationService.throw('custom', e)
+    });
+  }
+}
+
+export function completeUpload(id, files){
+  return dispatch=>{
+    dispatch(deletePendingUploads(id,files)).then(()=>{
+      dispatch(fetchExisting(id));
+      dispatch(fetchUnfinished());
+    });
+  }
+}
+
+export function deletePendingUploads(id, files){
+  return dispatch=>{
+    let deleteStack = [];
+    files.forEach(file=>{deleteStack.push(dispatch(deleteUpload(file.uniqueIdentifier, id)))});
+    return Promise.all(deleteStack,(result)=>{
+      dispatch({
+        type:DELETE_ALL_PENDING,
+        payload:id
+      })
+    });
+  }
+}
+
+export function deleteUnfinishedUploads(uploads, id){
+  return dispatch=>{
+    let deleteStack = [];
+    uploads.forEach((upload)=>{deleteStack.push(dispatch(deleteUpload(upload.file_hash, id)))});
+    return Promise.all(deleteStack,(result)=>{
+      dispatch({
+        type:DELETE_ALL_UNFINISHED,
+        payload:id
+      })
     });
   }
 }

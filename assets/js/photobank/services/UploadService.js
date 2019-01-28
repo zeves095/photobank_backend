@@ -59,29 +59,25 @@ class UploadService{
   /**
    * Выполняет обработку файла перед загрузкой на сервер
    * @param  {String} file Содержание файла, который нужно отправить на сервер
-   * @param  {Object[]} existingUploads Массив сужествующих готовых к отправке файлов
+   * @param  {Object[]} existingUploads Массив существующих готовых к отправке файлов
    */
   static processFile(file, existingUploads){
     return new Promise((resolve, reject)=>{
-      let hashResponse = this._getHash(file);
-      hashResponse.then((filehash)=>{
-        file.uniqueIdentifier = filehash;
-        this._commitUpload(file, existingUploads).then((response)=>{
-          resolve();
-        });
+      this._getHash(file).then((uniqueIdentifier)=>{
+        resolve(uniqueIdentifier);
       });
     });
   }
 
   /**
    * Удаляет запись о незаконченной загрузке с сервера
-   * @param  {String} filehash Уникальная строка-идентификатор файла
+   * @param  {String} uniqueIdentifier Уникальная строка-идентификатор файла
    * @param  {String} itemId Код 1С товара
    */
-  static deleteUpload(filehash, itemId){
+  static deleteUpload(uniqueIdentifier, itemId){
     return new Promise((resolve, reject)=>{
       let obj = {
-        'filehash': filehash,
+        'filehash': uniqueIdentifier,
         'itemid': itemId
       }
       $.ajax({url: window.config.remove_upload_url, method: 'POST', data: obj}).done(()=>{
@@ -114,24 +110,23 @@ class UploadService{
    * @param  {String} file Содержание файла, который нужно отправить на сервер
    * @param  {Object[]} existingUploads Массив существующих готовых к отправке файлов
    */
-  static _commitUpload(file, existingUploads){
+  static commitUpload(fileParams, existingUploads){
     return new Promise((resolve, reject)=>{
       let allowed = true;
-      let self = existingUploads.indexOf(file);
+      let self = existingUploads.indexOf(fileParams.file);
       for(var existingUpload in existingUploads){
-        if(existingUploads[existingUpload].uniqueIdentifier == file.uniqueIdentifier && existingUpload != self){
+        if(existingUploads[existingUpload].uniqueIdentifier == fileParams.uniqueIdentifier && existingUpload != self){
           allowed = false;
           existingUploads.splice(self, 1);
           resolve(false);
         }
       }
       if(allowed){
-        file.ready = true;
         let obj = {
-          'filehash': file.uniqueIdentifier,
-          'filename': file.fileName,
-          'itemid': file.itemId,
-          'totalchuks': file.chunks.length
+          'filehash': fileParams.uniqueIdentifier,
+          'filename': fileParams.file.fileName,
+          'itemid': fileParams.itemId,
+          'totalchuks': fileParams.file.chunks.length
         }
         $.ajax({url: window.config.commit_upload_url, method: 'POST', data: obj}).done(()=>{
           resolve(true);

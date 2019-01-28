@@ -8,6 +8,7 @@ import {LocalStorageService} from '../services/LocalStorageService';
 import {NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
+import selectors from '../selectors';
 import {fetchRootNodes, fetchNodes, chooseNode} from '../actionCreator';
 /**
  * [state description]
@@ -132,8 +133,8 @@ export class CatalogueTree extends React.Component {
 
 const mapStateToProps = (state) =>{
   return {
-    catalogue_data: state.catalogue.catalogue_data,
-    current_node: state.catalogue.current_node
+    catalogue_data: selectors.catalogue.getCatalogueData(state),
+    current_node: selectors.catalogue.getCurrentNode(state)
   }
 }
 

@@ -6,6 +6,5 @@ import resource from './resource';
 export default combineReducers({
   upload,
   catalogue,
-  resource,
-  resumable_container
+  resource
 })

@@ -1,3 +1,5 @@
+import {Map, Set, List, Record} from 'immutable';
+
 import {
   EXISTING_RESOURCES_FETCH,
   EXISTING_PRESETS_FETCH,
@@ -11,19 +13,20 @@ import {
  } from '../../services/';
 
 
-let defaultState = {
-  resources_existing: [],
-  finished_presets: []
-}
+let defaultState = Map({
+  resources_existing: List([]),
+  finished_presets: List([])
+})
 
-export default (catalogue = defaultState, action) => {
+export default (resource = defaultState, action) => {
+  resource = Map(resource);
   switch(action.type){
     case EXISTING_RESOURCES_FETCH+SUCCESS:
-      return {...catalogue, resources_existing:action.payload}
+      return resource.set('resources_existing',List(action.payload))
       break;
     case EXISTING_PRESETS_FETCH+SUCCESS:
-      return {...catalogue, finished_presets:action.payload}
+      return resource.set('finished_presets',List(action.payload))
       break;
   }
-  return catalogue
+  return resource
 }

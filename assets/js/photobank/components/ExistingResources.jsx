@@ -7,6 +7,7 @@ import {LocalStorageService} from '../services/LocalStorageService';
 
 import {connect} from 'react-redux';
 import {fetchExisting, fetchPresets} from '../actionCreator';
+import selectors from '../selectors';
 
 /**
  * Компонент интерфейса для отображения существующих ресурсов для товара
@@ -387,8 +388,8 @@ export class ExistingResources extends React.Component{
 
 const mapStateToProps = (state) =>{
   return {
-    existing: state.resource.resources_existing,
-    finished_presets: state.resource.finished_presets
+    existing: selectors.resource.getExisting(state),
+    finished_presets: selectors.resource.getFinishedPresets(state)
   }
 }
 

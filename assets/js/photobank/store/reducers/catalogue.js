@@ -1,3 +1,5 @@
+import {Map, Set, List, Record} from 'immutable';
+
 import {
   CATALOGUE_DATA_FETCH,
   CATALOGUE_ROOT_NODES_FETCH,
@@ -14,38 +16,46 @@ import {
  } from '../../services/';
 
 
-let defaultState = {
-  catalogue_data: [],
-  items: [],
+let defaultState = Map({
+  catalogue_data: List([]),
+  items: List([]),
   current_node: null,
   current_item: null,
   item_query_object: null
-}
+})
 
 export default (catalogue = defaultState, action) => {
+  catalogue = Map(catalogue);
   switch(action.type){
     case CATALOGUE_ROOT_NODES_FETCH+SUCCESS:
-      const root_nodes = action.payload;
-      return {...catalogue, catalogue_data:root_nodes}
+      const root_nodes = List(action.payload);
+      return catalogue.set('catalogue_data',root_nodes)
       break;
     case CATALOGUE_DATA_FETCH+SUCCESS:
-      let fetched_data = action.payload;
-      let newData = fetched_data.concat(catalogue.catalogue_data);
-      return {...catalogue, catalogue_data:newData}
+      let fetched_data = List(action.payload);
+      let fetchCatalogueData = catalogue.get('catalogue_data');
+      //let newData = existingCatalogueData.concat(fetched_data));
+      fetched_data.forEach((node)=>{
+        if(!fetchCatalogueData.find((existing)=>node.id===existing.id)){
+          fetchCatalogueData = fetchCatalogueData.push(node);
+        }
+      });
+      if(catalogue.get('catalogue_data').equals(fetchCatalogueData)){return catalogue}
+      return catalogue.set('catalogue_data',fetchCatalogueData)
       break;
     case NODE_CHOICE:
-      return {...catalogue, current_node:action.payload}
+      return catalogue.set('current_node',action.payload)
       break;
     case ITEM_CHOICE:
-      return {...catalogue, current_item:action.payload}
+      return catalogue.set('current_item',action.payload)
       break;
     case ITEMS_FETCH+SUCCESS:
-      let newItems = action.payload;
-      let curItem = catalogue.items.find(item=>item.id===catalogue.current_item);
-      if(curItem&&catalogue.current_node!==curItem.node){
-        newItems.push(curItem);
-      }
-      return {...catalogue, items:newItems}
+      let newItems = List(action.payload);
+      let prefetchedItems = List(catalogue.get('items'));
+      let chosenItem = prefetchedItems.find((item)=>item.id===catalogue.get('current_item'));
+      if(chosenItem&&!newItems.find(item=>item.id===chosenItem.id))newItems = newItems.push(chosenItem);
+      if(newItems.equals(catalogue.get('items'))){return catalogue}
+      return catalogue.set('items',newItems)
       break;
   }
   return catalogue

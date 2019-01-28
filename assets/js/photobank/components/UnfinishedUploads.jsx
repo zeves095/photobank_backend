@@ -5,7 +5,8 @@ import {UploadService} from '../services/UploadService';
 import {NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
-import {resolveResumedUploads} from '../selectors';
+import selectors from '../selectors';
+import {deleteUpload, deleteUnfinishedUploads} from '../actionCreator';
 
 /**
  * Компонент интерфейса работы с незаконченными загрузками
@@ -31,49 +32,20 @@ export class UnfinishedUploads extends React.Component{
       "uploading": "Загружается",
       "resolved": "Готов к повторной загрузке"
     };
-    this.handleDelete = this.handleDelete.bind(this);
-    this.clearAllUnfinished = this.clearAllUnfinished.bind(this);
-    this.hideUnfinished = this.hideUnfinished.bind(this);
   }
-
-  // /**
-  //  * Запрашивает список незаконченных загрузок для текущего товара
-  //  * TODO loading ui
-  //  */
-  // fetchUnfinished(){
-  //   this.setState({"loading" : true});
-  // }
 
   /**
    * Обработчик удаления записи о незавершенной загрузке с сервера
    * @param  {Event} e обытие клика
    */
-  handleDelete(e){
-    let filehash = $(e.target).data("item");
-    this.props.deleteHandler(filehash);
-  }
-
-  /**
-   * Удаляет все незавершенные загрузки для текущего товара
-   */
-  clearAllUnfinished(){
-    if(this.props.unfinished.length == 0){return null}
-    this.setState({"loading":true});
-    for(var id in this.props.unfinished){
-      this.removeUploadStack.push(this.props.unfinished[id].filehash);
-    }
-    for(var id in this.props.unfinished){
-      let unfinished = this.props.unfinished[id];
-      this.props.deleteHandler(unfinished.filehash);
-      this.props.clearAllHandler();
-    }
-    NotificationService.toast("unfinished-cleared");
+  handleDelete = (filehash)=>{
+    this.props.deleteUpload(filehash, this.props.item.id);
   }
 
   /**
    * Скрывает отображение незаконченных загрузок
    */
-  hideUnfinished(){
+  hideUnfinished=()=>{
     this.setState({
       "unfinished_hidden" : !this.props.unfinished_hidden
     });
@@ -82,7 +54,7 @@ export class UnfinishedUploads extends React.Component{
   render() {
     let unfinished_uploads = this.props.unfinished.map((upload)=>
       <div key={upload.file_name+upload.file_hash+"unfinished"} className={"file-list__file-item file-item " + "file-item--unfinished " + (this.props.unfinished_hidden?"file-item--hidden":"")}>
-        <i data-item={upload.file_hash} onClick={this.handleDelete} className="fas fa-trash-alt file-item__delete-upload"></i><br />
+        <i data-item={upload.file_hash} onClick={()=>{this.handleDelete(upload.file_hash)}} className="fas fa-trash-alt file-item__delete-upload"></i><br />
       <span className="file-item__file-name">{upload.file_name}</span>
     <span className="file-item__upload-status">Прерван</span>
       <span className="progress-bar" id={"progress_bar"+upload.file_hash}>
@@ -93,7 +65,7 @@ export class UnfinishedUploads extends React.Component{
       <div className={"item-uploads__unfinished "+(this.state.loading?"loading":"")}>
         <div key={this.props.item.id + "unfinished"} className="item-view__subheader-wrapper">
           <h4 className="item-view__subheader">Незаконченные          <div className="button-block">
-                      <button onClick={this.clearAllUnfinished} title="Удалить все незавершенные загрузки для данного товара" className="button-block__btn button-block__btn--clear"><i className="fas fa-trash-alt"></i>Очистить</button>
+                      <button onClick={()=>{this.props.deleteUnfinishedUploads(this.props.unfinished, this.props.item.id)}} title="Удалить все незавершенные загрузки для данного товара" className="button-block__btn button-block__btn--clear"><i className="fas fa-trash-alt"></i>Очистить</button>
                     <button onClick={this.hideUnfinished} className="button-block__btn button-block__btn--clear">{this.props.unfinished_hidden?<i className='fas fa-eye'></i>:<i className='fas fa-eye-slash'></i>}{this.props.unfinished_hidden?"Показать":"Скрыть"}</button>
                     </div></h4>
         </div>
@@ -113,11 +85,14 @@ export class UnfinishedUploads extends React.Component{
 
 const mapStateToProps = (state) =>{
   return {
-    unfinished: resolveResumedUploads(state),
+    unfinished: selectors.upload.resolveResumedUploads(state),
+    item: selectors.catalogue.getItemObject(state)
   }
 }
 
 const mapDispatchToProps = {
+  deleteUpload,
+  deleteUnfinishedUploads
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UnfinishedUploads);

@@ -8,7 +8,7 @@ import {NotificationService} from '../../services/NotificationService';
 import {chooseItem, fetchItems} from '../actionCreator';
 
 import {connect} from 'react-redux';
-import {filterItems, getItemObject, getNodeItems} from '../selectors';
+import selectors from '../selectors';
 /**
  * Компонент интерфейса для работы со списком товаров раздела каталога
  */
@@ -43,7 +43,6 @@ export class ItemList extends React.Component{
    * @param  {Event} e Событие клика
    */
   itemClickHandler=(e)=>{
-    console.log("itemClickHandler");
     let itemId = "";
     if(e.target){
       itemId = e.target.dataset['item'];
@@ -85,10 +84,10 @@ export class ItemList extends React.Component{
 
 const mapStateToProps = (state) =>{
   return {
-    current_node: state.catalogue.current_node,
-    current_item: getItemObject(state),
-    items: getNodeItems(state),
-    items_filtered: filterItems(state),
+    current_node: selectors.catalogue.getCurrentNode(state),
+    current_item: selectors.catalogue.getItemObject(state),
+    items: selectors.catalogue.getNodeItems(state),
+    items_filtered: selectors.catalogue.filterItems(state),
   }
 }
 
