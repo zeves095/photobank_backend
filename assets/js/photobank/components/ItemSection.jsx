@@ -8,7 +8,7 @@ import {NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
 import selectors from '../selectors';
-import {pushResumable} from '../actionCreator';
+import {pushResumable, chooseListViewType, fetchItemData} from '../actionCreator';
 
 /**
  * Компонент интерфейса работы с определенным товаром
@@ -25,121 +25,78 @@ export class ItemSection extends React.Component{
    */
   constructor(props) {
     super(props);
-    this.state={
-      "resumable":this.resumable,
-      "item_id":this.props.item.id,
-      "open":this.props.open_by_default,
-      "ready":false,
-      "view_type": this.props.default_view,
-      "need_refresh": false
-    };
     this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
-
-    this.handleViewChoice = this.handleViewChoice.bind(this);
-    this.handleUpload = this.handleUpload.bind(this);
+    this.state = {
+      open:this.props.open_by_default
+    }
   }
 
   /**
    * Обработчик выбора типа представления для элементов списка
    * @param  {Event} e Событие клика
    */
-  handleViewChoice(e){
-    let viewBtn = $(e.target).is("button")?$(e.target):$(e.target).parent();
-    let view = viewBtn.data("view");
-    this.setState({"view_type": view});
-    this.props.viewChoiceHandler(view);
-  }
-
-  /**
-   * Запрашивает информацию о текуще товаре
-   */
-  componentWillMount(){
-    this.props.pushResumable(this.props.item.id);
-    ItemService.getIdentity(this.props.item.id).then((data)=>{
-      this.setState({
-        "item":data
-      });
-      if(typeof this.props.identityHandler != "undefined"){this.props.identityHandler(data.id,data.name,data.itemCode)};
-    }).catch((error)=>{
-      NotificationService.throw(error);
-    });
-  }
-
-  componentDidUpdate(prevProps, prevState){
-    if(this.props != prevProps){
-      this.setState({
-        "view_type": this.props.default_view,
-        "open": this.props.open_by_default
-      });
-    }
-    if(this.state.need_refresh){
-      this.setState({
-        "need_refresh":false,
-      });
-    }
-  }
-
-  /**
-   * Обработчик начала загрузки файлов на сервер
-   */
-  handleUpload(){
-    NotificationService.toast("up-done");
-    this.setState({
-      "need_refresh": true
-    });
+  handleViewChoice =(type)=>{
+    this.props.chooseListViewType(type);
   }
 
   render() {
+    if(!this.props.item){this.props.fetchItemData(this.props.item_id);return null;}
+    let render_upload = this.props.item&&this.props.resumable&&this.props.authorized;
+    let viewBtn = (
+      <div className="button-block">
+        <button type="button" data-view="0" title="Большие иконки" className={this.props.view==0?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={()=>{this.handleViewChoice("0")}}>
+          <i className="fas fa-th-large"></i>
+        </button>
+        <button type="button" data-view="1" title="Маленькие иконки" className={this.props.view==1?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={()=>{this.handleViewChoice("1")}}>
+          <i className="fas fa-th"></i>
+        </button>
+        <button type="button" data-view="2" title="Таблица" className={this.props.view==2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={()=>{this.handleViewChoice("2")}}>
+          <i className="fas fa-list-ul"></i>
+        </button>
+      </div>
+    )
     return (
       <div className = {"item-view"} >
       <div className="file-list__drop-target" id={"drop_target" + this.props.item.id}></div>
       {
         !this.props.render_existing
-          ? <button type="button" className="item-view__collapse-button" onClick={() => {
-                this.setState({
-                  "open": !this.state.open
-                })
-              }}>{
-                this.state.open
-                  ? "Скрыть"
-                  : "Показать"
-              }</button>
-            : null
+        ?<button type="button" className="item-view__collapse-button" onClick={()=>{this.setState({"open": !this.state.open})}}>
+          {this.state.open? "Скрыть": "Показать"}
+         </button>
+        :null
       } {
         typeof this.props.item != "undefined"
-          ? <div className="item-view__item-title">Товар #{this.props.item.itemCode}
-              "{this.props.item.name}"</div>
+          ? <div className="item-view__item-title">Товар #{this.props.item.itemCode}"{this.props.item.name}"</div>
           : null
       }<div className={"item-view__inner " + (
           this.state.open
           ? "item-view__inner--open "
-          : "item-view__inner--closed ") + this.containerViewClasses[this.state.view_type]}>
-          <button type="button" data-view="0" title="Большие иконки" className={this.state.view_type==0?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
-            <i className="fas fa-th-large"></i>
-          </button>
-          <button type="button" data-view="1" title="Маленькие иконки" className={this.state.view_type==1?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
-            <i className="fas fa-th"></i>
-          </button>
-          <button type="button" data-view="2" title="Таблица" className={this.state.view_type==2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={this.handleViewChoice}>
-            <i className="fas fa-list-ul"></i>
-          </button>
-          {this.props.render_existing?<ExistingResources authorized={this.props.authorized} item_id={this.props.item.id} addDownloadHandler={this.props.addDownloadHandler} need_refresh={this.state.need_refresh} default_view={this.state.view_type} />:null}
-        {((typeof this.props.item=='undefined')||!this.props.authorized)?null:<h4 className="item-view__subheader">Загрузки</h4>}
-      {((typeof this.props.item=='undefined')||!this.props.authorized)?null:<Uploads item={this.props.item} resumable={this.resumable} uploadCompleteHandler={this.handleUpload} />}
+          : "item-view__inner--closed ") + this.containerViewClasses[this.props.view]}>
+          {this.props.render_existing&&viewBtn}
+          {this.props.render_existing?<ExistingResources authorized={this.props.authorized} item_id={this.props.item.id} addDownloadHandler={this.props.addDownloadHandler} default_view={this.props.view} />:null}
+        {!render_upload?null:<h4 className="item-view__subheader">Загрузки</h4>}
+      {!render_upload?null:<Uploads item_id={this.props.item_id} item={this.props.item} />}
       </div> </div>
     );
   }
 }
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state, props) =>{
   return {
-    item: selectors.catalogue.getItemObject(state)
+    item: selectors.catalogue.getItemObject(state,props),
+    view: selectors.localstorage.getStoredListViewtype(state,props),
+    resumable: selectors.upload.getResumableInstance(state,props),
+    render_existing: (typeof props.render_existing !== 'undefined')?props.render_existing:true,
+    authorized: selectors.user.getAuthorized(state,props),
+    open_by_default: (typeof props.open_by_default !== 'undefined')?props.open_by_default:true
   }
 }
 
 const mapDispatchToProps = {
-  pushResumable
+  pushResumable,
+  chooseListViewType,
+  fetchItemData
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemSection);

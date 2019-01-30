@@ -42,27 +42,20 @@ export class ItemList extends React.Component{
    * Обработчик клика по товару из списка
    * @param  {Event} e Событие клика
    */
-  itemClickHandler=(e)=>{
-    let itemId = "";
-    if(e.target){
-      itemId = e.target.dataset['item'];
-    }else{
-      itemId = e;
-    }
-    LocalStorageService.set("current_item", itemId);
+  itemClickHandler=(itemId)=>{
     this.props.chooseItem(itemId);
   }
 
-  componentDidMount(){
-    this.itemClickHandler(this.props.item);
+  componentDidUpdate(prevProps){
+    if(prevProps.current_item === null && this.props.current_item)this.itemClickHandler(this.props.current_item.id);
   }
 
   render() {
     let nodeItemList = this.props.current_node == null
     ?""
     :this.props.items_filtered.map((item)=>
-      <div className={"list-item"+((this.props.current_item!=null&&item.id==this.props.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={this.itemClickHandler}>
-        <h4 data-item={item.id} onClick={this.itemClickHandler} title={item.node}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
+      <div className={"list-item"+((this.props.current_item!=null&&item.id==this.props.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={()=>{this.itemClickHandler(item.id)}}>
+        <h4 data-item={item.id} onClick={()=>{this.itemClickHandler(item.id)}} title={item.node}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
       </div>
     );
     let tooBroadMsg = this.props.items_filtered.length == 100?"Показаны не все результаты. Необходимо сузить критерии поиска.":"";
@@ -82,12 +75,12 @@ export class ItemList extends React.Component{
   }
 }
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state,props) =>{
   return {
-    current_node: selectors.catalogue.getCurrentNode(state),
-    current_item: selectors.catalogue.getItemObject(state),
-    items: selectors.catalogue.getNodeItems(state),
-    items_filtered: selectors.catalogue.filterItems(state),
+    current_node: selectors.catalogue.getCurrentNode(state,props),
+    current_item: selectors.catalogue.getItemObject(state,props)||selectors.localstorage.getStoredItem(state,props),
+    items: selectors.catalogue.getNodeItems(state,props),
+    items_filtered: selectors.catalogue.filterItems(state,props),
   }
 }
 

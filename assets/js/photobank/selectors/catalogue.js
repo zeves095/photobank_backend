@@ -1,12 +1,12 @@
 import {createSelector, createStructuredSelector} from 'reselect';
 import {Map,List,Set,Record} from 'immutable';
 
-export const unfinishedUploads = (store)=>store.upload.get('uploads_unfinished');
-export const currentItemId = (store)=>store.catalogue.get('current_item');
-export const currentNodeId = (store)=>store.catalogue.get('current_node');
-export const catalogueData = (store)=>store.catalogue.get('catalogue_data');
-export const items = (store)=>store.catalogue.get('items');
-export const resumableContainer = (store)=>store.upload.get('resumable_container');
+export const unfinishedUploads = (store, props)=>store.upload.get('uploads_unfinished');
+export const currentItemId = (store, props)=>props.item_id||store.catalogue.get('current_item');
+export const currentNodeId = (store, props)=>store.catalogue.get('current_node');
+export const catalogueData = (store, props)=>store.catalogue.get('catalogue_data');
+export const items = (store, props)=>store.catalogue.get('items');
+export const resumableContainer = (store, props)=>store.upload.get('resumable_container');
 
 export const getCatalogueData = createSelector(catalogueData,(catalogue)=>{
   return catalogue.toArray();
@@ -27,5 +27,6 @@ export const filterItems = createSelector(getNodeItems, items, currentNodeId, (n
 
 export const getItemObject = createSelector(items, currentItemId, (items, id)=>{
   let item = items.find(item=>item.id===id);
+  if(!item)item=null;
   return item;
 });

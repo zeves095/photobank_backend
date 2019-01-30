@@ -61,9 +61,9 @@ class UploadService{
    * @param  {String} file Содержание файла, который нужно отправить на сервер
    * @param  {Object[]} existingUploads Массив существующих готовых к отправке файлов
    */
-  static processFile(file, existingUploads){
+  static processFile(file, existingUploads, itemId){
     return new Promise((resolve, reject)=>{
-      this._getHash(file).then((uniqueIdentifier)=>{
+      this._getHash(file, itemId).then((uniqueIdentifier)=>{
         resolve(uniqueIdentifier);
       });
     });
@@ -90,7 +90,7 @@ class UploadService{
    * Получает сгенерированный ключ md5 для загружаемого файла
    * @param  {String} file Содержание файла, который нужно отправить на сервер
    */
-  static _getHash(file){
+  static _getHash(file, itemId){
     return new Promise((resolve, reject)=>{
       let fileObj = file.file;
       let reader = new FileReader();
@@ -98,7 +98,7 @@ class UploadService{
         let hashable = e.target.result;
         hashable = new Uint8Array(hashable);
         hashable = CRC32.buf(hashable).toString();
-        let identifier = hex_md5(hashable+file.itemId + file.file.size)
+        let identifier = hex_md5(hashable+itemId + file.file.size)
         resolve(identifier);
       };
       reader.readAsArrayBuffer(fileObj);

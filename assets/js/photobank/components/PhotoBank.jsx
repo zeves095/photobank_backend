@@ -13,7 +13,7 @@ import {NotificationService} from '../../services/NotificationService';
 import {UtilityService} from '../services/UtilityService';
 
 import {connect} from 'react-redux';
-import { fetchUnfinished } from '../actionCreator'
+import { fetchUnfinished, getLocalStorage, getUserInfo } from '../actionCreator'
 
 /**
  * Верхнеуровневый компонент интерфейса загрузки/выгрузки ресурсов
@@ -36,8 +36,8 @@ export class PhotoBank extends React.Component {
       "authorized":false
     }
     this.props.fetchUnfinished();
-
-    LocalStorageService.init();
+    this.props.getLocalStorage();
+    this.props.getUserInfo();
   }
 
   /**
@@ -69,14 +69,14 @@ export class PhotoBank extends React.Component {
    * Получает сохраненные значения из localstorage
    */
   componentWillMount(){
-    let prevnode = LocalStorageService.get("current_node");
-    let previtem = LocalStorageService.get("current_item");
-    let prevview = LocalStorageService.get("list_view_type");
-    this.setState({
-      "ls_node": prevnode,
-      "ls_item": previtem,
-      "ls_view": prevview,
-    });
+    // let prevnode = LocalStorageService.get("current_node");
+    // let previtem = LocalStorageService.get("current_item");
+    // let prevview = LocalStorageService.get("list_view_type");
+    // this.setState({
+    //   "ls_node": prevnode,
+    //   "ls_item": previtem,
+    //   "ls_view": prevview,
+    // });
     UtilityService.getRole().then((result)=>{
       this.setState({
         "authorized":result
@@ -93,7 +93,7 @@ export class PhotoBank extends React.Component {
 
         </div>
       <div className="photobank-main__main-block">
-        <CatalogueTree authorized={this.state.authorized} queryHandler={this.handleCatalogueQuery} default_view={cat_view} crumb_handler={this.handleCrumbUpdate} node={this.state.ls_node} />
+        <CatalogueTree authorized={this.state.authorized} queryHandler={this.handleCatalogueQuery} default_view={cat_view} crumb_handler={this.handleCrumbUpdate}/>
       {$(".catalogue-tree").length>0?<Draggable box1=".catalogue-tree" box2=".node-viewer" id="1" />:null}
       {this.props.show_node_viewer == null?null:<NodeViewer authorized={this.state.authorized} catalogue_data={this.state.catalogue_data_filtered} node={this.state.selected_node} crumb_string={this.state.crumb_string} item={this.state.ls_item} default_view={this.state.ls_view} />}
         </div>
@@ -104,14 +104,16 @@ export class PhotoBank extends React.Component {
 }
 }
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state,props) =>{
   return {
-    show_node_viewer: state.catalogue.item_query_object==null
+    show_node_viewer: state.catalogue.item_query_object==null,
   }
 }
 
 const mapDispatchToProps = {
-  fetchUnfinished
+  fetchUnfinished,
+  getLocalStorage,
+  getUserInfo
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PhotoBank);

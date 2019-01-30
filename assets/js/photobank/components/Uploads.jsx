@@ -81,6 +81,9 @@ export class Uploads extends React.Component{
     this.props.resumable.on('uploadStart', (file,event)=>{
       this.state.busy = true;
     });
+    this.props.resumable.on('fileComplete', (file,event)=>{
+      console.log(file);
+    });
     this.props.resumable.on('complete', ()=>{
       this.state.busy = false;
       this.props.completeUpload(this.props.item.id, this.props.resumable.files);
@@ -186,18 +189,18 @@ export class Uploads extends React.Component{
         </div>
         {uploadsMarkup}
       </div>:null}
-        <UnfinishedUploads item={this.props.item} uploads={this.props.uploads} need_refresh={this.state.unfinished_need_refresh}/>
+        <UnfinishedUploads item_id={this.props.item_id} item={this.props.item} />
       </div>
     </div>
     );
   }
 }
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state,props) =>{
   return {
-    resumable: selectors.upload.getResumableInstance(state),
-    uploads: selectors.upload.getUploads(state),
-    uploads_ready: selectors.upload.getReadyUploads(state),
+    resumable: selectors.upload.getResumableInstance(state,props),
+    uploads: selectors.upload.getUploads(state,props),
+    uploads_ready: selectors.upload.getReadyUploads(state,props),
   }
 }
 

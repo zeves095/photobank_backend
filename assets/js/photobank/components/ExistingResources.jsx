@@ -386,10 +386,10 @@ export class ExistingResources extends React.Component{
   }
 }
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state,props) =>{
   return {
-    existing: selectors.resource.getExisting(state),
-    finished_presets: selectors.resource.getFinishedPresets(state)
+    existing: selectors.resource.getExisting(state,props),
+    finished_presets: selectors.resource.getFinishedPresets(state,props)
   }
 }
 

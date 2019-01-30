@@ -143,7 +143,7 @@ export class NodeViewer extends React.Component{
   }
 
   render() {
-    let itemSection = this.props.current_item!=null?(<ItemSection authorized={this.props.authorized} viewChoiceHandler={this.handleViewChoice} addDownloadHandler={this.handleAddToDownloads} render_existing={true} item_id={this.props.current_item.id} open_by_default={true} section_type="nv" crumb_string={this.props.crumb_string} default_view={this.state.view_type} />):"Не выбран товар";
+    let itemSection = this.props.current_item!=null?(<ItemSection item_id={this.props.stored_item_id} />):"Не выбран товар";
 
     let section = "";
     switch(parseInt(this.state.view_pool)){
@@ -154,7 +154,7 @@ export class NodeViewer extends React.Component{
         section = <DownloadPool resources={this.state.downloads} removeDownloadHandler={this.handleRemoveDownload} addDownloadHandler={this.handleDownload} />
         break;
       case 2:
-        section = <UploadPool viewChoiceHandler={this.handleViewChoice} default_view={this.state.view_type} />
+        section = <UploadPool />
         break;
       default:
         section = itemSection;
@@ -164,7 +164,7 @@ export class NodeViewer extends React.Component{
 
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
-          <ItemList node={this.props.node} query={this.props.item_query_object} item={this.props.item} />
+          <ItemList />
           {$(".view-inner__item-section").length>0?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
           <div className="view-inner__item-section" key={this.props.current_item!=null?this.props.current_item.id:""}>
             <span className="titlefix"><h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.state.product_crumbs}</i></h2></span>
@@ -182,11 +182,12 @@ export class NodeViewer extends React.Component{
   }
 }
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state,props) =>{
   return {
     node: state.catalogue.current_node,
     item_query_object: state.catalogue.item_query_object,
-    current_item: selectors.catalogue.getItemObject(state)
+    current_item: selectors.catalogue.getItemObject(state,props)||selectors.localstorage.getStoredItem(state,props),
+    stored_item_id: selectors.localstorage.getStoredItemId(state,props)
   }
 }
 

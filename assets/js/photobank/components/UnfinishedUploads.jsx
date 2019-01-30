@@ -83,10 +83,10 @@ export class UnfinishedUploads extends React.Component{
   }
 }
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state,props) =>{
   return {
-    unfinished: selectors.upload.resolveResumedUploads(state),
-    item: selectors.catalogue.getItemObject(state)
+    unfinished: selectors.upload.resolveResumedUploads(state,props),
+    item: selectors.catalogue.getItemObject(state,props)||selectors.localstorage.getStoredItem(state,props)
   }
 }
 

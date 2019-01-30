@@ -1,15 +1,20 @@
 import {createSelector, createStructuredSelector} from 'reselect';
 import {Map,List,Set,Record} from 'immutable';
 
-export const unfinishedUploads = (store)=>store.upload.get('uploads_unfinished');
-export const currentItemId = (store)=>store.catalogue.get('current_item');
-export const currentNodeId = (store)=>store.catalogue.get('current_node');
-export const items = (store)=>store.catalogue.get('items');
-export const resumableContainer = (store)=>store.upload.get('resumable_container');
+export const unfinishedUploads = (store,props)=>store.upload.get('uploads_unfinished');
+export const currentItemId = (store,props)=>props.item_id||store.catalogue.get('current_item');
+export const currentNodeId = (store,props)=>store.catalogue.get('current_node');
+export const items = (store,props)=>store.catalogue.get('items');
+export const resumableContainer = (store,props)=>store.upload.get('resumable_container');
 
 export const getResumableInstance = createSelector(resumableContainer, currentItemId, (container, id)=>{
-  let resumable = container.find(resumable=>resumable.id===id);
-  return resumable.instance.toObject();
+  let resumable = container.find(resumable=>resumable.get('id')===id);
+  return resumable?resumable.get('instance').toObject():null;
+})
+
+export const getResumableContainer = createSelector(resumableContainer, (container)=>{
+  let newContainer = List(container).toJS();
+  return newContainer;
 });
 
 export const getUploads = createSelector(getResumableInstance, (resumable)=>{

@@ -74,28 +74,26 @@ class CatalogueService{
      */
     static makeTree(data, currentNode){
       let tree={ core: { data: [] }, 'selected':[]};
+      let nodeToOpen;
       data.forEach((item)=>{
-        let treeNode ={
+        let node = {
           'text':item.name,
-          'parent':item.parent,
+          'parent':item.parent||"#",
           'id':item.id,
           'state':{
             'selected':currentNode===item.id,
             'opened':currentNode===item.id
           }
         };
-        if(treeNode.parent == null){
-          treeNode.parent = "#";
-        }
-        tree['core']['data'].push(treeNode);
-      });
-      tree.core.data.forEach((treeNode)=>{
-        let nodeToOpen = treeNode;
-        while(typeof nodeToOpen != "undefined"){
-          nodeToOpen['state']['opened'] = true;
-          nodeToOpen = tree['core']['data'].filter((datum)=>{return datum.id == nodeToOpen.parent})[0];
+        tree['core']['data'].push(node);
+        if(node['state']['selected']===true){
+          nodeToOpen = node;
         }
       });
+      while(typeof nodeToOpen != "undefined"){
+        nodeToOpen['state']['opened'] = true;
+        nodeToOpen = tree['core']['data'].find((parent)=>{return parent.id === nodeToOpen.parent});
+      }
       return tree;
     }
 

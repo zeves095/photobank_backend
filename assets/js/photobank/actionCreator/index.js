@@ -1,4 +1,4 @@
-import {UploadService, NotificationService, CatalogueService, ResourceService, ItemQueryObject, ItemService} from '../services/';
+import {UploadService, NotificationService, CatalogueService, ResourceService, ItemQueryObject, ItemService, LocalStorageService} from '../services/';
 
 import {
   UPLOADS_UNFINISHED_FETCH,
@@ -14,9 +14,14 @@ import {
   UPLOAD_DELETE,
   DELETE_ALL_PENDING,
   DELETE_ALL_UNFINISHED,
+  LOCAL_STORAGE_VALUE_SET,
+  PURGE_EMPTY_ITEMS,
+  USER_INFO_FETCH,
+  ITEM_INFO_FETCH,
   START,
   SUCCESS,
-  FAIL
+  FAIL,
+  ALL
 } from '../constants/';
 
 export function fetchUnfinished(){
@@ -31,6 +36,12 @@ export function fetchUnfinished(){
       dispatch({
         type: UPLOADS_UNFINISHED_FETCH+SUCCESS,
         payload: items
+      });
+      items.forEach((item)=>{
+        dispatch({
+          type: RESUMABLE_PUSH,
+          payload: item.id
+        });
       });
     }).catch((error)=>{
       dispatch({
@@ -99,6 +110,8 @@ export function chooseNode(id){
     let qo = new ItemQueryObject();
     qo.nodeId = id;
     dispatch(fetchItems(qo));
+    dispatch(setLocalValue('current_node', id));
+    dispatch(fetchNodes(id));
     dispatch({
       type: NODE_CHOICE,
       payload: id
@@ -149,9 +162,14 @@ export function fetchPresets(pagination, existing){
 }
 
 export function chooseItem(id){
-  return {
-    type: ITEM_CHOICE,
-    payload: id
+  return dispatch=>{
+    dispatch(purgeEmptyItems());
+    dispatch(setLocalValue('current_item',id));
+    dispatch(pushResumable(id));
+    return dispatch({
+      type: ITEM_CHOICE,
+      payload: id
+    });
   }
 }
 
@@ -182,7 +200,7 @@ export function prepareFileForUpload(file, existing, item){
   return (dispatch)=>{
     const itemId = item.id;
     const itemCode = item.itemCode;
-    return UploadService.processFile(file, existing).then((uniqueIdentifier)=>{
+    return UploadService.processFile(file, existing, item).then((uniqueIdentifier)=>{
       let fileParams = {uniqueIdentifier,itemId,itemCode,file};
       dispatch({
         type: FILE_PROCESSED,
@@ -238,6 +256,103 @@ export function deleteUnfinishedUploads(uploads, id){
         type:DELETE_ALL_UNFINISHED,
         payload:id
       })
+    });
+  }
+}
+
+export function setLocalValue(key,value){
+  return dispatch=>{
+    LocalStorageService.set(key,value);
+    dispatch({
+      type:LOCAL_STORAGE_VALUE_SET,
+      payload:{key,value}
+    });
+  }
+}
+
+export function addToLocalValue(key,value){
+  return dispatch=>{
+    LocalStorageService.removeFrom(key,value);
+    dispatch({
+      type:LOCAL_STORAGE_VALUE_SET,
+      payload:{key,value}
+    });
+  }
+}
+
+export function spliceFromLocalValue(key,value){
+  return dispatch=>{
+    LocalStorageService.addTo(key,value);
+    dispatch({
+      type:LOCAL_STORAGE_VALUE_SET,
+      payload:{key,value}
+    });
+  }
+}
+
+export function getLocalStorage(key = null){
+  return dispatch=>{
+    const data = LocalStorageService.get(key);
+    dispatch({
+      type:LOCAL_STORAGE_VALUE_SET+(!key&&ALL),
+      payload:data
+    });
+  }
+}
+
+export function chooseListViewType(id=1){
+  return dispatch=>{
+    return dispatch(setLocalValue('list_view_type', id));
+  }
+}
+
+export function chooseCatalogueViewType(id=1){
+  return dispatch=>{
+    return dispatch(setLocalValue('catalogue_view', id));
+  }
+}
+
+export function purgeEmptyItems(){
+  return dispatch=>{
+    dispatch({
+      type:PURGE_EMPTY_ITEMS,
+      payload: ""
+    });
+  }
+}
+
+export function getUserInfo(){
+  return dispatch=>{
+    fetch("/account/getinfo/", {method:"GET"})
+    .then((response)=>response.json())
+    .then((response)=>{
+      dispatch({
+        type: USER_INFO_FETCH+SUCCESS,
+        payload: response,
+      });
+    }).catch((error)=>{
+      dispatch({
+        type: USER_INFO_FETCH+FAIL,
+        payload: "",
+      });
+    });
+  }
+}
+
+export function fetchItemData(id){
+  return dispatch=>{
+    fetch("/catalogue/node/item/"+id, {method:"GET"})
+    .then((response)=>response.json())
+    .then((response)=>{
+      dispatch({
+        type: ITEM_INFO_FETCH+SUCCESS,
+        payload: response,
+      });
+    }).catch((error)=>{
+      dispatch({
+        type: ITEM_INFO_FETCH+FAIL,
+        payload: "",
+      });
     });
   }
 }

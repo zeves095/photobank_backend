@@ -115,7 +115,7 @@ export class DownloadPool extends React.Component{
   }
 }
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state,props) =>{
   return {
   }
 }

@@ -17,7 +17,6 @@ export class ItemSearch extends React.Component {
     this.state = {
       "query": {}
     };
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   };
@@ -80,7 +79,7 @@ export class ItemSearch extends React.Component {
   }
 }
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state,props) =>{
   return {
   }
 }

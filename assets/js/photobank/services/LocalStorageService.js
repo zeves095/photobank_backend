@@ -52,6 +52,7 @@ class LocalStorageService{
    * @param {String} key Ключ, соответсвующий переменной localstorage
    */
   static get(key){
+    if(key==null){return this.getAll();}
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(key) != -1 && typeof window.localStorage[keys[key]] != "undefined"){
       return window.localStorage[keys[key]];
@@ -127,8 +128,20 @@ class LocalStorageService{
     }
   }
 
+  static getAll(){
+    this.init();
+    let keys=this._getKeys();
+    let response = {};
+    Object.keys(keys).forEach(key=>{
+      if(key == "pb_data_download_list"){
+        response[key] = this.getList(key)
+      }else{
+        response[key] = this.get(key);
+      }
+    });
+    return response;
+  }
+
 }
-
-
 
 export {LocalStorageService}
