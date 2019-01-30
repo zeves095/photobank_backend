@@ -7,6 +7,7 @@ import {
   NODE_CHOICE,
   ITEM_CHOICE,
   ITEMS_FETCH,
+  START,
   SUCCESS,
   FAIL
  } from '../../constants'
@@ -22,18 +23,30 @@ let defaultState = Map({
   items: List([]),
   current_node: null,
   current_item: null,
-  item_query_object: null
+  item_query_object: null,
+  fetching_catalogue: true,
+  fetching_items: true,
 })
 
 export default (catalogue = defaultState, action) => {
   catalogue = Map(catalogue);
   switch(action.type){
+    case CATALOGUE_ROOT_NODES_FETCH+START:{
+      return catalogue.set('fetching_catalogue',true)
+      break;
+    }
     case CATALOGUE_ROOT_NODES_FETCH+SUCCESS:{
       const root_nodes = List(action.payload);
-      return catalogue.set('catalogue_data',root_nodes)
+      return catalogue.set('fetching_catalogue',false).set('catalogue_data',root_nodes)
+      break;
+    }
+    case CATALOGUE_DATA_FETCH+START:{
+      console.log("STOORT");
+      return catalogue.set('fetching_catalogue',true)
       break;
     }
     case CATALOGUE_DATA_FETCH+SUCCESS:{
+      console.log("STAHP");
       let fetched_data = List(action.payload);
       let fetchCatalogueData = catalogue.get('catalogue_data');
       //let newData = existingCatalogueData.concat(fetched_data));
@@ -42,8 +55,7 @@ export default (catalogue = defaultState, action) => {
           fetchCatalogueData = fetchCatalogueData.push(node);
         }
       });
-      if(catalogue.get('catalogue_data').equals(fetchCatalogueData)){return catalogue}
-      return catalogue.set('catalogue_data',fetchCatalogueData)
+      return catalogue.set('fetching_catalogue',false).set('catalogue_data',fetchCatalogueData);
       break;
     }
     case NODE_CHOICE:{
@@ -54,13 +66,17 @@ export default (catalogue = defaultState, action) => {
       return catalogue.set('current_item',action.payload)
       break;
     }
+    case ITEMS_FETCH+START:{
+      return catalogue.set('fetching_items',true)
+      break;
+    }
     case ITEMS_FETCH+SUCCESS:{
       let newItems = List(action.payload);
       let prefetchedItems = List(catalogue.get('items'));
       let chosenItem = prefetchedItems.find((item)=>item.id===catalogue.get('current_item'));
       if(chosenItem&&!newItems.find(item=>item.id===chosenItem.id))newItems = newItems.push(chosenItem);
       if(newItems.equals(catalogue.get('items'))){return catalogue}
-      return catalogue.set('items',newItems)
+      return catalogue.set('items',newItems).set('fetching_items',false)
       break;
     }
     case ITEM_INFO_FETCH+SUCCESS:{

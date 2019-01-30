@@ -67,11 +67,15 @@ class LocalStorageService{
    * @param {String} value Значение переменной для редактирования
    */
   static addTo(list, value){
+    console.log(list, value);
     if(typeof value == 'undefined'){return null}
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
-      let val = window.localStorage[keys[list]] + " " + value;
-      window.localStorage[keys[list]] = val;
+      let val = window.localStorage[keys[list]];
+      let splitVal = val.split(" ").filter(item=>item!==""&&item!==value);
+      splitVal.push(value);
+      window.localStorage[keys[list]] = splitVal.join(" ");
+      console.log(window.localStorage[keys[list]]);
     }
   }
 
@@ -114,6 +118,17 @@ class LocalStorageService{
         }
       }
       return splitList;
+    }
+  }
+
+  static setList(list, input, delimiter=" "){
+    let keys = this._getKeys();
+    if(Object.keys(keys).indexOf(list) != -1){
+      let storedList = window.localStorage[keys[list]];
+      if(typeof storedList == "undefined" || storedList == null){
+        return false;
+      }
+      let newValue = input.join(delimiter);
     }
   }
 

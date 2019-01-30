@@ -270,9 +270,10 @@ export function setLocalValue(key,value){
   }
 }
 
-export function addToLocalValue(key,value){
+export function addToLocalValue(key,add){
   return dispatch=>{
-    LocalStorageService.removeFrom(key,value);
+    LocalStorageService.addTo(key,add);
+    let value = LocalStorageService.get(key);
     dispatch({
       type:LOCAL_STORAGE_VALUE_SET,
       payload:{key,value}
@@ -282,7 +283,7 @@ export function addToLocalValue(key,value){
 
 export function spliceFromLocalValue(key,value){
   return dispatch=>{
-    LocalStorageService.addTo(key,value);
+    LocalStorageService.removeFrom(key,value);
     dispatch({
       type:LOCAL_STORAGE_VALUE_SET,
       payload:{key,value}
@@ -358,7 +359,9 @@ export function fetchItemData(id){
 }
 
 export function addResourceToDownloads(id){
-
+  return dispatch=>{
+    dispatch(addToLocalValue('pending_downloads',id));
+  }
 }
 
 export function updateResourceField(params){

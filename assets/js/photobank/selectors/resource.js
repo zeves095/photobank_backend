@@ -5,9 +5,10 @@ export const existingResources = (store,props)=>store.resource.get('resources_ex
 export const finishedPresets = (store,props)=>store.resource.get('finished_presets');
 export const resourceId = (store,props)=>props.file.id||null;
 export const itemId = (store,props)=>props.item_id||null;
+export const loadingResources = (store,props)=>store.resource.get('fetching_resources');
+export const loadingPresets = (store,props)=>store.resource.get('fetching_presets');
 
 export const getExisting = createSelector(existingResources,(existing)=>{
-  console.log(existing);
   existing = existing.sort((a,b)=>{
     let val = 0;
     if(a.type===b.type===2){
@@ -16,7 +17,6 @@ export const getExisting = createSelector(existingResources,(existing)=>{
       val = a.type>b.type?1:b.type>a.type?-1:a.src_filename.localeCompare(b.src_filename);
     }return val;
   });
-  console.log(existing);
   return existing.toArray();
 });
 
@@ -51,4 +51,12 @@ export const getCurrentAddResources = createSelector(existingResources, itemId, 
   return existing.filter(resource=>{
     return resource.type===2&&resource.item===id;
   }).size;
+});
+
+export const getLoadingResources = createSelector(loadingResources, (loading)=>{
+  return loading;
+});
+
+export const getLoadingPresets = createSelector(loadingPresets, (loading)=>{
+  return loading;
 });

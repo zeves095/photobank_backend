@@ -156,8 +156,7 @@ export class ExistingResources extends React.Component{
 
   render() {
 
-    let files = this.props.existing.sort((a,b)=>a.type<b.type||a.priority>b.priority||a.src_filename.localeCompare(b.src_filename)?1:0);
-    files = files.map(file=>{
+    let files = this.props.existing.map(file=>{
       return <ExistingResource file={file} item_id={this.props.item_id} />
     });
 
@@ -175,7 +174,7 @@ export class ExistingResources extends React.Component{
         <h4 className="item-view__subheader">Файлы товара<div className="button-block"><button type="button" onClick={()=>{this.props.fetchExisting(this.props.item_id);this.fetchPresets();}}><i className="fas fa-redo-alt"></i>Обновить</button></div></h4>
         {paginationControls}
         {this.props.existing.length==0?"Нет загруженных файлов":null}
-        <div className={(this.state.loading?"loading ":"") + "item-resources"}>
+        <div className={(this.props.loading?"loading ":"") + "item-resources"}>
           <div className="item-view__file-list existing-files">
             <div className="item-view__table-header">
               <span className="info__info-field info__info-field--title info__info-field--sizepx">Имя файла</span>
@@ -198,7 +197,7 @@ export class ExistingResources extends React.Component{
 const mapStateToProps = (state,props) =>{
   return {
     existing: selectors.resource.getExisting(state,props),
-    //finished_presets: selectors.resource.getFinishedPresets(state,props)
+    loading: selectors.resource.getLoadingPresets(state,props)||selectors.resource.getLoadingResources(state,props),
   }
 }
 

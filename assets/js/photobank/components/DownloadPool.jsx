@@ -4,6 +4,7 @@ import {ResourceService} from './../../services/ResourceService';
 import {NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
+import selectors from '../selectors';
 
 /**
  * Компонент интерфейса bulk-загрузки файлов с сервера
@@ -117,6 +118,7 @@ export class DownloadPool extends React.Component{
 
 const mapStateToProps = (state,props) =>{
   return {
+    downloads: selectors.localstorage.getPendingDownloads(state,props)
   }
 }
 

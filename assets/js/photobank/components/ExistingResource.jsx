@@ -53,7 +53,7 @@ export class ExistingResource extends React.Component {
     e.stopPropagation();
     e.preventDefault();
     let resource = e.target.dataset["resource"];
-    this.props.addDownloadHandler(resource);
+    this.props.addResourceToDownloads(resource);
     NotificationService.toast("dl-queued");
   }
 
@@ -69,43 +69,6 @@ export class ExistingResource extends React.Component {
       "priority_active": file
     });
   }
-
-  /**
-   * Обработчик начала установки приоритета ресурса
-   * @param  {[type]} e Событие клика
-   */
-  // handlePriorityUpdate = (e)=>{
-  //   if(!this.props.authorized){return}
-  //   let priority = e.target.dataset["priority"];
-  //   let form = $(e.target).closest(".existing-files__file.file");
-  //   let input = form.find("input[name='priority']");
-  //   let id = form.find("input[name='id']").val();
-  //   input.val(priority);
-  //   this.handleResourceUpdate(e, id)
-  // }
-
-  /**
-   * Обработчик обновления данных о ресурсе
-   * @param  {Event} e Событие клика
-   * @param  {Number} [id=null] Опциональный идентификатор ресурса для обновления. Если не указан, будет взят из элемента, по которому кликнул пользователь
-   */
-  // handleResourceUpdate = (id)=>{
-  //   if(!this.props.authorized){return}
-  //   let form = {};
-  //   if(id==null){
-  //     form = $(e.target).closest(".existing-files__file.file");
-  //   }else{
-  //     form = $(".existing-files__file.file").filter(function(){
-  //       return $(this).find("input[name=id]").val() == id;
-  //     });
-  //   }
-  //   ResourceService.updateResource(form).then((data)=>{
-  //     this.key++;
-  //     this.props.fetchExisting(this.props.item_id);
-  //   }).catch((error)=>{
-  //     NotificationService.throw(error);
-  //   });
-  // }
 
   handleTypeUpdate = (e)=>{
     let type = e.target.value;
@@ -127,8 +90,6 @@ export class ExistingResource extends React.Component {
   }
 
   render() {
-
-    console.log(this.props);
 
     let presets = [];
 

@@ -115,7 +115,7 @@ export class CatalogueTree extends React.Component {
           <div className="catalogue-tree__crumbs crumbs">
             {this.props.view==1?crumbs:null}
           </div>
-          <div className={(this.state.loading?"loading ":"")+"catalogue-tree__view-inner view-inner"}>
+          <div className={(this.props.loading?"loading ":"")+"catalogue-tree__view-inner view-inner"}>
             <div className={"view-inner__"+viewClass + " " + viewClass}>
               {view}
             </div>
@@ -130,7 +130,8 @@ const mapStateToProps = (state,props) =>{
   return {
     catalogue_data: selectors.catalogue.getCatalogueData(state,props),
     current_node: selectors.catalogue.getCurrentNode(state,props)||selectors.localstorage.getStoredNode(state,props),
-    view: selectors.localstorage.getStoredCatalogueViewtype(state,props)
+    view: selectors.localstorage.getStoredCatalogueViewtype(state,props),
+    loading: selectors.catalogue.getLoadingCatalogue(state,props)
   }
 }
 

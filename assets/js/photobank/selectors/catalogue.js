@@ -7,6 +7,8 @@ export const currentNodeId = (store, props)=>store.catalogue.get('current_node')
 export const catalogueData = (store, props)=>store.catalogue.get('catalogue_data');
 export const items = (store, props)=>store.catalogue.get('items');
 export const resumableContainer = (store, props)=>store.upload.get('resumable_container');
+export const fetchingCatalogue = (store, props)=>store.catalogue.get('fetching_catalogue');
+export const fetchingItems = (store, props)=>store.catalogue.get('fetching_items');
 
 export const getCatalogueData = createSelector(catalogueData,(catalogue)=>{
   return catalogue.toArray();
@@ -29,4 +31,12 @@ export const getItemObject = createSelector(items, currentItemId, (items, id)=>{
   let item = items.find(item=>item.id===id);
   if(!item)item=null;
   return item;
+});
+
+export const getLoadingCatalogue = createSelector(fetchingCatalogue, (fetching)=>{
+  return fetching;
+});
+
+export const getLoadingItems = createSelector(fetchingItems, (fetching)=>{
+  return fetching;
 });

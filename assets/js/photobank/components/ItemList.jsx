@@ -63,7 +63,7 @@ export class ItemList extends React.Component{
 
       <div className={"view-inner__item-list"}>
         <span className="titlefix"><h2 className="node-viewer__component-title component-title">Товары</h2></span>
-      <div className={(this.state.loading?"loading ":"")+"view-inner__container inner-bump"}>
+      <div className={(this.props.loading?"loading ":"")+"view-inner__container inner-bump"}>
         <ListFilter filterHandler={this.filterQueryHandler} filterid="nodesearch" placeholder="Фильтр по выбранному" />
       {this.props.items_filtered.length>0?null:"Нет товаров в выбранной категории"}
         {tooBroadMsg}
@@ -81,6 +81,7 @@ const mapStateToProps = (state,props) =>{
     current_item: selectors.catalogue.getItemObject(state,props)||selectors.localstorage.getStoredItem(state,props),
     items: selectors.catalogue.getNodeItems(state,props),
     items_filtered: selectors.catalogue.filterItems(state,props),
+    loading: selectors.catalogue.getLoadingItems(state,props),
   }
 }
 
