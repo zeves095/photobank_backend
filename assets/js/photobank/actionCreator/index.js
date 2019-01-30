@@ -356,3 +356,7 @@ export function fetchItemData(id){
     });
   }
 }
+
+export function addResourceToDownloads(id){
+
+}
