@@ -7,6 +7,16 @@ export const resourceId = (store,props)=>props.file.id||null;
 export const itemId = (store,props)=>props.item_id||null;
 
 export const getExisting = createSelector(existingResources,(existing)=>{
+  console.log(existing);
+  existing = existing.sort((a,b)=>{
+    let val = 0;
+    if(a.type===b.type===2){
+      val = a.priority>b.priority?1:b.priority>a.priority?-1:a.src_filename.localeCompare(b.src_filename);
+    }else{
+      val = a.type>b.type?1:b.type>a.type?-1:a.src_filename.localeCompare(b.src_filename);
+    }return val;
+  });
+  console.log(existing);
   return existing.toArray();
 });
 

@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import selectors from '../selectors';
 import {ResourceService,NotificationService} from '../services';
-import {addResourceToDownloads} from '../actionCreator';
+import {addResourceToDownloads, updateResourceField} from '../actionCreator';
 
 export class ExistingResource extends React.Component {
 
@@ -74,57 +74,78 @@ export class ExistingResource extends React.Component {
    * Обработчик начала установки приоритета ресурса
    * @param  {[type]} e Событие клика
    */
-  handlePriorityUpdate = (e)=>{
-    if(!this.props.authorized){return}
-    let priority = e.target.dataset["priority"];
-    let form = $(e.target).closest(".existing-files__file.file");
-    let input = form.find("input[name='priority']");
-    let id = form.find("input[name='id']").val();
-    input.val(priority);
-    this.handleResourceUpdate(e, id)
-  }
+  // handlePriorityUpdate = (e)=>{
+  //   if(!this.props.authorized){return}
+  //   let priority = e.target.dataset["priority"];
+  //   let form = $(e.target).closest(".existing-files__file.file");
+  //   let input = form.find("input[name='priority']");
+  //   let id = form.find("input[name='id']").val();
+  //   input.val(priority);
+  //   this.handleResourceUpdate(e, id)
+  // }
 
   /**
    * Обработчик обновления данных о ресурсе
    * @param  {Event} e Событие клика
    * @param  {Number} [id=null] Опциональный идентификатор ресурса для обновления. Если не указан, будет взят из элемента, по которому кликнул пользователь
    */
-  handleResourceUpdate = (e, id=null)=>{
-    if(!this.props.authorized){return}
-    let form = {};
-    if(id==null){
-      form = $(e.target).closest(".existing-files__file.file");
-    }else{
-      form = $(".existing-files__file.file").filter(function(){
-        return $(this).find("input[name=id]").val() == id;
-      });
-    }
-    ResourceService.updateResource(form).then((data)=>{
-      this.key++;
-      this.props.fetchExisting(this.props.item_id);
-    }).catch((error)=>{
-      NotificationService.throw(error);
+  // handleResourceUpdate = (id)=>{
+  //   if(!this.props.authorized){return}
+  //   let form = {};
+  //   if(id==null){
+  //     form = $(e.target).closest(".existing-files__file.file");
+  //   }else{
+  //     form = $(".existing-files__file.file").filter(function(){
+  //       return $(this).find("input[name=id]").val() == id;
+  //     });
+  //   }
+  //   ResourceService.updateResource(form).then((data)=>{
+  //     this.key++;
+  //     this.props.fetchExisting(this.props.item_id);
+  //   }).catch((error)=>{
+  //     NotificationService.throw(error);
+  //   });
+  // }
+
+  handleTypeUpdate = (e)=>{
+    let type = e.target.value;
+    this.props.updateResourceField({
+      file:this.props.file,
+      key:"type",
+      value:type,
+      item:this.props.item_id,
+    });
+  }
+
+  handlePriorityUpdate = (priority)=>{
+    this.props.updateResourceField({
+      file:this.props.file,
+      key:"priority",
+      value:priority,
+      item:this.props.item_id,
     });
   }
 
   render() {
 
+    console.log(this.props);
+
     let presets = [];
 
     for(var preset in window.config['presets']){
       let presetId = window.config['presets'][preset]['id'];
-      let finished = this.props.finished_presets.find(preset=>preset.gid===this.props.file.id);
+      let finished = this.props.finished_presets.find(preset=>preset.resource===this.props.file.id);
       presets.push(
         <span key={this.props.file.id+"-"+presetId} className={"info__info-field info__info-field--preset "+finished?"info__info-field--preset-done":"info__info-field--preset-not-done"}>
           {finished
             ?<span className="existing-download">
               <span className="existing-download-controls">
-                <i onClick={(e)=>{this.handleCopyToClipboard(finishedPreset.id, e)}} title="Скопировать ссылку" data-resource={finishedPreset.id} className="fas fa-link get-url"></i>
-              <i onClick={(e)=>{this.handleOpenInTab(finishedPreset.id, e)}} title="Открыть в новой вкладке" data-resource={finishedPreset.id} className="fas fa-external-link-square-alt open-in-tab"></i>
-            <i onClick={(e)=>{this.handleDownloadResource(finishedPreset.id, e)}} title="Скачать файл" data-resource={finishedPreset.id} className="fas fa-arrow-alt-circle-down dl-now"></i>
-          <i onClick={(e)=>{this.handleAddToDownloads(finishedPreset.id, e)}} title="Добавить в загрузки" data-resource={finishedPreset.id} className="fas fa-plus-circle dl-cart-add"></i>
+                <i onClick={(e)=>{this.handleCopyToClipboard(finished.id, e)}} title="Скопировать ссылку" data-resource={finished.id} className="fas fa-link get-url"></i>
+              <i onClick={(e)=>{this.handleOpenInTab(finished.id, e)}} title="Открыть в новой вкладке" data-resource={finished.id} className="fas fa-external-link-square-alt open-in-tab"></i>
+            <i onClick={(e)=>{this.handleDownloadResource(finished.id, e)}} title="Скачать файл" data-resource={finished.id} className="fas fa-arrow-alt-circle-down dl-now"></i>
+          <i onClick={(e)=>{this.handleAddToDownloads(finished.id, e)}} title="Добавить в загрузки" data-resource={finished.id} className="fas fa-plus-circle dl-cart-add"></i>
               </span>
-              <a href={window.config['resource_url']+finishedPreset.id+".jpg"} target="_blank">{window.config['presets'][preset]['width']+'/'+window.config['presets'][preset]['height']}</a>
+              <a href={window.config['resource_url']+finished.id+".jpg"} target="_blank">{window.config['presets'][preset]['width']+'/'+window.config['presets'][preset]['height']}</a>
             </span>
             :"Не обработан"
           }
@@ -142,8 +163,8 @@ export class ExistingResource extends React.Component {
     let priorityStack = [];
     let priorityCtx = "";
     if(this.state.priority_active == this.props.file.id){
-      for(var j=0; j<maxAdd; j++){
-        priorityStack.push(<div className={"item " + (this.props.file.priority == j?"active":"")} onClick={this.handlePriorityUpdate} data-priority={j}>{j}</div>);
+      for(let j=0; j<this.props.max_add; j++){
+        priorityStack.push(<div className={"item " + (this.props.file.priority == j?"active":"")} onClick={()=>{this.handlePriorityUpdate(j)}} data-priority={j}>{j}</div>);
       }
       priorityCtx = [
         <div className="edit-input__context-menu context-menu"><div className="context-menu__inner">{priorityStack}</div></div>
@@ -157,7 +178,7 @@ export class ExistingResource extends React.Component {
         {this.props.file.src_filename}
       </a>
       <div className={"edit-input " + (this.props.file.type == "2"?"edit-input--add-file":"")}>
-        <select onChange={this.handleResourceUpdate} name="type" defaultValue={this.props.file.type} disabled={!this.props.authorized}>
+        <select onChange={(e)=>{this.handleTypeUpdate(e)}} name="type" defaultValue={this.props.file.type} disabled={!this.props.authorized}>
           <option disabled={this.props.current_main >= this.props.max_main?true:false} value="1">Основноe{this.props.current_main+"/"+this.props.max_main}</option>
             <option disabled={this.props.current_add >= this.props.max_add?true:false} value="2">Доп.{this.props.current_add+"/"+this.props.max_add}</option>
           <option value="3">Исходник</option>
@@ -166,7 +187,6 @@ export class ExistingResource extends React.Component {
             ? <span className="edit-input__priority-btn" data-file={this.props.file.id} onClick={this.handlePriority}>{this.props.file.priority}{priorityCtx}</span>
             : null
         }
-        <input type="hidden" name="priority" defaultValue={this.props.file.priority} onChange={this.handleResourceUpdate}></input>
       </div>
       <input type="hidden" name="id" value={this.props.file.id}/>
       <span className="info__info-field info-field info__info-field--sizemb">{Math.round((this.props.file.size_bytes / (1024 * 1024)) * 100) / 100 + "MB"}</span>
@@ -185,18 +205,21 @@ export class ExistingResource extends React.Component {
 
 }
 
-const mapStateToProps = (store,props)=>{
+const mapStateToProps = (state,props)=>{
   return {
-    finished_presets: selectors.resource.getFinishedPresets(store,props),
-    max_main: selectors.resource.getMaxMainResources(store,props),
-    max_add: selectors.resource.getMaxAddResources(store,props),
-    current_main: selectors.resource.getCurrentMainResources(store,props),
-    current_add: selectors.resource.getCurrentAddResources(store,props),
+    finished_presets: selectors.resource.getFinishedPresets(state,props),
+    max_main: selectors.resource.getMaxMainResources(state,props),
+    max_add: selectors.resource.getMaxAddResources(state,props),
+    current_main: selectors.resource.getCurrentMainResources(state,props),
+    current_add: selectors.resource.getCurrentAddResources(state,props),
+    authorized: selectors.user.getAuthorized(state,props),
   }
 }
 
 const mapDispatchToProps = {
   addResourceToDownloads,
+  updateResourceField,
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExistingResource)

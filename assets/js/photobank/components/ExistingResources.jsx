@@ -156,8 +156,8 @@ export class ExistingResources extends React.Component{
 
   render() {
 
-
-    let files = this.props.existing.map(file=>{
+    let files = this.props.existing.sort((a,b)=>a.type<b.type||a.priority>b.priority||a.src_filename.localeCompare(b.src_filename)?1:0);
+    files = files.map(file=>{
       return <ExistingResource file={file} item_id={this.props.item_id} />
     });
 

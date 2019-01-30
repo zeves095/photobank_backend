@@ -360,3 +360,17 @@ export function fetchItemData(id){
 export function addResourceToDownloads(id){
 
 }
+
+export function updateResourceField(params){
+  console.warn(params);
+  return dispatch=>{
+    let fetchBody = {
+      id:params.file.id,
+      type:params.file.type
+    };
+    fetchBody[params.key] = params.value;
+    fetch(window.config.resource_url+params.file.id, {method:"PATCH", body:JSON.stringify(fetchBody)}).then(response=>{
+      dispatch(fetchExisting(params.item));
+    });
+  }
+}

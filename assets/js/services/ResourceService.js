@@ -109,35 +109,36 @@ class ResourceService{
    * Обновляет метаинформацию ресурса
    * @param  {Object} form Данные формы
    */
-  static updateResource(form){
+  static updateResource(data){
     return new Promise((resolve, reject)=>{
-      let data = {
-        "id" : form.find("input[name='id']").val()
-      };
-      let val = form.find("select, input[type='text'], input[type='hidden']");
-      let chk = form.find("input[type='checkbox']");
-      if(val.length){
-        val.each(function(){
-          data[$(this).prop('name')]=$(this).val()
-        })
-      }
-      if(chk.length){
-        sel.each(function(){
-          data[$(this).prop('name')]=$(this).prop("checked")
-        })
-      }
-      let dataJson = JSON.stringify(data);
-      $.ajax({
-        url: window.config.resource_url+data.id,
-        method: 'PATCH',
-        data: dataJson,
-        contentType: "application/json; charset=utf-8",
-        dataType: "json"
-      }).done(()=>{
-        resolve();
-      }).fail(()=>{
-        reject("request-failed");
-      });
+      
+      // let data = {
+      //   "id" : form.find("input[name='id']").val()
+      // };
+      // let val = form.find("select, input[type='text'], input[type='hidden']");
+      // let chk = form.find("input[type='checkbox']");
+      // if(val.length){
+      //   val.each(function(){
+      //     data[$(this).prop('name')]=$(this).val()
+      //   })
+      // }
+      // if(chk.length){
+      //   sel.each(function(){
+      //     data[$(this).prop('name')]=$(this).prop("checked")
+      //   })
+      // }
+      // let dataJson = JSON.stringify(data);
+      // $.ajax({
+      //   url: window.config.resource_url+data.id,
+      //   method: 'PATCH',
+      //   data: dataJson,
+      //   contentType: "application/json; charset=utf-8",
+      //   dataType: "json"
+      // }).done(()=>{
+      //   resolve();
+      // }).fail(()=>{
+      //   reject("request-failed");
+      // });
       //resolve();
     });
   }

@@ -6,7 +6,7 @@ import {
  } from '../../constants'
 
 let defaultState = Map({
-  isAuthorized: Map({}),
+  isAuthorized: false,
 })
 
 export default (user = defaultState, action) => {
@@ -16,7 +16,8 @@ export default (user = defaultState, action) => {
       const user_info = Map(action.payload);
       const roles = user_info.get('user_roles');
       const authorized = roles.includes("ROLE_ADMIN")||roles.includes("ROLE_SUPER_ADMIN")||roles.includes("ROLE_WRITER");
-      return user.set('isAithorized',authorized);
+      console.warn(authorized);
+      return user.set('isAuthorized',authorized);
       break;
     }
   }
