@@ -43,7 +43,7 @@ export class ItemSearch extends React.Component {
   }
 
   /**
-   * Создает объект поиска и определяет отслеживаемые события на странице
+   * Определяет отслеживаемые события на странице
    */
   componentDidMount() {
     let queryObject = {};

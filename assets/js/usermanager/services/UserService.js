@@ -45,7 +45,6 @@ class UserService{
    * @param  {Object[]} users Существующие пользователи
    */
   static getBlankUser(users){
-    console.log(users);
     let id = users[users.length-1].id + 1;
     let blankUser = {"id":id, "password":"","name":"", "email":"", "active":true, "role":"ROLE_USER"};
     return blankUser;

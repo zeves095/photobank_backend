@@ -16,7 +16,6 @@ export default (user = defaultState, action) => {
       const user_info = Map(action.payload);
       const roles = user_info.get('user_roles');
       const authorized = roles.includes("ROLE_ADMIN")||roles.includes("ROLE_SUPER_ADMIN")||roles.includes("ROLE_WRITER");
-      console.warn(authorized);
       return user.set('isAuthorized',authorized);
       break;
     }

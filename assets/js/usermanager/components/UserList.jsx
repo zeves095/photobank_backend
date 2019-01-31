@@ -28,7 +28,6 @@ export class UserList extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     let usersActive = this.props.users_active.map((user)=>{
       return <div key={"userl"+user.id} className={"user-item card-panel white-text "+(this.props.user&&this.props.user.id==user.id?"light-blue accent-3":"blue-grey lighten-2")} onClick={()=>{this.props.chooseUser(user.id)}}><i className="fas fa-user"></i>{user.name}</div>
     });

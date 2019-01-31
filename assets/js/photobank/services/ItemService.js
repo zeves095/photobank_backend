@@ -52,7 +52,6 @@ class ItemService{
           resolve(data);
         }).catch((e)=>{reject([])});
       }else{
-        console.log(window.config.item_search_url);
         let fetchBody = {"item_search_name":queryObject.name||"","item_search_code":queryObject.code||"","item_search_parent_name":queryObject.parent_name||"","item_search_search_nested":queryObject.search_nested, "item_search_article":queryObject.article||""};
         let getParams = "?"+Object.entries(fetchBody).map(entry=>entry[0]+"="+entry[1]).join("&");
         fetch(window.config.item_search_url+getParams)

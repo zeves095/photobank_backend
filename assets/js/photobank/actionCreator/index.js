@@ -82,8 +82,11 @@ export function fetchRootNodes(id){
   }
 }
 
-export function fetchNodes(id){
+export function fetchNodes(id, data){
   return (dispatch)=>{
+    if(data.length === 0){
+      return dispatch(fetchRootNodes(id));
+    }
     dispatch({
       type: CATALOGUE_DATA_FETCH+START,
       payload: ''
@@ -106,13 +109,13 @@ export function fetchNodes(id){
   }
 }
 
-export function chooseNode(id){
+export function chooseNode(id, data){
   return (dispatch)=> {
     let qo = new ItemQueryObject();
     qo.nodeId = id;
     dispatch(fetchItems(qo));
     dispatch(setLocalValue('current_node', id));
-    dispatch(fetchNodes(id));
+    dispatch(fetchNodes(id, data));
     dispatch({
       type: NODE_CHOICE,
       payload: id
@@ -164,9 +167,9 @@ export function fetchPresets(pagination, existing){
 
 export function chooseItem(id){
   return dispatch=>{
+    dispatch(pushResumable(id));
     dispatch(purgeEmptyItems());
     dispatch(setLocalValue('current_item',id));
-    dispatch(pushResumable(id));
     return dispatch({
       type: ITEM_CHOICE,
       payload: id
@@ -182,7 +185,6 @@ export function fetchItems(query){
     });
     return ItemService.fetchItems(query)
     .then((data)=>{
-      console.warn(data);
       dispatch({
         type: ITEMS_FETCH+SUCCESS,
         payload: data
@@ -298,7 +300,6 @@ export function spliceFromLocalValue(key,value){
 export function getLocalStorage(key = null){
   return dispatch=>{
     const data = LocalStorageService.get(key);
-    console.log(data);
     dispatch({
       type:LOCAL_STORAGE_VALUE_SET+(!key&&ALL),
       payload:data
@@ -370,7 +371,6 @@ export function addResourceToDownloads(id){
 }
 
 export function updateResourceField(params){
-  console.warn(params);
   return dispatch=>{
     let fetchBody = {
       id:params.file.id,

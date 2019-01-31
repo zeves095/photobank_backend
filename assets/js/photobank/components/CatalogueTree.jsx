@@ -36,20 +36,18 @@ export class CatalogueTree extends React.Component {
    * Обработчик выбора активного раздела каталога
    */
   handleNodeChoice = (id)=>{
-    this.props.chooseNode(id);
+    this.props.chooseNode(id, this.props.catalogue_data);
   }
 
   /**
    * Запрашивает структуру каталога от созраненного выбранного раздела до верхнего уровня каталога
    */
   componentWillMount(){
-    this.props.fetchRootNodes(this.props.current_node);
-    this.handleNodeChoice(this.props.current_node);
+    this.handleNodeChoice(this.props.current_node, this.props.catalogue_data);
   }
 
   componentDidUpdate(prevProps){
     if((this.props.current_node !== prevProps.current_node || this.props.catalogue_data !== prevProps.catalogue_data)&&this.props.catalogue_data.length){
-      console.log(this.props.catalogue_data, this.props.current_node);
       this.props.pushCrumbs(this.props.catalogue_data, this.props.current_node);
     }
   }
@@ -60,7 +58,7 @@ export class CatalogueTree extends React.Component {
    */
   handleViewChoice = (type)=>{
     if(type==3){
-      this.props.chooseNode(null);
+      this.props.chooseNode(null, this.props.catalogue_data);
     }
     this.props.chooseCatalogueViewType(type);
   }
@@ -71,7 +69,7 @@ export class CatalogueTree extends React.Component {
   traverseUp = ()=>{
     let curNode = this.props.catalogue_data.filter((node)=>{return parseInt(node.id)==parseInt(this.props.current_node)})[0];
     if(typeof curNode!= "undefined"){
-      this.props.chooseNode(curNode.parent);
+      this.props.chooseNode(curNode.parent, this.props.catalogue_data);
     }
   }
 

@@ -47,5 +47,10 @@ export const getCrumbs = createSelector(breadcrumbs, (crumbs)=>{
 });
 
 export const getCrumbString = createSelector(breadcrumbs, (crumbs)=>{
-  return crumbs&&crumbs.map(crumb=>crumb.name).join("/");
+  if(!crumbs){return "/"}
+  let crumbArr = List(crumbs.map(crumb=>crumb.name));
+  if(crumbArr.size>3){
+    crumbArr = crumbArr.slice(0,1).push('...').concat(crumbArr.slice(-2));
+  }
+  return crumbArr.join("/")
 });

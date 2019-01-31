@@ -67,7 +67,6 @@ class LocalStorageService{
    * @param {String} value Значение переменной для редактирования
    */
   static addTo(list, value){
-    console.log(list, value);
     if(typeof value == 'undefined'){return null}
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
@@ -75,7 +74,6 @@ class LocalStorageService{
       let splitVal = val.split(" ").filter(item=>item!==""&&item!==value);
       splitVal.push(value);
       window.localStorage[keys[list]] = splitVal.join(" ");
-      console.log(window.localStorage[keys[list]]);
     }
   }
 

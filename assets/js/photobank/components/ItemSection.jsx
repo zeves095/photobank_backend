@@ -40,6 +40,10 @@ export class ItemSection extends React.Component{
     this.props.chooseListViewType(type);
   }
 
+  componentWillMount(){
+    this.props.pushResumable(this.props.item.id);
+  }
+
   render() {
     if(!this.props.item){this.props.fetchItemData(this.props.item_id);return null;}
     let render_upload = this.props.item&&this.props.resumable&&this.props.authorized;
