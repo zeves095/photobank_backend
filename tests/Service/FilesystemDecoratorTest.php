@@ -45,7 +45,6 @@ class FilesystemDecoratorTest extends WebTestCase
 
   public function testDumpFile()
   {
-      var_dump($this->dir);
       $filesystemDecorator = $this->getService();
       $this->createLiveMount();
       $filesystemDecorator->dumpFile($this->dir.'/testfile','');

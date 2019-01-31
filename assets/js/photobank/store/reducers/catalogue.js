@@ -7,6 +7,7 @@ import {
   NODE_CHOICE,
   ITEM_CHOICE,
   ITEMS_FETCH,
+  CRUMBS_UPDATE,
   START,
   SUCCESS,
   FAIL
@@ -26,27 +27,26 @@ let defaultState = Map({
   item_query_object: null,
   fetching_catalogue: true,
   fetching_items: true,
+  crumbs: null
 })
 
 export default (catalogue = defaultState, action) => {
   catalogue = Map(catalogue);
   switch(action.type){
     case CATALOGUE_ROOT_NODES_FETCH+START:{
-      return catalogue.set('fetching_catalogue',true)
+      return catalogue.set('fetching_catalogue',true);
       break;
     }
     case CATALOGUE_ROOT_NODES_FETCH+SUCCESS:{
       const root_nodes = List(action.payload);
-      return catalogue.set('fetching_catalogue',false).set('catalogue_data',root_nodes)
+      return catalogue.set('fetching_catalogue',false).set('catalogue_data',root_nodes);
       break;
     }
     case CATALOGUE_DATA_FETCH+START:{
-      console.log("STOORT");
-      return catalogue.set('fetching_catalogue',true)
+      return catalogue.set('fetching_catalogue',true);
       break;
     }
     case CATALOGUE_DATA_FETCH+SUCCESS:{
-      console.log("STAHP");
       let fetched_data = List(action.payload);
       let fetchCatalogueData = catalogue.get('catalogue_data');
       //let newData = existingCatalogueData.concat(fetched_data));
@@ -59,15 +59,15 @@ export default (catalogue = defaultState, action) => {
       break;
     }
     case NODE_CHOICE:{
-      return catalogue.set('current_node',action.payload)
+      return catalogue.set('current_node',action.payload);
       break;
     }
     case ITEM_CHOICE:{
-      return catalogue.set('current_item',action.payload)
+      return catalogue.set('current_item',action.payload);
       break;
     }
     case ITEMS_FETCH+START:{
-      return catalogue.set('fetching_items',true)
+      return catalogue.set('fetching_items',true);
       break;
     }
     case ITEMS_FETCH+SUCCESS:{
@@ -75,15 +75,19 @@ export default (catalogue = defaultState, action) => {
       let prefetchedItems = List(catalogue.get('items'));
       let chosenItem = prefetchedItems.find((item)=>item.id===catalogue.get('current_item'));
       if(chosenItem&&!newItems.find(item=>item.id===chosenItem.id))newItems = newItems.push(chosenItem);
-      if(newItems.equals(catalogue.get('items'))){return catalogue}
-      return catalogue.set('items',newItems).set('fetching_items',false)
+      return catalogue.set('items',newItems).set('fetching_items',false);
       break;
     }
     case ITEM_INFO_FETCH+SUCCESS:{
       let itemData = action.payload;
       let prefetchedItems = List(catalogue.get('items'));
       if(!prefetchedItems.find(item=>item.id===itemData.id))prefetchedItems = prefetchedItems.push(itemData);
-      return catalogue.set('items',prefetchedItems)
+      return catalogue.set('items',prefetchedItems);
+      break;
+    }
+    case CRUMBS_UPDATE:{
+      let crumbs = action.payload;
+      return catalogue.set('crumbs', crumbs);
       break;
     }
   }

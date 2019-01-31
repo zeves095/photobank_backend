@@ -16,6 +16,7 @@ export const LOCAL_STORAGE_VALUE_SET = 'LOCAL_STORAGE_VALUE_SET';
 export const PURGE_EMPTY_ITEMS = 'PURGE_EMPTY_ITEMS';
 export const USER_INFO_FETCH = 'USER_INFO_FETCH';
 export const ITEM_INFO_FETCH = 'ITEM_INFO_FETCH';
+export const CRUMBS_UPDATE = 'CRUMBS_UPDATE';
 
 export const START = '_START';
 export const SUCCESS = '_SUCCESS';

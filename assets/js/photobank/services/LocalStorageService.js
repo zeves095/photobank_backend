@@ -148,7 +148,7 @@ class LocalStorageService{
     let keys=this._getKeys();
     let response = {};
     Object.keys(keys).forEach(key=>{
-      if(key == "pb_data_download_list"){
+      if(key == "pending_downloads"){
         response[key] = this.getList(key)
       }else{
         response[key] = this.get(key);

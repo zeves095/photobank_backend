@@ -11,8 +11,9 @@ export const loadingPresets = (store,props)=>store.resource.get('fetching_preset
 export const getExisting = createSelector(existingResources,(existing)=>{
   existing = existing.sort((a,b)=>{
     let val = 0;
-    if(a.type===b.type===2){
-      val = a.priority>b.priority?1:b.priority>a.priority?-1:a.src_filename.localeCompare(b.src_filename);
+    if(a.type===2&&b.type===2){
+        val = a.priority>b.priority?1:(b.priority>a.priority?-1:a.src_filename.localeCompare(b.src_filename));
+        val=(a.priority==0||b.priority==0)?-val:val;
     }else{
       val = a.type>b.type?1:b.type>a.type?-1:a.src_filename.localeCompare(b.src_filename);
     }return val;

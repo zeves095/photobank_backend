@@ -19,6 +19,8 @@ use App\Service\LinkService;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Serializer\AppSerializer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use App\Exception\LinkExpiredException;
+use App\Exception\AccessDeniedException;
 
 /**
   * Контроллер для получения и обновления информации о сущностях каталога Link
@@ -186,7 +188,13 @@ class LinkController extends AbstractController
      public function getResource($link_hash, Request $request, LinkService $linkService)
      {
         $user = $this->getUser();
-        $imageData = $linkService->getImageData($link_hash, $request, $user);
+        try{
+          $imageData = $linkService->getImageData($link_hash, $request, $user);
+        }catch(AccessDeniedException $e){
+          throw new HttpException(403,$e->getMessage());
+        }catch(LinkExpiredException $e){
+          throw new HttpException(410,$e->getMessage());
+        }
         $image = $imageData['content'];
         $headers = array(
           'Content-Type'     => 'image/jpeg',

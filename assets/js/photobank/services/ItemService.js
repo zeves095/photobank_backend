@@ -52,12 +52,14 @@ class ItemService{
           resolve(data);
         }).catch((e)=>{reject([])});
       }else{
-        let url = new URL(window.config.item_search_url);
-        let data = {"item_search_name":queryObject.name,"item_search_code":queryObject.code,"item_search_parent_name":queryObject.parent_name,"item_search_search_nested":queryObject.search_nested, "item_search_article":queryObject.article}
-        Object.keys(data).forEach(key => url.searchParams.append(key, data[key]));
-        fetch(url).then((data)=>{
+        console.log(window.config.item_search_url);
+        let fetchBody = {"item_search_name":queryObject.name||"","item_search_code":queryObject.code||"","item_search_parent_name":queryObject.parent_name||"","item_search_search_nested":queryObject.search_nested, "item_search_article":queryObject.article||""};
+        let getParams = "?"+Object.entries(fetchBody).map(entry=>entry[0]+"="+entry[1]).join("&");
+        fetch(window.config.item_search_url+getParams)
+        .then((response)=>response.json())
+        .then((data)=>{
           resolve(data);
-        }).catch((e)=>{reject([])});
+        }).catch((e)=>{reject(e)});
       }
     })
   }

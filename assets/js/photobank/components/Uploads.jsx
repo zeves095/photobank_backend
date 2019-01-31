@@ -23,11 +23,8 @@ export class Uploads extends React.Component{
   constructor(props) {
     super(props);
     this.state={
-      "uploads":[],
-      "busy" : false,
-      "loading" : false,
-      "need_refresh": false,
-      "unfinished_need_refresh":false
+      loading : false,
+      busy:false
     };
     this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
     this.fileHashStack = [];
@@ -65,12 +62,7 @@ export class Uploads extends React.Component{
    */
   assignResumableEvents=()=>{
     this.props.resumable.on('fileAdded', (file, event)=>{
-      //this.fileAddQueue.push(file);
-      // this.setState({"loading" : true});
       this.props.prepareFileForUpload(file,this.props.uploads,this.props.item);
-      if(window.resumableContainer[this.props.item.id] == undefined){
-        window.resumableContainer[this.props.item.id] = this.props.resumable;
-      }
       $("#drop_target" + this.props.item.id).removeClass('file-list__drop-target--active');
     });
     this.props.resumable.on('fileProgress', (file,event)=>{
@@ -81,15 +73,9 @@ export class Uploads extends React.Component{
     this.props.resumable.on('uploadStart', (file,event)=>{
       this.state.busy = true;
     });
-    this.props.resumable.on('fileComplete', (file,event)=>{
-      console.log(file);
-    });
     this.props.resumable.on('complete', ()=>{
       this.state.busy = false;
       this.props.completeUpload(this.props.item.id, this.props.resumable.files);
-      // delete window.resumableContainer[this.props.item_id];
-      // window.resumableContainer.splice(this.props.item.id, 1);
-      //this.props.uploadCompleteHandler();
     });
     this.props.resumable.on('fileError', (file,message)=>{
       this.state.busy = false;
@@ -119,22 +105,6 @@ export class Uploads extends React.Component{
       }, 100);
     });
     this.assignResumableEvents();
-  }
-
-  componentDidUpdate(prevProps, prevState){
-    if(this.props != prevProps){
-      this.setState({
-        "view_type": this.props.default_view,
-        "open": this.props.open_by_default
-      });
-    }
-    if(this.state.unfinished_need_refresh || this.state.need_refresh){
-      this.setState({
-        "need_refresh": false,
-        "unfinished_need_refresh": false,
-        "loading": false,
-      });
-    }
   }
 
   componentWillUnmount(){

@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use App\Service\UserService;
 use Symfony\Component\HttpFoundation\Request;
+use App\Exception\InvalidUserDataException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
   * Контроллер для работы с записями о пользователях и рендера страници управления пользователями
   *
@@ -63,7 +65,11 @@ class UsermanagerController extends AbstractController
      */
     public function setUser(UserService $userService, Request $request){
       $response = new JsonResponse();
-      $response->setData($userService->setUser($request->request->all()));
+      try{
+        $response->setData($userService->setUser($request->request->all()));
+      }catch(InvalidUserDataException $e){
+        throw new HttpException(400, $e->getMessage());
+      }
       return $response;
     }
 }

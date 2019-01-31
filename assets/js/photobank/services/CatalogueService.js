@@ -106,8 +106,8 @@ class CatalogueService{
    */
   static getCrumbs(data, currentNode){
     let crumbs = [];
-    if(currentNode == null){return crumbs;}
     let cur_node = this._getNodeById(data, currentNode);
+    if(cur_node == null){return crumbs;}
     cur_node.active = true;
     crumbs.push(cur_node);
     while(this._getNodeParent(data, cur_node) != cur_node && this._getNodeParent(data, cur_node)!= null){

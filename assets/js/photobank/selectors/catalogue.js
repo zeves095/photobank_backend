@@ -9,6 +9,7 @@ export const items = (store, props)=>store.catalogue.get('items');
 export const resumableContainer = (store, props)=>store.upload.get('resumable_container');
 export const fetchingCatalogue = (store, props)=>store.catalogue.get('fetching_catalogue');
 export const fetchingItems = (store, props)=>store.catalogue.get('fetching_items');
+export const breadcrumbs = (store, props)=>store.catalogue.get('crumbs');
 
 export const getCatalogueData = createSelector(catalogueData,(catalogue)=>{
   return catalogue.toArray();
@@ -19,7 +20,7 @@ export const getCurrentNode = createSelector(currentNodeId,(node)=>{
 });
 
 export const getNodeItems = createSelector(items, currentNodeId, (items, id)=>{
-  let newItems = items.filter(item=>item.node===id);
+  let newItems = id!==null?items.filter(item=>item.node===id):items;
   return newItems.toArray();
 });
 
@@ -39,4 +40,12 @@ export const getLoadingCatalogue = createSelector(fetchingCatalogue, (fetching)=
 
 export const getLoadingItems = createSelector(fetchingItems, (fetching)=>{
   return fetching;
+});
+
+export const getCrumbs = createSelector(breadcrumbs, (crumbs)=>{
+  return crumbs;
+});
+
+export const getCrumbString = createSelector(breadcrumbs, (crumbs)=>{
+  return crumbs&&crumbs.map(crumb=>crumb.name).join("/");
 });

@@ -48,16 +48,6 @@ export class UploadPool extends React.Component{
    }
 
   /**
-   * Обработчик обновления строки фильтрации списка товаров
-   * @param  {String} query Строка фильтрации
-   */
-  // filterQueryHandler=(query)=>{
-  //   this.setState({
-  //     "filter_query": query
-  //   });
-  // }
-
-  /**
    * Обработчик сворачивания всех товаров в очереди
    */
   handleCollapseAll=()=>{

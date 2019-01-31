@@ -89,7 +89,7 @@ const mapStateToProps = (state, props) =>{
     resumable: selectors.upload.getResumableInstance(state,props),
     render_existing: (typeof props.render_existing !== 'undefined')?props.render_existing:true,
     authorized: selectors.user.getAuthorized(state,props),
-    open_by_default: (typeof props.open_by_default !== 'undefined')?props.open_by_default:true
+    open_by_default: (typeof props.open_by_default !== 'undefined')?props.open_by_default:true,
   }
 }
 

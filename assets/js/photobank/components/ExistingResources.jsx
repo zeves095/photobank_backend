@@ -29,24 +29,16 @@ export class ExistingResources extends React.Component{
   constructor(props) {
     super(props);
     this.state={
-      "existing": [],
       "view_type": this.props.default_view,
-      "finished_presets": [],
       "loading" : false,
       "pagination_start": 0,
       "pagination_limit": 20,
       "pagination_end": 20,
       "pagination_current_page": 1,
       "pagination_total_pages": 0,
-      "priority_active":null
     };
     this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
-    this.fileViewClasses = ['file--icons-lg ','file--icons-sm ','file--detailed '];
-    this.finishedPresetRequestStack = [];
     this.paginationControls = "";
-    this.preset_headers = [];
-
-    this.presetCache = [];
 
   }
 

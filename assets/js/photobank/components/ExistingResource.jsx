@@ -93,9 +93,9 @@ export class ExistingResource extends React.Component {
 
     let presets = [];
 
-    for(var preset in window.config['presets']){
+    for(let preset in window.config['presets']){
       let presetId = window.config['presets'][preset]['id'];
-      let finished = this.props.finished_presets.find(preset=>preset.resource===this.props.file.id);
+      let finished = this.props.finished_presets.find(finished=>finished.resource===this.props.file.id&&finished.preset===presetId);
       presets.push(
         <span key={this.props.file.id+"-"+presetId} className={"info__info-field info__info-field--preset "+finished?"info__info-field--preset-done":"info__info-field--preset-not-done"}>
           {finished

@@ -18,6 +18,7 @@ import {
   PURGE_EMPTY_ITEMS,
   USER_INFO_FETCH,
   ITEM_INFO_FETCH,
+  CRUMBS_UPDATE,
   START,
   SUCCESS,
   FAIL,
@@ -181,6 +182,7 @@ export function fetchItems(query){
     });
     return ItemService.fetchItems(query)
     .then((data)=>{
+      console.warn(data);
       dispatch({
         type: ITEMS_FETCH+SUCCESS,
         payload: data
@@ -262,11 +264,13 @@ export function deleteUnfinishedUploads(uploads, id){
 
 export function setLocalValue(key,value){
   return dispatch=>{
-    LocalStorageService.set(key,value);
-    dispatch({
-      type:LOCAL_STORAGE_VALUE_SET,
-      payload:{key,value}
-    });
+    if(typeof value !== "undefined" && value !== null){
+      LocalStorageService.set(key,value);
+      dispatch({
+        type:LOCAL_STORAGE_VALUE_SET,
+        payload:{key,value}
+      });
+    }
   }
 }
 
@@ -294,6 +298,7 @@ export function spliceFromLocalValue(key,value){
 export function getLocalStorage(key = null){
   return dispatch=>{
     const data = LocalStorageService.get(key);
+    console.log(data);
     dispatch({
       type:LOCAL_STORAGE_VALUE_SET+(!key&&ALL),
       payload:data
@@ -374,6 +379,26 @@ export function updateResourceField(params){
     fetchBody[params.key] = params.value;
     fetch(window.config.resource_url+params.file.id, {method:"PATCH", body:JSON.stringify(fetchBody)}).then(response=>{
       dispatch(fetchExisting(params.item));
+    });
+  }
+}
+
+export function searchItems(query){
+  return dispatch=>{
+    let qo = new ItemQueryObject();
+    Object.keys(query).forEach(key=>{
+      qo[key]=query[key];
+    });
+    dispatch(fetchItems(qo));
+  }
+}
+
+export function pushCrumbs(data, node){
+  return dispatch=>{
+    let crumbs = CatalogueService.getCrumbs(data,node);
+    dispatch({
+      type: CRUMBS_UPDATE,
+      payload: crumbs
     });
   }
 }

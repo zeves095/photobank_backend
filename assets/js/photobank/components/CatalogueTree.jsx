@@ -1,7 +1,7 @@
 import React from 'react';
 // import $ from 'jquery';
 import TreeView from 'react-simple-jstree';
-import {ItemSearch} from './ItemSearch';
+import ItemSearch from './ItemSearch';
 import {ItemQueryObject} from '../services/ItemQueryObject';
 import {CatalogueService} from '../services/CatalogueService';
 import {LocalStorageService} from '../services/LocalStorageService';
@@ -9,7 +9,7 @@ import {NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
 import selectors from '../selectors';
-import {fetchRootNodes, fetchNodes, chooseNode, chooseCatalogueViewType} from '../actionCreator';
+import {fetchRootNodes, fetchNodes, chooseNode, chooseCatalogueViewType, pushCrumbs} from '../actionCreator';
 /**
  * [state description]
  * @type {Object}
@@ -33,17 +33,6 @@ export class CatalogueTree extends React.Component {
   }
 
   /**
-   * Запрашивает массив объектов разделов каталога для отображения хлебных крошек
-   */
-  getCrumbs =()=>{
-    let crumbs = CatalogueService.getCrumbs(this.props.catalogue_data, this.props.current_node);
-    this.setState({
-      "crumbs" : crumbs
-    });
-    this.props.crumb_handler(crumbs);
-  }
-
-  /**
    * Обработчик выбора активного раздела каталога
    */
   handleNodeChoice = (id)=>{
@@ -58,11 +47,21 @@ export class CatalogueTree extends React.Component {
     this.handleNodeChoice(this.props.current_node);
   }
 
+  componentDidUpdate(prevProps){
+    if((this.props.current_node !== prevProps.current_node || this.props.catalogue_data !== prevProps.catalogue_data)&&this.props.catalogue_data.length){
+      console.log(this.props.catalogue_data, this.props.current_node);
+      this.props.pushCrumbs(this.props.catalogue_data, this.props.current_node);
+    }
+  }
+
   /**
    * Обработчик выбора типа предаставления
    * @param  {Event} e Событие клика
    */
   handleViewChoice = (type)=>{
+    if(type==3){
+      this.props.chooseNode(null);
+    }
     this.props.chooseCatalogueViewType(type);
   }
 
@@ -106,7 +105,7 @@ export class CatalogueTree extends React.Component {
         break;
     }
 
-    let crumbs = this.state.crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"crumbs__crumb crumbs__crumb--active":"crumbs__crumb"} onClick={this.listClickHandler}>{crumb.name}</span>);
+    let crumbs = this.props.crumbs&&this.props.crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"crumbs__crumb crumbs__crumb--active":"crumbs__crumb"} onClick={this.listClickHandler}>{crumb.name}</span>);
 
     return (
       <div className={"catalogue-tree"}>
@@ -131,7 +130,8 @@ const mapStateToProps = (state,props) =>{
     catalogue_data: selectors.catalogue.getCatalogueData(state,props),
     current_node: selectors.catalogue.getCurrentNode(state,props)||selectors.localstorage.getStoredNode(state,props),
     view: selectors.localstorage.getStoredCatalogueViewtype(state,props),
-    loading: selectors.catalogue.getLoadingCatalogue(state,props)
+    loading: selectors.catalogue.getLoadingCatalogue(state,props),
+    crumbs: selectors.catalogue.getCrumbs(state,props),
   }
 }
 
@@ -139,7 +139,8 @@ const mapDispatchToProps = {
   fetchRootNodes,
   fetchNodes,
   chooseNode,
-  chooseCatalogueViewType
+  chooseCatalogueViewType,
+  pushCrumbs
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogueTree);

@@ -90,7 +90,7 @@ class UploadService{
    * Получает сгенерированный ключ md5 для загружаемого файла
    * @param  {String} file Содержание файла, который нужно отправить на сервер
    */
-  static _getHash(file, itemId){
+  static _getHash(file, item){
     return new Promise((resolve, reject)=>{
       let fileObj = file.file;
       let reader = new FileReader();
@@ -98,7 +98,7 @@ class UploadService{
         let hashable = e.target.result;
         hashable = new Uint8Array(hashable);
         hashable = CRC32.buf(hashable).toString();
-        let identifier = hex_md5(hashable+itemId + file.file.size)
+        let identifier = hex_md5(hashable+item.id + file.file.size);
         resolve(identifier);
       };
       reader.readAsArrayBuffer(fileObj);

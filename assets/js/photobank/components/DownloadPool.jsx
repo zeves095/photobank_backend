@@ -19,27 +19,23 @@ export class DownloadPool extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      "downloads": [],
-      "loading": false
+      "loading": false,
+      "downloads": []
     }
-    this.handleDownload = this.handleDownload.bind(this);
-    this.handleRemoveDownload = this.handleRemoveDownload.bind(this);
-    this.populateDownloads = this.populateDownloads.bind(this);
   };
 
   /**
    * Обработчик начала загрузки файлов
    */
-  handleDownload(){
+  handleDownload=()=>{
     ResourceService.downloadResource(this.props.resources);
-    this.props.addDownloadHandler();
   }
 
   /**
    * Обработчик удаления файла из очереди загрузок
    * @param  {Event} e Событие клика
    */
-  handleRemoveDownload(e){
+  handleRemoveDownload=(e)=>{
     let id = e.target.dataset["download"];
     this.props.removeDownloadHandler(id);
   }
@@ -60,7 +56,7 @@ export class DownloadPool extends React.Component{
   /**
    * Создает массив данных о загрузках для отображения
    */
-  populateDownloads(){
+  populateDownloads=()=>{
     let downloads = [];
     ResourceService.getResource(this.props.resources).then((res)=>{
       for(var r in res){
@@ -82,7 +78,7 @@ export class DownloadPool extends React.Component{
   }
 
   render(){
-    //if(this.state.downloads.length == 0){return "Нет загрузок"}
+    //if(this.props.downloads.length == 0){return "Нет загрузок"}
     let downloads = this.state.downloads.map((download)=>{
       return(
         <div key={"dl"+download.id} className="pending-download">
@@ -101,7 +97,7 @@ export class DownloadPool extends React.Component{
     });
     return(
       <div className={(this.state.loading?"loading":"")}>
-        {this.state.downloads.length != 0?
+        {this.props.resources.length != 0?
         <div className="download-pool">
         <h2 className="download-pool__component-title component-title">Загрузки</h2>
         <button type="button" onClick={this.handleDownload}>Скачать все</button>
@@ -118,7 +114,7 @@ export class DownloadPool extends React.Component{
 
 const mapStateToProps = (state,props) =>{
   return {
-    downloads: selectors.localstorage.getPendingDownloads(state,props)
+    resources: selectors.localstorage.getPendingDownloads(state,props)
   }
 }
 

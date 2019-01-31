@@ -20,6 +20,7 @@ export default (localstorage = defaultState, action) => {
       break;
     }
     case LOCAL_STORAGE_VALUE_SET+ALL:{
+      console.log(action.payload);
       return localstorage.set('localstorage',Map(action.payload))
       break;
     }

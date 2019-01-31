@@ -26,16 +26,6 @@ export class ItemList extends React.Component{
    */
   constructor(props) {
     super(props);
-    this.state ={
-      "node": this.props.node,
-      "node_items": [],
-      "node_items_filtered": [],
-      "filter_query": "",
-      "current_item": null,
-      "previtem_id": this.props.item,
-      "loading": false,
-      "need_refresh": true
-    }
   }
 
   /**
@@ -46,19 +36,13 @@ export class ItemList extends React.Component{
     this.props.chooseItem(itemId);
   }
 
-  componentDidUpdate(prevProps){
-    if(prevProps.current_item === null && this.props.current_item)this.itemClickHandler(this.props.current_item.id);
-  }
-
   render() {
-    let nodeItemList = this.props.current_node == null
-    ?""
-    :this.props.items_filtered.map((item)=>
+    let nodeItemList = this.props.items_filtered.map((item)=>
       <div className={"list-item"+((this.props.current_item!=null&&item.id==this.props.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={()=>{this.itemClickHandler(item.id)}}>
         <h4 data-item={item.id} onClick={()=>{this.itemClickHandler(item.id)}} title={item.node}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
       </div>
     );
-    let tooBroadMsg = this.props.items_filtered.length == 100?"Показаны не все результаты. Необходимо сузить критерии поиска.":"";
+    let tooBroadMsg = this.props.items_filtered.length >= 100?"Показаны не все результаты. Необходимо сузить критерии поиска.":"";
     return (
 
       <div className={"view-inner__item-list"}>
