@@ -26,6 +26,9 @@ export class ItemList extends React.Component{
    */
   constructor(props) {
     super(props);
+    this.state={
+      filter_query:""
+    }
   }
 
   /**
@@ -36,8 +39,15 @@ export class ItemList extends React.Component{
     this.props.chooseItem(itemId);
   }
 
+  filterQueryHandler =(filter_query)=>{
+    this.setState({
+      filter_query
+    });
+  }
+
   render() {
-    let nodeItemList = this.props.items_filtered.map((item)=>
+    let nodeItemList = this.props.items.filter((item)=>{if(!this.state.filter_query) return true; return JSON.stringify(item).toLowerCase().includes(this.state.filter_query.toLowerCase());})
+    .map((item)=>
       <div className={"list-item"+((this.props.current_item!=null&&item.id==this.props.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={()=>{this.itemClickHandler(item.id)}}>
         <h4 data-item={item.id} onClick={()=>{this.itemClickHandler(item.id)}} title={item.node}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
       </div>
