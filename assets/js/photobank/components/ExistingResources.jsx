@@ -150,7 +150,7 @@ export class ExistingResources extends React.Component{
   render() {
 
     let files = this.props.existing.map(file=>{
-      return <ExistingResource file={file} item_id={this.props.item_id} />
+      return <ExistingResource file={file} item_id={this.props.item_id} key={"existing_resource_"+file.id} />
     });
 
     let paginationControls = this.props.existing.length!=0?(
