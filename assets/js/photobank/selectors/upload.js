@@ -18,10 +18,12 @@ export const getResumableContainer = createSelector(resumableContainer, (contain
 });
 
 export const getUploads = createSelector(getResumableInstance, (resumable)=>{
+  console.log(resumable.files);
   return resumable.files;
 });
 
 export const getReadyUploads = createSelector(getResumableInstance, (resumable)=>{
+  console.log(resumable.files);
   return resumable.files.length>0?resumable.files.filter(file=>file.ready):[];
 });
 

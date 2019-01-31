@@ -45,9 +45,8 @@ export class Uploads extends React.Component{
    * Обработчик начала отправки файлов на сервер
    */
   handleSubmit=()=>{
-    if (this.props.uploads_ready.length === this.props.uploads.length) {
-      this.props.resumable.upload();
-    }
+    console.log("PLS STOORT");
+    this.props.resumable.upload();
   }
 
   /**
@@ -71,6 +70,7 @@ export class Uploads extends React.Component{
       });
     });
     this.props.resumable.on('uploadStart', (file,event)=>{
+      console.log("STOORT");
       this.state.busy = true;
     });
     this.props.resumable.on('complete', ()=>{
