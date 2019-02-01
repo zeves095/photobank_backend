@@ -298,6 +298,17 @@ export function spliceFromLocalValue(key,remove){
   }
 }
 
+export function clearDownloads(){
+  return dispatch=>{
+    LocalStorageService.set("pending_downloads", "");
+    let value = LocalStorageService.getList("pending_downloads");
+    dispatch({
+      type:LOCAL_STORAGE_VALUE_SET,
+      payload:{key:"pending_downloads",value}
+    });
+  }
+}
+
 export function getLocalStorage(key = null){
   return dispatch=>{
     const data = LocalStorageService.get(key);

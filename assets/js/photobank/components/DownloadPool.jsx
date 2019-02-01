@@ -5,7 +5,7 @@ import {NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
 import selectors from '../selectors';
-import {removeDownload} from '../actionCreator';
+import {removeDownload, clearDownloads} from '../actionCreator';
 
 /**
  * Компонент интерфейса bulk-загрузки файлов с сервера
@@ -30,6 +30,7 @@ export class DownloadPool extends React.Component{
    */
   handleDownload=()=>{
     ResourceService.downloadResource(this.props.resources);
+    this.props.clearDownloads();
   }
 
   /**
@@ -79,7 +80,7 @@ export class DownloadPool extends React.Component{
   }
 
   render(){
-    //if(this.props.downloads.length == 0){return "Нет загрузок"}
+    if(this.state.downloads.length == 0){return "Нет загрузок"}
     let downloads = this.state.downloads.map((download)=>{
       return(
         <div key={"dl"+download.id} className="pending-download">
@@ -120,7 +121,8 @@ const mapStateToProps = (state,props) =>{
 }
 
 const mapDispatchToProps = {
-  removeDownload
+  removeDownload,
+  clearDownloads
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DownloadPool);

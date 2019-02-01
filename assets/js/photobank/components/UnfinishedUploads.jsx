@@ -47,13 +47,13 @@ export class UnfinishedUploads extends React.Component{
    */
   hideUnfinished=()=>{
     this.setState({
-      "unfinished_hidden" : !this.props.unfinished_hidden
+      "unfinished_hidden" : !this.state.unfinished_hidden
     });
   }
 
   render() {
     let unfinished_uploads = this.props.unfinished.map((upload)=>
-      <div key={upload.file_name+upload.file_hash+"unfinished"} className={"file-list__file-item file-item " + "file-item--unfinished " + (this.props.unfinished_hidden?"file-item--hidden":"")}>
+      <div key={upload.file_name+upload.file_hash+"unfinished"} className={"file-list__file-item file-item " + "file-item--unfinished " + (this.state.unfinished_hidden?"file-item--hidden":"")}>
         <i data-item={upload.file_hash} onClick={()=>{this.handleDelete(upload.file_hash)}} className="fas fa-trash-alt file-item__delete-upload"></i><br />
       <span className="file-item__file-name">{upload.file_name}</span>
     <span className="file-item__upload-status">Прерван</span>
@@ -66,7 +66,7 @@ export class UnfinishedUploads extends React.Component{
         <div key={this.props.item.id + "unfinished"} className="item-view__subheader-wrapper">
           <h4 className="item-view__subheader">Незаконченные          <div className="button-block">
                       <button onClick={()=>{this.props.deleteUnfinishedUploads(this.props.unfinished, this.props.item.id)}} title="Удалить все незавершенные загрузки для данного товара" className="button-block__btn button-block__btn--clear"><i className="fas fa-trash-alt"></i>Очистить</button>
-                    <button onClick={this.hideUnfinished} className="button-block__btn button-block__btn--clear">{this.props.unfinished_hidden?<i className='fas fa-eye'></i>:<i className='fas fa-eye-slash'></i>}{this.props.unfinished_hidden?"Показать":"Скрыть"}</button>
+                    <button onClick={this.hideUnfinished} className="button-block__btn button-block__btn--clear">{this.state.unfinished_hidden?<i className='fas fa-eye'></i>:<i className='fas fa-eye-slash'></i>}{this.state.unfinished_hidden?"Показать":"Скрыть"}</button>
                     </div></h4>
         </div>
         <div className="item-uploads__unfinished-wrapper">
