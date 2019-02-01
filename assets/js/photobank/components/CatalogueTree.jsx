@@ -103,7 +103,7 @@ export class CatalogueTree extends React.Component {
         break;
     }
 
-    let crumbs = this.props.crumbs&&this.props.crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"crumbs__crumb crumbs__crumb--active":"crumbs__crumb"} onClick={this.listClickHandler}>{crumb.name}</span>);
+    let crumbs = this.props.crumbs&&this.props.crumbs.map((crumb)=><span key={crumb.name} data-node={crumb.id} className={crumb.active?"crumbs__crumb crumbs__crumb--active":"crumbs__crumb"} onClick={()=>{this.handleNodeChoice(crumb.id)}}>{crumb.name}</span>);
 
     return (
       <div className={"catalogue-tree"}>
