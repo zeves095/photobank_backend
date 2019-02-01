@@ -83,12 +83,15 @@ class LocalStorageService{
    * @param {String} value Значение переменной для редактирования
    */
   static removeFrom(list, value){
+    console.log(value);
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
       let val = window.localStorage[keys[list]];
       let listArr = val.split(" ");
       let result = "";
-      listArr.splice(listArr.indexOf(value),1);
+      console.log(listArr);
+      listArr.splice(listArr.indexOf(value.toString()),1);
+      console.log(listArr);
       for(var item in listArr){
         if(listArr[item] == "" || listArr[item] == "undefined"){continue}
         result = result + listArr[item]+" ";

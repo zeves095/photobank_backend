@@ -15,7 +15,7 @@ export default (localstorage = defaultState, action) => {
   switch(action.type){
     case LOCAL_STORAGE_VALUE_SET:{
       let storage = localstorage.get('localstorage');
-      storage = storage.set(action.payload.key,action.payload.value);
+      storage = Map(storage.set(action.payload.key,action.payload.value));
       return localstorage.set('localstorage',storage);
       break;
     }

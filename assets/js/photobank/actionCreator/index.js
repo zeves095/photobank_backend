@@ -279,7 +279,7 @@ export function setLocalValue(key,value){
 export function addToLocalValue(key,add){
   return dispatch=>{
     LocalStorageService.addTo(key,add);
-    let value = LocalStorageService.get(key);
+    let value = LocalStorageService.getList(key);
     dispatch({
       type:LOCAL_STORAGE_VALUE_SET,
       payload:{key,value}
@@ -287,9 +287,10 @@ export function addToLocalValue(key,add){
   }
 }
 
-export function spliceFromLocalValue(key,value){
+export function spliceFromLocalValue(key,remove){
   return dispatch=>{
-    LocalStorageService.removeFrom(key,value);
+    LocalStorageService.removeFrom(key,remove);
+    let value = LocalStorageService.getList(key);
     dispatch({
       type:LOCAL_STORAGE_VALUE_SET,
       payload:{key,value}
@@ -400,5 +401,11 @@ export function pushCrumbs(data, node){
       type: CRUMBS_UPDATE,
       payload: crumbs
     });
+  }
+}
+
+export function removeDownload(id){
+  return dispatch=>{
+    dispatch(spliceFromLocalValue("pending_downloads", id))
   }
 }
