@@ -52,6 +52,7 @@ class LocalStorageService{
    * @param {String} key Ключ, соответсвующий переменной localstorage
    */
   static get(key){
+    if(key==null){return this.getAll();}
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(key) != -1 && typeof window.localStorage[keys[key]] != "undefined"){
       return window.localStorage[keys[key]];
@@ -69,8 +70,10 @@ class LocalStorageService{
     if(typeof value == 'undefined'){return null}
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
-      let val = window.localStorage[keys[list]] + " " + value;
-      window.localStorage[keys[list]] = val;
+      let val = window.localStorage[keys[list]];
+      let splitVal = val.split(" ").filter(item=>item!==""&&item!==value);
+      splitVal.push(value);
+      window.localStorage[keys[list]] = splitVal.join(" ");
     }
   }
 
@@ -116,6 +119,17 @@ class LocalStorageService{
     }
   }
 
+  static setList(list, input, delimiter=" "){
+    let keys = this._getKeys();
+    if(Object.keys(keys).indexOf(list) != -1){
+      let storedList = window.localStorage[keys[list]];
+      if(typeof storedList == "undefined" || storedList == null){
+        return false;
+      }
+      let newValue = input.join(delimiter);
+    }
+  }
+
   /**
    * Удаляет переменную из localstorage
    * @param {String} key Ключ, соответсвующий переменной localstorage
@@ -127,8 +141,20 @@ class LocalStorageService{
     }
   }
 
+  static getAll(){
+    this.init();
+    let keys=this._getKeys();
+    let response = {};
+    Object.keys(keys).forEach(key=>{
+      if(key == "pending_downloads"){
+        response[key] = this.getList(key)
+      }else{
+        response[key] = this.get(key);
+      }
+    });
+    return response;
+  }
+
 }
-
-
 
 export {LocalStorageService}

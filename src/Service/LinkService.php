@@ -13,8 +13,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use \Imagine\Imagick\Imagine;
 use \Imagine\Image\Box;
 use \Imagine\Image\ImageInterface;
-use \Symfony\Component\HttpKernel\Exception\HttpException;
-
+use App\Exception\LinkExpiredException;
+use App\Exception\AccessDeniedException;
+use App\Exception\InvalidFormatException;
 
 /**
   * Сервис для создания, обновления, удаления и получения информации по объектам типа "Link"
@@ -94,14 +95,15 @@ private $fileSystem;
     * Обновляет ранее созданную ссылку и добавляет в нее необходимые поля, либо после создания нового изображения, либо после выбора существующего ресурса
     *
     * @param mixed[] $params Параметры для обновления ссылки
-    *
-    * TODO выставлять ready=true для обработанных ссылок
     */
   public function updateLink($params)
   {
     $link = $this->entityManager->getRepository(Link::class)->findOneBy([
       'id'=>$params['id']
     ]);
+    if(sizeof(array_intersect(array_keys($params),['path','size_px','size_bytes','max_requests','symlink','expires_by','target','access','comment']))){
+      $link->setReady(true);
+    }
     if(array_search('path', array_keys($params)) !== false && $params['path'] !== ''){$link->setPath($params['path']);}
     if(array_search('size_px', array_keys($params)) !== false && $params['size_px'] !== ''){$link->setSizePx($params['size_px']);}
     if(array_search('size_bytes', array_keys($params)) !== false && $params['size_bytes'] !== ''){$link->setSizeBytes($params['size_bytes']);}
@@ -161,7 +163,6 @@ private $fileSystem;
     *
     * @return string Сгенерированная строка-идентификатор
     *
-    * TODO вынести http ошибки в контроллер
     *
     */
 
@@ -172,11 +173,11 @@ private $fileSystem;
     ]);
     $created_by = $link->getCreatedBy()->getId();
     if(is_null($user) && !$this->_checkAccess($link, $request)){
-      throw new HttpException(403);
+      throw new AccessDeniedException("Доступ к ссылке запрещен");
     }
     if(is_null($user) && (!$this->_countRequests($link) || !$this->_isNotExpired($link)))
     {
-      throw new HttpException(410);
+      throw new LinkExpiredException("Истек срок действия ссылки");
     }
 
     $path = $this->container->getParameter('local_file_dir').$link->getPath();
@@ -290,7 +291,6 @@ private $fileSystem;
     *
     * @return bool true в случае успешного удаления
     *
-    * TODO Вынести http ошибку в контроллер
     *
     */
   public function deleteLink($link, $user)
@@ -304,7 +304,7 @@ private $fileSystem;
       if(preg_match('/\.jpg$/',$link->getPath())){
         $this->fileSystem->remove($link->getPath());
       }else{
-        throw new HttpException(500);
+        throw new InvalidFormatException("Файл не является изображением");
       }
     }
     $this->entityManager->remove($link);

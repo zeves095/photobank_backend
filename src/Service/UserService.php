@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Service\UserService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-
+use App\Exception\InvalidUserDataException;
 /**
   * Сервис для создания, обновления, удаления и получения информации по объектам типа "User"
   */
@@ -89,12 +89,11 @@ private $container;
     *
     * @param mixed[] $user Массив полей для создания пользователя. Обязателен id
     *
-    * TODO Http ошибки только из контроллера блин
     */
   private function _createUser($user){
     $roles = $this->_getRoles();
     if(!in_array($user["role"], $roles) || $user["role"]==0){
-      throw new BadRequestHttpException();
+      throw new InvalidUserDataException("Неверные данные пользователя");
     }
     $newUser = new User();
     $newUser->setUsername($user["name"]);
@@ -112,12 +111,11 @@ private $container;
     * @param mixed[] $user Массив полей для обновления пользователя. Обязателен id
     * @param User $existing Объект обновляемого пользователя
     *
-    * TODO Http ошибки только из контроллера блин
     */
   private function _updateUser($user, $existing){
     $roles = $this->_getRoles();
     if(!in_array($user["role"], $roles) || $user["role"]==0){
-      throw new BadRequestHttpException();
+      throw new InvalidUserDataException("Неверные данные пользователя");
     }
     $existing->setUsername($user["name"]);
     $existing->setPassword($user["password"]);

@@ -111,7 +111,7 @@ class UsermanagerControllerTest extends BaseTest
 
     $crawler = $client->request('POST', '/usermanager/set', $newUserData);
     $response = $client->getResponse();
-    //var_dump($crawler->filter('h1.excemption-message')->text());
+    //var_dump($crawler->filter('h1.exception-message')->text());
     $this->assertEquals(200, $response->getStatusCode());
 
     $crawler = $client->request('GET', '/usermanager/get');
