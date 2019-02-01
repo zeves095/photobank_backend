@@ -91,7 +91,7 @@ export class ExistingResources extends React.Component{
       this.setState({
         "pagination_start": start,
         "pagination_limit": limit,
-        "pagination_end": start+limit,
+        "pagination_end": parseInt(start, 10)+parseInt(limit, 10),
         "loading": true,
         "pagination_current_page": Math.floor(this.state.pagination_start/limit)+1,
         "pagination_total_pages": Math.ceil(this.props.existing.length/limit)
@@ -149,7 +149,9 @@ export class ExistingResources extends React.Component{
 
   render() {
 
-    let files = this.props.existing.map(file=>{
+    console.log(this.state.pagination_start, this.state.pagination_end);
+
+    let files = this.props.existing.slice(this.state.pagination_start, this.state.pagination_end).map(file=>{
       return <ExistingResource file={file} item_id={this.props.item_id} key={"existing_resource_"+file.id} />
     });
 
