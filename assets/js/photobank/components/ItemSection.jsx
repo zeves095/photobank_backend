@@ -41,7 +41,7 @@ export class ItemSection extends React.Component{
   }
 
   componentWillMount(){
-    this.props.pushResumable(this.props.item.id);
+    this.props.item&&this.props.pushResumable(this.props.item.id);
   }
 
   render() {
@@ -100,7 +100,8 @@ const mapStateToProps = (state, props) =>{
 const mapDispatchToProps = {
   pushResumable,
   chooseListViewType,
-  fetchItemData
+  fetchItemData,
+  pushResumable
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemSection);
