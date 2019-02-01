@@ -1,6 +1,9 @@
 import React from 'react';
 
-import {ItemQueryObject} from './services/ItemQueryObject';
+import {ItemQueryObject} from '../services/ItemQueryObject';
+
+import {connect} from 'react-redux';
+import {searchItems} from '../actionCreator';
 /**
  * Компонент интерфейса поиска товаров
  */
@@ -15,16 +18,13 @@ export class ItemSearch extends React.Component {
     this.state = {
       "query": {}
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   };
 
   /**
    * Обработчик изменения значения полей формы
    * @param  {Event} e Событие
    */
-  handleChange(e) {
+  handleChange = (e)=>{
     let field = e.target.name;
     let query = this.state.query;
     if (e.target.type == "checkbox") {
@@ -37,16 +37,16 @@ export class ItemSearch extends React.Component {
   /**
    * Обработчик отправки формы поиска
    */
-  handleSubmit() {
+  handleSubmit=()=>{
     let newQuery = Object.assign({}, this.state.query);
-    this.props.searchQueryHandler(newQuery);
+    this.props.searchItems(newQuery);
   }
 
   /**
-   * Создает объект поиска и определяет отслеживаемые события на странице
+   * Определяет отслеживаемые события на странице
    */
   componentDidMount() {
-    let queryObject = new ItemQueryObject();
+    let queryObject = {};
     for (var i = 1; i < 6; i++) {
       let input = document.getElementById(this.props.filterid + "inpt" + i);
       input.addEventListener("keyup", (event) => {
@@ -77,3 +77,14 @@ export class ItemSearch extends React.Component {
     </div>);
   }
 }
+
+const mapStateToProps = (state,props) =>{
+  return {
+  }
+}
+
+const mapDispatchToProps = {
+  searchItems
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ItemSearch);

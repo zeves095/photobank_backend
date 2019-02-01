@@ -15,20 +15,14 @@ class ItemService{
    * @param  {Object}  items  Уде полученный список товаров
    * @param  {Boolean} [need_refresh=true] Необходимость повторного обращения к серверу
    */
-  static fetchItems(query, filter, items,need_refresh = true){
+  static fetchItems(query){
     return new Promise((resolve, reject)=>{
-      if(!need_refresh){
-        let dataFiltered = this._filterData(items, filter);
-        resolve([items, dataFiltered]);
-      }else{
         this._getItems(query).then((data)=>{
-          if(data.length == 0){reject("none-found")}
-          let dataFiltered = this._filterData(data, filter);
-          resolve([data, dataFiltered]);
+          if(data.length == 0){resolve([])}
+          resolve(data);
         }).catch((e)=>{
-          reject("none-found");
+          reject(e);
         });
-      }
     });
   }
 
@@ -52,14 +46,19 @@ class ItemService{
     return new Promise((resolve,reject)=>{
       if(!queryObject instanceof ItemQueryObject){reject("Invalid query object")}
       if(queryObject.nodeId != null){
-        $.getJSON(window.config.get_items_url+queryObject.nodeId, (data)=>{
+        fetch(window.config.get_items_url+queryObject.nodeId, {'method':'GET'})
+        .then((response)=>response.json())
+        .then((data)=>{
           resolve(data);
-        }).fail((e)=>{reject([])});
+        }).catch((e)=>{reject([])});
       }else{
-        let data = {"item_search_name":queryObject.name,"item_search_code":queryObject.code,"item_search_parent_name":queryObject.parent_name,"item_search_search_nested":queryObject.search_nested, "item_search_article":queryObject.article}
-        $.get(window.config.item_search_url,data).done((data)=>{
+        let fetchBody = {"item_search_name":queryObject.name||"","item_search_code":queryObject.code||"","item_search_parent_name":queryObject.parent_name||"","item_search_search_nested":queryObject.search_nested, "item_search_article":queryObject.article||""};
+        let getParams = "?"+Object.entries(fetchBody).map(entry=>entry[0]+"="+entry[1]).join("&");
+        fetch(window.config.item_search_url+getParams)
+        .then((response)=>response.json())
+        .then((data)=>{
           resolve(data);
-        }).fail((e)=>{reject([])});
+        }).catch((e)=>{reject(e)});
       }
     })
   }

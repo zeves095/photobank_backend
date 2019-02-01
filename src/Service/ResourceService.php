@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Symfony\Component\Messenger\MessageBusInterface;
 use App\Message\ResourcePresetNotification;
+use App\Exception\ItemNotFoundException;
 /**
   * Сервис для создания, обновления, удаления и получения информации по объектам типа "Resource"
   */
@@ -104,7 +105,6 @@ class ResourceService{
  * Созраняет запись о ресурсе в базе данных
  * @param mixed[] $resourceParameters Параметры загруженного файла
  *
- * TODO Да из контроллера же http-ошибки
  */
   public function persistResource($resourceParameters)
   {
@@ -114,7 +114,7 @@ class ResourceService{
     $item = $repository->findOneBy( ['id' => $item_id] );
     if (!$item) {
         $error_string = $this->translator->trans("Product not founded",[],'file_uploader') . '. '. $this->translator->trans("The code is:",[],'file_uploader') . ' ' . $item_id ;
-        throw new NotFoundHttpException($error_string);
+        throw new ItemNotFoundException($error_string);
     }
 
     if(in_array(strtolower($resourceParameters['extension']),array('jpg','jpeg','png','gif','psd','tiff','tif','bmp'))){
@@ -268,6 +268,12 @@ class ResourceService{
     }
     $resource = $repo->findOneBy($findParams);
     return $resource;
+  }
+
+  public function getOriginal($item)
+  {
+    $resources = $this->entityManager->getRepository(Resource::class)->findOriginalResources($item);
+    return $resources;
   }
 
 }

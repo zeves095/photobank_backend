@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { UserManager } from './UserManager';
+import { UserManagerWrapper } from './components/UserManagerWrapper';
 
 var wrapper = document.getElementById('usermanager-wrapper');
 global.config = JSON.parse(wrapper.dataset.config);
 wrapper.dataset.config="";
 
-if(typeof UserManager != 'undefined') ReactDOM.render(<UserManager />, wrapper);
+if(typeof UserManagerWrapper != 'undefined') ReactDOM.render(<UserManagerWrapper />, wrapper);
