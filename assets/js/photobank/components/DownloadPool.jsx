@@ -5,6 +5,7 @@ import {NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
 import selectors from '../selectors';
+import {removeDownload} from '../actionCreator';
 
 /**
  * Компонент интерфейса bulk-загрузки файлов с сервера
@@ -35,9 +36,8 @@ export class DownloadPool extends React.Component{
    * Обработчик удаления файла из очереди загрузок
    * @param  {Event} e Событие клика
    */
-  handleRemoveDownload=(e)=>{
-    let id = e.target.dataset["download"];
-    this.props.removeDownloadHandler(id);
+  handleRemoveDownload=(id)=>{
+    this.props.removeDownload(id);
   }
 
   componentDidMount(){
@@ -49,6 +49,7 @@ export class DownloadPool extends React.Component{
 
   componentDidUpdate(prevProps){
     if(prevProps != this.props){
+      console.log(prevProps,this.props)
       this.populateDownloads();
     }
   }
@@ -90,7 +91,7 @@ export class DownloadPool extends React.Component{
           <div className="download-infofields__field sizepx">
           Размер:{download.sizepx}
           </div>
-          <button type="button" data-download={download.id} onClick={this.handleRemoveDownload}><i className="fas fa-trash-alt"></i>Отменить</button>
+          <button type="button" data-download={download.id} onClick={()=>{this.handleRemoveDownload(download.id)}}><i className="fas fa-trash-alt"></i>Отменить</button>
         </div>
         </div>
       )
@@ -119,6 +120,7 @@ const mapStateToProps = (state,props) =>{
 }
 
 const mapDispatchToProps = {
+  removeDownload
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DownloadPool);

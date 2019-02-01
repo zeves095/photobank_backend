@@ -33,7 +33,7 @@ export const getStoredListViewtype = createSelector(localStorage, (storage)=>{
 
 export const getPendingDownloads = createSelector(localStorage, (storage)=>{
   let downloads = storage.get('pending_downloads');
-  return downloads?downloads:null;
+  return downloads?downloads:[];
 });
 
 // export const getStoredDownloads = createSelector(localStorage, catalogueData, (storage, catalogue)=>{
