@@ -236,7 +236,6 @@ describe('Actions', ()=>{
         body: {},
         headers: { 'content-type': 'application/json' }
     });
-
     fetchMock.getOnce("/api/links/fetchall",{
         body: {},
         headers: { 'content-type': 'application/json' }

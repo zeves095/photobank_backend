@@ -1,4 +1,5 @@
 import {UploadService, NotificationService, CatalogueService, ResourceService, ItemQueryObject, ItemService, LocalStorageService} from '../services/';
+import utility from '../services/UtilityService';
 
 import {
   UPLOADS_UNFINISHED_FETCH,
@@ -19,11 +20,29 @@ import {
   USER_INFO_FETCH,
   ITEM_INFO_FETCH,
   CRUMBS_UPDATE,
+  CONFIG_GET,
   START,
   SUCCESS,
   FAIL,
   ALL
 } from '../constants/';
+
+export function init(){
+  return dispatch=>{
+    return Promise.all([
+      utility.fetchConfig(),
+      utility.initLocalstorage(),
+    ]).then(()=>{
+      Promise.all([
+        getLocalStorage()(dispatch),
+        fetchUnfinished()(dispatch),
+        getUserInfo()(dispatch),
+      ]);
+    }).catch((e)=>{
+      console.log(e);
+    });
+  }
+}
 
 export function fetchUnfinished(){
   return (dispatch)=>{
@@ -45,6 +64,7 @@ export function fetchUnfinished(){
         });
       });
     }).catch((error)=>{
+      console.log(error);
       dispatch({
         type: UPLOADS_UNFINISHED_FETCH+FAIL,
         payload: ''
@@ -73,6 +93,7 @@ export function fetchRootNodes(id){
         payload: data
       });
     }).catch((error)=>{
+      console.log(error);
       dispatch({
         type: CATALOGUE_ROOT_NODES_FETCH+FAIL,
         payload: id
@@ -312,7 +333,7 @@ export function clearDownloads(){
 export function getLocalStorage(key = null){
   return dispatch=>{
     const data = LocalStorageService.get(key);
-    dispatch({
+    return dispatch({
       type:LOCAL_STORAGE_VALUE_SET+(!key&&ALL),
       payload:data
     });
@@ -332,17 +353,15 @@ export function chooseCatalogueViewType(id=1){
 }
 
 export function purgeEmptyItems(){
-  return dispatch=>{
-    dispatch({
+  return {
       type:PURGE_EMPTY_ITEMS,
       payload: ""
-    });
-  }
+    };
 }
 
 export function getUserInfo(){
   return dispatch=>{
-    fetch("/account/getinfo/", {method:"GET"})
+    return fetch("/account/getinfo/", {method:"GET"})
     .then((response)=>response.json())
     .then((response)=>{
       dispatch({
@@ -406,13 +425,11 @@ export function searchItems(query){
 }
 
 export function pushCrumbs(data, node){
-  return dispatch=>{
     let crumbs = CatalogueService.getCrumbs(data,node);
-    dispatch({
+    return {
       type: CRUMBS_UPDATE,
       payload: crumbs
-    });
-  }
+    };
 }
 
 export function removeDownload(id){

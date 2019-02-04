@@ -50,7 +50,6 @@ export class DownloadPool extends React.Component{
 
   componentDidUpdate(prevProps){
     if(prevProps != this.props){
-      console.log(prevProps,this.props)
       this.populateDownloads();
     }
   }

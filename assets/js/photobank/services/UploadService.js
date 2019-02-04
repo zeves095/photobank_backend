@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { hex_md5 } from '../../vendor/md5';
+import utility from './UtilityService';
 
 /**
  * Сервис для работы с загрузками на сервер
@@ -16,7 +17,7 @@ class UploadService{
   static fetchUnfinished(){
     let unfinished = [];
     return new Promise((resolve, reject)=>{
-      fetch(window.config.unfinished_uploads_url,{'method':'GET'}).then((data)=>{
+      fetch(utility.config.unfinished_uploads_url,{'method':'GET'}).then((data)=>{
         resolve(data);
       });
     });
@@ -32,7 +33,7 @@ class UploadService{
   static populateResumableContainer(container, uploads, config={}){
     let newContainer = Object.assign({}, container);
     for(var upload in uploads){
-      newContainer[uploads[upload]]=new Resumable({target: window.config.upload_target_url});
+      newContainer[uploads[upload]]=new Resumable({target: utility.config.upload_target_url});
     }
     return newContainer;
   }
@@ -80,7 +81,7 @@ class UploadService{
         'filehash': uniqueIdentifier,
         'itemid': itemId
       }
-      $.ajax({url: window.config.remove_upload_url, method: 'POST', data: obj}).done(()=>{
+      fetch(utility.config.remove_upload_url, {method: 'POST', body: obj}).then(()=>{
         resolve();
       });
     });
@@ -128,7 +129,7 @@ class UploadService{
           'itemid': fileParams.itemId,
           'totalchuks': fileParams.file.chunks.length
         }
-        $.ajax({url: window.config.commit_upload_url, method: 'POST', data: obj}).done(()=>{
+        fetch(utility.config.commit_upload_url, {method: 'POST', body: obj}).then(()=>{
           resolve(true);
         });
       }
