@@ -1,6 +1,6 @@
 // TODO убрать джейквеееееееерииии
 import $ from 'jquery';
-
+import utility from './UtilityService';
 /**
  * Сервис для получения и обновления данных по структуре каталога
  */
@@ -18,7 +18,9 @@ class CatalogueService{
     let result = prevresult;
     return new Promise((resolve, reject)=>{
       let searchNode = (currentNode!=null?currentNode:"");
-      $.getJSON(window.config.get_nodes_url+searchNode).done((data)=>{
+      fetch(utility.config.get_nodes_url+searchNode, {method:"GET"})
+      .then(response=>response.json())
+      .then((data)=>{
         result = result.concat(data);
         if(currentNode == null){
           resolve(result);
@@ -26,7 +28,6 @@ class CatalogueService{
 
         else{
           this._fetchNodeParent(currentNode).then((parent)=>{
-            //if(parent == null){parent = "";}
             this.fetchRootNodes(parent,result).then((result)=>{
               resolve(result);
             });
@@ -45,7 +46,7 @@ class CatalogueService{
   static fetchNodes(id){
     return new Promise((resolve,reject)=>{
       let searchNode = (id!=null?id:"");
-      fetch(window.config.get_nodes_url+searchNode,{'method':'GET'}).then((nodes)=>{
+      fetch(utility.config.get_nodes_url+searchNode,{'method':'GET'}).then((nodes)=>{
         resolve(nodes);
       })
     });
@@ -125,9 +126,11 @@ class CatalogueService{
    */
   static _fetchNodeParent(id){
     return new Promise((resolve,reject)=>{
-      $.getJSON("/catalogue/node/"+id, (data)=>{
+      fetch("/catalogue/node/"+id,{method:"GET"})
+      .then(response=>response.json())
+      .then((data)=>{
         resolve(data.parent);
-      }).fail(()=>{
+      }).catch(()=>{
         reject("request-failed");
       });
     });

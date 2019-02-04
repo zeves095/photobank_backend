@@ -1,4 +1,5 @@
 import {ItemQueryObject} from './ItemQueryObject';
+import utility from './UtilityService';
 import $ from 'jquery';
 
 /**
@@ -32,7 +33,7 @@ class ItemService{
    */
   static getIdentity(id){
     return new Promise((resolve,reject)=>{
-        $.ajax({url: window.config['item_url']+id, method: 'GET'}).done((data)=>{
+        fetch(utility.config.item_url+id, {method: 'GET'}).then((data)=>{
           resolve(data);
         });
     });
@@ -46,7 +47,7 @@ class ItemService{
     return new Promise((resolve,reject)=>{
       if(!queryObject instanceof ItemQueryObject){reject("Invalid query object")}
       if(queryObject.nodeId != null){
-        fetch(window.config.get_items_url+queryObject.nodeId, {'method':'GET'})
+        fetch(utility.config.get_items_url+queryObject.nodeId, {'method':'GET'})
         .then((response)=>response.json())
         .then((data)=>{
           resolve(data);
@@ -54,7 +55,7 @@ class ItemService{
       }else{
         let fetchBody = {"item_search_name":queryObject.name||"","item_search_code":queryObject.code||"","item_search_parent_name":queryObject.parent_name||"","item_search_search_nested":queryObject.search_nested, "item_search_article":queryObject.article||""};
         let getParams = "?"+Object.entries(fetchBody).map(entry=>entry[0]+"="+entry[1]).join("&");
-        fetch(window.config.item_search_url+getParams)
+        fetch(utility.config.item_search_url+getParams)
         .then((response)=>response.json())
         .then((data)=>{
           resolve(data);

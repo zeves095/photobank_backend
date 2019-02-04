@@ -13,7 +13,7 @@ import {NotificationService} from '../../services/NotificationService';
 import {UtilityService} from '../services/UtilityService';
 
 import {connect} from 'react-redux';
-import { fetchUnfinished, getLocalStorage, getUserInfo } from '../actionCreator'
+import { fetchUnfinished, getLocalStorage, getUserInfo, init } from '../actionCreator'
 import selectors from '../selectors';
 
 /**
@@ -30,19 +30,24 @@ export class PhotoBank extends React.Component {
    */
   constructor(props) {
     super(props);
+    this.state = {
+      ready: false
+    }
   }
 
   /**
    * Получает сохраненные значения из localstorage
    */
   componentWillMount(){
-    this.props.fetchUnfinished();
-    this.props.getLocalStorage();
-    this.props.getUserInfo();
+    this.props.init().then(()=>{
+      this.setState({
+        ready:true
+      });
+    });
   }
 
   render() {
-    if(this.props.catalogue_data == {}){return (<h1>ЗАГРУЗКА...</h1>)}
+    if(this.props.catalogue_data == {} || !this.state.ready){return (<h1>ЗАГРУЗКА...</h1>)}
     return (
       <div className="photobank-main">
         <div id="notification-overlay"></div>
@@ -61,14 +66,15 @@ export class PhotoBank extends React.Component {
 const mapStateToProps = (state,props) =>{
   return {
     show_node_viewer: state.catalogue.item_query_object==null,
-    catalogue_data: selectors.catalogue.getCatalogueData(state,props)
+    catalogue_data: selectors.catalogue.getCatalogueData(state,props),
   }
 }
 
 const mapDispatchToProps = {
   fetchUnfinished,
   getLocalStorage,
-  getUserInfo
+  getUserInfo,
+  init
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PhotoBank);

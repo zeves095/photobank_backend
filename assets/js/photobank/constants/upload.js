@@ -1,0 +1,27 @@
+export const CATALOGUE_TREE_COMPONENT = "CatalogueTree";
+export const DOWNLOAD_POOL_COMPONENT = "DownloadPool";
+export const EXISTING_RESOURCE_COMPONENT = "ExistingResource";
+export const EXISTING_RESOURCES_COMPONENT = "ExistingResources";
+export const ITEM_LIST_COMPONENT = "ItemList";
+export const ITEM_SEARCH_COMPONENT = "ItemSearch";
+export const ITEM_SECTION_COMPONENT = "ItemSection";
+export const LIST_FILTER_COMPONENT = "ListFilter";
+export const NODE_VIEWER_COMPONENT = "NodeViewer";
+export const PHOTOBANK_COMPONENT = "PhotoBank";
+export const UNFINISHED_UPLOADS_COMPONENT = "UnfinishedUploads";
+export const UPLOAD_POOL_COMPONENT = "UploadPool";
+export const UPLOADS_COMPONENT = "Uploads";
+
+export const CATALOGUE_TREE_WRAPPER = ".photobank-main";
+export const DOWNLOAD_POOL_WRAPPER = ".photobank-main";
+export const EXISTING_RESOURCE_WRAPPER = ".photobank-main";
+export const EXISTING_RESOURCES_WRAPPER = ".photobank-main";
+export const ITEM_LIST_WRAPPER = ".photobank-main";
+export const ITEM_SEARCH_WRAPPER = ".photobank-main";
+export const ITEM_SECTION_WRAPPER = ".photobank-main";
+export const LIST_FILTER_WRAPPER = ".photobank-main";
+export const NODE_VIEWER_WRAPPER = ".photobank-main";
+export const PHOTOBANK_WRAPPER = ".photobank-main";
+export const UNFINISHED_UPLOADS_WRAPPER = ".photobank-main";
+export const UPLOAD_POOL_WRAPPER = ".photobank-main";
+export const UPLOADS_WRAPPER = ".photobank-main";

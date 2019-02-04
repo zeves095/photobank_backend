@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import utility from './UtilityService';
 
 /**
  * Сервис для работы с данными, сохраненными в localstorage браузера пользователя
@@ -25,13 +26,13 @@ class LocalStorageService{
    * Устанавливает изначальные значения переменных для корректной работы
    */
   static init(){
-    if(window.localStorage.photobank_data != "1"){
-      window.localStorage.photobank_data = "1";
-      window.localStorage.pb_data_current_item = "1";
-      window.localStorage.pb_data_downloads = "";
-      window.localStorage.pb_data_list_view_type = "1";
-      window.localStorage.pb_data_catalogue_view_type = "2";
-      window.localStorage.pb_data_pagination_limit = "10";
+    if(utility.localStorage.photobank_data != "1"){
+      utility.localStorage.photobank_data = "1";
+      utility.localStorage.pb_data_current_item = "1";
+      utility.localStorage.pb_data_downloads = "";
+      utility.localStorage.pb_data_list_view_type = "1";
+      utility.localStorage.pb_data_catalogue_view_type = "2";
+      utility.localStorage.pb_data_pagination_limit = "10";
     }
   }
 
@@ -43,7 +44,7 @@ class LocalStorageService{
   static set(key, value){
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(key) != -1){
-      window.localStorage[keys[key]] = value;
+      utility.localStorage[keys[key]] = value;
     }
   }
 
@@ -54,8 +55,8 @@ class LocalStorageService{
   static get(key){
     if(key==null){return this.getAll();}
     let keys = this._getKeys();
-    if(Object.keys(keys).indexOf(key) != -1 && typeof window.localStorage[keys[key]] != "undefined"){
-      return window.localStorage[keys[key]];
+    if(Object.keys(keys).indexOf(key) != -1 && typeof utility.localStorage[keys[key]] != "undefined"){
+      return utility.localStorage[keys[key]];
     } else {
       return null;
     }
@@ -70,10 +71,10 @@ class LocalStorageService{
     if(typeof value == 'undefined'){return null}
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
-      let val = window.localStorage[keys[list]];
+      let val = utility.localStorage[keys[list]];
       let splitVal = val.split(" ").filter(item=>item!==""&&item!==value);
       splitVal.push(value);
-      window.localStorage[keys[list]] = splitVal.join(" ");
+      utility.localStorage[keys[list]] = splitVal.join(" ");
     }
   }
 
@@ -83,20 +84,17 @@ class LocalStorageService{
    * @param {String} value Значение переменной для редактирования
    */
   static removeFrom(list, value){
-    console.log(value);
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
-      let val = window.localStorage[keys[list]];
+      let val = utility.localStorage[keys[list]];
       let listArr = val.split(" ");
       let result = "";
-      console.log(listArr);
       listArr.splice(listArr.indexOf(value.toString()),1);
-      console.log(listArr);
       for(var item in listArr){
         if(listArr[item] == "" || listArr[item] == "undefined"){continue}
         result = result + listArr[item]+" ";
       }
-      window.localStorage[keys[list]] = result;
+      utility.localStorage[keys[list]] = result;
     }
   }
 
@@ -108,7 +106,7 @@ class LocalStorageService{
   static getList(list, delimiter=" "){
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
-      let storedList = window.localStorage[keys[list]];
+      let storedList = utility.localStorage[keys[list]];
       if(typeof storedList == "undefined" || storedList == null){
         return [];
       }
@@ -125,7 +123,7 @@ class LocalStorageService{
   static setList(list, input, delimiter=" "){
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
-      let storedList = window.localStorage[keys[list]];
+      let storedList = utility.localStorage[keys[list]];
       if(typeof storedList == "undefined" || storedList == null){
         return false;
       }
@@ -139,8 +137,8 @@ class LocalStorageService{
    */
   static unset(key){
     let keys = this._getKeys();
-    if(Object.keys(keys).indexOf(key) != -1 && typeof window.localStorage[keys[key]] != "undefined"){
-      window.localStorage.removeItem(keys[key]);
+    if(Object.keys(keys).indexOf(key) != -1 && typeof utility.localStorage[keys[key]] != "undefined"){
+      utility.localStorage.removeItem(keys[key]);
     }
   }
 
