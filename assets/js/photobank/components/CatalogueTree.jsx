@@ -101,7 +101,7 @@ export class CatalogueTree extends React.Component {
 
     return (
       <div className={"catalogue-tree"}>
-        <span className="titlefix"><h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-sitemap" title="Дерево" onClick={()=>{this.handleViewChoice("2")}}></i><i className="fas fa-list" title="Список" onClick={()=>{this.handleViewChoice("1")}}></i><i title="Поиск" onClick={()=>{this.handleViewChoice("3")}} className="fas fa-search"></i></span></h2></span>
+        <span className="titlefix"><h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-sitemap" title="Дерево" data-view="2" onClick={()=>{this.handleViewChoice("2")}}></i><i className="fas fa-list" title="Список" data-view="1" onClick={()=>{this.handleViewChoice("1")}}></i><i title="Поиск" data-view="3" onClick={()=>{this.handleViewChoice("3")}} className="fas fa-search"></i></span></h2></span>
       <div className="inner-bump">
           <div className="catalogue-tree__crumbs crumbs">
             {this.props.view==1?crumbs:null}

@@ -311,6 +311,8 @@ describe('Проверка навигации по каталогам', function
     await w(driver);
     const treeViewBtn = await driver.findElement(By.css(SELECTORS.upload.CATALOGUE_TREE_TREE_VIEW));
     await treeViewBtn.click();
+    await waitForEl(driver, SELECTORS.notloading.NODE_LIST);
+    await waitForEl(driver, SELECTORS.upload.CATALOGUE_TREE_TREE_NODE);
     let rootNode = await driver.findElement(By.css(SELECTORS.upload.CATALOGUE_TREE_TREE_NODE));
     rootNode.click();
     try{
@@ -326,7 +328,8 @@ describe('Проверка навигации по каталогам', function
     let numOfItemsInNode = 0;
     let browseStep = 0;
     while(numOfItemsInNode < 1){
-      await s(driver);
+      await waitForEl(driver, SELECTORS.notloading.NODE_LIST);
+      await waitForEl(driver, SELECTORS.upload.CATALOGUE_TREE_TREE_NODE);
       let catNodes = await driver.findElements(By.css(SELECTORS.upload.CATALOGUE_TREE_TREE_NODE));
       await catNodes[browseStep++].click();
       await waitForEl(driver, SELECTORS.notloading.ITEM_LIST);
@@ -344,7 +347,7 @@ describe('Проверка навигации по каталогам', function
       const rootNode = await driver.findElement(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ROOT));
       await rootNode.click();
       await waitForEl(driver, SELECTORS.notloading.ITEM_LIST);
-    }catch(e){console.log(e)}
+    }catch(e){}
     const firstNode = await driver.findElement(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM));
     firstNode.click();
     await waitForEl(driver, SELECTORS.notloading.ITEM_LIST);
@@ -389,6 +392,7 @@ describe('Проверка навигации по каталогам', function
     let nodeCode = await firstNode.getAttribute('data-node');
     firstNode.click();
     await waitForEl(driver, SELECTORS.notloading.ITEM_LIST);
+    await waitForEl(driver, SELECTORS.upload.CATALOGUE_TREE_LIST_UP);
     const traverseUpBtn = await driver.findElement(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_UP));
     traverseUpBtn.click();
     await waitForEl(driver, SELECTORS.notloading.NODE_LIST);
@@ -584,6 +588,7 @@ async function getVerifiedData(driver){
   let itemsWithResources = [];
   let numOfResources = 0;
 
+  await waitForEl(driver, SELECTORS.notloading.NODE_LIST);
   const listViewBtn = await driver.findElement(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_VIEW));
   await listViewBtn.click();
 
@@ -598,16 +603,19 @@ async function getVerifiedData(driver){
 
   do{
     await waitForEl(driver, SELECTORS.notloading.NODE_LIST);
+    await waitForEl(driver, SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM);
     let firstListItem = await driver.findElement(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM));
     nodeName = await firstListItem.getAttribute('innerText');
     nodeCode = await firstListItem.getAttribute('data-node');
     nodeCodeList = [nodeCode];
 
     await firstListItem.click();
-
     await waitForEl(driver, SELECTORS.notloading.ITEM_LIST);
 
     await driver.findElements(By.css(SELECTORS.upload.ITEM_LIST_ITEM)).then((items=>{numOfItemsInNode = items.length}));
+
+    await waitForEl(driver, SELECTORS.notloading.NODE_LIST);
+    await waitForEl(driver, SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM);
     await driver.findElements(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM)).then((items=>{numOfSubNodes = items.length}));
     await waitForEl(driver, SELECTORS.notloading.ITEM_LIST);
 
@@ -626,7 +634,7 @@ async function getVerifiedData(driver){
           nodeWithResources = nodeName;
           itemsWithResources.push(itemCode);
           numOfResources += resourcesInItem.length;
-      }catch(e){console.log(e)}
+      }catch(e){}
       itemCodes.push(itemCode);
   }
 
