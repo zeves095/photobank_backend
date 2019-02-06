@@ -26,11 +26,8 @@ class ResourceService{
 
   /**
    * Получает все сгенерированные пресеты для товара, с ограничением по первому и последнему ресурсу из списка
-   * @param  {String} itemId          Идентификатор товара
-   * @param  {Object[]} existing        Список существующих ресурсов товара
-   * @param  {Number} start           Индекс начала списка товаров, для которых нужны пресеты
-   * @param  {Number} end             Индекс конца списка товаров, для которых нужны пресеты
-   * @param  {Object[]} finishedPresets Уже запрошенные и полученные пресеты
+   * @param  {Object} pagination Параметры пагинации
+   * @param  {Object[]} existing Список существующих ресурсов товара
    */
   static fetchExistingPresets(pagination, existing){
     let presets = [];
@@ -48,14 +45,6 @@ class ResourceService{
             presets = presets.concat(data[item]);
           }
         }
-        // presets = presets.filter((preset)=>{
-        //   for(var fin in finishedPresets){
-        //      if(preset.preset==finishedPresets[fin].preset&&finishedPresets[fin].resource==preset.resource){
-        //        return false;
-        //      }
-        //   }
-        //   return true;
-        // });
         resolve(presets);
       }).catch((e)=>{
         reject(e);
@@ -66,16 +55,12 @@ class ResourceService{
   /**
    * Запрашивает обработанные пресеты с сервера для одного ресурса
    * @param  {Object[]} existing        Список существующих ресурсов товара
-   * @param  {Number} id              Идентификатор ресурса
-   * @param  {Object[]} finishedPresets Уже запрошенные и полученные пресеты
    */
   static _getFinishedPresets(existing){
     let presetItems = [];
     let presets = [];
     return new Promise((resolve, reject)=>{
       if(typeof existing == 'undefined'){resolve(null)}
-      //if(finishedPresets.filter((fin_preset)=>{return fin_preset.resource == existing.id}).length >= Object.keys(utility.config['presets']).length){resolve(null)}
-
       for(var preset in utility.config['presets']){
 
         let presetId = utility.config['presets'][preset]['id'];

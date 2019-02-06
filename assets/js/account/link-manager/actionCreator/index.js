@@ -186,7 +186,7 @@ export function getResourceThumbnails(resources){
 
 /**
  * Отправляет на сервер запрос на поиск ресурсов
- * @param  {Object} Объект поискка
+ * @param  {Object} searchObject={} Объект поискка
  */
 export function searchResources(searchObject={}){
   return (dispatch)=>{

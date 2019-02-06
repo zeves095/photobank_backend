@@ -12,9 +12,6 @@ class ItemService{
   /**
    * Получает список товаров, при необходимости запрашивает с сервера, фильтрует полученные данные
    * @param  {ItemQueryObject}  query  Объект поискового запроса
-   * @param  {String}  filter Значение фильтра
-   * @param  {Object}  items  Уде полученный список товаров
-   * @param  {Boolean} [need_refresh=true] Необходимость повторного обращения к серверу
    */
   static fetchItems(query){
     return new Promise((resolve, reject)=>{
