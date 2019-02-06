@@ -25,7 +25,6 @@ class CatalogueService{
         if(currentNode == null){
           resolve(result);
         }
-
         else{
           this._fetchNodeParent(currentNode).then((parent)=>{
             this.fetchRootNodes(parent,result).then((result)=>{
@@ -39,9 +38,7 @@ class CatalogueService{
 
   /**
    * Запрашивает данные о дочерних элементах каталога от раздела каталога
-   * @param  {Object[]} data Уже полученная структура каталога
-   * @param  {int[]} tracked Список разделов каталога, по которым уже есть данные
-   * @param  {Number} node Идентификатор раздела каталога, дочерние элементы которого необходимо найти
+   * @param {Number} id Код 1С раздела каталога
    */
   static fetchNodes(id){
     return new Promise((resolve,reject)=>{

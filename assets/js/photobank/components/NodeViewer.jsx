@@ -17,19 +17,7 @@ import selectors from '../selectors';
 export class NodeViewer extends React.Component{
   /**
    * Конструктор компонента
-   * catalogue_data - Данные каталога
-   * node - Теккущий раздел каталога
-   * prev_node_id - Идентификатор предыдущего выбранного раздлела каталога
-   * node_items - Список товаров для данного раздела каталога
-   * node_items_filtered - Отфильтрованный список товаров для данного раздела каталога
-   * filter_query - Строка фильтрации
-   * current_item - Идентификатор текущего выбранного товара каталога
    * view_pool - Показывать ли очередь загрузки/выгрузки
-   * view_type - Тип представления элементов списка
-   * product_crumbs - Хлебные крошки, соответствующие данному товару
-   * loading - Находтся ли компонент в состоянии ожидания
-   * downloads - Список ресурсов в очереди загрузок
-   * query - Поисковый объект для списка товаров
    */
   constructor(props) {
     super(props);
@@ -85,7 +73,7 @@ export class NodeViewer extends React.Component{
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
           <ItemList />
-          {$(".view-inner__item-section").length>0?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
+          <Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />
           <div className="view-inner__item-section" key={this.props.current_item!=null?this.props.current_item.id:""}>
             <span className="titlefix"><h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.props.crumbs}</i></h2></span>
           <div className="view-switcher-button-block">

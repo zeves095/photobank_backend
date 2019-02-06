@@ -1,3 +1,6 @@
+import {LocalStorageMock} from '../../tests/mockdata/';
+import {LocalStorageService} from '../../photobank/services/';
+
 /**
  * Функции-утилиты, которые не подходят в другие сервисы
  */
@@ -20,11 +23,12 @@ export default class UtilityService{
   }
 
   static initLocalstorage(){
-    if(window){
-      this.localStorage = window.localStorage;
+    if(typeof window ==="undefined"){
+      this.localStorage = new LocalStorageMock();
     }else{
-      this.localStorage = {};
+      this.localStorage = window.localStorage;
     }
+    LocalStorageService.init();
   }
 
 }

@@ -30,7 +30,7 @@ class UploadService{
    *
    * TODO сделать конфигурацию неглобальной
    */
-  static populateResumableContainer(container, uploads, config={}){
+  static populateResumableContainer(container, uploads){
     let newContainer = Object.assign({}, container);
     for(var upload in uploads){
       newContainer[uploads[upload]]=new Resumable({target: utility.config.upload_target_url});
@@ -61,6 +61,7 @@ class UploadService{
    * Выполняет обработку файла перед загрузкой на сервер
    * @param  {String} file Содержание файла, который нужно отправить на сервер
    * @param  {Object[]} existingUploads Массив существующих готовых к отправке файлов
+   * @param {String} itemId Код 1С товара
    */
   static processFile(file, existingUploads, itemId){
     return new Promise((resolve, reject)=>{
@@ -90,6 +91,7 @@ class UploadService{
   /**
    * Получает сгенерированный ключ md5 для загружаемого файла
    * @param  {String} file Содержание файла, который нужно отправить на сервер
+   * @param {Object} item Объект товара каталога
    */
   static _getHash(file, item){
     return new Promise((resolve, reject)=>{
@@ -108,7 +110,7 @@ class UploadService{
 
   /**
    * Отправляет запрос на создание записи о начатой загрузке на сервер
-   * @param  {String} file Содержание файла, который нужно отправить на сервер
+   * @param  {Object} fileParams Параметры загрузки. Хеш-идентификатор, объект файла, код 1С товара
    * @param  {Object[]} existingUploads Массив существующих готовых к отправке файлов
    */
   static commitUpload(fileParams, existingUploads){
@@ -129,7 +131,12 @@ class UploadService{
           'itemid': fileParams.itemId,
           'totalchuks': fileParams.file.chunks.length
         }
-        fetch(utility.config.commit_upload_url, {method: 'POST', body: obj}).then(()=>{
+        let formData = new FormData();
+        for(let i = 0; i<Object.keys(obj).length; i++){
+          formData.set(Object.keys(obj)[i],obj[Object.keys(obj)[i]]);
+        }
+        console.log(obj);
+        fetch(utility.config.commit_upload_url, {method: 'POST', body: formData}).then(()=>{
           resolve(true);
         });
       }

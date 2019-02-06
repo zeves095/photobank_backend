@@ -16,7 +16,7 @@ export function fetchUsers(){
       type:FETCH_USERS+START,
       payload:""
     })
-    UserService.fetchUsers().then((users)=>{
+    return UserService.fetchUsers().then((users)=>{
       dispatch({
         type:FETCH_USERS+SUCCESS,
         payload:users
@@ -24,7 +24,7 @@ export function fetchUsers(){
     }).catch(e=>{
       dispatch({
         type:FETCH_USERS+FAIL,
-        payload:users
+        payload:""
       })
       console.error(e);
     });
@@ -33,7 +33,7 @@ export function fetchUsers(){
 
 export function chooseUser(user){
   return dispatch=>{
-    dispatch({
+    return dispatch({
       type:CHOOSE_USER,
       payload:user
     });
@@ -43,7 +43,7 @@ export function chooseUser(user){
 export function addUser(users){
   return dispatch=>{
     let user = UserService.getBlankUser(users);
-    dispatch({
+    return dispatch({
       type:ADD_USER,
       payload:user
     });
@@ -56,13 +56,14 @@ export function submitUser(user){
       type: SUBMIT_USER+START,
       payload: user.id
     });
-    UserService.submitUser(user).then(result=>{
+    return UserService.submitUser(user).then(result=>{
       dispatch({
         type:SUBMIT_USER+SUCCESS,
         payload: user
       });
       dispatch(fetchUsers());
     }).catch(e=>{
+      console.log(e);
       dispatch({
         type:SUBMIT_USER+FAIL,
         payload:""

@@ -26,13 +26,13 @@ class LocalStorageService{
    * Устанавливает изначальные значения переменных для корректной работы
    */
   static init(){
-    if(utility.localStorage.photobank_data != "1"){
-      utility.localStorage.photobank_data = "1";
-      utility.localStorage.pb_data_current_item = "1";
-      utility.localStorage.pb_data_downloads = "";
-      utility.localStorage.pb_data_list_view_type = "1";
-      utility.localStorage.pb_data_catalogue_view_type = "2";
-      utility.localStorage.pb_data_pagination_limit = "10";
+    if(utility.localStorage.getItem('photobank_data') != "1"){
+      utility.localStorage.setItem('photobank_data',"1");
+      utility.localStorage.setItem('pb_data_current_item',"1");
+      utility.localStorage.setItem('pb_data_download_list',"");
+      utility.localStorage.setItem('pb_data_list_view_type',"1");
+      utility.localStorage.setItem('pb_data_catalogue_view_type',"2");
+      utility.localStorage.setItem('pb_data_pagination_limit',"10");
     }
   }
 
@@ -44,7 +44,7 @@ class LocalStorageService{
   static set(key, value){
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(key) != -1){
-      utility.localStorage[keys[key]] = value;
+      utility.localStorage.setItem(keys[key], value);
     }
   }
 
@@ -55,8 +55,8 @@ class LocalStorageService{
   static get(key){
     if(key==null){return this.getAll();}
     let keys = this._getKeys();
-    if(Object.keys(keys).indexOf(key) != -1 && typeof utility.localStorage[keys[key]] != "undefined"){
-      return utility.localStorage[keys[key]];
+    if(Object.keys(keys).indexOf(key) != -1 && typeof utility.localStorage.getItem(keys[key]) != "undefined"){
+      return utility.localStorage.getItem(keys[key]);
     } else {
       return null;
     }
@@ -71,10 +71,10 @@ class LocalStorageService{
     if(typeof value == 'undefined'){return null}
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
-      let val = utility.localStorage[keys[list]];
+      let val = utility.localStorage.getItem(keys[list]);
       let splitVal = val.split(" ").filter(item=>item!==""&&item!==value);
       splitVal.push(value);
-      utility.localStorage[keys[list]] = splitVal.join(" ");
+      utility.localStorage.setItem(keys[list], splitVal.join(" "));
     }
   }
 
@@ -86,15 +86,15 @@ class LocalStorageService{
   static removeFrom(list, value){
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
-      let val = utility.localStorage[keys[list]];
+      let val = utility.localStorage.getItem(keys[list]);
       let listArr = val.split(" ");
       let result = "";
-      listArr.splice(listArr.indexOf(value.toString()),1);
+      listArr.splice(listArr.indexOf(value.toString()),1).filter(item=>item!=="");
       for(var item in listArr){
         if(listArr[item] == "" || listArr[item] == "undefined"){continue}
         result = result + listArr[item]+" ";
       }
-      utility.localStorage[keys[list]] = result;
+      utility.localStorage.setItem(keys[list], result);
     }
   }
 
@@ -106,11 +106,11 @@ class LocalStorageService{
   static getList(list, delimiter=" "){
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
-      let storedList = utility.localStorage[keys[list]];
+      let storedList = utility.localStorage.getItem(keys[list]);
       if(typeof storedList == "undefined" || storedList == null){
         return [];
       }
-      let splitList = storedList.split(delimiter);
+      let splitList = storedList.split(delimiter).filter(item=>item!=="");
       for(var item in splitList){
         if(splitList[item] == "undefined"){
           splitList.splice(item, 1);
@@ -123,7 +123,7 @@ class LocalStorageService{
   static setList(list, input, delimiter=" "){
     let keys = this._getKeys();
     if(Object.keys(keys).indexOf(list) != -1){
-      let storedList = utility.localStorage[keys[list]];
+      let storedList = utility.localStorage.getItem(keys[list]);
       if(typeof storedList == "undefined" || storedList == null){
         return false;
       }
@@ -137,7 +137,7 @@ class LocalStorageService{
    */
   static unset(key){
     let keys = this._getKeys();
-    if(Object.keys(keys).indexOf(key) != -1 && typeof utility.localStorage[keys[key]] != "undefined"){
+    if(Object.keys(keys).indexOf(key) != -1 && typeof utility.localStorage.getItem(keys[key]) != "undefined"){
       utility.localStorage.removeItem(keys[key]);
     }
   }

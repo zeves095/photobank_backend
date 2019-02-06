@@ -6,13 +6,18 @@ export {
   mockFetchRequestData,
   mockFetchResponse,
   userList,
-} from './usermanager';
+} from './linkmanager';
 
 export {
   mockUploadStore,
   mockUploadFetchResponse
 } from './upload';
 
+export {
+  mockUsermanagerStore
+} from './usermanager';
+
+export {LocalStorageMock} from './LocalStorageMock';
 
 export let mockConfig = {
   commit_upload_url: "/api/upload/commit",
@@ -48,5 +53,7 @@ export let mockConfig = {
   unfinished_uploads_url: "/api/upload/unfinished/",
   upload_directory: "/home/efimov/WORK/git/photobank_backend/private/uploads",
   upload_target_url: "/api/upload/",
-  upload_url: "/upload"
+  upload_url: "/upload",
+  user_get_url: "/usermanager/get",
+  user_set_url: "/usermanager/set"
 }

@@ -1,5 +1,7 @@
 import {Map, Set, List, Record} from 'immutable';
 
+import utility from '../../services/UtilityService';
+
 import {
   UPLOADS_UNFINISHED_FETCH,
   FILE_PROCESSED,
@@ -57,7 +59,7 @@ export default (upload = defaultState, action) => {
       if(!container.find(resumable=>resumable.get('id')===itemId)){
         container = container.push(Map({
           id:itemId,
-          instance: Map(new Resumable({target: window.config.upload_target_url}))
+          instance: Map(new Resumable({target: utility.config.upload_target_url}))
         }));
       }
       return upload.set('resumable_container',container)

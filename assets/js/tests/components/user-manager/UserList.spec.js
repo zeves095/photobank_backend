@@ -4,18 +4,26 @@ import Adapter from 'enzyme-adapter-react-16';
 import {selectors} from '../../constants';
 import {userList} from '../../mockdata';
 
-import {UserList} from '../../../usermanager/UserList';
+import {UserList} from '../../../usermanager/components/UserList';
 
 Enzyme.configure({adapter: new Adapter()});
 
 let bareProps = {
-  userChoiceHandler: ()=>{},
-  users: []
+  users_active: [],
+  user: null,
+  chooseUser: null,
+  users_inactive: [],
+  addUser: null,
+  users: null,
 };
 
 let userProps = {
-  userChoiceHandler: ()=>{},
-  users: userList
+  users_active: userList,
+  user: null,
+  chooseUser: null,
+  users_inactive: [],
+  addUser: null,
+  users: null,
 };
 
 function setup(props){

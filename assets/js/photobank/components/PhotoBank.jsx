@@ -1,5 +1,4 @@
 import React from 'react';
-// import $ from 'jquery';
 
 import CatalogueTree from './CatalogueTree';
 import NodeViewer from './NodeViewer';
@@ -23,10 +22,6 @@ export class PhotoBank extends React.Component {
 
   /**
    * Конструктор компонента
-   * crumb_string - Строка хлебных крошек, разделенная / для отображения в ItemSection
-   * item_query_object - Объект поиска товаров
-   * ls_node - Сохраненный в localstorage идентификатор выбранного раздела каталога
-   * authorized - Имеет ли текущий пользователь права редактора
    */
   constructor(props) {
     super(props);
@@ -36,7 +31,7 @@ export class PhotoBank extends React.Component {
   }
 
   /**
-   * Получает сохраненные значения из localstorage
+   * Инициализирует конфигурацию, localstorage, получает список незаконченных загрузок
    */
   componentWillMount(){
     this.props.init().then(()=>{
@@ -53,8 +48,8 @@ export class PhotoBank extends React.Component {
         <div id="notification-overlay"></div>
       <div className="photobank-main__main-block">
         <CatalogueTree />
-      {$(".catalogue-tree").length>0?<Draggable box1=".catalogue-tree" box2=".node-viewer" id="1" />:null}
-      {this.props.show_node_viewer == null?null:<NodeViewer />}
+        <Draggable box1=".catalogue-tree" box2=".node-viewer" id="1" />
+        {this.props.show_node_viewer == null?null:<NodeViewer />}
         </div>
         <div className="photobank-main__butt-wrapper">
         </div>

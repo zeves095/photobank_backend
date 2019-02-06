@@ -1,5 +1,4 @@
 import React from 'react';
-// import $ from 'jquery';
 import { hex_md5 } from '../../vendor/md5';
 import {UploadService} from '../services/UploadService';
 import {NotificationService} from '../../services/NotificationService';
@@ -15,8 +14,6 @@ export class UnfinishedUploads extends React.Component{
   /**
    * Конструктор компонента
    * uploads - Массив загрузок
-   * unfinished - Массив незавершенных загрузок
-   * loading - Находится ли компонент в состоянии ожидания
    * unfinished_hidden - Скрыты ли в приложении незаконченные загрузки
    */
   constructor(props) {
@@ -36,7 +33,7 @@ export class UnfinishedUploads extends React.Component{
 
   /**
    * Обработчик удаления записи о незавершенной загрузке с сервера
-   * @param  {Event} e обытие клика
+   * @param  {String} filehash Сгенерированный хеш-идентификатор файла
    */
   handleDelete = (filehash)=>{
     this.props.deleteUpload(filehash, this.props.item.id);

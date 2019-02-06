@@ -10,7 +10,7 @@ import { ResourceSearchResults } from '../../account/link-manager/components/Res
 import Enzyme, {render, shallow,mount} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import renderer from 'react-test-renderer';
-import {store} from '../../account/link-manager/store/'
+import {store} from '../../account/link-manager/store/';
 import {Provider} from 'react-redux';
 
 Enzyme.configure({adapter: new Adapter()});

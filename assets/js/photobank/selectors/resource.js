@@ -1,6 +1,8 @@
 import {createSelector, createStructuredSelector} from 'reselect';
 import {Map,List,Set,Record} from 'immutable';
 
+import utility from '../services/UtilityService';
+
 export const existingResources = (store,props)=>store.resource.get('resources_existing');
 export const finishedPresets = (store,props)=>store.resource.get('finished_presets');
 export const resourceId = (store,props)=>props.file.id||null;
@@ -27,7 +29,7 @@ export const getFinishedPresets = createSelector(finishedPresets, resourceId, (f
     response = response.filter(preset=>{
       return preset.resource===id;
     }).map(preset=>{
-      preset.link = window.config['resource_url']+ preset.id+".jpg";
+      preset.link = utility.config['resource_url']+ preset.id+".jpg";
       return preset;
     });
   }
@@ -35,11 +37,11 @@ export const getFinishedPresets = createSelector(finishedPresets, resourceId, (f
 });
 
 export const getMaxMainResources = createSelector(()=>{
-  return window.config.max_main_resources;
+  return utility.config.max_main_resources;
 });
 
 export const getMaxAddResources = createSelector(()=>{
-  return window.config.max_additional_resources;
+  return utility.config.max_additional_resources;
 });
 
 export const getCurrentMainResources = createSelector(existingResources, itemId, (existing, id)=>{

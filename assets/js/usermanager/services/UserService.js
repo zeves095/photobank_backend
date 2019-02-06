@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import utility from '../../photobank/services/UtilityService';
 /**
  * Сервис для получения и обновления данных пользователей
  */
@@ -13,9 +13,11 @@ class UserService{
    */
   static fetchUsers(){
     return new Promise((resolve,reject)=>{
-      $.getJSON(window.config.user_get_url).done((data)=>{
+      return fetch(utility.config.user_get_url, {method:"GET"})
+      .then(response=>response.json())
+      .then((data)=>{
         resolve(data);
-      }).fail((e)=>{
+      }).catch((e)=>{
         reject();
       });
     });
@@ -28,14 +30,11 @@ class UserService{
   static submitUser(user){
     return new Promise((resolve, reject)=>{
       user.active = user.active?1:0;
-      $.ajax({
-        "url":window.config.user_set_url,
-        "data":user,
-        "method":"POST"
-      }).done((data)=>{
+      return fetch(utility.config.user_set_url, {method:"POST", body:JSON.stringify(user)})
+      .then((data)=>{
         resolve(data);
-      }).fail((e)=>{
-        reject();
+      }).catch((e)=>{
+        reject(e);
       });
     });
   }

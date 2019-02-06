@@ -3,7 +3,7 @@ import Enzyme, {shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import {selectors} from '../../constants';
 
-import {UserEditor} from '../../../usermanager/components/UserEditor';
+import {PhotoBank} from '../../../photobank/components/PhotoBank';
 
 Enzyme.configure({adapter: new Adapter()});
 
@@ -25,14 +25,14 @@ let userProps = {
 };
 
 function setup(props){
-    const component = shallow(<UserEditor {...props} />);
+    const component = shallow(<PhotoBank {...props} />);
     return{
       props,
       component
     }
 }
 
-describe('UserEditor', ()=>{
+describe('PhotoBank', ()=>{
   describe('render',()=>{
     it('Компонент рендерится', ()=>{
       const {component} = setup(bareProps);

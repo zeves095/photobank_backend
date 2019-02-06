@@ -18,12 +18,7 @@ export class CatalogueTree extends React.Component {
 
   /**
    * Конструктор компонета
-   * catalogue_data - Полные данные структуры каталога
-   * tracked_nodes - Массив идентификаторов разделов каталога, которые уже отслеживаются в состоянии компонента
-   * current_node - Текущий выбранный раздел каталога
    * crumbs - Массив объектов разделов каталога для хлебных крошек
-   * view - Текущий выбранный тип отображения структуры каталога
-   * loading - Находится ли компонент в состоянии загрузки
    */
   constructor(props) {
     super(props);
@@ -40,7 +35,7 @@ export class CatalogueTree extends React.Component {
   }
 
   /**
-   * Запрашивает структуру каталога от созраненного выбранного раздела до верхнего уровня каталога
+   * Выбирает созраненный раздел каталога как активный
    */
   componentWillMount(){
     this.handleNodeChoice(this.props.current_node, this.props.catalogue_data);
@@ -54,7 +49,7 @@ export class CatalogueTree extends React.Component {
 
   /**
    * Обработчик выбора типа предаставления
-   * @param  {Event} e Событие клика
+   * @param  {Number} type Тип представления
    */
   handleViewChoice = (type)=>{
     if(type==3){
@@ -74,7 +69,6 @@ export class CatalogueTree extends React.Component {
   }
 
   render() {
-    // if(this.props.current_node==0){return null}
     let view = "";
     let viewClass = "";
     switch(this.props.view){
