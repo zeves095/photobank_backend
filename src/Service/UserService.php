@@ -93,6 +93,7 @@ private $container;
   private function _createUser($user){
     $roles = $this->_getRoles();
     if(!in_array($user["role"], $roles) || $user["role"]==0){
+      var_dump([$user,$roles]);
       throw new InvalidUserDataException("Неверные данные пользователя");
     }
     $newUser = new User();
@@ -115,6 +116,7 @@ private $container;
   private function _updateUser($user, $existing){
     $roles = $this->_getRoles();
     if(!in_array($user["role"], $roles) || $user["role"]==0){
+      //var_dump([$user,$roles]);
       throw new InvalidUserDataException("Неверные данные пользователя");
     }
     $existing->setUsername($user["name"]);
