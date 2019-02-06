@@ -7,6 +7,8 @@ import {connect} from 'react-redux';
 import selectors from '../selectors';
 import {removeDownload, clearDownloads} from '../actionCreator';
 
+import utility from '../services/UtilityService';
+
 /**
  * Компонент интерфейса bulk-загрузки файлов с сервера
  */
@@ -35,7 +37,7 @@ export class DownloadPool extends React.Component{
 
   /**
    * Обработчик удаления файла из очереди загрузок
-   * @param  {Event} e Событие клика
+   * @param  {Number} id Id файла
    */
   handleRemoveDownload=(id)=>{
     this.props.removeDownload(id);
@@ -64,7 +66,7 @@ export class DownloadPool extends React.Component{
         if(res[r] == ""){continue;}
         downloads.push({
           "id": res[r].id,
-          "preset": Object.keys(window.config["presets"])[res[r].preset],
+          "preset": Object.keys(utility.config["presets"])[res[r].preset],
           "name": res[r].src_filename,
           "sizepx": res[r].size_px
         });
@@ -115,7 +117,7 @@ export class DownloadPool extends React.Component{
 
 const mapStateToProps = (state,props) =>{
   return {
-    resources: selectors.localstorage.getPendingDownloads(state,props)
+    resources: selectors.localstorage.getPendingDownloads(state,props),
   }
 }
 

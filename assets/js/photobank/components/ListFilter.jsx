@@ -17,9 +17,6 @@ export class ListFilter extends React.Component{
       "query" : ""
     };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-
     this.filterTimeout = null;
   };
 
@@ -27,7 +24,7 @@ export class ListFilter extends React.Component{
    * Обработчик изменения строки фильтрации
    * @param  {Event} e Событие
    */
-  handleChange(e){
+  handleChange=(e)=>{
     let query = e.target.value;
     this.state.query = query;
     if(this.filterTimeout != null){
@@ -39,7 +36,7 @@ export class ListFilter extends React.Component{
   /**
    * Обработчик отправки строки фильтрации
    */
-  handleSubmit(){
+  handleSubmit=()=>{
     this.props.filterHandler(this.state.query);
   }
 
@@ -68,7 +65,7 @@ export class ListFilter extends React.Component{
 
 const mapStateToProps = (state,props) =>{
   return {
-  }
+}
 }
 
 const mapDispatchToProps = {

@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import utility from '../photobank/services/UtilityService';
 
 /**
  * Сервис для получения и обновления данных по ресурсам
@@ -13,11 +13,14 @@ class ResourceService{
    */
   static fetchExisting(itemId){
     return new Promise((resolve, reject)=>{
-      $.getJSON(window.config.existing_uploads_url+itemId, (data)=>{
+      fetch(utility.config.existing_uploads_url+itemId, {method: "GET"})
+      .then(response=>response.json())
+      .then((data)=>{
         resolve(data);
-      }).fail(()=>{
+      }).catch((e)=>{
+        console.log(e);
         reject("request-failed");
-      });;
+      });
     })
   }
 
@@ -71,15 +74,17 @@ class ResourceService{
     let presets = [];
     return new Promise((resolve, reject)=>{
       if(typeof existing == 'undefined'){resolve(null)}
-      //if(finishedPresets.filter((fin_preset)=>{return fin_preset.resource == existing.id}).length >= Object.keys(window.config['presets']).length){resolve(null)}
+      //if(finishedPresets.filter((fin_preset)=>{return fin_preset.resource == existing.id}).length >= Object.keys(utility.config['presets']).length){resolve(null)}
 
-      for(var preset in window.config['presets']){
+      for(var preset in utility.config['presets']){
 
-        let presetId = window.config['presets'][preset]['id'];
+        let presetId = utility.config['presets'][preset]['id'];
         let resId = existing.id;
-        let url = window.config.resource_url + existing.id + "/" + presetId;
+        let url = utility.config.resource_url + existing.id + "/" + presetId;
         presetItems.push(new Promise((resolvePreset,rejectPreset)=>{
-          $.ajax({url: url, method: 'GET'}).done((data)=>{
+          fetch(url, {method: 'GET'})
+          .then(response=>response.json())
+          .then((data)=>{
             if(typeof data.id != "undefined"){
               resolvePreset({
                 'id': data.id,
@@ -89,7 +94,8 @@ class ResourceService{
             }else{
               resolvePreset(null);
             }
-          }).fail(()=>{
+          }).catch((e)=>{
+            console.log(e);
             reject("request-failed");
           });
         }))
@@ -102,44 +108,6 @@ class ResourceService{
         }
         resolve(presets);
       });
-    });
-  }
-
-  /**
-   * Обновляет метаинформацию ресурса
-   * @param  {Object} form Данные формы
-   */
-  static updateResource(data){
-    return new Promise((resolve, reject)=>{
-      
-      // let data = {
-      //   "id" : form.find("input[name='id']").val()
-      // };
-      // let val = form.find("select, input[type='text'], input[type='hidden']");
-      // let chk = form.find("input[type='checkbox']");
-      // if(val.length){
-      //   val.each(function(){
-      //     data[$(this).prop('name')]=$(this).val()
-      //   })
-      // }
-      // if(chk.length){
-      //   sel.each(function(){
-      //     data[$(this).prop('name')]=$(this).prop("checked")
-      //   })
-      // }
-      // let dataJson = JSON.stringify(data);
-      // $.ajax({
-      //   url: window.config.resource_url+data.id,
-      //   method: 'PATCH',
-      //   data: dataJson,
-      //   contentType: "application/json; charset=utf-8",
-      //   dataType: "json"
-      // }).done(()=>{
-      //   resolve();
-      // }).fail(()=>{
-      //   reject("request-failed");
-      // });
-      //resolve();
     });
   }
 
@@ -187,11 +155,15 @@ class ResourceService{
     let resourceLink = this._getLinkById(id, true);
     return new Promise((resolve, reject)=>{
       new Promise((resolve,reject)=>{
-        $.ajax(resourceLink).done((result)=>{
+        fetch(resourceLink,{method:"GET"})
+        .then(response=>response.json())
+        .then((result)=>{
           resolve(result.gid);
         })
       }).then((gid)=>{
-        $.ajax(resourceLink+"/"+gid).done((result)=>{
+        fetch(resourceLink,{method:"GET"}+"/"+gid)
+        .then(response=>response.json())
+        .then((result)=>{
           resolve(this._getLinkById(result.id, true));
         })
       })
@@ -209,7 +181,9 @@ class ResourceService{
       for(var r in res){
         if(res[r] == ""){continue}
         resourceIterable.push(new Promise((resolve,reject)=>{
-          $.ajax(window.config["resource_url"]+res[r]).done((result)=>{
+          fetch(utility.config["resource_url"]+res[r], {method:"GET"})
+          .then(response=>response.json())
+          .then((result)=>{
             resolve(result);
           });
         }));
@@ -228,7 +202,7 @@ class ResourceService{
   static _getLinkById(id, isAjax = false){
     let href = window.location.href.split("/");
     let host = href[0] + "//" + href[2]
-    let link = host+window.config.resource_url+id+(isAjax?"":".jpg");
+    let link = host+utility.config.resource_url+id+(isAjax?"":".jpg");
     return link;
   }
 

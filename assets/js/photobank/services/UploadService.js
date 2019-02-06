@@ -129,7 +129,12 @@ class UploadService{
           'itemid': fileParams.itemId,
           'totalchuks': fileParams.file.chunks.length
         }
-        fetch(utility.config.commit_upload_url, {method: 'POST', body: obj}).then(()=>{
+        let formData = new FormData();
+        for(let i = 0; i<Object.keys(obj).length; i++){
+          formData.set(Object.keys(obj)[i],obj[Object.keys(obj)[i]]);
+        }
+        console.log(obj);
+        fetch(utility.config.commit_upload_url, {method: 'POST', body: formData}).then(()=>{
           resolve(true);
         });
       }

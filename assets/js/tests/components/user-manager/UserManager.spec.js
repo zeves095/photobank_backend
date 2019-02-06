@@ -3,7 +3,7 @@ import Enzyme, {shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import {selectors} from '../../constants';
 
-import {UserManager} from '../../../usermanager/UserManager';
+import {UserManager} from '../../../usermanager/components/UserManager';
 
 Enzyme.configure({adapter: new Adapter()});
 
@@ -17,7 +17,7 @@ function setup(props){
 describe('UserManager', ()=>{
   describe('render',()=>{
     it('Компонент рендерится', ()=>{
-      const {component} = setup({});
+      const {component} = setup({fetchUsers:()=>{}});
       expect(component.find(selectors.usermanager.USER_MANAGER_WRAPPER).exists()).toBe(true);
     });
   });

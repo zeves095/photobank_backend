@@ -16,12 +16,7 @@ import {pushResumable, chooseListViewType, fetchItemData} from '../actionCreator
 export class ItemSection extends React.Component{
   /**
    * Конструктор компонента
-   * resumable - Инстанс resumable.js для текущего товара
-   * item_id - Код 1c товара
    * open - Открыт ли интерфейс
-   * ready - Готовы ли загрузки для данного товара к отправке
-   * view_type - Тип представления элементов списка
-   * need_refresh - Нуждается ли компонент в обновлении
    */
   constructor(props) {
     super(props);

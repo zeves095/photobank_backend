@@ -65,8 +65,12 @@ class UsermanagerController extends AbstractController
      */
     public function setUser(UserService $userService, Request $request){
       $response = new JsonResponse();
+      $data = json_decode(
+          $request->getContent(),
+          true
+      );
       try{
-        $response->setData($userService->setUser($request->request->all()));
+        $response->setData($userService->setUser($data));
       }catch(InvalidUserDataException $e){
         throw new HttpException(400, $e->getMessage());
       }

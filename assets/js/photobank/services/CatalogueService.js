@@ -25,7 +25,6 @@ class CatalogueService{
         if(currentNode == null){
           resolve(result);
         }
-
         else{
           this._fetchNodeParent(currentNode).then((parent)=>{
             this.fetchRootNodes(parent,result).then((result)=>{

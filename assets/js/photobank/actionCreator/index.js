@@ -27,6 +27,9 @@ import {
   ALL
 } from '../constants/';
 
+/**
+ * Инициализвация приложения. Получает конфигурацию, данные из localStorage, незаконченные загрузки и данные о текущем пользователе
+ */
 export function init(){
   return dispatch=>{
     return Promise.all([
@@ -44,6 +47,9 @@ export function init(){
   }
 }
 
+/**
+ * Запрашивает данные о незаконченных загрузках с сервера
+ */
 export function fetchUnfinished(){
   return (dispatch)=>{
     dispatch({
@@ -74,6 +80,10 @@ export function fetchUnfinished(){
   }
 }
 
+/**
+ * Добавляет товар в контейнер resumable.js
+ * @param  {[String]} itemId Код 1С товара
+ */
 export function pushResumable(itemId){
   return {
     type: RESUMABLE_PUSH,
@@ -81,6 +91,10 @@ export function pushResumable(itemId){
   }
 }
 
+/**
+ * Рекурсивно запрашивает структура каталога от текущего раздела до корня
+ * @param  {Number} id Id текущего раздела
+ */
 export function fetchRootNodes(id){
   return (dispatch)=>{
     dispatch({
@@ -103,6 +117,11 @@ export function fetchRootNodes(id){
   }
 }
 
+/**
+ * Получает дочерние разделы каталога по id родителя
+ * @param  {Number} id   Код 1C родителя
+ * @param  {Object[]} data Уже имеющиеся данныe каталога
+ */
 export function fetchNodes(id, data){
   return (dispatch)=>{
     if(data.length === 0){
@@ -130,20 +149,33 @@ export function fetchNodes(id, data){
   }
 }
 
+/**
+ * Выбирает кативный раздел каталога
+ * @param  {String} id   Код 1С раздела каталога
+ * @param  {Object[]} data Уже имеющиеся данныe каталога
+ */
 export function chooseNode(id, data){
   return (dispatch)=> {
     let qo = new ItemQueryObject();
     qo.nodeId = id;
-    dispatch(fetchItems(qo));
-    dispatch(setLocalValue('current_node', id));
-    dispatch(fetchNodes(id, data));
-    dispatch({
-      type: NODE_CHOICE,
-      payload: id
-    })
+    let actions = [
+      dispatch(fetchItems(qo)),
+      dispatch(setLocalValue('current_node', id)),
+      dispatch(fetchNodes(id, data))
+    ];
+    return Promise.all(actions).then(result=>{
+      dispatch({
+        type: NODE_CHOICE,
+        payload: id
+      })
+    });
   }
 }
 
+/**
+ * Получает данные о существующих ресурсах, привязанных к товару каталога
+ * @param  {String} id Код 1С товара
+ */
 export function fetchExisting(id){
   return (dispatch)=>{
     dispatch({
@@ -156,6 +188,7 @@ export function fetchExisting(id){
         payload: data
       });
     }).catch((error)=>{
+      console.log(error);
       dispatch({
         type: EXISTING_RESOURCES_FETCH+FAIL,
         payload: ''
@@ -165,6 +198,11 @@ export function fetchExisting(id){
   }
 }
 
+/**
+ * Получает список сгенерированных пресетов для ресурса
+ * @param  {Object} pagination Данные пагинации. Начало, лимит
+ * @param  {Object[]} existing   Данные о существующих ресурсах
+ */
 export function fetchPresets(pagination, existing){
   return (dispatch)=>{
     dispatch({
@@ -186,18 +224,30 @@ export function fetchPresets(pagination, existing){
   }
 }
 
+/**
+ * Выбирает активный товар
+ * @param  {String} id Код 1С товара
+ */
 export function chooseItem(id){
   return dispatch=>{
-    dispatch(pushResumable(id));
-    dispatch(purgeEmptyItems());
-    dispatch(setLocalValue('current_item',id));
-    return dispatch({
-      type: ITEM_CHOICE,
-      payload: id
-    });
+    let actions = [
+      dispatch(pushResumable(id)),
+      dispatch(purgeEmptyItems()),
+      dispatch(setLocalValue('current_item',id)),
+    ];
+    return Promise.all(actions).then(result=>{
+      dispatch({
+        type: ITEM_CHOICE,
+        payload: id
+      });
+    })
   }
 }
 
+/**
+ * Получает товары по разделу каталога
+ * @param  {ItemQueryObject} query Объект поиска
+ */
 export function fetchItems(query){
   return (dispatch)=>{
     dispatch({
@@ -221,6 +271,12 @@ export function fetchItems(query){
   }
 }
 
+/**
+ * Выполняет обработку файла перед отправкой на сервер
+ * @param  {ResumableFile} file     Объект файла из resumable.js
+ * @param  {Object[]} existing Данные о существующих ресурсах товара
+ * @param  {Object} item     Объект товара, к которому относится загрузка
+ */
 export function prepareFileForUpload(file, existing, item){
   return (dispatch)=>{
     const itemId = item.id;
@@ -236,6 +292,11 @@ export function prepareFileForUpload(file, existing, item){
   }
 }
 
+/**
+ * Удаляет активную или незаконченную загрузку
+ * @param  {String} filehash Сгенерированный хеш-идентификатор загрузки
+ * @param  {String} item     Код 1С товара
+ */
 export function deleteUpload(filehash, item){
   return (dispatch)=>{
     return UploadService.deleteUpload(filehash,item).then((response)=>{
@@ -250,15 +311,26 @@ export function deleteUpload(filehash, item){
   }
 }
 
+/**
+ * Удаляет записи об активных загрузках, запрашивает информацию о существующих ресурсах и незаконченных загрузках после завершения загрузки на сервер
+ * @param  {[type]} id    [description]
+ * @param  {[type]} files [description]
+ * @return {[type]}       [description]
+ */
 export function completeUpload(id, files){
   return dispatch=>{
-    dispatch(deletePendingUploads(id,files)).then(()=>{
+    return dispatch(deletePendingUploads(id,files)).then(()=>{
       dispatch(fetchExisting(id));
       dispatch(fetchUnfinished());
     });
   }
 }
 
+/**
+ * Удаляет записи об активных загрузках
+ * @param  {String} id    Код 1С товара
+ * @param  {ResumableFile[]} files Объекты загрузок из resumable.js
+ */
 export function deletePendingUploads(id, files){
   return dispatch=>{
     let deleteStack = [];
@@ -272,6 +344,11 @@ export function deletePendingUploads(id, files){
   }
 }
 
+/**
+ * Удаляет записи о незаконченных загрузках
+ * @param  {Object} uploads Объекты загрузок
+ * @param  {String} id      Код 1С товара
+ */
 export function deleteUnfinishedUploads(uploads, id){
   return dispatch=>{
     let deleteStack = [];
@@ -285,11 +362,16 @@ export function deleteUnfinishedUploads(uploads, id){
   }
 }
 
+/**
+ * Устанавливает значение переменной localstorage по ключу
+ * @param {String} key   Ключ параметра
+ * @param {String} value Новое значение
+ */
 export function setLocalValue(key,value){
   return dispatch=>{
     if(typeof value !== "undefined" && value !== null){
       LocalStorageService.set(key,value);
-      dispatch({
+      return dispatch({
         type:LOCAL_STORAGE_VALUE_SET,
         payload:{key,value}
       });
@@ -297,39 +379,56 @@ export function setLocalValue(key,value){
   }
 }
 
+/**
+ * Добавляет значение к массиву localstorage по ключу
+ * @param {String} key   Ключ параметра
+ * @param {String} add Новое значение
+ */
 export function addToLocalValue(key,add){
   return dispatch=>{
     LocalStorageService.addTo(key,add);
     let value = LocalStorageService.getList(key);
-    dispatch({
+    return dispatch({
       type:LOCAL_STORAGE_VALUE_SET,
       payload:{key,value}
     });
   }
 }
 
+/**
+ * Удаляет значение из массива localstorage по ключу
+ * @param {String} key   Ключ параметра
+ * @param {String} remove Новое значение
+ */
 export function spliceFromLocalValue(key,remove){
   return dispatch=>{
     LocalStorageService.removeFrom(key,remove);
     let value = LocalStorageService.getList(key);
-    dispatch({
+    return dispatch({
       type:LOCAL_STORAGE_VALUE_SET,
       payload:{key,value}
     });
   }
 }
 
+/**
+ * Сбравывает список файлов для скачивания в localStorage
+ */
 export function clearDownloads(){
   return dispatch=>{
     LocalStorageService.set("pending_downloads", "");
     let value = LocalStorageService.getList("pending_downloads");
-    dispatch({
+    return dispatch({
       type:LOCAL_STORAGE_VALUE_SET,
       payload:{key:"pending_downloads",value}
     });
   }
 }
 
+/**
+ * Получает значение переменной localStorage, либо всех переменных localStorage, если ключ не указан
+ * @param  {String} [key=null] Ключ переменной
+ */
 export function getLocalStorage(key = null){
   return dispatch=>{
     const data = LocalStorageService.get(key);
@@ -340,18 +439,29 @@ export function getLocalStorage(key = null){
   }
 }
 
+/**
+ * Выбирает тип предсавления для элементов списка загрузок и существующих ресурсов
+ * @param  {Number} [id=1] id типа представления
+ */
 export function chooseListViewType(id=1){
   return dispatch=>{
     return dispatch(setLocalValue('list_view_type', id));
   }
 }
 
+/**
+ * Выбирает тип предсавления для браузера каталога
+ * @param  {Number} [id=1] id типа представления
+ */
 export function chooseCatalogueViewType(id=1){
   return dispatch=>{
     return dispatch(setLocalValue('catalogue_view', id));
   }
 }
 
+/**
+ * Удаляет из памяти товары, для которых нет активных и незаконченных загрузок
+ */
 export function purgeEmptyItems(){
   return {
       type:PURGE_EMPTY_ITEMS,
@@ -359,6 +469,9 @@ export function purgeEmptyItems(){
     };
 }
 
+/**
+ * Запрашивает информацию о текущем пользователе
+ */
 export function getUserInfo(){
   return dispatch=>{
     return fetch("/account/getinfo/", {method:"GET"})
@@ -377,9 +490,13 @@ export function getUserInfo(){
   }
 }
 
+/**
+ * Получает данные одного товара по коду 1С
+ * @param  {String} id Код 1С товара
+ */
 export function fetchItemData(id){
   return dispatch=>{
-    fetch("/catalogue/node/item/"+id, {method:"GET"})
+    return fetch("/catalogue/node/item/"+id, {method:"GET"})
     .then((response)=>response.json())
     .then((response)=>{
       dispatch({
@@ -395,12 +512,20 @@ export function fetchItemData(id){
   }
 }
 
+/**
+ * Добавляет ресурс к списку для скачивания
+ * @param {Number} id Id ресурса
+ */
 export function addResourceToDownloads(id){
   return dispatch=>{
-    dispatch(addToLocalValue('pending_downloads',id));
+    return dispatch(addToLocalValue('pending_downloads',id));
   }
 }
 
+/**
+ * Обновляет поле тип/приоритет ресурса
+ * @param  {Object} params Данные для обновления
+ */
 export function updateResourceField(params){
   return dispatch=>{
     let fetchBody = {
@@ -408,22 +533,31 @@ export function updateResourceField(params){
       type:params.file.type
     };
     fetchBody[params.key] = params.value;
-    fetch(window.config.resource_url+params.file.id, {method:"PATCH", body:JSON.stringify(fetchBody)}).then(response=>{
+    return fetch(utility.config.resource_url+params.file.id, {method:"PATCH", body:JSON.stringify(fetchBody)}).then(response=>{
       dispatch(fetchExisting(params.item));
     });
   }
 }
 
+/**
+ * Отправляет на сервер запрос на поиск товаров
+ * @param  {ItemQueryObject} query Объект поиска
+ */
 export function searchItems(query){
   return dispatch=>{
     let qo = new ItemQueryObject();
     Object.keys(query).forEach(key=>{
       qo[key]=query[key];
     });
-    dispatch(fetchItems(qo));
+    return dispatch(fetchItems(qo));
   }
 }
 
+/**
+ * Устанавливает значение массива разделов каталога для создания хлебных крошек к текущему разделу
+ * @param  {Object[]} data Данные каталога
+ * @param  {String} node Код 1С текущего раздела
+ */
 export function pushCrumbs(data, node){
     let crumbs = CatalogueService.getCrumbs(data,node);
     return {
@@ -432,8 +566,12 @@ export function pushCrumbs(data, node){
     };
 }
 
+/**
+ * Удаляет файл из списка для скачивания
+ * @param  {Number} id Id файла
+ */
 export function removeDownload(id){
   return dispatch=>{
-    dispatch(spliceFromLocalValue("pending_downloads", id))
+    return dispatch(spliceFromLocalValue("pending_downloads", id))
   }
 }

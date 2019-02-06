@@ -1,5 +1,4 @@
 import React from 'react';
-// import $ from 'jquery';
 import { hex_md5 } from '../../vendor/md5';
 import UnfinishedUploads from './UnfinishedUploads';
 import { UploadService } from '../services/UploadService';
@@ -14,11 +13,8 @@ import {prepareFileForUpload, deleteUpload, completeUpload, deleteUnfinishedUplo
 export class Uploads extends React.Component{
   /**
    * Конструктор компонента
-   * uploads - Список активных загрузок
    * busy - Идет ли в данный момент загрузка файлов на сервер
    * loading - Находится ли компонент в состоянии ожидания
-   * need_refresh - Нуждается ли компонент в обновлении
-   * unfinished_need_refresh - Нуждается ли список незавершенных загрузок в обновлении
    */
   constructor(props) {
     super(props);
@@ -59,6 +55,7 @@ export class Uploads extends React.Component{
    * Определяет действия по событиям из resumable
    */
   assignResumableEvents=()=>{
+    if(!this.props.resumable){return null}
     this.props.resumable.on('fileAdded', (file, event)=>{
       this.props.prepareFileForUpload(file,this.props.uploads,this.props.item);
       $("#drop_target" + this.props.item.id).removeClass('file-list__drop-target--active');
@@ -87,6 +84,7 @@ export class Uploads extends React.Component{
    * Определяет drag&drop зону и кнопку для выбора файлов в файловой системе, вызывает запуск функции, которая определяет события resumable
    */
   componentDidMount(){
+    if(!this.props.item||!this.props.resumable){return null}
     this.props.resumable.assignBrowse(document.getElementById("browse" + this.props.item.id));
     this.props.resumable.assignDrop(document.getElementById("drop_target" + this.props.item.id));
     var dragTimer;
@@ -110,6 +108,9 @@ export class Uploads extends React.Component{
   }
 
   render() {
+
+    if(!this.props.item||!this.props.resumable){return null}
+
     let uploadsMarkup = [];
     for(let i = 0; i< this.props.uploads.length; i++){
       let status = "";

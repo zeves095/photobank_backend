@@ -79,7 +79,9 @@ class UploadController extends AbstractController
         'max_main_resources' => $container->getParameter('max_main_resources'),
         'max_additional_resources' => $container->getParameter('max_additional_resources'),
         'presets' => $container->getParameter('presets'),
-        'upload_url' => $container->getParameter('upload_url')
+        'upload_url' => $container->getParameter('upload_url'),
+        'user_get_url' => $container->getParameter('user_get_url'),
+        'user_set_url' => $container->getParameter('user_set_url')
       );
       $response = new JsonResponse();
       $response->setData($config);

@@ -33,12 +33,8 @@ export class LinkManager extends React.Component{
 
         </div>
         <div className="flex-wrapper">
-          {/*<div className="link-list">*/}
             <LinkList />
-          {/*</div>*/}
-          {/*<div className="link-adder">*/}
             <LinkAdder />
-          {/*</div>*/}
         </div>
       </div>
     )

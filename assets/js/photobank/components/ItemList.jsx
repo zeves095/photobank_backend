@@ -15,14 +15,7 @@ import selectors from '../selectors';
 export class ItemList extends React.Component{
   /**
    * Конструктор компонента
-   * node - текущий выбранный раздел каталога
-   * node_items - Список товаров для текущего раздела каталога
-   * node_items_filtered - Отфильтрованный список товаров текущего раздела каталога
    * filter_query - Строка для фильтрации товаров
-   * current_item - Выбранный товар
-   * previtem_id - Идентификатор предудущего товара
-   * loading - Находится ли компонент в состоянии ожидания
-   * need_refresh - Нуждается ли компонент в обновлении
    */
   constructor(props) {
     super(props);
@@ -33,12 +26,16 @@ export class ItemList extends React.Component{
 
   /**
    * Обработчик клика по товару из списка
-   * @param  {Event} e Событие клика
+   * @param  {String} itemId Код 1С товара
    */
   itemClickHandler=(itemId)=>{
     this.props.chooseItem(itemId);
   }
 
+  /**
+   * Обработчик установки строки фильтрации
+   * @param  {String} filter_query Строка фильтрации
+   */
   filterQueryHandler =(filter_query)=>{
     this.setState({
       filter_query

@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import selectors from '../selectors';
 import {ResourceService,NotificationService} from '../services';
 import {addResourceToDownloads, updateResourceField} from '../actionCreator';
+import utility from '../services/UtilityService';
 
 export class ExistingResource extends React.Component {
 
@@ -16,6 +17,7 @@ export class ExistingResource extends React.Component {
 
   /**
    * Обработчик копирования ссылки для авторизованных пользователей в буфер обмена
+   * @param {Number} id Id файла
    * @param  {Event} e Событие клика
    */
   handleCopyToClipboard = (id, e)=>{
@@ -27,6 +29,7 @@ export class ExistingResource extends React.Component {
 
   /**
    * Обработчик открытия изображения в новой вкладке
+   * @param {Number} id Id файла
    * @param  {Event} e Событие клика
    */
   handleOpenInTab = (id, e)=>{
@@ -37,6 +40,7 @@ export class ExistingResource extends React.Component {
 
   /**
    * Обработчик скачивания изображения ресурса
+   * @param {Number} id Id файла
    * @param  {[type]} e Событие клика
    */
   handleDownloadResource = (id, e)=>{
@@ -47,6 +51,7 @@ export class ExistingResource extends React.Component {
 
   /**
    * Обработчик добавления изображения в очередь загрузок
+   * @param {Number} id Id файла
    * @param  {[type]} e Событие клика
    */
   handleAddToDownloads = (id, e)=>{
@@ -70,6 +75,10 @@ export class ExistingResource extends React.Component {
     });
   }
 
+  /**
+   * Обработчик установки типа ресурса для файла
+   * @param  {Event} e Событие клика
+   */
   handleTypeUpdate = (e)=>{
     let type = e.target.value;
     this.props.updateResourceField({
@@ -80,6 +89,10 @@ export class ExistingResource extends React.Component {
     });
   }
 
+  /**
+   * Обработчик установки приоритета 1C дополнительного ресурса
+   * @param  {Event} e Событие клика
+   */
   handlePriorityUpdate = (priority)=>{
     this.props.updateResourceField({
       file:this.props.file,
@@ -91,10 +104,12 @@ export class ExistingResource extends React.Component {
 
   render() {
 
+    if(!this.props.file){return null}
+
     let presets = [];
 
-    for(let preset in window.config['presets']){
-      let presetId = window.config['presets'][preset]['id'];
+    for(let preset in utility.config['presets']){
+      let presetId = utility.config['presets'][preset]['id'];
       let finished = this.props.finished_presets.find(finished=>finished.resource===this.props.file.id&&finished.preset===presetId);
       presets.push(
         <span key={this.props.file.id+"-"+presetId} className={"info__info-field info__info-field--preset "+finished?"info__info-field--preset-done":"info__info-field--preset-not-done"}>
@@ -106,7 +121,7 @@ export class ExistingResource extends React.Component {
             <i onClick={(e)=>{this.handleDownloadResource(finished.id, e)}} title="Скачать файл" data-resource={finished.id} className="fas fa-arrow-alt-circle-down dl-now"></i>
           <i onClick={(e)=>{this.handleAddToDownloads(finished.id, e)}} title="Добавить в загрузки" data-resource={finished.id} className="fas fa-plus-circle dl-cart-add"></i>
               </span>
-              <a href={window.config['resource_url']+finished.id+".jpg"} target="_blank">{window.config['presets'][preset]['width']+'/'+window.config['presets'][preset]['height']}</a>
+              <a href={utility.config['resource_url']+finished.id+".jpg"} target="_blank">{utility.config['presets'][preset]['width']+'/'+utility.config['presets'][preset]['height']}</a>
             </span>
             :"Не обработан"
           }
@@ -133,7 +148,7 @@ export class ExistingResource extends React.Component {
     }
 
     return ((<div className={"existing-files__file file " + this.fileViewClasses[this.props.view]} key={this.props.file.src_filename + this.props.file.filename}>
-      <a className="file__file-name" href={window.config.resource_url + this.props.file.id + ".jpg"} target="_blank">
+      <a className="file__file-name" href={utility.config.resource_url + this.props.file.id + ".jpg"} target="_blank">
         <div className="file__thumbnail" style={{"backgroundImage" : "url(" + (this.props.finished_presets.length?this.props.finished_presets[0].link:"") + ")"}}></div>
         {this.props.view != 2 ? dlControls : null}
         {this.props.file.src_filename}
@@ -155,7 +170,7 @@ export class ExistingResource extends React.Component {
       <span className="info__info-field info-field info__info-field--username">{this.props.file.username}</span>
       <span className="info__info-field info-field info__info-field--comment">{this.props.file.comment}</span>
       <span className="info__info-field info-field info__info-field--sizepx">
-        <a className="file__file-src" href={window.config.resource_url + this.props.file.id + ".jpg"} target="_blank">
+        <a className="file__file-src" href={utility.config.resource_url + this.props.file.id + ".jpg"} target="_blank">
           {dlControls}
           {this.props.file.size_px}
         </a>

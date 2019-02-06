@@ -10,21 +10,19 @@ import {connect} from 'react-redux';
 import {fetchExisting, fetchPresets} from '../actionCreator';
 import selectors from '../selectors';
 
+import utility from '../services/UtilityService';
 /**
  * Компонент интерфейса для отображения существующих ресурсов для товара
  */
 export class ExistingResources extends React.Component{
   /**
    * Конструктор компонента
-   * existing - Массив существующих ресурсов товара
    * view_type - Текущий тип отображения
-   * finished_presets - Массив обработаных пресетов ресурса
    * loading - Находится ли компонент в состоянии ожидания
    * pagination_start - Индекс первого элемента для пагинации
    * pagination_end - Индекс последнего элемента для пагинации
    * pagination_current_page - Номер текущей страницы пагинации
    * pagination_total_pages - Общее количество страниц пагинации
-   * priority_active - Индекс ресурса, для которого в данный момент нужно отобразить окно выбора приоритета
    */
   constructor(props) {
     super(props);
@@ -39,7 +37,6 @@ export class ExistingResources extends React.Component{
     };
     this.containerViewClasses = ['item-view__inner--icons-lg ','item-view__inner--icons-sm ','item-view__inner--detailed '];
     this.paginationControls = "";
-
   }
 
   /**
@@ -104,13 +101,10 @@ export class ExistingResources extends React.Component{
    */
   componentDidMount(){
     let presets = [];
-    for(var preset in window.config['presets']){
+    for(var preset in utility.config['presets']){
       presets.push(<span key={"preset"+preset} className="info__info-field info__info-field--title info__info-field--preset">{preset}</span>);
     }
     this.preset_headers = presets;
-    $(document).on("keyup.pagination", (e)=>{
-      this.handlePagination(e);
-    });
     this.props.fetchExisting(this.props.item_id);
     this.setState({
       "pagination_limit": LocalStorageService.get("pagination_limit"),
@@ -141,10 +135,6 @@ export class ExistingResources extends React.Component{
         "pagination_current_page": Math.floor(this.state.pagination_start/this.state.pagination_limit)+1,
       });
     }
-  }
-
-  componentWillUnmount(){
-    $(document).off(".pagination");
   }
 
   render() {

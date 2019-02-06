@@ -1,5 +1,4 @@
 import React from 'react';
-// import $ from 'jquery';
 
 import ItemSection from './ItemSection';
 import { ListFilter } from './ListFilter';
@@ -18,11 +17,6 @@ export class UploadPool extends React.Component{
 
   /**
    * Конструктор компонента
-   * resumable_container - Объект, содержащий в себе инстансы resumable.js для всех товаров с активными и незаконченными загрузками
-   * item_list - Список идентификаторов товаров с активными и незаконченными загрузками
-   * item_list_filtered - Отфильтрованный список идентификаторов товаров с активными и незаконченными загрузками
-   * view_type - Тип отображения элементов списка
-   * filter_query - Строка фильтрации
    * collapse_all - Нужно ли свернуть все секции товаров в очереди
    */
   constructor(props){
@@ -41,7 +35,7 @@ export class UploadPool extends React.Component{
 
   /**
    * Обработчик выбора типа представления для элементов списка
-   * @param  {Event} e Событие клика
+   * @param  {Number} type Тип представления
    */
    handleViewChoice =(type)=>{
      this.props.chooseListViewType(type);
@@ -62,8 +56,7 @@ export class UploadPool extends React.Component{
       <div key={"pool-item" + item.id}>
         <ItemSection item_id={item.id} open_by_default={!this.state.collapse_all} render_existing={false}/>
       </div>
-    )}
-    );
+    )});
     return(
       <div className="upload-pool">
         <button type="button" className={"view-button"+(this.props.view==="0"?" view-button--active":"")} onClick={()=>{this.handleViewChoice("0")}}><i className="fas fa-th-large"></i></button>

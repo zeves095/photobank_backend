@@ -1,17 +1,8 @@
-import {UploadService} from './UploadService';
-import {CatalogueService} from './CatalogueService';
-import {ItemService} from './ItemService';
-import {LocalStorageService} from './LocalStorageService';
-import {UtilityService} from './UtilityService';
-import {ItemQueryObject} from './ItemQueryObject';
-import {NotificationService} from '../../services/NotificationService';
-import {ResourceService} from '../../services/ResourceService';
-
-export {UploadService};
-export {CatalogueService};
-export {ItemService};
-export {LocalStorageService};
-export {UtilityService};
-export {ItemQueryObject};
-export {NotificationService};
-export {ResourceService};
+export {UploadService} from './UploadService';
+export {CatalogueService} from './CatalogueService';
+export {ItemService} from './ItemService';
+export {LocalStorageService} from './LocalStorageService';
+export {UtilityService} from './UtilityService';
+export {ItemQueryObject} from './ItemQueryObject';
+export {NotificationService} from '../../services/NotificationService';
+export {ResourceService} from '../../services/ResourceService';
