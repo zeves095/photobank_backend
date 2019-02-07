@@ -178,7 +178,7 @@ typescript. С другой стороны популярная библиоте
 
 ### Конфигурация
 
-Для работы react-приложения необходимо получить на frontend глобальный объект конфигурации. Сериализованная строка с полями конфигурации пишется в data-config аргумент элемента, в который react-dom рендерит компонент верхнего уровня и во время инициализации пишется в параметр глобального объекта window.
+Для работы react-приложения необходимо получить на frontend глобальный объект конфигурации. Конфигурация запрашивается с сервера и записывается в свойство статичного класса */assets/js/photobank/services/UtilityService.js*, после чего становится доступна во всех местах, где подключен класс.
 Необходимые поля:
 
  - */config/fileuploader.yaml*
@@ -367,7 +367,7 @@ ItemSection содержит в себе интерфейс загрузки(Upl
 
 #### Frontend
 
-Тестирование frontend реализовано через стек jest+enzyme. Команда для запуска тестов - *yarn jest*. Для работы jest с jsx-кодом и стандартами es2015 в .babelrc должны быть подключены плагины *babel-preset-react*, *babel-preset-es2015* и *babel-preset-stage-2*. Тесты реакт-компонентов и frontend-кода запускаются командой **yarn jest** из корневой директории. Shallow-тесты для компонентов находятся в директории *assets/js/tests/components*. Тесты для redux actionCreator и selectors находятся соответственно в диреториях *assets/js/tests/actionCreator* и *assets/js/tests/selectors*. 
+Тестирование frontend реализовано через стек jest+enzyme. Команда для запуска тестов - *yarn jest*. Для работы jest с jsx-кодом и стандартами es2015 в .babelrc должны быть подключены плагины *babel-preset-react*, *babel-preset-es2015* и *babel-preset-stage-2*. Тесты реакт-компонентов и frontend-кода запускаются командой **yarn jest** из корневой директории. Shallow-тесты для компонентов находятся в директории *assets/js/tests/components*. Тесты для redux actionCreator и selectors находятся соответственно в диреториях *assets/js/tests/actionCreator* и *assets/js/tests/selectors*.
 Mock-данные для props компонентов находятся в *assets/js/tests/mockdata*. Селекторы для поиска элементов на странице следует определять в *assets/js/tests/constants/index.js*.
 
 #### End-to-end
