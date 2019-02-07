@@ -3,6 +3,7 @@ import {Map, Set, List, Record} from 'immutable';
 import {
   EXISTING_RESOURCES_FETCH,
   EXISTING_PRESETS_FETCH,
+  DOWNLOAD_DATA_FETCH,
   START,
   SUCCESS,
   FAIL
@@ -17,6 +18,7 @@ import {
 let defaultState = Map({
   resources_existing: List([]),
   finished_presets: List([]),
+  downloads: List([]),
   fetching_presets: true,
   fetching_resources: true
 })
@@ -35,6 +37,9 @@ export default (resource = defaultState, action) => {
       break;
     case EXISTING_PRESETS_FETCH+SUCCESS:
       return resource.set('finished_presets',List(action.payload)).set('fetching_presets',false)
+      break;
+    case DOWNLOAD_DATA_FETCH+SUCCESS:
+      return resource.set('downloads',List(action.payload))
       break;
   }
   return resource

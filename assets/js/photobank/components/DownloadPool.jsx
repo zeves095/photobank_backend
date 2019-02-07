@@ -5,7 +5,7 @@ import {NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
 import selectors from '../selectors';
-import {removeDownload, clearDownloads} from '../actionCreator';
+import {removeDownload, clearDownloads, downloadResources, getDownloadResourceData} from '../actionCreator';
 
 import utility from '../services/UtilityService';
 
@@ -31,8 +31,7 @@ export class DownloadPool extends React.Component{
    * Обработчик начала загрузки файлов
    */
   handleDownload=()=>{
-    ResourceService.downloadResource(this.props.resources);
-    this.props.clearDownloads();
+    this.props.downloadResources(this.props.resources);
   }
 
   /**
@@ -44,45 +43,12 @@ export class DownloadPool extends React.Component{
   }
 
   componentDidMount(){
-    this.setState({
-      "loading": true
-    });
-    this.populateDownloads();
-  }
-
-  componentDidUpdate(prevProps){
-    if(prevProps != this.props){
-      this.populateDownloads();
-    }
-  }
-
-  /**
-   * Создает массив данных о загрузках для отображения
-   */
-  populateDownloads=()=>{
-    let downloads = [];
-    ResourceService.getResource(this.props.resources).then((res)=>{
-      for(var r in res){
-        if(res[r] == ""){continue;}
-        downloads.push({
-          "id": res[r].id,
-          "preset": Object.keys(utility.config["presets"])[res[r].preset],
-          "name": res[r].src_filename,
-          "sizepx": res[r].size_px
-        });
-      }
-      this.setState({
-        "downloads": downloads,
-        "loading":false
-      });
-    }).catch((error)=>{
-      NotificationService.throw(error);
-    });
+    this.props.getDownloadResourceData(this.props.resources);
   }
 
   render(){
-    if(this.state.downloads.length == 0){return "Нет загрузок"}
-    let downloads = this.state.downloads.map((download)=>{
+    if(this.props.downloads.length == 0){return "Нет загрузок"}
+    let downloads = this.props.downloads.map((download)=>{
       return(
         <div key={"dl"+download.id} className="pending-download">
           <div className="download-thumbnail" style={{"backgroundImage":"url("+ResourceService._getLinkById(download.id)+")"}}></div>
@@ -118,12 +84,15 @@ export class DownloadPool extends React.Component{
 const mapStateToProps = (state,props) =>{
   return {
     resources: selectors.localstorage.getPendingDownloads(state,props),
+    downloads: selectors.resource.getDownloadData(state,props),
   }
 }
 
 const mapDispatchToProps = {
   removeDownload,
-  clearDownloads
+  clearDownloads,
+  downloadResources,
+  getDownloadResourceData
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DownloadPool);

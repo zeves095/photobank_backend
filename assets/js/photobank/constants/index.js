@@ -1,4 +1,3 @@
-export * from './linkmanager';
 export * from './upload';
 
 export const NOTIFICATION_WRAPPER = "#notification-overlay";
