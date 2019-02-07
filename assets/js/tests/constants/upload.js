@@ -14,4 +14,5 @@ export const upload = {
   UNFINISHED_UPLOAD: '.file-list__file-item.file-item.file-item--unfinished',
   UPLOAD_POOL_WRAPPER: '.upload-pool',
   UPLOADS_WRAPPER: '.item-uploads',
+  DOWNLOAD_LIST_ITEM: '.pending-download',
 }
