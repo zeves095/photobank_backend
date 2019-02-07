@@ -33,6 +33,7 @@
         "white-october/pagerfanta-bundle": "^1.2"
     },
     "require-dev": {
+        "photobank/dev-console-commands-bundle": "dev-master",
         "symfony/debug-pack": "*",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "4.1.*",

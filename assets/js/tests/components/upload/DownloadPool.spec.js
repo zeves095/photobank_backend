@@ -53,11 +53,9 @@ Enzyme.configure({adapter: new Adapter()});
         expect(component.text()==="Нет загрузок").toBe(true);
       });
       it('Отображаются загрузки', ()=>{
-        console.log(ResourceService);
         const spy = jest.spyOn(ResourceService, '_getLinkById').mockImplementation(() => "link");
         const {component} = setup(resourcesProps);
         expect(component.find(selectors.upload.DOWNLOAD_LIST_ITEM)).toHaveLength(resourcesProps.downloads.length);
       });
     });
-  }, ()=>{
-    expect(component.text()==="Нет загрузок").toBe(true);});
+  });

@@ -15,4 +15,5 @@ return [
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Symfony\Bundle\WebServerBundle\WebServerBundle::class => ['dev' => true],
     PhotoBank\FileUploaderBundle\FileUploaderBundle::class => ['all' => true],
+    PhotoBank\DevConsoleCommandBundle\DevConsoleCommandBundle::class => ['dev' => true, 'test' => true],
 ];

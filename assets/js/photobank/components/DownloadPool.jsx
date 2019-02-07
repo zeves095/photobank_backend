@@ -46,6 +46,10 @@ export class DownloadPool extends React.Component{
     this.props.getDownloadResourceData(this.props.resources);
   }
 
+  componentDidUpdate(prevProps){
+    this.props.resources!==prevProps.resources&&this.props.getDownloadResourceData(this.props.resources);
+  }
+
   render(){
     if(this.props.downloads.length == 0){return "Нет загрузок"}
     let downloads = this.props.downloads.map((download)=>{

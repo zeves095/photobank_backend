@@ -104,6 +104,9 @@
     "pagerfanta/pagerfanta": {
         "version": "v2.0.1"
     },
+    "photobank/dev-console-commands-bundle": {
+        "version": "dev-master"
+    },
     "photobank/file-uploader-bundle": {
         "version": "dev-master"
     },
