@@ -9,6 +9,7 @@ export const resourceId = (store,props)=>props.file.id||null;
 export const itemId = (store,props)=>props.item_id||null;
 export const loadingResources = (store,props)=>store.resource.get('fetching_resources');
 export const loadingPresets = (store,props)=>store.resource.get('fetching_presets');
+export const downloads = (store,props)=>store.resource.get('downloads');
 
 export const getExisting = createSelector(existingResources,(existing)=>{
   existing = existing.sort((a,b)=>{
@@ -62,4 +63,8 @@ export const getLoadingResources = createSelector(loadingResources, (loading)=>{
 
 export const getLoadingPresets = createSelector(loadingPresets, (loading)=>{
   return loading;
+});
+
+export const getDownloadData = createSelector(downloads, (downloads)=>{
+  return downloads.toArray();
 });

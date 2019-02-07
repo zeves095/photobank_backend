@@ -21,6 +21,7 @@ import {
   ITEM_INFO_FETCH,
   CRUMBS_UPDATE,
   CONFIG_GET,
+  DOWNLOAD_DATA_FETCH,
   START,
   SUCCESS,
   FAIL,
@@ -573,5 +574,41 @@ export function pushCrumbs(data, node){
 export function removeDownload(id){
   return dispatch=>{
     return dispatch(spliceFromLocalValue("pending_downloads", id))
+  }
+}
+
+/**
+ *  Получает доп поля для скачиваемых ресурсов
+ *  @param {Number[]} resources Массив id ресурсов для скачивания
+ */
+export function getDownloadResourceData(resources){
+  return dispatch=>{
+    let downloads = [];
+    return ResourceService.getResource(resources).then((res)=>{
+      for(var r in res){
+        if(res[r] == ""){continue;}
+        downloads.push({
+          "id": res[r].id,
+          "preset": Object.keys(utility.config["presets"])[res[r].preset],
+          "name": res[r].src_filename,
+          "sizepx": res[r].size_px
+        });
+      }
+      dispatch({
+        type: DOWNLOAD_DATA_FETCH+SUCCESS,
+        payload: downloads
+      });
+    });
+  }
+}
+
+/**
+ *  Скачивает ресурсы из очереди
+ *  @param {Number[]} resources Массив id ресурсов для скачивания
+ */
+export function downloadResources(resources){
+  return dispatch=>{
+    ResourceService.downloadResource(resources);
+    dispatch(clearDownloads());
   }
 }
