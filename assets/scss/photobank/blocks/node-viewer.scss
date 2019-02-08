@@ -1,8 +1,8 @@
 .node-viewer {
   order: 2;
-  flex-grow: 1;
+  display: flex;
+  flex: 1 1 85%;
   height: 85vh;
-  width:85%;
   display: inline-block;
 
   .view-inner__container{
@@ -16,9 +16,8 @@
     &__item-list {
       overflow: hidden;
       min-width: 210px;
-      width:20%;
-      flex-grow: 0;
-      flex-shrink: 2;
+      display: flex;
+      flex: 1 1 20%;
       overflow: overlay;
       @include component-section();
       .list-item{
@@ -29,21 +28,32 @@
 
     &__item-section {
       overflow: hidden;
-      min-width: 440px;
-      width:80%;
-      flex-grow: 2;
-      flex-shrink: 1;
+      display: flex;
+      flex: 2 1 440px;
       //max-width: 60vw;
       overflow-x:hidden;
       overflow-y:overlay;
       @include component-section();
+      .node-viewer__component-title{
+        display: flex;
+        flex-wrap: wrap;
+        p{
+          margin:0 10px 0;
+        }
+        h2,.view-switcher-button-block{
+          flex: 0,0,220px;
+        }
+        i{
+          flex: 1 1 0;
+        }
+        .view-switcher-button-block{
+          margin:-10px 0;
+        }
+      }
     }
   }
 
   .view-switcher-button-block{
-    position: absolute;
-    top: 2px;
-    right: 0px;
     .item-section-switcher{
       @include button();
       margin: 0;

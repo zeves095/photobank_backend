@@ -180,7 +180,7 @@ export class ExistingResources extends React.Component{
 const mapStateToProps = (state,props) =>{
   return {
     existing: selectors.resource.getExisting(state,props),
-    loading: selectors.resource.getLoadingPresets(state,props)||selectors.resource.getLoadingResources(state,props),
+    loading: selectors.resource.getLoadingPresets(state,props)||false,
   }
 }
 

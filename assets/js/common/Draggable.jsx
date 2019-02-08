@@ -56,8 +56,8 @@ export class Draggable extends React.Component{
     this.state.boundrect = this.state.parent.get(0).getBoundingClientRect();
     let b1w = 100/(this.state.boundrect.width/(this.state.mouseX - this.state.boundrect.left));
     let b2w = 100-b1w;
-    this.state.box1.css('width', b1w+'%');
-    this.state.box2.css('width', b2w+'%');
+    this.state.box1.css('flex-basis', b1w+'%');
+    this.state.box2.css('flex-basis', b2w+'%');
   }
 
   componentDidMount(){

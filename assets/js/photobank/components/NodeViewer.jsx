@@ -75,11 +75,16 @@ export class NodeViewer extends React.Component{
           <ItemList />
           <Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />
           <div className="view-inner__item-section" key={this.props.current_item!=null?this.props.current_item.id:""}>
-            <span className="titlefix"><h2 className="node-viewer__component-title component-title">Файлы <i className="crumb-string">{this.props.crumbs}</i></h2></span>
-          <div className="view-switcher-button-block">
-            <button type="button" className="item-section-switcher" data-pool="1" onClick={this.handlePoolClick}>{this.state.view_pool==1?"К последнему товару":"Выгрузка"}</button>
-          {this.props.authorized?<button type="button" className="item-section-switcher" data-pool="2" onClick={this.handlePoolClick}>{this.state.view_pool==2?"К последнему товару":"Загрузка"}</button>:null}
-          </div>
+            <span className="titlefix">
+              <h2 className="node-viewer__component-title component-title">
+                <p>Файлы</p>
+                <i className="crumb-string">{this.props.crumbs}</i>
+                <div className="view-switcher-button-block">
+                  <button type="button" className="item-section-switcher" data-pool="1" onClick={this.handlePoolClick}>{this.state.view_pool==1?"К последнему товару":"Выгрузка"}</button>
+                  {this.props.authorized?<button type="button" className="item-section-switcher" data-pool="2" onClick={this.handlePoolClick}>{this.state.view_pool==2?"К последнему товару":"Загрузка"}</button>:null}
+                </div>
+              </h2>
+        </span>
           <div className="view-inner__container inner-bump">
             {section}
           </div>
