@@ -259,6 +259,32 @@ class ResourceController extends AbstractController
      }
 
      /**
+      * Получает массив всех обработанных пресетов для списка ресурсов
+      *
+      * @param int[] $resources Идентификатор ресурса
+      * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+      * @param ResourceService $resourceService Сервис для работы с сущностями типа "Resource"
+      *
+      * @Route(
+      *      "/catalogue/node/item/resources/presets/",
+      *      methods={"POST"},
+      *      name="catalogue_node_item_resources_presets",
+      * )
+      */
+      public function bulkGetAllPresets(Request $request, AppSerializer $serializer, ResourceService $resourceService)
+      {
+        $data = json_decode(
+            $request->getContent(),
+            true
+        );
+        $presets = $resourceService->bulkGetAllPresets($data);
+
+        $response = new JsonResponse();
+        $response->setData($presets);
+        return $response;
+      }
+
+     /**
       * Получает нормализованный объект с информацией о ресурсе, который является пресетом 1(thumbnail) по идентификатору группы ресурсов
       *
       * @param int $gid Идентификатор группы ресурсов
