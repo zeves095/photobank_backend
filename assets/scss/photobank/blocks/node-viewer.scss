@@ -29,6 +29,7 @@
     &__item-section {
       overflow: hidden;
       display: flex;
+      min-width: 440px;
       flex: 2 1 440px;
       //max-width: 60vw;
       overflow-x:hidden;
