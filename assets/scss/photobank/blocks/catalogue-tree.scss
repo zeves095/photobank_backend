@@ -1,10 +1,9 @@
 .catalogue-tree {
   min-width: 200px;
   max-width: 60vw;
-  width:15%;
+  display: flex;
+  flex: 0 1 15%;
   order: 1;
-  flex-grow: 0;
-  flex-shrink: 1;
   height: 100vh;
   display: inline-block;
   overflow: overlay;

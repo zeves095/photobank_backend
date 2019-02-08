@@ -9,10 +9,7 @@ body {
     transition: 0.3s;
   }
   .photobank-main div{
-    transition: 0.2s;
-  }
-  .catalogue-tree, .node-viewer, .view-inner__item-list, .view-inner__item-section{
-    transition: 0s;
+    transition: 0.2s, flex-basis 0s;  
   }
 
   .photobank-main input[type="checkbox"]{
