@@ -31,68 +31,14 @@ class ResourceService{
    */
   static fetchExistingPresets(pagination, existing){
     let presets = [];
-    return new Promise((resolve,reject)=>{
-      if(existing.length==0){resolve([])}
-      let presetIterable = [];
-      for(var i = pagination.start; i<pagination.end; i++){
-        if(typeof existing[i] != "undefined"){
-          presetIterable.push(this._getFinishedPresets(existing[i]));
-        }
-      }
-      Promise.all(presetIterable).then((data)=>{
-        for(var item in data){
-          if(data[item]!=null){
-            presets = presets.concat(data[item]);
-          }
-        }
-        resolve(presets);
-      }).catch((e)=>{
-        reject(e);
-      });
-    });
-  }
-
-  /**
-   * Запрашивает обработанные пресеты с сервера для одного ресурса
-   * @param  {Object[]} existing        Список существующих ресурсов товара
-   */
-  static _getFinishedPresets(existing){
-    let presetItems = [];
-    let presets = [];
-    return new Promise((resolve, reject)=>{
-      if(typeof existing == 'undefined'){resolve(null)}
-      for(var preset in utility.config['presets']){
-
-        let presetId = utility.config['presets'][preset]['id'];
-        let resId = existing.id;
-        let url = utility.config.resource_url + existing.id + "/" + presetId;
-        presetItems.push(new Promise((resolvePreset,rejectPreset)=>{
-          fetch(url, {method: 'GET'})
-          .then(response=>response.json())
-          .then((data)=>{
-            if(typeof data.id != "undefined"){
-              resolvePreset({
-                'id': data.id,
-                'resource' : data.gid,
-                'preset' : data.preset
-              });
-            }else{
-              resolvePreset(null);
-            }
-          }).catch((e)=>{
-            console.log(e);
-            reject("request-failed");
-          });
-        }))
-      }
-      Promise.all(presetItems).then((result)=>{
-        for(var i = 0; i<result.length; i++){
-          if(result[i] !=  null){
-            presets.push(result[i]);
-          }
-        }
-        resolve(presets);
-      });
+    let resources = existing.slice(pagination.start, pagination.end).map(res=>res.id);
+    return fetch("/catalogue/node/item/resources/presets/", {method: 'POST',body:JSON.stringify(resources)})
+    .then(response=>response.json())
+    .then((data)=>{
+      return data;
+    }).catch((e)=>{
+      console.log(e);
+      reject("request-failed");
     });
   }
 
