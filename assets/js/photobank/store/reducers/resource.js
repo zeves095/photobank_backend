@@ -19,7 +19,7 @@ let defaultState = Map({
   resources_existing: List([]),
   finished_presets: List([]),
   downloads: List([]),
-  fetching_presets: true,
+  fetching_presets: false,
   fetching_resources: true
 })
 
