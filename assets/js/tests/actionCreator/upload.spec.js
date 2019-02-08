@@ -6,6 +6,9 @@ import Enzyme, {shallow} from 'enzyme';
 import {mockUploadStore, mockUploadFetchResponse, mockConfig, LocalStorageMock} from '../mockdata/';
 import utility from '../../photobank/services/UtilityService';
 import {ItemQueryObject, UploadService, LocalStorageService, CatalogueService} from '../../photobank/services/';
+import FormData from 'formdata-node';
+
+global.FormData = FormData;
 
 import * as constants from '../../photobank/constants/';
 
@@ -246,18 +249,30 @@ describe('Actions', ()=>{
     let chosen_resources = resources.filter(resource=>resource.item===item.id);
     let pagination = {start:0, end:5};
 
-    let result = [];
+    let response = [].concat.apply([],resources.map(res=>{
+      return [
+        {
+          id:res.id,
+          resource:res.gid,
+          preset:1
+        },
+        {
+          id:res.id,
+          resource:res.gid,
+          preset:2
+        },
+        {
+          id:res.id,
+          resource:res.gid,
+          preset:3
+        },
+      ]
+    }));
 
-    for(let i = pagination.start; i<pagination.end; i++){
-      for(let j = 0; j<utility.config.presets.length; j++){
-        fetchMock.getOnce(utility.config.resource_url+resources[i]+"/"+j,{
-          body: JSON.stringify(resource[0]),
-          headers: { 'content-type': 'application/json' }
-        });
-        result.push({id:resource[0].id, resource:resource[0].gid, preset:resource[0].preset});
-      }
-    }
-
+    fetchMock.postOnce("/catalogue/node/item/resources/presets/", {
+      body: JSON.stringify(response),
+      headers: { 'content-type': 'application/json' }
+    });
 
     let expectedActions = [
       {
@@ -266,13 +281,13 @@ describe('Actions', ()=>{
       },
       {
         type:  constants.EXISTING_PRESETS_FETCH+constants.SUCCESS,
-        payload: result
+        payload: response
       },
     ];
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.fetchPresets(resources,pagination)).then(()=>{
+    return store.dispatch(actions.fetchPresets(pagination,resources)).then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
 
@@ -350,10 +365,13 @@ describe('Actions', ()=>{
     let unfinished = mockUploadStore.upload.uploads_unfinished;
     let upload = unfinished[0];
 
-    let hash = upload.filehash;
+    let hash = upload.file_hash;
     let item = upload.id;
 
-    fetchMock.postOnce(utility.config.remove_upload_url,200);
+    fetchMock.postOnce(utility.config.remove_upload_url,{
+      body: JSON.stringify(upload),
+      headers: { 'content-type': 'application/json' }
+    });
 
     let expectedActions = [
       {

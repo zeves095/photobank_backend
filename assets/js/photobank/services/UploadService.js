@@ -77,19 +77,15 @@ class UploadService{
    * @param  {String} itemId Код 1С товара
    */
   static deleteUpload(uniqueIdentifier, itemId){
-    return new Promise((resolve, reject)=>{
-      let obj = {
-        'filehash': uniqueIdentifier,
-        'itemid': itemId
-      }
-      let formData = new FormData();
-      for(let i = 0; i<Object.keys(obj).length; i++){
-        formData.set(Object.keys(obj)[i],obj[Object.keys(obj)[i]]);
-      }
-      fetch(utility.config.remove_upload_url, {method: 'POST', body:formData}).then(()=>{
-        resolve();
-      });
-    });
+    let obj = {
+      'filehash': uniqueIdentifier,
+      'itemid': itemId
+    }
+    let formData = new FormData();
+    for(let i = 0; i<Object.keys(obj).length; i++){
+      formData.set(Object.keys(obj)[i],obj[Object.keys(obj)[i]]);
+    }
+    return fetch(utility.config.remove_upload_url, {method: 'POST', body:formData});
   }
 
   /**
