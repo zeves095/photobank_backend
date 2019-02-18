@@ -1,5 +1,3 @@
-// TODO убрать джейквеееееееерииии
-import $ from 'jquery';
 import utility from './UtilityService';
 /**
  * Сервис для получения и обновления данных по структуре каталога

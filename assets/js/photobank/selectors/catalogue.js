@@ -10,12 +10,17 @@ export const resumableContainer = (store, props)=>store.upload.get('resumable_co
 export const fetchingCatalogue = (store, props)=>store.catalogue.get('fetching_catalogue');
 export const fetchingItems = (store, props)=>store.catalogue.get('fetching_items');
 export const breadcrumbs = (store, props)=>store.catalogue.get('crumbs');
+export const collectionType = (store, props)=>store.catalogue.get('collection_type');
+export const storedNodeId = (store, props)=>store.localstorage.get('current_node');
+export const storedDumpNodeId = (store, props)=>store.localstorage.get('current_dump_node');
 
-export const getCatalogueData = createSelector(catalogueData,(catalogue)=>{
-  return catalogue.toArray();
+export const getCatalogueData = createSelector(catalogueData, collectionType,(catalogue, type)=>{
+  const cat_data = catalogue.get(type);
+  return cat_data.toArray();
 });
 
-export const getCurrentNode = createSelector(currentNodeId,(node)=>{
+export const getCurrentNode = createSelector(currentNodeId, collectionType,(node, type)=>{
+  currentNodeId||;
   return node;
 });
 
@@ -53,4 +58,8 @@ export const getCrumbString = createSelector(breadcrumbs, (crumbs)=>{
     crumbArr = crumbArr.slice(0,1).push('...').concat(crumbArr.slice(-2));
   }
   return crumbArr.join("/")
+});
+
+export const getCollectionType = createSelector(collectionType, (type)=>{
+  return type;
 });

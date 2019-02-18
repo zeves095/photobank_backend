@@ -9,7 +9,7 @@ import {NotificationService} from '../../services/NotificationService';
 
 import {connect} from 'react-redux';
 import selectors from '../selectors';
-import {fetchRootNodes, fetchNodes, chooseNode, chooseCatalogueViewType, pushCrumbs} from '../actionCreator';
+import {chooseNode, chooseCatalogueViewType, pushCrumbs, chooseCollectionType} from '../actionCreator';
 /**
  * [state description]
  * @type {Object}
@@ -31,7 +31,7 @@ export class CatalogueTree extends React.Component {
    * Обработчик выбора активного раздела каталога
    */
   handleNodeChoice = (id)=>{
-    this.props.chooseNode(id, this.props.catalogue_data);
+    this.props.chooseNode(id, this.props.catalogue_data, this.props.collection_type);
   }
 
   /**
@@ -45,15 +45,18 @@ export class CatalogueTree extends React.Component {
     if((this.props.current_node !== prevProps.current_node || this.props.catalogue_data !== prevProps.catalogue_data)&&this.props.catalogue_data.length){
       this.props.pushCrumbs(this.props.catalogue_data, this.props.current_node);
     }
+    if(this.props.collection_type !== prevProps.collection_type){
+      this.props.chooseNode(this.props.current_node, this.props.catalogue_data, this.props.collection_type);
+    }
   }
 
   /**
    * Обработчик выбора типа предаставления
-   * @param  {Number} type Тип представления
+   * @param {Number} type Тип представления
    */
   handleViewChoice = (type)=>{
     if(type==3){
-      this.props.chooseNode(null, this.props.catalogue_data);
+      this.props.chooseNode(null, this.props.catalogue_data, this.props.collection_type);
     }
     this.props.chooseCatalogueViewType(type);
   }
@@ -64,7 +67,7 @@ export class CatalogueTree extends React.Component {
   traverseUp = ()=>{
     let curNode = this.props.catalogue_data.filter((node)=>{return parseInt(node.id)==parseInt(this.props.current_node)})[0];
     if(typeof curNode!= "undefined"){
-      this.props.chooseNode(curNode.parent, this.props.catalogue_data);
+      this.props.chooseNode(curNode.parent, this.props.catalogue_data, this.props.collection_type);
     }
   }
 
@@ -73,7 +76,7 @@ export class CatalogueTree extends React.Component {
     let viewClass = "";
     switch(this.props.view){
       case "1":
-        let children = CatalogueService.fetchLevel(this.props.catalogue_data, this.props.current_node)
+        let children = this.props.catalogue_data.filter(node=>node.parent===this.props.current_node);
         let list = [];
         if(this.props.current_node!==null){list.push(<div onClick={this.traverseUp} className="list-view__cat_item list-view__cat_item--parent">../</div>);}
         for(var i = 0; i< children.length; i++){
@@ -101,7 +104,14 @@ export class CatalogueTree extends React.Component {
 
     return (
       <div className={"catalogue-tree"}>
-        <span className="titlefix"><h2 className="catalogue-tree__component-title component-title">Каталог<span className="component-title__view-icons"><i className="fas fa-sitemap" title="Дерево" data-view="2" onClick={()=>{this.handleViewChoice("2")}}></i><i className="fas fa-list" title="Список" data-view="1" onClick={()=>{this.handleViewChoice("1")}}></i><i title="Поиск" data-view="3" onClick={()=>{this.handleViewChoice("3")}} className="fas fa-search"></i></span></h2></span>
+        <span className="titlefix"><h2 className="catalogue-tree__component-title component-title">
+          Каталог
+          <span className="component-title__view-icons"><i className="fas fa-sitemap" title="Дерево" data-view="2" onClick={()=>{this.handleViewChoice("2")}}></i><i className="fas fa-list" title="Список" data-view="1" onClick={()=>{this.handleViewChoice("1")}}></i><i title="Поиск" data-view="3" onClick={()=>{this.handleViewChoice("3")}} className="fas fa-search"></i></span></h2>
+        <div className="collection-tabs">
+          <span className={"collection-tabs__tab" + (this.props.collection_type==0?" active":"")} onClick={()=>{this.props.chooseCollectionType(0)}}>Товары</span>
+        <span className={"collection-tabs__tab" + (this.props.collection_type==1?" active":"")} onClick={()=>{this.props.chooseCollectionType(1)}}>Свалка</span>
+        </div>
+      </span>
       <div className="inner-bump">
           <div className="catalogue-tree__crumbs crumbs">
             {this.props.view==1?crumbs:null}
@@ -119,6 +129,7 @@ export class CatalogueTree extends React.Component {
 
 const mapStateToProps = (state,props) =>{
   return {
+    collection_type: selectors.catalogue.getCollectionType(state,props),
     catalogue_data: selectors.catalogue.getCatalogueData(state,props),
     current_node: selectors.catalogue.getCurrentNode(state,props)||selectors.localstorage.getStoredNode(state,props),
     view: selectors.localstorage.getStoredCatalogueViewtype(state,props),
@@ -128,11 +139,10 @@ const mapStateToProps = (state,props) =>{
 }
 
 const mapDispatchToProps = {
-  fetchRootNodes,
-  fetchNodes,
   chooseNode,
   chooseCatalogueViewType,
-  pushCrumbs
+  pushCrumbs,
+  chooseCollectionType
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogueTree);

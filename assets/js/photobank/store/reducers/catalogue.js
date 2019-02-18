@@ -8,6 +8,7 @@ import {
   ITEM_CHOICE,
   ITEMS_FETCH,
   CRUMBS_UPDATE,
+  CHOOSE_COLLECTION,
   START,
   SUCCESS,
   FAIL
@@ -20,7 +21,8 @@ import {
 
 
 let defaultState = Map({
-  catalogue_data: List([]),
+  collection_type: 0,
+  catalogue_data: List([List([]),List([])]),
   items: List([]),
   current_node: null,
   current_item: null,
@@ -39,7 +41,9 @@ export default (catalogue = defaultState, action) => {
     }
     case CATALOGUE_ROOT_NODES_FETCH+SUCCESS:{
       const root_nodes = List(action.payload);
-      return catalogue.set('fetching_catalogue',false).set('catalogue_data',root_nodes);
+      let cat_data = catalogue.get('catalogue_data');
+      cat_data = cat_data.set(catalogue.get('collection_type'), root_nodes);
+      return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
       break;
     }
     case CATALOGUE_DATA_FETCH+START:{
@@ -48,14 +52,15 @@ export default (catalogue = defaultState, action) => {
     }
     case CATALOGUE_DATA_FETCH+SUCCESS:{
       let fetched_data = List(action.payload);
-      let fetchCatalogueData = catalogue.get('catalogue_data');
-      //let newData = existingCatalogueData.concat(fetched_data));
+      let cat_data = catalogue.get('catalogue_data');
+      let fetchCatalogueData = cat_data.get(catalogue.get('collection_type'));
       fetched_data.forEach((node)=>{
         if(!fetchCatalogueData.find((existing)=>node.id===existing.id)){
           fetchCatalogueData = fetchCatalogueData.push(node);
         }
       });
-      return catalogue.set('fetching_catalogue',false).set('catalogue_data',fetchCatalogueData);
+      cat_data = cat_data.set(catalogue.get('collection_type'), fetchCatalogueData);
+      return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
       break;
     }
     case NODE_CHOICE:{
@@ -88,6 +93,10 @@ export default (catalogue = defaultState, action) => {
     case CRUMBS_UPDATE:{
       let crumbs = action.payload;
       return catalogue.set('crumbs', crumbs);
+      break;
+    }
+    case CHOOSE_COLLECTION:{
+      return catalogue.set('collection_type', action.payload);
       break;
     }
   }
