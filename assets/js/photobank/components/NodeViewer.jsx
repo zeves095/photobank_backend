@@ -72,8 +72,8 @@ export class NodeViewer extends React.Component{
 
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
-          <ItemList />
-          <Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />
+          {this.props.collection_type==0?<ItemList />:null}
+          {this.props.collection_type==0?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
           <div className="view-inner__item-section" key={this.props.current_item!=null?this.props.current_item.id:""}>
             <span className="titlefix">
               <h2 className="node-viewer__component-title component-title">
@@ -97,12 +97,11 @@ export class NodeViewer extends React.Component{
 
 const mapStateToProps = (state,props) =>{
   return {
-    node: state.catalogue.current_node,
-    item_query_object: state.catalogue.item_query_object,
     current_item: selectors.catalogue.getItemObject(state,props)||selectors.localstorage.getStoredItem(state,props),
     stored_item_id: selectors.localstorage.getStoredItemId(state,props),
     crumbs: selectors.catalogue.getCrumbString(state,props),
-    authorized: selectors.user.getAuthorized(state,props)
+    authorized: selectors.user.getAuthorized(state,props),
+    collection_type: selectors.catalogue.getCollectionType(state,props),
   }
 }
 

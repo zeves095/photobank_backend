@@ -22,6 +22,7 @@ import {
   CRUMBS_UPDATE,
   CONFIG_GET,
   DOWNLOAD_DATA_FETCH,
+  CHOOSE_COLLECTION,
   START,
   SUCCESS,
   FAIL,
@@ -151,19 +152,21 @@ export function fetchNodes(id, data){
 }
 
 /**
- * Выбирает кативный раздел каталога
+ * Выбирает активный раздел каталога
  * @param  {String} id   Код 1С раздела каталога
  * @param  {Object[]} data Уже имеющиеся данныe каталога
  */
-export function chooseNode(id, data){
+export function chooseNode(id, data, collection){
   return (dispatch)=> {
     let qo = new ItemQueryObject();
     qo.nodeId = id;
     let actions = [
-      dispatch(fetchItems(qo)),
       dispatch(setLocalValue('current_node', id)),
-      dispatch(fetchNodes(id, data))
     ];
+    id&&actions.push(dispatch(fetchNodes(id, data)));
+    collection===0
+    ?actions.push(dispatch(fetchItems(qo)))
+    :actions.push(dispatch({type: ITEM_CHOICE,payload: id}));
     return Promise.all(actions).then(result=>{
       dispatch({
         type: NODE_CHOICE,
@@ -610,5 +613,17 @@ export function downloadResources(resources){
   return dispatch=>{
     ResourceService.downloadResource(resources);
     dispatch(clearDownloads());
+  }
+}
+
+/**
+ * Выбор типа коллекции для отображения в дереве каталога
+ */
+export function chooseCollectionType(type){
+  return dispatch=>{
+    return dispatch({
+      type: CHOOSE_COLLECTION,
+      payload: type
+    });
   }
 }

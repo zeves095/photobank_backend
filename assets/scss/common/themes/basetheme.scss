@@ -9,7 +9,7 @@ body {
     transition: 0.3s;
   }
   .photobank-main div{
-    transition: 0.2s, flex-basis 0s;  
+    transition: 0.2s, flex-basis 0s;
   }
 
   .photobank-main input[type="checkbox"]{
@@ -99,6 +99,19 @@ body {
 .catalogue-tree {
   background-color: $color-main;
   //border-right: 2px solid $color-tertiary;
+  //
+
+  .collection-tabs{
+    &__tab{
+      background-color: $color-tertiary;
+      font-weight: bold;
+      &.active{
+        background-color: $color-accent;
+        color: $color-tertiary;
+      }
+    }
+  }
+
   .view-inner__list-view{
     .list-view__cat_item{
       @include list-item-color();
