@@ -66,7 +66,7 @@ export class ItemSection extends React.Component{
         :null
       } {
         typeof this.props.item != "undefined"
-          ? <div className="item-view__item-title">Товар #{this.props.item.itemCode}"{this.props.item.name}"</div>
+          ? <div className="item-view__item-title">Товар #{this.props.item.id}"{this.props.item.name}"</div>
           : null
       }<div className={"item-view__inner " + (
           this.state.open

@@ -97,13 +97,13 @@ export function pushResumable(itemId){
  * Рекурсивно запрашивает структура каталога от текущего раздела до корня
  * @param  {Number} id Id текущего раздела
  */
-export function fetchRootNodes(id){
+export function fetchRootNodes(id, collection){
   return (dispatch)=>{
     dispatch({
       type: CATALOGUE_ROOT_NODES_FETCH+START,
       payload: id
     });
-    return CatalogueService.fetchRootNodes(id).then((data)=>{
+    return CatalogueService.fetchRootNodes(id, collection).then((data)=>{
       dispatch({
         type: CATALOGUE_ROOT_NODES_FETCH+SUCCESS,
         payload: data
@@ -124,16 +124,16 @@ export function fetchRootNodes(id){
  * @param  {Number} id   Код 1C родителя
  * @param  {Object[]} data Уже имеющиеся данныe каталога
  */
-export function fetchNodes(id, data){
+export function fetchNodes(id, data, collection){
   return (dispatch)=>{
     if(data.length === 0){
-      return dispatch(fetchRootNodes(id));
+      return dispatch(fetchRootNodes(id, collection));
     }
     dispatch({
       type: CATALOGUE_DATA_FETCH+START,
       payload: ''
     });
-    return CatalogueService.fetchNodes(id)
+    return CatalogueService.fetchNodes(id, collection)
     .then((response)=>response.json())
     .then((data)=>{
       dispatch({
@@ -160,13 +160,13 @@ export function chooseNode(id, data, collection){
   return (dispatch)=> {
     let qo = new ItemQueryObject();
     qo.nodeId = id;
+    let storageKey = collection==0?'current_node':'current_dump_node';
     let actions = [
-      dispatch(setLocalValue('current_node', id)),
+      dispatch(setLocalValue(storageKey, id)),
+      dispatch(fetchNodes(id, data, collection))
     ];
-    id&&actions.push(dispatch(fetchNodes(id, data)));
-    collection===0
-    ?actions.push(dispatch(fetchItems(qo)))
-    :actions.push(dispatch({type: ITEM_CHOICE,payload: id}));
+    collection==0&&actions.push(dispatch(fetchItems(qo)));
+    //:actions.push(dispatch(setLocalValue('current_item',id)))&&actions.push(dispatch({type: ITEM_CHOICE,payload: id}));
     return Promise.all(actions).then(result=>{
       dispatch({
         type: NODE_CHOICE,
@@ -621,6 +621,7 @@ export function downloadResources(resources){
  */
 export function chooseCollectionType(type){
   return dispatch=>{
+    dispatch(setLocalValue('collection_type', type));
     return dispatch({
       type: CHOOSE_COLLECTION,
       payload: type

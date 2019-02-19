@@ -10,6 +10,8 @@ parameters:
   item_search_url: '/catalogue/search/items/'
   get_nodes_url: '/catalogue/nodes/'
   get_dump_nodes_url: '/dump/nodes/'
+  get_node_url: '/catalogue/node/'
+  get_dump_node_url: '/dump/node/'
   get_items_url: '/catalogue/node/items/'
   upload_url: '/upload'
   max_main_resources: 1

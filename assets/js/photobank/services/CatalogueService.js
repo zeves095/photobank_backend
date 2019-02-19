@@ -12,11 +12,12 @@ class CatalogueService{
    * @param  {Number} [currentNode=null] Текущий раздел каталога
    * @param  {Array}  [prevresult=[]] Предыдущий результат выполнения функции
    */
-  static fetchRootNodes(currentNode = null, prevresult = []){
+  static fetchRootNodes(currentNode = null, collection, prevresult = []){
     let result = prevresult;
     return new Promise((resolve, reject)=>{
       let searchNode = (currentNode!=null?currentNode:"");
-      fetch(utility.config.get_nodes_url+searchNode, {method:"GET"})
+      let url = collection==0?utility.config.get_nodes_url:utility.config.get_dump_nodes_url;
+      fetch(url+searchNode, {method:"GET"})
       .then(response=>response.json())
       .then((data)=>{
         result = result.concat(data);
@@ -24,8 +25,8 @@ class CatalogueService{
           resolve(result);
         }
         else{
-          this._fetchNodeParent(currentNode).then((parent)=>{
-            this.fetchRootNodes(parent,result).then((result)=>{
+          this._fetchNodeParent(currentNode, collection).then((parent)=>{
+            this.fetchRootNodes(parent, collection,result).then((result)=>{
               resolve(result);
             });
           });
@@ -38,10 +39,11 @@ class CatalogueService{
    * Запрашивает данные о дочерних элементах каталога от раздела каталога
    * @param {Number} id Код 1С раздела каталога
    */
-  static fetchNodes(id){
+  static fetchNodes(id, collection){
     return new Promise((resolve,reject)=>{
       let searchNode = (id!=null?id:"");
-      fetch(utility.config.get_nodes_url+searchNode,{'method':'GET'}).then((nodes)=>{
+      let url = collection==0?utility.config.get_nodes_url:utility.config.get_dump_nodes_url;
+      fetch(url+searchNode,{'method':'GET'}).then((nodes)=>{
         resolve(nodes);
       })
     });
@@ -119,9 +121,10 @@ class CatalogueService{
    * Получает родительский раздел каталога по идентификатору дочернего с сервера
    * @param  {Number} id Идентификатор дочернего разделы каталога
    */
-  static _fetchNodeParent(id){
+  static _fetchNodeParent(id, collection){
     return new Promise((resolve,reject)=>{
-      fetch("/catalogue/node/"+id,{method:"GET"})
+      let url = collection==0?utility.config.get_node_url:utility.config.get_dump_node_url;
+      fetch(url+id,{method:"GET"})
       .then(response=>response.json())
       .then((data)=>{
         resolve(data.parent);
