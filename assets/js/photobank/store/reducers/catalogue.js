@@ -25,7 +25,7 @@ let defaultState = Map({
   catalogue_data: List([List([]),List([])]),
   items: List([]),
   current_node: null,
-  current_dump_node: null,
+  current_garbage_node: null,
   current_item: null,
   item_query_object: null,
   fetching_catalogue: true,
@@ -66,7 +66,7 @@ export default (catalogue = defaultState, action) => {
       break;
     }
     case NODE_CHOICE:{
-      let nodeKey = catalogue.get('collection_type') ===0?'current_node':'current_dump_node';
+      let nodeKey = catalogue.get('collection_type') ===0?'current_node':'current_garbage_node';
       return catalogue.set(nodeKey,action.payload);
       break;
     }

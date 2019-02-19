@@ -16,10 +16,11 @@ class CatalogueService{
     let result = prevresult;
     return new Promise((resolve, reject)=>{
       let searchNode = (currentNode!=null?currentNode:"");
-      let url = collection==0?utility.config.get_nodes_url:utility.config.get_dump_nodes_url;
+      let url = collection==0?utility.config.get_nodes_url:utility.config.get_garbage_nodes_url;
       fetch(url+searchNode, {method:"GET"})
       .then(response=>response.json())
       .then((data)=>{
+        console.log(data, url);
         result = result.concat(data);
         if(currentNode == null){
           resolve(result);
@@ -42,7 +43,7 @@ class CatalogueService{
   static fetchNodes(id, collection){
     return new Promise((resolve,reject)=>{
       let searchNode = (id!=null?id:"");
-      let url = collection==0?utility.config.get_nodes_url:utility.config.get_dump_nodes_url;
+      let url = collection==0?utility.config.get_nodes_url:utility.config.get_garbage_nodes_url;
       fetch(url+searchNode,{'method':'GET'}).then((nodes)=>{
         resolve(nodes);
       })
@@ -74,6 +75,7 @@ class CatalogueService{
       let tree={ core: { data: [] }, 'selected':[]};
       let nodeToOpen;
       data.forEach((item)=>{
+        console.log(currentNode,item.id,currentNode===item.id);
         let node = {
           'text':item.name,
           'parent':item.parent||"#",
@@ -123,7 +125,7 @@ class CatalogueService{
    */
   static _fetchNodeParent(id, collection){
     return new Promise((resolve,reject)=>{
-      let url = collection==0?utility.config.get_node_url:utility.config.get_dump_node_url;
+      let url = collection==0?utility.config.get_node_url:utility.config.get_garbage_node_url;
       fetch(url+id,{method:"GET"})
       .then(response=>response.json())
       .then((data)=>{

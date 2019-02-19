@@ -4,7 +4,7 @@ import {Map,List,Set,Record} from 'immutable';
 export const unfinishedUploads = (store, props)=>store.upload.get('uploads_unfinished');
 export const currentItemId = (store, props)=>props.item_id||store.catalogue.get('current_item');
 export const currentNodeId = (store, props)=>store.catalogue.get('current_node');
-export const currentDumpNodeId = (store, props)=>store.catalogue.get('current_dump_node');
+export const currentgarbageNodeId = (store, props)=>store.catalogue.get('current_garbage_node');
 export const catalogueData = (store, props)=>store.catalogue.get('catalogue_data');
 export const items = (store, props)=>store.catalogue.get('items');
 export const resumableContainer = (store, props)=>store.upload.get('resumable_container');
@@ -20,10 +20,10 @@ export const getCatalogueData = createSelector(catalogueData, collectionType,(ca
   return cat_data.toArray();
 });
 
-export const getCurrentNode = createSelector(currentNodeId, currentDumpNodeId, collectionType, localStorage, (node, dump_node, type, storage)=>{
-  let result = type==0?node:dump_node;
+export const getCurrentNode = createSelector(currentNodeId, currentgarbageNodeId, collectionType, localStorage, (node, garbage_node, type, storage)=>{
+  let result = type==0?node:garbage_node;
   if(!result){
-    result = type==0?storage.get('current_node'):storage.get('current_dump_node');
+    result = type==0?storage.get('current_node'):storage.get('current_garbage_node');
   }
   return result;
 });
@@ -37,10 +37,10 @@ export const filterItems = createSelector(getNodeItems, items, currentNodeId, (n
   return nodeItems;
 });
 
-export const getItemObject = createSelector(items, catalogueData, currentItemId, currentDumpNodeId, collectionType, (items, cat, id, dumpId, type)=>{
+export const getItemObject = createSelector(items, catalogueData, currentItemId, currentgarbageNodeId, collectionType, (items, cat, id, garbageId, type)=>{
   let item = type==0
   ?items.find(item=>item.id===id)
-  :cat.get(type).find(node=>node.id===dumpId);
+  :cat.get(type).find(node=>node.id===garbageId);
   if(!item)item=null;
   return item;
 });
