@@ -27,11 +27,12 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 use App\Service\Search\SearchQueryBuilder;
 use App\Service\Search\SearchService;
+use App\Service\GarbageService;
 
 /**
   * Контроллер для получения и обновления информации о сущностях каталога GarbageNode, GarbageNodeItem, Resource
   */
-class GarbageCollectionController extends AbstractController
+class GarbageStorageController extends AbstractController
 {
 
     /**
@@ -48,9 +49,12 @@ class GarbageCollectionController extends AbstractController
     {
         $response = new JsonResponse();
 
-        $gnodeArray = $serializer->normalize($gnode, null, array(
-            'add-relation' => false
-        ));
+        $gnodeArray = [];
+        if(!$gnode->getDeleted()){
+          $gnodeArray = $serializer->normalize($gnode, null, array(
+              'add-relation' => false
+          ));
+        }
 
         $response->setData($gnodeArray);
         return $response;
@@ -78,13 +82,13 @@ class GarbageCollectionController extends AbstractController
 
         $response = new JsonResponse();
 
-
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository(GarbageNode::class);
 
         if(!$gnode){
             $children = $repo->findBy([
                 'parent' => null,
+                'deleted' => false
             ],[
               'name'=>'ASC'
             ]);
@@ -92,6 +96,7 @@ class GarbageCollectionController extends AbstractController
             // $children = $gnode->getChildren();
             $children = $repo->findBy([
                 'parent' => $gnode->getId(),
+                'deleted' => false
             ],[
               'name'=>'ASC'
             ]);
@@ -103,6 +108,91 @@ class GarbageCollectionController extends AbstractController
         $response->setData($gnodeArray);
         return $response;
     }
+
+    /**
+     * Получает нормализованный объект с информацией о разделе свалки
+     *
+     * @param GarbageNode $gnode Обьект раздела, подтягивается через wildcard {id}
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
+     * @Route("/garbage/node/add",
+     * methods={"POST"},
+     * name="garbage_create_node")
+     */
+    public function createNode(Request $request, GarbageService $garbageService)
+    {
+        $data = json_decode(
+          $request->getContent(),
+          true
+        );
+
+        if(isset($data['name'])&&isset($data['parent'])){
+          if(!$garbageService->createNode($data['name'],$data['parent'])['successful']){
+            throw new \Exception('Ошибка при добавлении папки');
+          }
+        }else{
+          throw new \Exception('Должны быть указаны название и родительский ресурс');
+        }
+
+        return new JsonResponse();
+    }
+
+    /**
+     * Получает нормализованный объект с информацией о разделе свалки
+     *
+     * @param GarbageNode $gnode Обьект раздела, подтягивается через wildcard {id}
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
+     * @Route("/garbage/node/update",
+     * methods={"POST"},
+     * name="garbage_update_node")
+     */
+    public function updateNode(Request $request, GarbageService $garbageService)
+    {
+        $data = json_decode(
+          $request->getContent(),
+          true
+        );
+
+        if(isset($data['id']) && (isset($data['name'])||isset($data['parent']))){
+          if(!$garbageService->updateNode($data['id'],['name'=>$data['name'],'parent'=>$data['parent']])['successful']){
+            throw new \Exception('Ошибка при изменении папки');
+          }
+        }else{
+          throw new \Exception('Должны быть указаны верные данные');
+        }
+
+        return new JsonResponse();
+    }
+
+    /**
+     * Получает нормализованный объект с информацией о разделе свалки
+     *
+     * @param GarbageNode $gnode Обьект раздела, подтягивается через wildcard {id}
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
+     * @Route("/garbage/node/remove",
+     * methods={"POST"},
+     * name="garbage_remove_node")
+     */
+    public function removeNode(Request $request, GarbageService $garbageService)
+    {
+        $data = json_decode(
+          $request->getContent(),
+          true
+        );
+
+        if(isset($data['id'])){
+          if(!$garbageService->removeNode($data['id'])['successful']){
+            throw new \Exception('Ошибка при удалении папки');
+          }
+        }else{
+          throw new \Exception('Должен быть указан идентификатор ресурса');
+        }
+
+        return new JsonResponse();
+    }
+
     // /**
     //  * Получает нормализованный объект с информацией о товаре по коду 1С
     //  *

@@ -9,6 +9,7 @@ import {
   ITEMS_FETCH,
   CRUMBS_UPDATE,
   CHOOSE_COLLECTION,
+  NODE_REMOVE,
   START,
   SUCCESS,
   FAIL
@@ -43,7 +44,6 @@ export default (catalogue = defaultState, action) => {
     case CATALOGUE_ROOT_NODES_FETCH+SUCCESS:{
       const root_nodes = List(action.payload);
       let cat_data = catalogue.get('catalogue_data');
-      console.log(catalogue.get('collection_type'));
       cat_data = cat_data.set(catalogue.get('collection_type'), root_nodes);
       return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
       break;
@@ -57,10 +57,23 @@ export default (catalogue = defaultState, action) => {
       let cat_data = catalogue.get('catalogue_data');
       let fetchCatalogueData = cat_data.get(catalogue.get('collection_type'));
       fetched_data.forEach((node)=>{
-        if(!fetchCatalogueData.find((existing)=>node.id===existing.id)){
+        let found = fetchCatalogueData.find((existing)=>node.id===existing.id);
+        if(!found){
           fetchCatalogueData = fetchCatalogueData.push(node);
+        }else{
+          fetchCatalogueData = fetchCatalogueData.splice(fetchCatalogueData.indexOf(found),1,node);
         }
       });
+      cat_data = cat_data.set(catalogue.get('collection_type'), fetchCatalogueData);
+      return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
+      break;
+    }
+    case NODE_REMOVE+SUCCESS:{
+      let del_id = action.payload;
+      let cat_data = catalogue.get('catalogue_data');
+      let fetchCatalogueData = cat_data.get(catalogue.get('collection_type'));
+      let found = fetchCatalogueData.find((existing)=>del_id===existing.id);
+      if(found)fetchCatalogueData=fetchCatalogueData.splice(fetchCatalogueData.indexOf(found),1);
       cat_data = cat_data.set(catalogue.get('collection_type'), fetchCatalogueData);
       return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
       break;

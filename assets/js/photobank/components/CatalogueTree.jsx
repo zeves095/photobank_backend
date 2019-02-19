@@ -2,6 +2,7 @@ import React from 'react';
 // import $ from 'jquery';
 import TreeView from 'react-simple-jstree';
 import ItemSearch from './ItemSearch';
+import NodeCrud from './NodeCrud';
 import {ItemQueryObject} from '../services/ItemQueryObject';
 import {CatalogueService} from '../services/CatalogueService';
 import {LocalStorageService} from '../services/LocalStorageService';
@@ -131,6 +132,7 @@ export class CatalogueTree extends React.Component {
               {view}
             </div>
           </div>
+          {this.props.collection_type==1&&this.props.isAuthorized?<NodeCrud />:null}
         </div>
       </div>
     );
@@ -145,6 +147,7 @@ const mapStateToProps = (state,props) =>{
     view: selectors.localstorage.getStoredCatalogueViewtype(state,props),
     loading: selectors.catalogue.getLoadingCatalogue(state,props),
     crumbs: selectors.catalogue.getCrumbs(state,props),
+    isAuthorized: selectors.user.getAuthorized(state,props)
   }
 }
 

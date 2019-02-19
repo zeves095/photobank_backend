@@ -39,6 +39,11 @@ class GarbageNode
      */
     private $resources;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $deleted;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
@@ -132,6 +137,18 @@ class GarbageNode
                 $resource->setGarbageNode(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }

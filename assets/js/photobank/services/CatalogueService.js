@@ -20,7 +20,6 @@ class CatalogueService{
       fetch(url+searchNode, {method:"GET"})
       .then(response=>response.json())
       .then((data)=>{
-        console.log(data, url);
         result = result.concat(data);
         if(currentNode == null){
           resolve(result);
@@ -75,7 +74,6 @@ class CatalogueService{
       let tree={ core: { data: [] }, 'selected':[]};
       let nodeToOpen;
       data.forEach((item)=>{
-        console.log(currentNode,item.id,currentNode===item.id);
         let node = {
           'text':item.name,
           'parent':item.parent||"#",
