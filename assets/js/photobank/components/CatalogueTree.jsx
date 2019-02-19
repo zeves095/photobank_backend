@@ -38,7 +38,8 @@ export class CatalogueTree extends React.Component {
    * Выбирает созраненный раздел каталога как активный
    */
   componentWillMount(){
-    this.handleNodeChoice(this.props.current_node, this.props.catalogue_data);
+    this.handleCollectionChoice(this.props.collection_type);
+    this.handleNodeChoice(this.props.current_node);
   }
 
   componentDidUpdate(prevProps){
@@ -46,7 +47,7 @@ export class CatalogueTree extends React.Component {
       this.props.pushCrumbs(this.props.catalogue_data, this.props.current_node);
     }
     if(this.props.collection_type !== prevProps.collection_type){
-      this.props.chooseNode(this.props.current_node, this.props.catalogue_data, this.props.collection_type);
+      this.handleNodeChoice(this.props.current_node);
     }
   }
 
@@ -59,6 +60,15 @@ export class CatalogueTree extends React.Component {
       this.props.chooseNode(null, this.props.catalogue_data, this.props.collection_type);
     }
     this.props.chooseCatalogueViewType(type);
+  }
+
+  /**
+   * Обработчик выбора типа коллекции (каталог/свалка)
+   * @param {Number} type Тип коллекции
+   *
+   */
+  handleCollectionChoice(type){
+    this.props.chooseCollectionType(type);
   }
 
   /**
@@ -108,8 +118,8 @@ export class CatalogueTree extends React.Component {
           Каталог
           <span className="component-title__view-icons"><i className="fas fa-sitemap" title="Дерево" data-view="2" onClick={()=>{this.handleViewChoice("2")}}></i><i className="fas fa-list" title="Список" data-view="1" onClick={()=>{this.handleViewChoice("1")}}></i><i title="Поиск" data-view="3" onClick={()=>{this.handleViewChoice("3")}} className="fas fa-search"></i></span></h2>
         <div className="collection-tabs">
-          <span className={"collection-tabs__tab" + (this.props.collection_type==0?" active":"")} onClick={()=>{this.props.chooseCollectionType(0)}}>Товары</span>
-        <span className={"collection-tabs__tab" + (this.props.collection_type==1?" active":"")} onClick={()=>{this.props.chooseCollectionType(1)}}>Свалка</span>
+          <span className={"collection-tabs__tab" + (this.props.collection_type==0?" active":"")} onClick={()=>{this.handleCollectionChoice(0)}}>Товары</span>
+        <span className={"collection-tabs__tab" + (this.props.collection_type==1?" active":"")} onClick={()=>{this.handleCollectionChoice(1)}}>Свалка</span>
         </div>
       </span>
       <div className="inner-bump">
@@ -131,7 +141,7 @@ const mapStateToProps = (state,props) =>{
   return {
     collection_type: selectors.catalogue.getCollectionType(state,props),
     catalogue_data: selectors.catalogue.getCatalogueData(state,props),
-    current_node: selectors.catalogue.getCurrentNode(state,props)||selectors.localstorage.getStoredNode(state,props),
+    current_node: selectors.catalogue.getCurrentNode(state,props),
     view: selectors.localstorage.getStoredCatalogueViewtype(state,props),
     loading: selectors.catalogue.getLoadingCatalogue(state,props),
     crumbs: selectors.catalogue.getCrumbs(state,props),

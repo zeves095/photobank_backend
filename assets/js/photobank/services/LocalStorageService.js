@@ -14,11 +14,13 @@ class LocalStorageService{
   static _getKeys(){
     let keys = {
       "current_node": "pb_data_catalogue_current_node",
+      "current_dump_node": "pb_data_catalogue_current_dump_node",
       "current_item": "pb_data_current_item",
       "pending_downloads": "pb_data_download_list",
       "list_view_type": "pb_data_list_view_type",
       "catalogue_view": "pb_data_catalogue_view_type",
-      "pagination_limit": "pb_data_pagination_limit"
+      "pagination_limit": "pb_data_pagination_limit",
+      "collection_type": "pb_data_collection_type"
     }
     return keys;
   }

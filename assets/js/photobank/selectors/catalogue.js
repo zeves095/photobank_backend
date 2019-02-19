@@ -4,24 +4,28 @@ import {Map,List,Set,Record} from 'immutable';
 export const unfinishedUploads = (store, props)=>store.upload.get('uploads_unfinished');
 export const currentItemId = (store, props)=>props.item_id||store.catalogue.get('current_item');
 export const currentNodeId = (store, props)=>store.catalogue.get('current_node');
+export const currentDumpNodeId = (store, props)=>store.catalogue.get('current_dump_node');
 export const catalogueData = (store, props)=>store.catalogue.get('catalogue_data');
 export const items = (store, props)=>store.catalogue.get('items');
 export const resumableContainer = (store, props)=>store.upload.get('resumable_container');
 export const fetchingCatalogue = (store, props)=>store.catalogue.get('fetching_catalogue');
 export const fetchingItems = (store, props)=>store.catalogue.get('fetching_items');
 export const breadcrumbs = (store, props)=>store.catalogue.get('crumbs');
-export const collectionType = (store, props)=>store.catalogue.get('collection_type');
-export const storedNodeId = (store, props)=>store.localstorage.get('current_node');
-export const storedDumpNodeId = (store, props)=>store.localstorage.get('current_dump_node');
+// export const collectionType = (store, props)=>store.catalogue.get('collection_type');
+export const localStorage = (store, props)=>store.localstorage.get('localstorage');
+export const collectionType = (store, props)=>localStorage(store,props).get('collection_type')||store.catalogue.get('collection_type');
 
 export const getCatalogueData = createSelector(catalogueData, collectionType,(catalogue, type)=>{
   const cat_data = catalogue.get(type);
   return cat_data.toArray();
 });
 
-export const getCurrentNode = createSelector(currentNodeId, collectionType,(node, type)=>{
-  currentNodeId||;
-  return node;
+export const getCurrentNode = createSelector(currentNodeId, currentDumpNodeId, collectionType, localStorage, (node, dump_node, type, storage)=>{
+  let result = type==0?node:dump_node;
+  if(!result){
+    result = type==0?storage.get('current_node'):storage.get('current_dump_node');
+  }
+  return result;
 });
 
 export const getNodeItems = createSelector(items, currentNodeId, (items, id)=>{
@@ -33,8 +37,10 @@ export const filterItems = createSelector(getNodeItems, items, currentNodeId, (n
   return nodeItems;
 });
 
-export const getItemObject = createSelector(items, currentItemId, (items, id)=>{
-  let item = items.find(item=>item.id===id);
+export const getItemObject = createSelector(items, catalogueData, currentItemId, currentDumpNodeId, collectionType, (items, cat, id, dumpId, type)=>{
+  let item = type==0
+  ?items.find(item=>item.id===id)
+  :cat.get(type).find(node=>node.id===dumpId);
   if(!item)item=null;
   return item;
 });

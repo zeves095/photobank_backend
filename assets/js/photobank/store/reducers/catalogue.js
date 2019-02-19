@@ -25,6 +25,7 @@ let defaultState = Map({
   catalogue_data: List([List([]),List([])]),
   items: List([]),
   current_node: null,
+  current_dump_node: null,
   current_item: null,
   item_query_object: null,
   fetching_catalogue: true,
@@ -42,6 +43,7 @@ export default (catalogue = defaultState, action) => {
     case CATALOGUE_ROOT_NODES_FETCH+SUCCESS:{
       const root_nodes = List(action.payload);
       let cat_data = catalogue.get('catalogue_data');
+      console.log(catalogue.get('collection_type'));
       cat_data = cat_data.set(catalogue.get('collection_type'), root_nodes);
       return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
       break;
@@ -64,7 +66,8 @@ export default (catalogue = defaultState, action) => {
       break;
     }
     case NODE_CHOICE:{
-      return catalogue.set('current_node',action.payload);
+      let nodeKey = catalogue.get('collection_type') ===0?'current_node':'current_dump_node';
+      return catalogue.set(nodeKey,action.payload);
       break;
     }
     case ITEM_CHOICE:{

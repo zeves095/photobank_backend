@@ -119,7 +119,7 @@ describe('Actions', ()=>{
         payload: nodeResponses},
     ];
     const store = mockStore(mockUploadStore);
-    return store.dispatch(actions.fetchRootNodes(nodes[0])).then(()=>{
+    return store.dispatch(actions.fetchRootNodes(nodes[0], 0)).then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
 
@@ -149,7 +149,7 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.fetchNodes(firstId,cat_data)).then(()=>{
+    return store.dispatch(actions.fetchNodes(firstId,cat_data, 0)).then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
 

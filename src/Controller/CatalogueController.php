@@ -34,6 +34,51 @@ use App\Service\Search\SearchService;
   */
 class CatalogueController extends AbstractController
 {
+  /**
+   * @Route("/dump/nodes/{id}",
+   * methods={"GET"},
+   * name="mock_dump")
+   */
+  public function mockNodes($id)
+  {
+      $response = new JsonResponse();
+
+      $data = [["id"=>"90000000001","name"=>"SWOOTY","parent"=>"90000000000","children"=>[],"items_count"=>0]];
+
+      $response->setData($data);
+      return $response;
+  }
+
+  /**
+   * @Route("/dump/nodes",
+   * methods={"GET"},
+   * name="mock_dump1")
+   */
+  public function mockNodes1()
+  {
+      $response = new JsonResponse();
+
+      $data = [["id"=>"90000000000","name"=>"SWIGGITY","parent"=>null,"children"=>["90000000001"],"items_count"=>0]];
+
+      $response->setData($data);
+      return $response;
+  }
+
+  /**
+   * @Route("/dump/node/{id}",
+   * methods={"GET"},
+   * name="mock_dump2")
+   */
+  public function mockNode($id)
+  {
+      $response = new JsonResponse();
+
+      $data = $data = $id=="90000000001"?[["id"=>"90000000001","name"=>"SWOOTY","parent"=>"90000000000","children"=>[],"items_count"=>0]]:[["id"=>"90000000000","name"=>"SWIGGITY","parent"=>null,"children"=>["90000000001"],"items_count"=>0]];
+
+      $response->setData($data);
+      return $response;
+  }
+
     /**
      * Получает нормализованный объект с информацией о разделе каталога
      *
