@@ -9,9 +9,9 @@ parameters:
   item_url: '/catalogue/node/item/'
   item_search_url: '/catalogue/search/items/'
   get_nodes_url: '/catalogue/nodes/'
-  get_dump_nodes_url: '/dump/nodes/'
+  get_garbage_nodes_url: '/garbage/nodes/'
   get_node_url: '/catalogue/node/'
-  get_dump_node_url: '/dump/node/'
+  get_garbage_node_url: '/garbage/node/'
   get_items_url: '/catalogue/node/items/'
   upload_url: '/upload'
   max_main_resources: 1

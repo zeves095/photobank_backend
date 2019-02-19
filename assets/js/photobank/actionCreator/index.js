@@ -160,7 +160,7 @@ export function chooseNode(id, data, collection){
   return (dispatch)=> {
     let qo = new ItemQueryObject();
     qo.nodeId = id;
-    let storageKey = collection==0?'current_node':'current_dump_node';
+    let storageKey = collection==0?'current_node':'current_garbage_node';
     let actions = [
       dispatch(setLocalValue(storageKey, id)),
       dispatch(fetchNodes(id, data, collection))
