@@ -28,6 +28,11 @@ export const getCurrentNode = createSelector(currentNodeId, currentgarbageNodeId
   return result;
 });
 
+export const getCurrentNodeParent = createSelector(getCurrentNode, getCatalogueData, (cur_node, data)=>{
+  let parent = data.find(node=>cur_node===node.id);
+  return parent?parent.parent:null;
+});
+
 export const getNodeItems = createSelector(items, currentNodeId, (items, id)=>{
   let newItems = id!==null?items.filter(item=>item.node===id):items;
   return newItems.toArray();

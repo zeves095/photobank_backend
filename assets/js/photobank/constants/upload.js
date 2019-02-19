@@ -20,3 +20,6 @@ export const CRUMBS_UPDATE = 'CRUMBS_UPDATE';
 export const CONFIG_GET = 'CONFIG_GET';
 export const DOWNLOAD_DATA_FETCH = 'DOWNLOAD_DATA_FETCH';
 export const CHOOSE_COLLECTION = 'CHOOSE_COLLECTION';
+export const NODE_ADD = 'NODE_ADD';
+export const NODE_UPDATE = 'NODE_UPDATE';
+export const NODE_REMOVE = 'NODE_REMOVE';

@@ -23,6 +23,9 @@ import {
   CONFIG_GET,
   DOWNLOAD_DATA_FETCH,
   CHOOSE_COLLECTION,
+  NODE_ADD,
+  NODE_UPDATE,
+  NODE_REMOVE,
   START,
   SUCCESS,
   FAIL,
@@ -625,6 +628,50 @@ export function chooseCollectionType(type){
     return dispatch({
       type: CHOOSE_COLLECTION,
       payload: type
+    });
+  }
+}
+
+export function addGarbageNode(name,parent,data,type){
+  return dispatch=>{
+    let body = JSON.stringify({name,parent});
+    return fetch(utility.config.add_garbage_node_url,{method:"POST", body})
+    .then(()=>{
+      dispatch({
+        type: NODE_ADD+SUCCESS,
+        payload: name
+      });
+      dispatch(fetchNodes(parent,data,type));
+    });
+  }
+}
+
+export function updateGarbageNode(id,name,parent,data,type){
+  return dispatch=>{
+    let body = JSON.stringify({id,name,parent});
+    return fetch(utility.config.update_garbage_node_url,{method:"POST", body})
+    .then(()=>{
+      dispatch({
+        type: NODE_UPDATE+SUCCESS,
+        payload: id
+      });
+      dispatch(fetchNodes(parent,data,type));
+    });
+  }
+}
+
+export function removeGarbageNode(id,parent,data,type){
+  return dispatch=>{
+    let body = JSON.stringify({id});
+    return fetch(utility.config.remove_garbage_node_url,{method:"POST", body})
+    .then((response)=>{
+      if(response.ok){
+        dispatch({
+          type: NODE_REMOVE+SUCCESS,
+          payload: id
+        });
+        dispatch(fetchNodes(parent,data,type));
+      }
     });
   }
 }
