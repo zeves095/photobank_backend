@@ -23,9 +23,10 @@ import {
   CONFIG_GET,
   DOWNLOAD_DATA_FETCH,
   CHOOSE_COLLECTION,
-  NODE_ADD,
+  NODE_CREATE,
   NODE_UPDATE,
   NODE_REMOVE,
+  NODE_REBASE,
   START,
   SUCCESS,
   FAIL,
@@ -168,8 +169,9 @@ export function chooseNode(id, data, collection){
       dispatch(setLocalValue(storageKey, id)),
       dispatch(fetchNodes(id, data, collection))
     ];
-    collection==0&&actions.push(dispatch(fetchItems(qo)));
-    //:actions.push(dispatch(setLocalValue('current_item',id)))&&actions.push(dispatch({type: ITEM_CHOICE,payload: id}));
+    collection==0
+    ?actions.push(dispatch(fetchItems(qo)))
+    :actions.push(dispatch(pushResumable(id)));
     return Promise.all(actions).then(result=>{
       dispatch({
         type: NODE_CHOICE,
@@ -183,13 +185,13 @@ export function chooseNode(id, data, collection){
  * Получает данные о существующих ресурсах, привязанных к товару каталога
  * @param  {String} id Код 1С товара
  */
-export function fetchExisting(id){
+export function fetchExisting(id, collection){
   return (dispatch)=>{
     dispatch({
       type: EXISTING_RESOURCES_FETCH+START,
       payload: ''
     });
-    return ResourceService.fetchExisting(id).then((data)=>{
+    return ResourceService.fetchExisting(id, collection).then((data)=>{
       dispatch({
         type: EXISTING_RESOURCES_FETCH+SUCCESS,
         payload: data
@@ -638,7 +640,7 @@ export function addGarbageNode(name,parent,data,type){
     return fetch(utility.config.add_garbage_node_url,{method:"POST", body})
     .then(()=>{
       dispatch({
-        type: NODE_ADD+SUCCESS,
+        type: NODE_CREATE+SUCCESS,
         payload: name
       });
       dispatch(fetchNodes(parent,data,type));
@@ -648,7 +650,8 @@ export function addGarbageNode(name,parent,data,type){
 
 export function updateGarbageNode(id,name,parent,data,type){
   return dispatch=>{
-    let body = JSON.stringify({id,name,parent});
+    console.log(id,name,parent,data,type);
+    let body = JSON.stringify(Object.assign({},{id,name,parent}));
     return fetch(utility.config.update_garbage_node_url,{method:"POST", body})
     .then(()=>{
       dispatch({
@@ -672,6 +675,25 @@ export function removeGarbageNode(id,parent,data,type){
         });
         dispatch(fetchNodes(parent,data,type));
       }
+    });
+  }
+}
+
+export function startNodeRebase(){
+  return dispatch=>{
+    dispatch({
+      type:NODE_REBASE+START,
+      payload:''
+    });
+  }
+}
+
+export function stopNodeRebase(node_id=null, parent_id=null, data, type){
+  return dispatch=>{
+    dispatch(updateGarbageNode(node_id, null, parent_id, data, type))
+    dispatch({
+      type:NODE_REBASE+SUCCESS,
+      payload:{node_id, parent_id}
     });
   }
 }

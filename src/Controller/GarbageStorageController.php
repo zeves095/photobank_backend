@@ -1,6 +1,6 @@
 <?php
 /**
-  * Контроллер для получения и обновления информации о сущностях каталога GarbageNode, GarbageNodeItem, Resource
+  * Контроллер для получения и обновления информации о сущностях каталога GarbageNode, Resource
   *
   */
 namespace App\Controller;
@@ -27,10 +27,11 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 use App\Service\Search\SearchQueryBuilder;
 use App\Service\Search\SearchService;
+use App\Service\ResourceService;
 use App\Service\GarbageService;
 
 /**
-  * Контроллер для получения и обновления информации о сущностях каталога GarbageNode, GarbageNodeItem, Resource
+  * Контроллер для получения и обновления информации о сущностях каталога GarbageNode, Resource
   */
 class GarbageStorageController extends AbstractController
 {
@@ -193,29 +194,53 @@ class GarbageStorageController extends AbstractController
         return new JsonResponse();
     }
 
+    /**
+     * Получает нормализованный объект с информацией о ресурсе по идентификатору товара
+     *
+     * @param GarbageNode $gitem Объект товара, подтягивается через wildcard {id}
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     * @param EntityManagerInterface $entityManager Инструмент работы с сущностями Doctrine ORM
+     *
+     * @Route(
+     *      "/garbage/node/resources/{id}",
+     *      methods={"GET"},
+     *      name="garbage_node_item_resources"
+     * )
+     */
+    public function getResources(GarbageNode $gitem, AppSerializer $serializer, ResourceService $resourceService)
+    {
+        $response = new JsonResponse();
+
+        $resources = $resourceService->getOriginal($gitem);
+        $resourcesArray = $serializer->normalize($resources, 'json', array());
+
+        $response->setData($resourcesArray);
+        return $response;
+    }
+
     // /**
     //  * Получает нормализованный объект с информацией о товаре по коду 1С
     //  *
-    //  * @param GarbageNodeItem $citem Объект товара, подтягивается через wildcard {id}
+    //  * @param GarbageNode $gitem Объект товара, подтягивается через wildcard {id}
     //  * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
     //  *
     //  * @Route("/garbage/node/item/{item}",
     //  * requirements={"item" = "\d{11}"},
     //  * methods={"GET"},
     //  * name="garbage_node_item_by_itemcode")
-    //  * @ParamConverter("citem", class="App\Entity\GarbageNodeItem", options={"mapping": {"item": "id"}})
+    //  * @ParamConverter("gitem", class="App\Entity\GarbageNode", options={"mapping": {"item": "id"}})
     //  */
-    // public function getItemByItemCode(GarbageNodeItem $citem, AppSerializer $serializer)
+    // public function getItemByItemCode(GarbageNode $gitem, AppSerializer $serializer)
     // {
     //     $response = new JsonResponse();
     //
-    //     $citemArray = $serializer->normalize($citem, null, array(
+    //     $gitemArray = $serializer->normalize($gitem, null, array(
     //       'add-children'=>true,
     //         ObjectNormalizer::ENABLE_MAX_DEPTH => true,
     //         'groups' => array('main','parent')
     //     ));
     //
-    //     $response->setData($citemArray);
+    //     $response->setData($gitemArray);
     //
     //     return $response;
     // }
@@ -223,24 +248,24 @@ class GarbageStorageController extends AbstractController
     // /**
     //  * Получает нормализованный объект с информацией о товаре
     //  *
-    //  * @param GarbageNodeItem $citem Объект товара, подтягивается через wildcard {id}
+    //  * @param GarbageNode $gitem Объект товара, подтягивается через wildcard {id}
     //  * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
     //  *
     //  * @Route("/garbage/node/item/{id}",
     //  * methods={"GET"},
     //  * name="garbage_node_item")
     //  */
-    // public function getItem(GarbageNodeItem $citem, AppSerializer $serializer)
+    // public function getItem(GarbageNode $gitem, AppSerializer $serializer)
     // {
     //     $response = new JsonResponse();
     //
-    //     $citemArray = $serializer->normalize($citem, null, array(
+    //     $gitemArray = $serializer->normalize($gitem, null, array(
     //       'add-children'=>true,
     //         ObjectNormalizer::ENABLE_MAX_DEPTH => true,
     //         'groups' => array('main','parent')
     //     ));
     //
-    //     $response->setData($citemArray);
+    //     $response->setData($gitemArray);
     //     return $response;
     // }
     //

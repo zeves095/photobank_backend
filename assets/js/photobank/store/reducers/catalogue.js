@@ -10,6 +10,7 @@ import {
   CRUMBS_UPDATE,
   CHOOSE_COLLECTION,
   NODE_REMOVE,
+  NODE_REBASE,
   START,
   SUCCESS,
   FAIL
@@ -31,7 +32,8 @@ let defaultState = Map({
   item_query_object: null,
   fetching_catalogue: true,
   fetching_items: true,
-  crumbs: null
+  crumbs: null,
+  moving_node:false
 })
 
 export default (catalogue = defaultState, action) => {
@@ -114,6 +116,12 @@ export default (catalogue = defaultState, action) => {
     case CHOOSE_COLLECTION:{
       return catalogue.set('collection_type', action.payload);
       break;
+    }
+    case NODE_REBASE+START:{
+      return catalogue.set('moving_node', true);
+    }
+    case NODE_REBASE+SUCCESS:{
+      return catalogue.set('moving_node', false);
     }
   }
   return catalogue

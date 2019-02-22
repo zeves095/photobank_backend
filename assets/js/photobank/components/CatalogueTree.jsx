@@ -26,13 +26,14 @@ export class CatalogueTree extends React.Component {
     this.state ={
       "crumbs": [],
     }
+    this.nodeChoiceDebounce=null;
   }
 
   /**
    * Обработчик выбора активного раздела каталога
    */
   handleNodeChoice = (id)=>{
-    this.props.chooseNode(id, this.props.catalogue_data, this.props.collection_type);
+    if(!this.props.clicks_disabled)this.props.chooseNode(id, this.props.catalogue_data, this.props.collection_type);
   }
 
   /**
@@ -147,7 +148,8 @@ const mapStateToProps = (state,props) =>{
     view: selectors.localstorage.getStoredCatalogueViewtype(state,props),
     loading: selectors.catalogue.getLoadingCatalogue(state,props),
     crumbs: selectors.catalogue.getCrumbs(state,props),
-    isAuthorized: selectors.user.getAuthorized(state,props)
+    isAuthorized: selectors.user.getAuthorized(state,props),
+    clicks_disabled: selectors.catalogue.getNodeMoving(state,props)
   }
 }
 
