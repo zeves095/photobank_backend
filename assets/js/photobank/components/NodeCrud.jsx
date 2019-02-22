@@ -52,7 +52,7 @@ export class NodeCrud extends React.Component {
   render() {
     const addElement = (
       <div className="crud-controls crud-controls--add">
-        <p>Добавить папку</p>
+        {/* <p>Добавить папку</p> */}
       <label htmlFor="node-name">Название</label>
         <input type="text" name="name" id="node-name" onChange={(e)=>this.setState({name:e.target.value})} />
         <span className="button-block"><button onClick={()=>{this.handleAddNode()}}><i className="fas fa-folder-plus"></i>Добавить</button></span>
@@ -60,7 +60,7 @@ export class NodeCrud extends React.Component {
     );
     const renameElement = (
       <div className="crud-controls crud-controls--add">
-        <p>Переименовать папку</p>
+        {/* <p>Переименовать папку</p> */}
       <label htmlFor="node-name">Название</label>
         <input type="text" name="name" id="node-name" onChange={(e)=>this.setState({name:e.target.value})} />
         <span className="button-block"><button onClick={()=>{this.handleUpdateNode()}}><i className="fas fa-sync-alt"></i>Сохранить</button></span>
@@ -68,13 +68,13 @@ export class NodeCrud extends React.Component {
     );
     const moveElement = (
       <div className="crud-controls crud-controls--add">
-        <p>Переместить папку</p>
-        <span className="button-block"><button onClick={()=>{this.handleStartParentChoice()}}><i className="fas fa-hand-pointer"></i>Выбрать нового родителя</button></span>
+        {/* <p>Переместить папку</p> */}
+      <span className="button-block"><button onClick={()=>{this.handleStartParentChoice()}}><i className="fas fa-hand-pointer"></i>Переместить</button></span>
       </div>
     );
     const removeElement = (
       <div className="crud-controls crud-controls--add">
-        <p>Удалить папку</p>
+        {/* <p>Удалить папку</p> */}
         <span className="button-block"><button onClick={()=>{this.handleRemoveNode()}}><i className="fas fa-folder-minus"></i>Удалить</button></span>
       </div>
     );
@@ -82,10 +82,10 @@ export class NodeCrud extends React.Component {
     return (
       <div className="catalogue-tree__node-crud node-crud">
         <div className="node-crud__operations button-block">
-          <button className="btn" onClick={()=>this.handleChooseOperation(0)}><i className="fas fa-folder-plus"></i></button>
-        <button className="btn" onClick={()=>this.handleChooseOperation(1)}><i className="fas fa-sync-alt"></i></button>
-      <button className="btn" onClick={()=>this.handleChooseOperation(2)}><i className="fas fa-hand-pointer"></i></button>
-    <button className="btn" onClick={()=>this.handleChooseOperation(3)}><i className="fas fa-folder-minus"></i></button>
+          <button className="btn" onClick={()=>this.handleChooseOperation(0)} title="Добавить папку"><i className="fas fa-folder-plus"></i></button>
+        <button className="btn" onClick={()=>this.handleChooseOperation(1)} title="Переименовать папку"><i className="fas fa-sync-alt"></i></button>
+      <button className="btn" onClick={()=>this.handleChooseOperation(2)} title="Выбрать нового родителя"><i className="fas fa-hand-pointer"></i></button>
+    <button className="btn" onClick={()=>this.handleChooseOperation(3)} title="Удалить папку"><i className="fas fa-folder-minus"></i></button>
         </div>
         {elems[this.state.operation]}
       </div>

@@ -483,3 +483,13 @@ fieldset{
     }
   }
 }
+
+
+.node-crud{
+  .button-block{
+    @include button-block();
+    button{
+      @include button-view-color();
+    }
+  }
+}
