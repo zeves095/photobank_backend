@@ -87,7 +87,8 @@ class UploadController extends AbstractController
         'user_set_url' => $container->getParameter('user_set_url'),
         'add_garbage_node_url' => $container->getParameter('add_garbage_node_url'),
         'update_garbage_node_url' => $container->getParameter('update_garbage_node_url'),
-        'remove_garbage_node_url' => $container->getParameter('remove_garbage_node_url')
+        'remove_garbage_node_url' => $container->getParameter('remove_garbage_node_url'),
+        'dump_existing_uploads_url' => $container->getParameter('dump_existing_uploads_url')
       );
       $response = new JsonResponse();
       $response->setData($config);

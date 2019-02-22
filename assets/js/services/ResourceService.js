@@ -11,9 +11,10 @@ class ResourceService{
    * Запрашивает список существующих ресурсов для товара
    * @param  {String} itemId Идентификатор товара
    */
-  static fetchExisting(itemId){
+  static fetchExisting(itemId, collection){
     return new Promise((resolve, reject)=>{
-      fetch(utility.config.existing_uploads_url+itemId, {method: "GET"})
+      let url = collection==0?utility.config.existing_uploads_url+itemId:utility.config.dump_existing_uploads_url+itemId;
+      fetch(url, {method: "GET"})
       .then(response=>response.json())
       .then((data)=>{
         resolve(data);

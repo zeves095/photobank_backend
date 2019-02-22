@@ -14,6 +14,7 @@ export const breadcrumbs = (store, props)=>store.catalogue.get('crumbs');
 // export const collectionType = (store, props)=>store.catalogue.get('collection_type');
 export const localStorage = (store, props)=>store.localstorage.get('localstorage');
 export const collectionType = (store, props)=>localStorage(store,props).get('collection_type')||store.catalogue.get('collection_type');
+export const nodeMoving = (store,props)=>store.catalogue.get('moving_node');
 
 export const getCatalogueData = createSelector(catalogueData, collectionType,(catalogue, type)=>{
   const cat_data = catalogue.get(type);
@@ -73,4 +74,8 @@ export const getCrumbString = createSelector(breadcrumbs, (crumbs)=>{
 
 export const getCollectionType = createSelector(collectionType, (type)=>{
   return type;
+});
+
+export const getNodeMoving = createSelector(nodeMoving, (mov)=>{
+  return mov;
 });
