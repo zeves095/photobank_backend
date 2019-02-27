@@ -20,3 +20,4 @@ parameters:
   upload_url: '/upload'
   max_main_resources: 1
   max_additional_resources: 99
+  placeholder_url: '/catalogue/resource/placeholder'

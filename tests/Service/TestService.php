@@ -4,6 +4,7 @@ namespace App\Tests\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\CatalogueNode;
+use App\Entity\GarbageNode;
 use App\Entity\CatalogueNodeItem;
 use App\Entity\Resource;
 use App\Entity\Link;
@@ -30,18 +31,22 @@ class TestService{
     $resourceRepo = $this->entityManager->getRepository(Resource::class);
     $itemRepo = $this->entityManager->getRepository(CatalogueNodeItem::class);
     $nodeRepo = $this->entityManager->getRepository(CatalogueNode::class);
+    $garbageNodeRepo = $this->entityManager->getRepository(GarbageNode::class);
     $userRepo = $this->entityManager->getRepository(User::class);
     $linkRepo = $this->entityManager->getRepository(Link::class);
 
     $resources = $resourceRepo->findBy([],['id'=>'ASC'],50);
+    $garbageResource = $resourceRepo->findOneBy(['item' => NULL])->getId();
     $items = $itemRepo->findBy([],['id'=>'ASC'],50);
     $nodes = $nodeRepo->findBy([],['id'=>'ASC'],150);
+    $garbageNodes = $garbageNodeRepo->findBy([],['id'=>'ASC'],150);
     $users = $userRepo->findBy([],['id'=>'ASC'],100);
     $links = $linkRepo->findBy([],['id'=>'ASC'],100);
 
     $resourceIds = array();
     $itemIds = array();
     $nodeIds = array();
+    $garbageNodeIds = array();
     $linkIds = array();
 
     foreach($resources as $resource){
@@ -67,6 +72,13 @@ class TestService{
         $nodeWithItems = $node->getId();
       }
       $nodeIds[] = $node->getId();
+    }
+    foreach($garbageNodes as $node){
+      if(!isset($garbageNodeWithChildren)
+      & sizeof($node->getChildren())>0){
+        $garbageNodeWithChildren = $node->getId();
+      }
+      $garbageNodeIds[] = $node->getId();
     }
     foreach($users as $user){
       if(!isset($adminObject) && in_array('ROLE_ADMIN', $user->getRoles())){
@@ -103,15 +115,18 @@ class TestService{
       'resources'=>$resourceIds,
       'items'=>$itemIds,
       'nodes'=>$nodeIds,
+      'garbageNodes'=>$garbageNodeIds,
       'users'=>$userIds,
       'links'=>$linkIds,
       'admin'=>$admin,
       'nodeWithChildren'=>$nodeWithChildren,
+      'garbageNodeWithChildren'=>$garbageNodeWithChildren,
       'nodeWithItems'=>$nodeWithItems,
       'itemWithResources'=>$itemWithResources,
       'baseResource'=>$baseResource,
       'searchItem'=>$searchItem,
       'searchResource'=>$searchResource,
+      'garbageResource'=>$garbageResource,
     ];
 
     return $sample;

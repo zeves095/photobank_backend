@@ -8,6 +8,8 @@ use App\Entity\Resource;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use App\Entity\Search\ResourceQueryObject;
+use App\Entity\CatalogueNodeItem;
+use App\Entity\GarbageNode;
 
 /**
 * Репозиторий Doctrine ORM для работы с сущностями типа "Resource"
@@ -38,15 +40,18 @@ class ResourceRepository extends ServiceEntityRepository
     */
     public function findOriginalResources($item)
     {
-
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.item = :item')
-            ->setParameter('item', $item)
-            ->andWhere('r.gid = r.id')
-            ->orderBy('r.id', 'ASC')
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb = $this->createQueryBuilder('r')
+        ->andWhere('r.gid = r.id')
+        ->orderBy('r.id', 'ASC');
+        if($item instanceof CatalogueNodeItem){
+          $qb->andWhere('r.item = :item')
+          ->setParameter('item', $item);
+        }elseif($item instanceof GarbageNode){
+          $qb->andWhere('r.garbageNode = :item')
+          ->setParameter('item', $item);
+        }
+        return $qb->getQuery()
+        ->getResult();
     }
 
     /**

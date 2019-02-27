@@ -162,9 +162,11 @@ export function fetchNodes(id, data, collection){
  */
 export function chooseNode(id, data, collection){
   return (dispatch)=> {
+    console.log('CHOSS',id, collection);
     let qo = new ItemQueryObject();
     qo.nodeId = id;
     let storageKey = collection==0?'current_node':'current_garbage_node';
+    console.log('storke', storageKey);
     let actions = [
       dispatch(setLocalValue(storageKey, id)),
       dispatch(fetchNodes(id, data, collection))
@@ -626,6 +628,7 @@ export function downloadResources(resources){
  */
 export function chooseCollectionType(type){
   return dispatch=>{
+    console.log('KALSH', type);
     dispatch(setLocalValue('collection_type', type));
     return dispatch({
       type: CHOOSE_COLLECTION,
