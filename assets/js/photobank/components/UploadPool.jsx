@@ -52,6 +52,7 @@ export class UploadPool extends React.Component{
 
   render(){
     let pool = this.props.container.map(item=>{
+      console.log(item);
       return(
       <div key={"pool-item" + item.id}>
         <ItemSection item_id={item.id} open_by_default={!this.state.collapse_all} render_existing={false}/>

@@ -40,7 +40,7 @@ export class CatalogueTree extends React.Component {
    * Выбирает созраненный раздел каталога как активный
    */
   componentWillMount(){
-    this.handleCollectionChoice(this.props.collection_type);
+    this.props.chooseCollectionType(this.props.collection_type);
     this.handleNodeChoice(this.props.current_node);
   }
 
@@ -70,7 +70,9 @@ export class CatalogueTree extends React.Component {
    *
    */
   handleCollectionChoice(type){
+    if(!this.props.loading){
     this.props.chooseCollectionType(type);
+    }
   }
 
   /**
@@ -118,7 +120,10 @@ export class CatalogueTree extends React.Component {
       <div className={"catalogue-tree"}>
         <span className="titlefix"><h2 className="catalogue-tree__component-title component-title">
           Каталог
-          <span className="component-title__view-icons"><i className="fas fa-sitemap" title="Дерево" data-view="2" onClick={()=>{this.handleViewChoice("2")}}></i><i className="fas fa-list" title="Список" data-view="1" onClick={()=>{this.handleViewChoice("1")}}></i><i title="Поиск" data-view="3" onClick={()=>{this.handleViewChoice("3")}} className="fas fa-search"></i></span></h2>
+          <span className="component-title__view-icons"><i className="fas fa-sitemap" title="Дерево" data-view="2" onClick={()=>{this.handleViewChoice("2")}}></i><i className="fas fa-list" title="Список" data-view="1" onClick={()=>{this.handleViewChoice("1")}}></i>
+        {this.props.collection_type!=1&&<i title="Поиск" data-view="3" onClick={()=>{this.handleViewChoice("3")}} className="fas fa-search"></i>}
+        </span>
+        </h2>
         <div className="collection-tabs">
           <span className={"collection-tabs__tab" + (this.props.collection_type==0?" active":"")} onClick={()=>{this.handleCollectionChoice(0)}}>Товары</span>
         <span className={"collection-tabs__tab" + (this.props.collection_type==1?" active":"")} onClick={()=>{this.handleCollectionChoice(1)}}>Свалка</span>
