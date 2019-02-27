@@ -110,7 +110,7 @@ class ResourceService{
   public function persistResource($resourceParameters)
   {
     $resource = new Resource();
-    
+
     $item = $this->_getNodeByItemId($resourceParameters['item_id']);
 
     if(in_array(strtolower($resourceParameters['extension']),array('jpg','jpeg','png','gif','psd','tiff','tif','bmp'))){
@@ -291,14 +291,22 @@ class ResourceService{
     return $response;
   }
 
+  public function getFullPath($resource)
+  {
+    $upload_directory = $this->container->getParameter('upload_directory');
+    $path = $resource->getPath();
+    $filename = $resource->getFilename();
+    return $upload_directory.$path;
+  }
+
     protected function _getNodeByItemId(string $item_id)
     {
         if(preg_match('/^9\d{10}$/', $item_id)){ // отработка ресурса для помойки
-            $repository = $this->entityManager->getRepository(CatalogueNodeItem::class);
+            $repository = $this->entityManager->getRepository(GarbageNode::class);
         }else{
             $repository = $this->entityManager->getRepository(CatalogueNodeItem::class);
         }
-        
+
         $item = $repository->findOneBy( ['id' => $item_id] );
         if (!$item) {
             $error_string = $this->translator->trans("Product not founded",[],'file_uploader') . '. '. $this->translator->trans("The code is:",[],'file_uploader') . ' ' . $item_id ;

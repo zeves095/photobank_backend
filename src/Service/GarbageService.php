@@ -35,6 +35,11 @@ class GarbageService{
     $this->container = $container;
   }
 
+  /**
+   * Создает новую папку на свалке
+   * @param  string $name   Имя новой папки
+   * @param  int $parent Id родителя
+   */
   public function createNode($name, $parent)
   {
     $node = new GarbageNode();
@@ -47,22 +52,29 @@ class GarbageService{
     return ['successful'=>true];
   }
 
+  /**
+   * Устанавливает новое имя или родителя для папки на свалке
+   * @param  int $id     Id обновляемой папки
+   * @param  object $params Массив параметров для обновления
+   */
   public function updateNode($id, $params)
   {
     $repo = $this->entityManager->getRepository(GarbageNode::class);
     $node = $repo->findOneBy(['id'=>$id]);
     isset($params['name'])&&$node->setName($params['name']);
-    var_dump($params);
     if(isset($params['parent'])){
       if(!$this->_checkParentRecursion($id, $params['parent'])){return ['successful'=>false, 'error'=>'Нельзя переназначить ресурс на дочерний'];}
       $parent = $repo->findOneBy(['id'=>$params['parent']]);
       $node->setParent($parent);
     }
-    var_dump([$id,$params]);
     $this->entityManager->flush();
     return ['successful'=>true];
   }
 
+  /**
+   * Устанавливет флаг deleted в базе для папки
+   * @param  int $id Id ресурса для удаления
+   */
   public function removeNode($id)
   {
     $repo = $this->entityManager->getRepository(GarbageNode::class);
@@ -76,11 +88,15 @@ class GarbageService{
     return ['successful'=>true];
   }
 
+  /**
+   * Делает проверку да предмет того, происходит ли попытка установить дочернюю папку ресурса как ее родителя
+   * @param  int $nid Id папки
+   * @param  int $pid Id папки-рподителя
+   */
   private function _checkParentRecursion($nid,$pid)
   {
     $repo = $this->entityManager->getRepository(GarbageNode::class);
     while($pid){
-      var_dump(["PID",$pid]);
       if($pid == $nid){
         return false;
       }

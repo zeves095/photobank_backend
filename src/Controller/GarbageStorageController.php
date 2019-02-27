@@ -195,7 +195,7 @@ class GarbageStorageController extends AbstractController
     }
 
     /**
-     * Получает нормализованный объект с информацией о ресурсе по идентификатору товара
+     * Получает нормализованный объект с информацией о ресурсе по идентификатору папки свалки
      *
      * @param GarbageNode $gitem Объект товара, подтягивается через wildcard {id}
      * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
@@ -217,105 +217,5 @@ class GarbageStorageController extends AbstractController
         $response->setData($resourcesArray);
         return $response;
     }
-
-    // /**
-    //  * Получает нормализованный объект с информацией о товаре по коду 1С
-    //  *
-    //  * @param GarbageNode $gitem Объект товара, подтягивается через wildcard {id}
-    //  * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
-    //  *
-    //  * @Route("/garbage/node/item/{item}",
-    //  * requirements={"item" = "\d{11}"},
-    //  * methods={"GET"},
-    //  * name="garbage_node_item_by_itemcode")
-    //  * @ParamConverter("gitem", class="App\Entity\GarbageNode", options={"mapping": {"item": "id"}})
-    //  */
-    // public function getItemByItemCode(GarbageNode $gitem, AppSerializer $serializer)
-    // {
-    //     $response = new JsonResponse();
-    //
-    //     $gitemArray = $serializer->normalize($gitem, null, array(
-    //       'add-children'=>true,
-    //         ObjectNormalizer::ENABLE_MAX_DEPTH => true,
-    //         'groups' => array('main','parent')
-    //     ));
-    //
-    //     $response->setData($gitemArray);
-    //
-    //     return $response;
-    // }
-    //
-    // /**
-    //  * Получает нормализованный объект с информацией о товаре
-    //  *
-    //  * @param GarbageNode $gitem Объект товара, подтягивается через wildcard {id}
-    //  * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
-    //  *
-    //  * @Route("/garbage/node/item/{id}",
-    //  * methods={"GET"},
-    //  * name="garbage_node_item")
-    //  */
-    // public function getItem(GarbageNode $gitem, AppSerializer $serializer)
-    // {
-    //     $response = new JsonResponse();
-    //
-    //     $gitemArray = $serializer->normalize($gitem, null, array(
-    //       'add-children'=>true,
-    //         ObjectNormalizer::ENABLE_MAX_DEPTH => true,
-    //         'groups' => array('main','parent')
-    //     ));
-    //
-    //     $response->setData($gitemArray);
-    //     return $response;
-    // }
-    //
-    // /**
-    //  * Получает нормализованный объект с информацией о дочерних товарах от раздела каталога
-    //  *
-    //  * @param GarbageNode $gnode Обьект раздела, подтягивается через wildcard {id}
-    //  * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
-    //  *
-    //  * @Route("/garbage/node/items/{id}",
-    //  * methods={"GET"},
-    //  * name="garbage_node_items")
-    //  */
-    // public function getItems(GarbageNode $gnode, AppSerializer $serializer)
-    // {
-    //     $response = new JsonResponse();
-    //
-    //     $items = $gnode->getItems();
-    //     $itemsArray = $serializer->normalize($items, null, array(
-    //         ObjectNormalizer::ENABLE_MAX_DEPTH => true,
-    //         'groups' => array('main')
-    //     ));
-    //
-    //     $response->setData($itemsArray);
-    //     return $response;
-    // }
-    //
-    // /**
-    //  * Осуществляет поиск среди товаров
-    //  *
-    //  * @param Request $request Объект актуального запроса
-    //  * @param SearchQueryBuilder $queryBuilder Сервис создания поискового объекта
-    //  * @param SearchService $searchService Сервис, осуществляющий поиск через репозиторий
-    //  * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
-    //  *
-    //  * @Route("/garbage/search/items",
-    //  * methods={"GET"},
-    //  * name="garbage_search_items")
-    //  */
-    // public function searchItems(Request $request, SearchQueryBuilder $queryBuilder, SearchService $searchService,AppSerializer $serializer)
-    // {
-    //   $response = new JsonResponse();
-    //   $queryObject = $queryBuilder->makeItemQuery($request);
-    //   $items = $searchService->search($queryObject);
-    //   $itemsArray = $serializer->normalize($items, null, array(
-    //       ObjectNormalizer::ENABLE_MAX_DEPTH => true,
-    //       'groups' => array('main')
-    //   ));
-    //   $response->setData($itemsArray);
-    //   return $response;
-    // }
 
 }

@@ -149,7 +149,7 @@ export class ExistingResource extends React.Component {
 
     return ((<div className={"existing-files__file file " + this.fileViewClasses[this.props.view]} key={this.props.file.src_filename + this.props.file.filename}>
       <a className="file__file-name" href={utility.config.resource_url + this.props.file.id + ".jpg"} target="_blank">
-        <div className="file__thumbnail" style={{"backgroundImage" : "url(" + (this.props.finished_presets.length?this.props.finished_presets[0].link:"") + ")"}}></div>
+        <div className="file__thumbnail" style={{"backgroundImage" : "url(" + (this.props.finished_presets[0]?this.props.finished_presets[0].link:utility.config.placeholder_url) + ")"}}></div>
         {this.props.view != 2 ? dlControls : null}
         {this.props.file.src_filename}
       </a>
