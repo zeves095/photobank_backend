@@ -33,7 +33,6 @@ export class NodeCrud extends React.Component {
   bodyListener = (e)=>{
     e.stopPropagation();
     e.preventDefault();
-    console.log("CLOKK",e.target);
     let node_id = this.props.node;
     let parent_id = e.target.id.substring(0, e.target.id.length-7);
     this.props.stopNodeRebase(node_id, parent_id, this.props.catalogue_data, this.props.collection_type);

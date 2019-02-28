@@ -22,12 +22,10 @@ export const getCatalogueData = createSelector(catalogueData, collectionType,(ca
 });
 
 export const getCurrentNode = createSelector(currentNodeId, currentgarbageNodeId, collectionType, localStorage, (node, garbage_node, type, storage)=>{
-  console.log('TYPE', type, node, garbage_node);
   let result = type==0?node:garbage_node;
   if(!result){
     result = type==0?storage.get('current_node'):storage.get('current_garbage_node');
   }
-  console.log('CRENT NDO', result);
   return result;
 });
 
