@@ -57,9 +57,10 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.fetchUnfinished()).then(()=>{
+    return(store.dispatch(actions.fetchUnfinished())
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
 
   });
 
@@ -119,9 +120,10 @@ describe('Actions', ()=>{
         payload: nodeResponses},
     ];
     const store = mockStore(mockUploadStore);
-    return store.dispatch(actions.fetchRootNodes(nodes[0], constants.CATALOGUE_COLLECTION)).then(()=>{
+    return(store.dispatch(actions.fetchRootNodes(nodes[0], constants.CATALOGUE_COLLECTION))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
 
   });
 
@@ -149,9 +151,10 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.fetchNodes(firstId, cat_data[0], constants.CATALOGUE_COLLECTION)).then(()=>{
+    return(store.dispatch(actions.fetchNodes(firstId, cat_data[0], constants.CATALOGUE_COLLECTION))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
 
   });
 
@@ -202,9 +205,10 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.chooseNode(node.id, cat_data[0], constants.CATALOGUE_COLLECTION)).then(()=>{
+    return(store.dispatch(actions.chooseNode(node.id, cat_data[0], constants.CATALOGUE_COLLECTION))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
 
   });
 
@@ -234,9 +238,10 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.fetchExisting(item.id, constants.CATALOGUE_COLLECTION)).then(()=>{
+    return(store.dispatch(actions.fetchExisting(item.id, constants.CATALOGUE_COLLECTION))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
 
   });
 
@@ -287,9 +292,10 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.fetchPresets(pagination,resources)).then(()=>{
+    return(store.dispatch(actions.fetchPresets(pagination,resources))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
 
   });
 
@@ -319,10 +325,10 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.chooseItem(itemId))
+    return (store.dispatch(actions.chooseItem(itemId))
     .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
 
   });
 
@@ -355,9 +361,10 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.fetchItems(qo)).then(()=>{
+    return(store.dispatch(actions.fetchItems(qo))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
 
   });
 
@@ -383,9 +390,10 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.deleteUpload(hash, item)).then(()=>{
+    return(store.dispatch(actions.deleteUpload(hash, item))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
 
   });
 
@@ -407,9 +415,10 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.deletePendingUploads(item, pending)).then(()=>{
+    return(store.dispatch(actions.deletePendingUploads(item, pending))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
 
   });
 
@@ -431,9 +440,10 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.deleteUnfinishedUploads(itemUnfinished,item)).then(()=>{
+    return(store.dispatch(actions.deleteUnfinishedUploads(itemUnfinished,item))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
 
   });
 
@@ -561,9 +571,10 @@ describe('Actions', ()=>{
     ];
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.getUserInfo()).then(()=>{
+    return(store.dispatch(actions.getUserInfo())
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
 
   });
 
@@ -585,9 +596,10 @@ describe('Actions', ()=>{
     ];
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.fetchItemData(itemId)).then(()=>{
+    return(store.dispatch(actions.fetchItemData(itemId))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
   });
 
   it("Добавление ресурса к списку загрузок", ()=>{
@@ -634,9 +646,10 @@ describe('Actions', ()=>{
       item:itemId
     }
 
-    return store.dispatch(actions.updateResourceField(params, constants.CATALOGUE_COLLECTION)).then(()=>{
+    return(store.dispatch(actions.updateResourceField(params, constants.CATALOGUE_COLLECTION))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
   });
 
   it("Поиск товаров", ()=>{
@@ -671,9 +684,10 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.searchItems(searchFields)).then(()=>{
+    return(store.dispatch(actions.searchItems(searchFields))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
-    });
+    }));
   });
 
   it("Получение хлебных крошек", ()=>{
