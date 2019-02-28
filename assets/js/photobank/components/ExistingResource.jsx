@@ -1,9 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
+
 import selectors from '../selectors';
-import {ResourceService,NotificationService} from '../services';
+import {NotificationService, ResourceService} from '../services';
 import {addResourceToDownloads, updateResourceField} from '../actionCreator';
 import utility from '../services/UtilityService';
+import * as constants from '../constants';
 
 export class ExistingResource extends React.Component {
 
@@ -69,7 +71,7 @@ export class ExistingResource extends React.Component {
   handlePriority = (e)=>{
     if(!this.props.authorized){return}
     let file = e.target.dataset["file"];
-    if(this.state.priority_active == file){file = null}
+    if(this.state.priority_active === file){file = null}
     this.setState({
       "priority_active": file
     });
@@ -86,7 +88,7 @@ export class ExistingResource extends React.Component {
       key:"type",
       value:type,
       item:this.props.item_id,
-    });
+    }, this.props.collection_type);
   }
 
   /**
@@ -138,28 +140,27 @@ export class ExistingResource extends React.Component {
     );
     let priorityStack = [];
     let priorityCtx = "";
-    if(this.state.priority_active == this.props.file.id){
+    if(this.state.priority_active === this.props.file.id){
       for(let j=0; j<this.props.max_add; j++){
-        priorityStack.push(<div className={"item " + (this.props.file.priority == j?"active":"")} onClick={()=>{this.handlePriorityUpdate(j)}} data-priority={j}>{j}</div>);
+        priorityStack.push(<div className={"item " + (this.props.file.priority === j?"active":"")} onClick={()=>{this.handlePriorityUpdate(j)}} data-priority={j}>{j}</div>);
       }
       priorityCtx = [
         <div className="edit-input__context-menu context-menu"><div className="context-menu__inner">{priorityStack}</div></div>
       ];
     }
-
     return ((<div className={"existing-files__file file " + this.fileViewClasses[this.props.view]} key={this.props.file.src_filename + this.props.file.filename}>
       <a className="file__file-name" href={utility.config.resource_url + this.props.file.id + ".jpg"} target="_blank">
         <div className="file__thumbnail" style={{"backgroundImage" : "url(" + (this.props.finished_presets[0]?this.props.finished_presets[0].link:utility.config.placeholder_url) + ")"}}></div>
-        {this.props.view != 2 ? dlControls : null}
+      {constants.RESOURCES_TABLE_VIEW!==this.props.view ? dlControls : null}
         {this.props.file.src_filename}
       </a>
-      <div className={"edit-input " + (this.props.file.type == "2"?"edit-input--add-file":"")}>
+      <div className={"edit-input " + (this.props.file.type === "2"?"edit-input--add-file":"")}>
         <select onChange={(e)=>{this.handleTypeUpdate(e)}} name="type" defaultValue={this.props.file.type} disabled={!this.props.authorized}>
           <option disabled={this.props.current_main >= this.props.max_main?true:false} value="1">Основноe{this.props.current_main+"/"+this.props.max_main}</option>
             <option disabled={this.props.current_add >= this.props.max_add?true:false} value="2">Доп.{this.props.current_add+"/"+this.props.max_add}</option>
           <option value="3">Исходник</option>
         </select>
-        {this.props.file.type == "2"
+        {this.props.file.type === "2"
             ? <span className="edit-input__priority-btn" data-file={this.props.file.id} onClick={this.handlePriority}>{this.props.file.priority}{priorityCtx}</span>
             : null
         }
@@ -189,6 +190,8 @@ const mapStateToProps = (state,props)=>{
     current_main: selectors.resource.getCurrentMainResources(state,props),
     current_add: selectors.resource.getCurrentAddResources(state,props),
     authorized: selectors.user.getAuthorized(state,props),
+    collection_type: selectors.catalogue.getCollectionType(state,props),
+    view: selectors.localstorage.getStoredListViewtype(state,props)
   }
 }
 

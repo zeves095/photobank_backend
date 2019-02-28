@@ -56,7 +56,8 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockLinkmanagerStore);
 
-    return store.dispatch(actions.init()).then(()=>{
+    return store.dispatch(actions.init())
+.then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
 
@@ -90,7 +91,8 @@ describe('Actions', ()=>{
       },
     ];
     const store = mockStore(mockLinkmanagerStore);
-    return store.dispatch(actions.getResourceThumbnails([1,2,3])).then(()=>{
+    return store.dispatch(actions.getResourceThumbnails([1,2,3]))
+.then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
   });
@@ -115,7 +117,8 @@ describe('Actions', ()=>{
       },
     ];
     const store = mockStore(mockLinkmanagerStore);
-    return store.dispatch(actions.searchResources()).then(()=>{
+    return store.dispatch(actions.searchResources())
+.then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
   });
@@ -176,7 +179,8 @@ describe('Actions', ()=>{
       },
     ];
     const store = mockStore(mockLinkmanagerStore);
-    return store.dispatch(actions.deleteLink("1")).then(()=>{
+    return store.dispatch(actions.deleteLink("1"))
+.then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
   });
@@ -197,7 +201,8 @@ describe('Actions', ()=>{
       },
     ];
     const store = mockStore(mockLinkmanagerStore);
-    return store.dispatch(actions.fetchLinks()).then(()=>{
+    return store.dispatch(actions.fetchLinks())
+.then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
   });
@@ -226,7 +231,8 @@ describe('Actions', ()=>{
       },
     ];
     const store = mockStore(mockLinkmanagerStore);
-    return store.dispatch(actions.submitLink({})).then(()=>{
+    return store.dispatch(actions.submitLink({}))
+.then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
   });
@@ -251,7 +257,8 @@ describe('Actions', ()=>{
       },
     ];
     const store = mockStore(mockLinkmanagerStore);
-    return store.dispatch(actions.updateLink({},1)).then(()=>{
+    return store.dispatch(actions.updateLink({},1))
+.then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
   });

@@ -1,12 +1,10 @@
 import React from 'react';
-// import $ from 'jquery';
+import {connect} from 'react-redux';
+
 import {ResourceService} from './../../services/ResourceService';
 import {NotificationService} from '../../services/NotificationService';
-
-import {connect} from 'react-redux';
 import selectors from '../selectors';
-import {removeDownload, clearDownloads, downloadResources, getDownloadResourceData} from '../actionCreator';
-
+import {clearDownloads, downloadResources, getDownloadResourceData, removeDownload} from '../actionCreator';
 import utility from '../services/UtilityService';
 
 /**
@@ -51,7 +49,7 @@ export class DownloadPool extends React.Component{
   }
 
   render(){
-    if(this.props.downloads.length == 0){return "Нет загрузок"}
+    if(0 === this.props.downloads.length){return "Нет загрузок"}
     let downloads = this.props.downloads.map((download)=>{
       return(
         <div key={"dl"+download.id} className="pending-download">

@@ -1,16 +1,15 @@
 import React from 'react';
-// import $ from 'jquery';
+import {connect} from 'react-redux';
+import selectors from '../selectors';
 import TreeView from 'react-simple-jstree';
+
 import ItemSearch from './ItemSearch';
 import NodeCrud from './NodeCrud';
 import {ItemQueryObject} from '../services/ItemQueryObject';
 import {CatalogueService} from '../services/CatalogueService';
 import {LocalStorageService} from '../services/LocalStorageService';
 import {NotificationService} from '../../services/NotificationService';
-
-import {connect} from 'react-redux';
-import selectors from '../selectors';
-import {chooseNode, chooseCatalogueViewType, pushCrumbs, chooseCollectionType} from '../actionCreator';
+import {chooseCatalogueViewType, chooseCollectionType, chooseNode, pushCrumbs} from '../actionCreator';
 /**
  * [state description]
  * @type {Object}
@@ -58,7 +57,7 @@ export class CatalogueTree extends React.Component {
    * @param {Number} type Тип представления
    */
   handleViewChoice = (type)=>{
-    if(type==3){
+    if(3===parseInt(type,10)){
       this.props.chooseNode(null, this.props.catalogue_data, this.props.collection_type);
     }
     this.props.chooseCatalogueViewType(type);
@@ -79,8 +78,9 @@ export class CatalogueTree extends React.Component {
    * Смещает выбор текущего уровня каталога на уровень выше (для кнопки "../" в представлении списка)
    */
   traverseUp = ()=>{
-    let curNode = this.props.catalogue_data.filter((node)=>{return parseInt(node.id)==parseInt(this.props.current_node)})[0];
-    if(typeof curNode!= "undefined"){
+    if(!!parseInt(this.props.current_node,10));
+    let curNode = this.props.catalogue_data.filter((node)=>{return parseInt(node.id,10)===parseInt(this.props.current_node,10)})[0];
+    if(!!curNode){
       this.props.chooseNode(curNode.parent, this.props.catalogue_data, this.props.collection_type);
     }
   }
@@ -89,10 +89,10 @@ export class CatalogueTree extends React.Component {
     let view = "";
     let viewClass = "";
     switch(this.props.view){
-      case "1":
+      case 1:
         let children = this.props.catalogue_data.filter(node=>node.parent===this.props.current_node);
         let list = [];
-        if(this.props.current_node!==null){list.push(<div onClick={this.traverseUp} className="list-view__cat_item list-view__cat_item--parent">../</div>);}
+        if(!!this.props.current_node){list.push(<div onClick={this.traverseUp} className="list-view__cat_item list-view__cat_item--parent">../</div>);}
         for(var i = 0; i< children.length; i++){
           let child = children[i];
           list.push(
@@ -102,13 +102,13 @@ export class CatalogueTree extends React.Component {
         view = list;
         viewClass = "list-view";
         break;
-      case "2":
-        if(this.props.catalogue_data.length==0){view = "";break;}
+      case 2:
+        if(0===this.props.catalogue_data.length){view = "";break;}
         let tree=CatalogueService.makeTree(this.props.catalogue_data, this.props.current_node);
         view = <TreeView treeData={tree} onChange={(e,data)=>{if(data.action==='select_node' && data.selected[0] != this.props.current_node){this.handleNodeChoice(data.selected[0])}}} />;
         viewClass = "tree-view";
         break;
-      case "3":
+      case 3:
         view = <ItemSearch searchQueryHandler={this.handleQuery} filterid="srch" />;
         viewClass = "search-view";
         break;
@@ -125,20 +125,20 @@ export class CatalogueTree extends React.Component {
         </span>
         </h2>
         <div className="collection-tabs">
-          <span className={"collection-tabs__tab" + (this.props.collection_type==0?" active":"")} onClick={()=>{this.handleCollectionChoice(0)}}>Товары</span>
-        <span className={"collection-tabs__tab" + (this.props.collection_type==1?" active":"")} onClick={()=>{this.handleCollectionChoice(1)}}>Свалка</span>
+          <span className={"collection-tabs__tab" + (0==parseInt(this.props.collection_type,10)?" active":"")} onClick={()=>{this.handleCollectionChoice(0)}}>Товары</span>
+        <span className={"collection-tabs__tab" + (1==parseInt(this.props.collection_type,10)?" active":"")} onClick={()=>{this.handleCollectionChoice(1)}}>Свалка</span>
         </div>
       </span>
       <div className="inner-bump">
           <div className="catalogue-tree__crumbs crumbs">
-            {this.props.view==1?crumbs:null}
+            {this.props.view===1?crumbs:null}
           </div>
           <div className={(this.props.loading?"loading ":"")+"catalogue-tree__view-inner view-inner"}>
             <div className={"view-inner__"+viewClass + " " + viewClass}>
               {view}
             </div>
           </div>
-          {this.props.collection_type==1&&this.props.isAuthorized?<NodeCrud />:null}
+          {this.props.collection_type===1&&this.props.isAuthorized?<NodeCrud />:null}
         </div>
       </div>
     );

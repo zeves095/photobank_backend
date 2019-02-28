@@ -41,7 +41,8 @@ export function init(){
     return Promise.all([
       utility.fetchConfig(),
       utility.initLocalstorage(),
-    ]).then(()=>{
+    ])
+    .then(()=>{
       Promise.all([
         getLocalStorage()(dispatch),
         fetchUnfinished()(dispatch),
@@ -108,7 +109,8 @@ export function fetchRootNodes(id, collection){
       type: CATALOGUE_ROOT_NODES_FETCH+START,
       payload: id
     });
-    return CatalogueService.fetchRootNodes(id, collection).then((data)=>{
+    return CatalogueService.fetchRootNodes(id, collection)
+      .then((data)=>{
       dispatch({
         type: CATALOGUE_ROOT_NODES_FETCH+SUCCESS,
         payload: data
@@ -167,15 +169,16 @@ export function chooseNode(id, data, collection){
   return (dispatch)=> {
     let qo = new ItemQueryObject();
     qo.nodeId = id;
-    let storageKey = collection==0?'current_node':'current_garbage_node';
+    let storageKey = 0===parseInt(collection,10)?'current_node':'current_garbage_node';
     let actions = [
       dispatch(setLocalValue(storageKey, id)),
       dispatch(fetchNodes(id, data, collection))
     ];
-    collection==0
+    0===parseInt(collection,10)
     ?actions.push(dispatch(fetchItems(qo)))
     :actions.push(dispatch(pushResumable(id)));
-    return Promise.all(actions).then(result=>{
+    return Promise.all(actions)
+    .then(result=>{
       dispatch({
         type: NODE_CHOICE,
         payload: id
@@ -195,7 +198,8 @@ export function fetchExisting(id, collection){
       type: EXISTING_RESOURCES_FETCH+START,
       payload: ''
     });
-    return ResourceService.fetchExisting(id, collection).then((data)=>{
+    return ResourceService.fetchExisting(id, collection)
+    .then((data)=>{
       dispatch({
         type: EXISTING_RESOURCES_FETCH+SUCCESS,
         payload: data
@@ -222,7 +226,8 @@ export function fetchPresets(pagination, existing){
       type: EXISTING_PRESETS_FETCH+START,
       payload: ''
     });
-    return ResourceService.fetchExistingPresets(pagination, existing).then((data)=>{
+    return ResourceService.fetchExistingPresets(pagination, existing)
+    .then((data)=>{
       dispatch({
         type: EXISTING_PRESETS_FETCH+SUCCESS,
         payload: data
@@ -248,7 +253,8 @@ export function chooseItem(id){
       dispatch(purgeEmptyItems()),
       dispatch(setLocalValue('current_item',id)),
     ];
-    return Promise.all(actions).then(result=>{
+    return Promise.all(actions)
+    .then(result=>{
       dispatch({
         type: ITEM_CHOICE,
         payload: id
@@ -294,7 +300,8 @@ export function prepareFileForUpload(file, existing, item){
   return (dispatch)=>{
     const itemId = item.id;
     const itemCode = item.itemCode;
-    return UploadService.processFile(file, existing, item).then((uniqueIdentifier)=>{
+    return UploadService.processFile(file, existing, item)
+    .then((uniqueIdentifier)=>{
       let fileParams = {uniqueIdentifier,itemId,itemCode,file};
       dispatch({
         type: FILE_PROCESSED,
@@ -312,7 +319,8 @@ export function prepareFileForUpload(file, existing, item){
  */
 export function deleteUpload(filehash, item){
   return (dispatch)=>{
-    return UploadService.deleteUpload(filehash,item).then((response)=>{
+    return UploadService.deleteUpload(filehash,item)
+    .then((response)=>{
       dispatch({
         type: UPLOAD_DELETE,
         payload: {hash:filehash,item}
@@ -330,10 +338,11 @@ export function deleteUpload(filehash, item){
  * @param  {[type]} files [description]
  * @return {[type]}       [description]
  */
-export function completeUpload(id, files){
+export function completeUpload(id, files, collection){
   return dispatch=>{
-    return dispatch(deletePendingUploads(id,files)).then(()=>{
-      dispatch(fetchExisting(id));
+    return dispatch(deletePendingUploads(id,files))
+    .then(()=>{
+      dispatch(fetchExisting(id,collection));
       dispatch(fetchUnfinished());
     });
   }
@@ -539,15 +548,16 @@ export function addResourceToDownloads(id){
  * Обновляет поле тип/приоритет ресурса
  * @param  {Object} params Данные для обновления
  */
-export function updateResourceField(params){
+export function updateResourceField(params, collection){
   return dispatch=>{
     let fetchBody = {
       id:params.file.id,
       type:params.file.type
     };
     fetchBody[params.key] = params.value;
-    return fetch(utility.config.resource_url+params.file.id, {method:"PATCH", body:JSON.stringify(fetchBody)}).then(response=>{
-      dispatch(fetchExisting(params.item));
+    return fetch(utility.config.resource_url+params.file.id, {method:"PATCH", body:JSON.stringify(fetchBody)})
+    .then(response=>{
+      dispatch(fetchExisting(params.item,collection));
     });
   }
 }
@@ -596,7 +606,8 @@ export function removeDownload(id){
 export function getDownloadResourceData(resources){
   return dispatch=>{
     let downloads = [];
-    return ResourceService.getResource(resources).then((res)=>{
+    return ResourceService.getResource(resources)
+    .then((res)=>{
       for(var r in res){
         if(res[r] == ""){continue;}
         downloads.push({
@@ -627,6 +638,7 @@ export function downloadResources(resources){
 
 /**
  * Выбор типа коллекции для отображения в дереве каталога
+ * @param {Number} type Тип коллекции. 0-каталог 1-свалка
  */
 export function chooseCollectionType(type){
   return dispatch=>{
@@ -638,6 +650,13 @@ export function chooseCollectionType(type){
   }
 }
 
+/**
+ * Создает новую ноду свалки
+ * @param {String} name   Имя новой ноды
+ * @param {Number} parent Id родителя
+ * @param {Object} data   Структура каталога
+ * @param {Number} type   Тип коллекции
+ */
 export function addGarbageNode(name,parent,data,type){
   return dispatch=>{
     let body = JSON.stringify({name,parent});
@@ -652,6 +671,14 @@ export function addGarbageNode(name,parent,data,type){
   }
 }
 
+/**
+ * Обновляет ноду свалки
+ * @param {Number} id     Id ноды для обновления
+ * @param {String} name   Имя новой ноды
+ * @param {Number} parent Id родителя
+ * @param {Object} data   Структура каталога
+ * @param {Number} type   Тип коллекции
+ */
 export function updateGarbageNode(id,name,parent,data,type){
   return dispatch=>{
     let body = JSON.stringify(Object.assign({},{id,name,parent}));
@@ -666,6 +693,13 @@ export function updateGarbageNode(id,name,parent,data,type){
   }
 }
 
+/**
+ * Удаляет ноду свалки
+ * @param {Number} id     Id ноды для обновления
+ * @param {Number} parent Id родителя
+ * @param {Object} data   Структура каталога
+ * @param {Number} type   Тип коллекции
+ */
 export function removeGarbageNode(id,parent,data,type){
   return dispatch=>{
     let body = JSON.stringify({id});
@@ -682,6 +716,9 @@ export function removeGarbageNode(id,parent,data,type){
   }
 }
 
+/**
+ * Начало перемещения ноды свалки
+ */
 export function startNodeRebase(){
   return dispatch=>{
     dispatch({
@@ -691,6 +728,9 @@ export function startNodeRebase(){
   }
 }
 
+/**
+ * Конец перемещения ноды свалки
+ */
 export function stopNodeRebase(node_id=null, parent_id=null, data, type){
   return dispatch=>{
     dispatch(updateGarbageNode(node_id, null, parent_id, data, type))

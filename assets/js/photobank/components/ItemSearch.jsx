@@ -1,8 +1,7 @@
 import React from 'react';
+import {connect} from 'react-redux';
 
 import {ItemQueryObject} from '../services/ItemQueryObject';
-
-import {connect} from 'react-redux';
 import {searchItems} from '../actionCreator';
 /**
  * Компонент интерфейса поиска товаров
@@ -27,7 +26,7 @@ export class ItemSearch extends React.Component {
   handleChange = (e)=>{
     let field = e.target.name;
     let query = this.state.query;
-    if (e.target.type == "checkbox") {
+    if (e.target.type === "checkbox") {
       this.state.query[field] = e.target.checked ? 1 : 0;
     } else {
       this.state.query[field] = e.target.value;

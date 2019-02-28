@@ -1,13 +1,11 @@
 import React from 'react';
+import {connect} from 'react-redux';
 
 import ItemSection from './ItemSection';
 import { ListFilter } from './ListFilter';
 import {NotificationService} from '../../services/NotificationService';
-
-import {connect} from 'react-redux';
-
 import selectors from '../selectors';
-import {chooseListViewType, wasIsDoos} from '../actionCreator';
+import {chooseListViewType} from '../actionCreator';
 
 
 /**

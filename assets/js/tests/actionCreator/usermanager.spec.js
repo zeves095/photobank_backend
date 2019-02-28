@@ -49,7 +49,8 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUsermanagerStore);
 
-    return store.dispatch(actions.fetchUsers()).then(()=>{
+    return store.dispatch(actions.fetchUsers())
+.then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
 
@@ -102,7 +103,8 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUsermanagerStore);
 
-    return store.dispatch(actions.submitUser(user)).then(()=>{
+    return store.dispatch(actions.submitUser(user))
+.then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
 

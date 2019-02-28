@@ -1,9 +1,9 @@
 import React from 'react';
 import { hex_md5 } from '../../vendor/md5';
+import {connect} from 'react-redux';
+
 import {UploadService} from '../services/UploadService';
 import {NotificationService} from '../../services/NotificationService';
-
-import {connect} from 'react-redux';
 import selectors from '../selectors';
 import {deleteUpload, deleteUnfinishedUploads} from '../actionCreator';
 

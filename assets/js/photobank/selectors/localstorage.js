@@ -22,13 +22,13 @@ export const getStoredItemId = createSelector(localStorage, (storage)=>{
 });
 
 export const getStoredCatalogueViewtype = createSelector(localStorage, (storage)=>{
-  let view = storage.get('catalogue_view');
+  let view = parseInt(storage.get('catalogue_view'),10);
   return view?view:null;
 });
 
 export const getStoredListViewtype = createSelector(localStorage, (storage)=>{
-  let view = storage.get('list_view_type');
-  return view?view:null;
+  let view = parseInt(storage.get('list_view_type'),10);
+  return view;
 });
 
 export const getPendingDownloads = createSelector(localStorage, (storage)=>{
