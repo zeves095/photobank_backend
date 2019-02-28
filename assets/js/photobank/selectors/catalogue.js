@@ -79,3 +79,9 @@ export const getCollectionType = createSelector(collectionType, (type)=>{
 export const getNodeMoving = createSelector(nodeMoving, (mov)=>{
   return mov;
 });
+
+export const getPaginationLimit = createSelector(localStorage, (storage=>{
+  let limit = storage.get('pagination_limit');
+  if(!limit){limit=20;}
+  return limit;
+}));
