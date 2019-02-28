@@ -100,6 +100,7 @@ export function pushResumable(itemId){
 /**
  * Рекурсивно запрашивает структура каталога от текущего раздела до корня
  * @param  {Number} id Id текущего раздела
+ * @param  {Number} collection Тип коллекции (каталог/свалка)
  */
 export function fetchRootNodes(id, collection){
   return (dispatch)=>{
@@ -127,6 +128,7 @@ export function fetchRootNodes(id, collection){
  * Получает дочерние разделы каталога по id родителя
  * @param  {Number} id   Код 1C родителя
  * @param  {Object[]} data Уже имеющиеся данныe каталога
+ * @param  {Number} collection Тип коллекции (каталог/свалка)
  */
 export function fetchNodes(id, data, collection){
   return (dispatch)=>{
@@ -159,6 +161,7 @@ export function fetchNodes(id, data, collection){
  * Выбирает активный раздел каталога
  * @param  {String} id   Код 1С раздела каталога
  * @param  {Object[]} data Уже имеющиеся данныe каталога
+ * @param  {Number} collection Тип коллекции (каталог/свалка)
  */
 export function chooseNode(id, data, collection){
   return (dispatch)=> {
@@ -184,6 +187,7 @@ export function chooseNode(id, data, collection){
 /**
  * Получает данные о существующих ресурсах, привязанных к товару каталога
  * @param  {String} id Код 1С товара
+ * @param  {Number} collection Тип коллекции (каталог/свалка)
  */
 export function fetchExisting(id, collection){
   return (dispatch)=>{
