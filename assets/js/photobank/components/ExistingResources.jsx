@@ -30,7 +30,7 @@ export class ExistingResources extends React.Component{
       "view_type": this.props.default_view,
       "loading" : false,
       "pagination_start": 0,
-      "pagination_limit": 20,
+      "pagination_limit": this.props.pag_limit,
       "pagination_end": 20,
       "pagination_current_page": 1,
       "pagination_total_pages": 0,
@@ -54,7 +54,7 @@ export class ExistingResources extends React.Component{
   handlePagination = (e)=>{
     let changed = false;
     let start = this.state.pagination_start;
-    let limit = this.state.pagination_limit;
+    let limit = parseInt(this.state.pagination_limit,10);
     let target = e.target;
     if(e.type == "click"){
       if(target.tagName != "BUTTON"){
@@ -181,7 +181,8 @@ const mapStateToProps = (state,props) =>{
   return {
     existing: selectors.resource.getExisting(state,props),
     loading: selectors.resource.getLoadingPresets(state,props)||false,
-    collection_type: selectors.catalogue.getCollectionType(state,props)
+    collection_type: selectors.catalogue.getCollectionType(state,props),
+    pag_limit: selectors.catalogue.getPaginationLimit(state,props)
   }
 }
 
