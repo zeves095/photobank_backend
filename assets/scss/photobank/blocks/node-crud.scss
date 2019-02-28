@@ -1,0 +1,9 @@
+.node-crud{
+  padding: 10px;
+  .button-block{
+    button{
+      @include button();
+      padding: 10px 8px;
+    }
+  }
+}

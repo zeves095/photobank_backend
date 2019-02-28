@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PhotoBank\FileUploaderBundle\Event\FileUploadedEvent;
 use App\Entity\Resource;
 use App\Entity\CatalogueNodeItem;
+use App\Entity\GarbageNode;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Service\ResourceService;
 use Symfony\Component\Filesystem\Filesystem;
@@ -109,13 +110,8 @@ class ResourceService{
   public function persistResource($resourceParameters)
   {
     $resource = new Resource();
-    $repository = $this->entityManager->getRepository(CatalogueNodeItem::class);
-    $item_id = $resourceParameters['item_id'];
-    $item = $repository->findOneBy( ['id' => $item_id] );
-    if (!$item) {
-        $error_string = $this->translator->trans("Product not founded",[],'file_uploader') . '. '. $this->translator->trans("The code is:",[],'file_uploader') . ' ' . $item_id ;
-        throw new ItemNotFoundException($error_string);
-    }
+
+    $item = $this->_getNodeByItemId($resourceParameters['item_id']);
 
     if(in_array(strtolower($resourceParameters['extension']),array('jpg','jpeg','png','gif','psd','tiff','tif','bmp'))){
       $filesizepx = getimagesize($this->container->getParameter("upload_directory").$resourceParameters['path']);
@@ -124,7 +120,7 @@ class ResourceService{
 
     $resource->setPath($resourceParameters['path']);
     $resource->setUsername($resourceParameters['username']);
-    $resource->setItem($item);
+    $this->_setParentNode($resource, $item);
     $resource->setExtension($resourceParameters['extension']);
     $resource->setSizeBytes($resourceParameters['filesize']);
     $resource->setPreset($resourceParameters['preset']);
@@ -295,4 +291,36 @@ class ResourceService{
     return $response;
   }
 
+  public function getFullPath($resource)
+  {
+    $upload_directory = $this->container->getParameter('upload_directory');
+    $path = $resource->getPath();
+    $filename = $resource->getFilename();
+    return $upload_directory.$path;
+  }
+
+    protected function _getNodeByItemId(string $item_id)
+    {
+        if(preg_match('/^9\d{10}$/', $item_id)){ // отработка ресурса для помойки
+            $repository = $this->entityManager->getRepository(GarbageNode::class);
+        }else{
+            $repository = $this->entityManager->getRepository(CatalogueNodeItem::class);
+        }
+
+        $item = $repository->findOneBy( ['id' => $item_id] );
+        if (!$item) {
+            $error_string = $this->translator->trans("Product not founded",[],'file_uploader') . '. '. $this->translator->trans("The code is:",[],'file_uploader') . ' ' . $item_id ;
+            throw new ItemNotFoundException($error_string);
+        }
+
+        return $item;
+    }
+
+    protected function _setParentNode(&$resource, $item){
+        if( $item instanceof CatalogueNodeItem ){
+            $resource->setItem($item);
+        }elseif($item instanceof GarbageNode){
+            $resource->setGarbageNode($item);
+        }
+    }
 }

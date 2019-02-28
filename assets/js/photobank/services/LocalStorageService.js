@@ -14,11 +14,13 @@ class LocalStorageService{
   static _getKeys(){
     let keys = {
       "current_node": "pb_data_catalogue_current_node",
+      "current_garbage_node": "pb_data_catalogue_current_garbage_node",
       "current_item": "pb_data_current_item",
       "pending_downloads": "pb_data_download_list",
       "list_view_type": "pb_data_list_view_type",
       "catalogue_view": "pb_data_catalogue_view_type",
-      "pagination_limit": "pb_data_pagination_limit"
+      "pagination_limit": "pb_data_pagination_limit",
+      "collection_type": "pb_data_collection_type"
     }
     return keys;
   }
@@ -26,13 +28,14 @@ class LocalStorageService{
    * Устанавливает изначальные значения переменных для корректной работы
    */
   static init(){
-    if(utility.localStorage.getItem('photobank_data') != "1"){
-      utility.localStorage.setItem('photobank_data',"1");
+    if(utility.localStorage.getItem('photobank_data') != "2"){
+      utility.localStorage.setItem('photobank_data',"2");
       utility.localStorage.setItem('pb_data_current_item',"1");
       utility.localStorage.setItem('pb_data_download_list',"");
       utility.localStorage.setItem('pb_data_list_view_type',"1");
       utility.localStorage.setItem('pb_data_catalogue_view_type',"2");
       utility.localStorage.setItem('pb_data_pagination_limit',"10");
+      utility.localStorage.setItem('pb_data_collection_type',"0");
     }
   }
 

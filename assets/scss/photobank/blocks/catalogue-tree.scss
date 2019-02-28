@@ -9,6 +9,26 @@
   overflow: overlay;
   @include component-section();
 
+  .inner-bump{
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .view-inner{
+    flex: 1 1 auto;
+  }
+
+  .collection-tabs{
+    display: flex;
+    &__tab{
+      flex: 0 0 50%;
+      text-align: center;
+      padding: 5px 0;
+      cursor: pointer;
+    }
+  }
+
   .view-inner{
     padding-bottom: 30px;
   }

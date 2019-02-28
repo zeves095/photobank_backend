@@ -119,6 +119,12 @@ class Resource
      */
     private $extension;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\GarbageNode", inversedBy="resources")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $garbageNode;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -386,6 +392,18 @@ class Resource
     public function setExtension(?string $extension): self
     {
         $this->extension = $extension;
+
+        return $this;
+    }
+
+    public function getGarbageNode(): ?GarbageNode
+    {
+        return $this->garbageNode;
+    }
+
+    public function setGarbageNode(?GarbageNode $garbageNode): self
+    {
+        $this->garbageNode = $garbageNode;
 
         return $this;
     }

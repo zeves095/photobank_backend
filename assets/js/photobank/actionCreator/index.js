@@ -22,6 +22,11 @@ import {
   CRUMBS_UPDATE,
   CONFIG_GET,
   DOWNLOAD_DATA_FETCH,
+  CHOOSE_COLLECTION,
+  NODE_CREATE,
+  NODE_UPDATE,
+  NODE_REMOVE,
+  NODE_REBASE,
   START,
   SUCCESS,
   FAIL,
@@ -36,7 +41,8 @@ export function init(){
     return Promise.all([
       utility.fetchConfig(),
       utility.initLocalstorage(),
-    ]).then(()=>{
+    ])
+    .then(()=>{
       Promise.all([
         getLocalStorage()(dispatch),
         fetchUnfinished()(dispatch),
@@ -95,14 +101,16 @@ export function pushResumable(itemId){
 /**
  * Рекурсивно запрашивает структура каталога от текущего раздела до корня
  * @param  {Number} id Id текущего раздела
+ * @param  {Number} collection Тип коллекции (каталог/свалка)
  */
-export function fetchRootNodes(id){
+export function fetchRootNodes(id, collection){
   return (dispatch)=>{
     dispatch({
       type: CATALOGUE_ROOT_NODES_FETCH+START,
       payload: id
     });
-    return CatalogueService.fetchRootNodes(id).then((data)=>{
+    return CatalogueService.fetchRootNodes(id, collection)
+      .then((data)=>{
       dispatch({
         type: CATALOGUE_ROOT_NODES_FETCH+SUCCESS,
         payload: data
@@ -122,17 +130,18 @@ export function fetchRootNodes(id){
  * Получает дочерние разделы каталога по id родителя
  * @param  {Number} id   Код 1C родителя
  * @param  {Object[]} data Уже имеющиеся данныe каталога
+ * @param  {Number} collection Тип коллекции (каталог/свалка)
  */
-export function fetchNodes(id, data){
+export function fetchNodes(id, data, collection){
   return (dispatch)=>{
     if(data.length === 0){
-      return dispatch(fetchRootNodes(id));
+      return dispatch(fetchRootNodes(id, collection));
     }
     dispatch({
       type: CATALOGUE_DATA_FETCH+START,
       payload: ''
     });
-    return CatalogueService.fetchNodes(id)
+    return CatalogueService.fetchNodes(id, collection)
     .then((response)=>response.json())
     .then((data)=>{
       dispatch({
@@ -151,20 +160,25 @@ export function fetchNodes(id, data){
 }
 
 /**
- * Выбирает кативный раздел каталога
+ * Выбирает активный раздел каталога
  * @param  {String} id   Код 1С раздела каталога
  * @param  {Object[]} data Уже имеющиеся данныe каталога
+ * @param  {Number} collection Тип коллекции (каталог/свалка)
  */
-export function chooseNode(id, data){
+export function chooseNode(id, data, collection){
   return (dispatch)=> {
     let qo = new ItemQueryObject();
     qo.nodeId = id;
+    let storageKey = 0===parseInt(collection,10)?'current_node':'current_garbage_node';
     let actions = [
-      dispatch(fetchItems(qo)),
-      dispatch(setLocalValue('current_node', id)),
-      dispatch(fetchNodes(id, data))
+      dispatch(setLocalValue(storageKey, id)),
+      dispatch(fetchNodes(id, data, collection))
     ];
-    return Promise.all(actions).then(result=>{
+    0===parseInt(collection,10)
+    ?actions.push(dispatch(fetchItems(qo)))
+    :actions.push(dispatch(pushResumable(id)));
+    return Promise.all(actions)
+    .then(result=>{
       dispatch({
         type: NODE_CHOICE,
         payload: id
@@ -176,14 +190,16 @@ export function chooseNode(id, data){
 /**
  * Получает данные о существующих ресурсах, привязанных к товару каталога
  * @param  {String} id Код 1С товара
+ * @param  {Number} collection Тип коллекции (каталог/свалка)
  */
-export function fetchExisting(id){
+export function fetchExisting(id, collection){
   return (dispatch)=>{
     dispatch({
       type: EXISTING_RESOURCES_FETCH+START,
       payload: ''
     });
-    return ResourceService.fetchExisting(id).then((data)=>{
+    return ResourceService.fetchExisting(id, collection)
+    .then((data)=>{
       dispatch({
         type: EXISTING_RESOURCES_FETCH+SUCCESS,
         payload: data
@@ -210,7 +226,8 @@ export function fetchPresets(pagination, existing){
       type: EXISTING_PRESETS_FETCH+START,
       payload: ''
     });
-    return ResourceService.fetchExistingPresets(pagination, existing).then((data)=>{
+    return ResourceService.fetchExistingPresets(pagination, existing)
+    .then((data)=>{
       dispatch({
         type: EXISTING_PRESETS_FETCH+SUCCESS,
         payload: data
@@ -236,7 +253,8 @@ export function chooseItem(id){
       dispatch(purgeEmptyItems()),
       dispatch(setLocalValue('current_item',id)),
     ];
-    return Promise.all(actions).then(result=>{
+    return Promise.all(actions)
+    .then(result=>{
       dispatch({
         type: ITEM_CHOICE,
         payload: id
@@ -282,7 +300,8 @@ export function prepareFileForUpload(file, existing, item){
   return (dispatch)=>{
     const itemId = item.id;
     const itemCode = item.itemCode;
-    return UploadService.processFile(file, existing, item).then((uniqueIdentifier)=>{
+    return UploadService.processFile(file, existing, item)
+    .then((uniqueIdentifier)=>{
       let fileParams = {uniqueIdentifier,itemId,itemCode,file};
       dispatch({
         type: FILE_PROCESSED,
@@ -300,7 +319,8 @@ export function prepareFileForUpload(file, existing, item){
  */
 export function deleteUpload(filehash, item){
   return (dispatch)=>{
-    return UploadService.deleteUpload(filehash,item).then((response)=>{
+    return UploadService.deleteUpload(filehash,item)
+    .then((response)=>{
       dispatch({
         type: UPLOAD_DELETE,
         payload: {hash:filehash,item}
@@ -318,10 +338,11 @@ export function deleteUpload(filehash, item){
  * @param  {[type]} files [description]
  * @return {[type]}       [description]
  */
-export function completeUpload(id, files){
+export function completeUpload(id, files, collection){
   return dispatch=>{
-    return dispatch(deletePendingUploads(id,files)).then(()=>{
-      dispatch(fetchExisting(id));
+    return dispatch(deletePendingUploads(id,files))
+    .then(()=>{
+      dispatch(fetchExisting(id,collection));
       dispatch(fetchUnfinished());
     });
   }
@@ -527,15 +548,16 @@ export function addResourceToDownloads(id){
  * Обновляет поле тип/приоритет ресурса
  * @param  {Object} params Данные для обновления
  */
-export function updateResourceField(params){
+export function updateResourceField(params, collection){
   return dispatch=>{
     let fetchBody = {
       id:params.file.id,
       type:params.file.type
     };
     fetchBody[params.key] = params.value;
-    return fetch(utility.config.resource_url+params.file.id, {method:"PATCH", body:JSON.stringify(fetchBody)}).then(response=>{
-      dispatch(fetchExisting(params.item));
+    return fetch(utility.config.resource_url+params.file.id, {method:"PATCH", body:JSON.stringify(fetchBody)})
+    .then(response=>{
+      dispatch(fetchExisting(params.item,collection));
     });
   }
 }
@@ -584,7 +606,8 @@ export function removeDownload(id){
 export function getDownloadResourceData(resources){
   return dispatch=>{
     let downloads = [];
-    return ResourceService.getResource(resources).then((res)=>{
+    return ResourceService.getResource(resources)
+    .then((res)=>{
       for(var r in res){
         if(res[r] == ""){continue;}
         downloads.push({
@@ -610,5 +633,110 @@ export function downloadResources(resources){
   return dispatch=>{
     ResourceService.downloadResource(resources);
     dispatch(clearDownloads());
+  }
+}
+
+/**
+ * Выбор типа коллекции для отображения в дереве каталога
+ * @param {Number} type Тип коллекции. 0-каталог 1-свалка
+ */
+export function chooseCollectionType(type){
+  return dispatch=>{
+    dispatch(setLocalValue('collection_type', type));
+    return dispatch({
+      type: CHOOSE_COLLECTION,
+      payload: type
+    });
+  }
+}
+
+/**
+ * Создает новую ноду свалки
+ * @param {String} name   Имя новой ноды
+ * @param {Number} parent Id родителя
+ * @param {Object} data   Структура каталога
+ * @param {Number} type   Тип коллекции
+ */
+export function addGarbageNode(name,parent,data,type){
+  return dispatch=>{
+    let body = JSON.stringify({name,parent});
+    return fetch(utility.config.add_garbage_node_url,{method:"POST", body})
+    .then(()=>{
+      dispatch({
+        type: NODE_CREATE+SUCCESS,
+        payload: name
+      });
+      dispatch(fetchNodes(parent,data,type));
+    });
+  }
+}
+
+/**
+ * Обновляет ноду свалки
+ * @param {Number} id     Id ноды для обновления
+ * @param {String} name   Имя новой ноды
+ * @param {Number} parent Id родителя
+ * @param {Object} data   Структура каталога
+ * @param {Number} type   Тип коллекции
+ */
+export function updateGarbageNode(id,name,parent,data,type){
+  return dispatch=>{
+    let body = JSON.stringify(Object.assign({},{id,name,parent}));
+    return fetch(utility.config.update_garbage_node_url,{method:"POST", body})
+    .then(()=>{
+      dispatch({
+        type: NODE_UPDATE+SUCCESS,
+        payload: id
+      });
+      dispatch(fetchNodes(parent,data,type));
+    });
+  }
+}
+
+/**
+ * Удаляет ноду свалки
+ * @param {Number} id     Id ноды для обновления
+ * @param {Number} parent Id родителя
+ * @param {Object} data   Структура каталога
+ * @param {Number} type   Тип коллекции
+ */
+export function removeGarbageNode(id,parent,data,type){
+  return dispatch=>{
+    let body = JSON.stringify({id});
+    return fetch(utility.config.remove_garbage_node_url,{method:"POST", body})
+    .then((response)=>{
+      if(response.ok){
+        dispatch({
+          type: NODE_REMOVE+SUCCESS,
+          payload: id
+        });
+        dispatch(fetchNodes(parent,data,type));
+      }
+    });
+  }
+}
+
+/**
+ * Начало перемещения ноды свалки
+ */
+export function startNodeRebase(){
+  return dispatch=>{
+    dispatch({
+      type:NODE_REBASE+START,
+      payload:''
+    });
+  }
+}
+
+/**
+ * Конец перемещения ноды свалки
+ */
+export function stopNodeRebase(node_id=null, parent_id=null, data, type){
+  return dispatch=>{
+    dispatch(updateGarbageNode(node_id, null, parent_id, data, type))
+    dispatch({
+      type:NODE_REBASE+SUCCESS,
+      payload:{node_id, parent_id}
+    });
   }
 }

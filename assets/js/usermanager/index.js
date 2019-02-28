@@ -8,6 +8,7 @@ var wrapper = document.getElementById('usermanager-wrapper');
 global.config = JSON.parse(wrapper.dataset.config);
 wrapper.dataset.config="";
 
-utility.fetchConfig().then(a=>{
+utility.fetchConfig()
+.then(a=>{
   if(typeof UserManagerWrapper != 'undefined') ReactDOM.render(<UserManagerWrapper />, wrapper);
 });

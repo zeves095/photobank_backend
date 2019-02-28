@@ -1,12 +1,12 @@
 import React from 'react';
 import { hex_md5 } from '../../vendor/md5';
+import {connect} from 'react-redux';
+
 import UnfinishedUploads from './UnfinishedUploads';
 import { UploadService } from '../services/UploadService';
 import { NotificationService} from '../../services/NotificationService';
-
-import {connect} from 'react-redux';
 import selectors from '../selectors';
-import {prepareFileForUpload, deleteUpload, completeUpload, deleteUnfinishedUploads} from '../actionCreator';
+import {completeUpload, deleteUpload, deleteUnfinishedUploads, prepareFileForUpload} from '../actionCreator';
 /**
  * Компонент работы с активными и незаконченными загрузками
  */
@@ -70,11 +70,11 @@ export class Uploads extends React.Component{
     });
     this.props.resumable.on('complete', ()=>{
       this.state.busy = false;
-      this.props.completeUpload(this.props.item.id, this.props.resumable.files);
+      this.props.completeUpload(this.props.item.id, this.props.resumable.files, this.props.collection_type);
     });
     this.props.resumable.on('fileError', (file,message)=>{
       this.state.busy = false;
-      if(message == "Unsupported media type"){NotificationService.throw("ext-not-supported");}else{
+      if("Unsupported media type"===message){NotificationService.throw("ext-not-supported");}else{
         NotificationService.throw("unknown-error");
       }
     });
@@ -170,6 +170,7 @@ const mapStateToProps = (state,props) =>{
     resumable: selectors.upload.getResumableInstance(state,props),
     uploads: selectors.upload.getUploads(state,props),
     uploads_ready: selectors.upload.getReadyUploads(state,props),
+    collection_type: selectors.catalogue.getCollectionType(state,props)
   }
 }
 

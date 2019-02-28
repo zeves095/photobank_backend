@@ -8,6 +8,9 @@ import {
   ITEM_CHOICE,
   ITEMS_FETCH,
   CRUMBS_UPDATE,
+  CHOOSE_COLLECTION,
+  NODE_REMOVE,
+  NODE_REBASE,
   START,
   SUCCESS,
   FAIL
@@ -20,14 +23,17 @@ import {
 
 
 let defaultState = Map({
-  catalogue_data: List([]),
+  collection_type: 0,
+  catalogue_data: List([List([]),List([])]),
   items: List([]),
   current_node: null,
+  current_garbage_node: null,
   current_item: null,
   item_query_object: null,
   fetching_catalogue: true,
   fetching_items: true,
-  crumbs: null
+  crumbs: null,
+  moving_node:false
 })
 
 export default (catalogue = defaultState, action) => {
@@ -39,7 +45,9 @@ export default (catalogue = defaultState, action) => {
     }
     case CATALOGUE_ROOT_NODES_FETCH+SUCCESS:{
       const root_nodes = List(action.payload);
-      return catalogue.set('fetching_catalogue',false).set('catalogue_data',root_nodes);
+      let cat_data = catalogue.get('catalogue_data');
+      cat_data = cat_data.set(catalogue.get('collection_type'), root_nodes);
+      return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
       break;
     }
     case CATALOGUE_DATA_FETCH+START:{
@@ -48,18 +56,33 @@ export default (catalogue = defaultState, action) => {
     }
     case CATALOGUE_DATA_FETCH+SUCCESS:{
       let fetched_data = List(action.payload);
-      let fetchCatalogueData = catalogue.get('catalogue_data');
-      //let newData = existingCatalogueData.concat(fetched_data));
+      let cat_data = catalogue.get('catalogue_data');
+      let fetchCatalogueData = cat_data.get(catalogue.get('collection_type'));
       fetched_data.forEach((node)=>{
-        if(!fetchCatalogueData.find((existing)=>node.id===existing.id)){
+        let found = fetchCatalogueData.find((existing)=>node.id===existing.id);
+        if(!found){
           fetchCatalogueData = fetchCatalogueData.push(node);
+        }else{
+          fetchCatalogueData = fetchCatalogueData.splice(fetchCatalogueData.indexOf(found),1,node);
         }
       });
-      return catalogue.set('fetching_catalogue',false).set('catalogue_data',fetchCatalogueData);
+      cat_data = cat_data.set(catalogue.get('collection_type'), fetchCatalogueData);
+      return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
+      break;
+    }
+    case NODE_REMOVE+SUCCESS:{
+      let del_id = action.payload;
+      let cat_data = catalogue.get('catalogue_data');
+      let fetchCatalogueData = cat_data.get(catalogue.get('collection_type'));
+      let found = fetchCatalogueData.find((existing)=>del_id===existing.id);
+      if(found)fetchCatalogueData=fetchCatalogueData.splice(fetchCatalogueData.indexOf(found),1);
+      cat_data = cat_data.set(catalogue.get('collection_type'), fetchCatalogueData);
+      return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
       break;
     }
     case NODE_CHOICE:{
-      return catalogue.set('current_node',action.payload);
+      let nodeKey = catalogue.get('collection_type')==0?'current_node':'current_garbage_node';
+      return catalogue.set(nodeKey,action.payload);
       break;
     }
     case ITEM_CHOICE:{
@@ -89,6 +112,16 @@ export default (catalogue = defaultState, action) => {
       let crumbs = action.payload;
       return catalogue.set('crumbs', crumbs);
       break;
+    }
+    case CHOOSE_COLLECTION:{
+      return catalogue.set('collection_type', action.payload);
+      break;
+    }
+    case NODE_REBASE+START:{
+      return catalogue.set('moving_node', true);
+    }
+    case NODE_REBASE+SUCCESS:{
+      return catalogue.set('moving_node', false);
     }
   }
   return catalogue

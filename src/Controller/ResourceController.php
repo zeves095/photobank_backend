@@ -14,7 +14,6 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use \Symfony\Component\HttpKernel\Exception\HttpException;
 
-// use Symfony\Component\Serializer\SerializerInterface; // use AppSerializer instead
 use App\Serializer\AppSerializer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -163,11 +162,7 @@ class ResourceController extends AbstractController
         }
 
         $upload_directory = $this->getParameter('upload_directory');
-        // TODO: DELETE and use service|utils methods to get $fileDirectory
-        $item_code = $resource->getItem()->getId();
-        $fileDirectory = $upload_directory .'/'. $resourceService->generatePath($item_code);
-        $filename = $resource->getFilename();
-        $fullFilePath = $fileDirectory . $filename;
+        $fullFilePath = $resourceService->getFullPath($resource);
         $src_filename = $resource->getSrcFilename()?:'noName';
 
         if(!file_exists($fullFilePath)){throw new HttpException(503, "Ресурс временно недоступен");}
@@ -429,5 +424,21 @@ class ResourceController extends AbstractController
           ];
           $response->setData($presets);
           return $response;
+        }
+
+        /**
+        * Получает заглушку для ресурсов без превью
+        *
+        * @param ContainerInterface $container Контейнер сервисов Symfony, для получения конфигурации
+        *
+        * @Route(
+        *      "/catalogue/resource/placeholder",
+        *      methods={"GET"},
+        *      name="catalogue_resource_placeholder"
+        * )
+        */
+        public function getPlaceholder(ContainerInterface $container)
+        {
+          return $this->file($this->getParameter('upload_directory').'/../placeholder.png', 'placeholder.png', ResponseHeaderBag::DISPOSITION_INLINE);
         }
 }

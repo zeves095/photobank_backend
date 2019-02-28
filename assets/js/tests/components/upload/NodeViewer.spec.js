@@ -12,6 +12,7 @@ let bareProps = {
   stored_item_id: null,
   crumbs: [],
   authorized: null,
+  collection_type: 0
 };
 
 let itemChosenProps = {
@@ -24,6 +25,7 @@ let itemChosenProps = {
   stored_item_id: "00010598085",
   crumbs: [],
   authorized: null,
+  collection_type: 0
 };
 
 function setup(props){

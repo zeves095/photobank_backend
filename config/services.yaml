@@ -33,6 +33,9 @@ services:
     app.encoder.xml:
         class: 'Symfony\Component\Serializer\Encoder\XmlEncoder'
 
+    app.normalizer.garbage.node:
+        class: 'App\Serializer\Normalizer\GarbageNodeNormalizer'
+
     app.normalizer.catalogue.node:
         class: 'App\Serializer\Normalizer\CatalogueNodeNormalizer'
 
@@ -51,6 +54,7 @@ services:
         public: false
         arguments:
             0:
+                - '@app.normalizer.garbage.node'
                 - '@app.normalizer.catalogue.node'
                 - '@app.normalizer.catalogue.item'
                 - '@app.normalizer.resource'

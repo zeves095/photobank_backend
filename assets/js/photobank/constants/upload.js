@@ -19,3 +19,19 @@ export const ITEM_INFO_FETCH = 'ITEM_INFO_FETCH';
 export const CRUMBS_UPDATE = 'CRUMBS_UPDATE';
 export const CONFIG_GET = 'CONFIG_GET';
 export const DOWNLOAD_DATA_FETCH = 'DOWNLOAD_DATA_FETCH';
+export const CHOOSE_COLLECTION = 'CHOOSE_COLLECTION';
+export const NODE_CREATE = 'NODE_CREATE';
+export const NODE_UPDATE = 'NODE_UPDATE';
+export const NODE_REMOVE = 'NODE_REMOVE';
+export const NODE_REBASE = 'NODE_REBASE';
+
+export const CATALOGUE_TREE_VIEW = 1;
+export const CATALOGUE_LIST_VIEW = 2;
+export const CATALOGUE_SEARCH_VIEW = 3;
+
+export const CATALOGUE_COLLECTION = 0;
+export const GARBAGE_COLLECTION = 1;
+
+export const RESOURCES_BIG_ICONS_VIEW = 0;
+export const RESOURCES_SMALL_ICONS_VIEW = 1;
+export const RESOURCES_TABLE_VIEW = 2;

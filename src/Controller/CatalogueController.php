@@ -34,6 +34,7 @@ use App\Service\Search\SearchService;
   */
 class CatalogueController extends AbstractController
 {
+
     /**
      * Получает нормализованный объект с информацией о разделе каталога
      *
