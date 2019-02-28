@@ -1,8 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
+
 import selectors from '../selectors';
-import {ResourceService,NotificationService} from '../services';
-import {addGarbageNode,updateGarbageNode,removeGarbageNode} from '../actionCreator';
+import {NotificationService,ResourceService} from '../services';
+import {addGarbageNode,removeGarbageNode,updateGarbageNode} from '../actionCreator';
 import {startNodeRebase,stopNodeRebase} from '../actionCreator';
 import utility from '../services/UtilityService';
 
@@ -23,11 +24,22 @@ export class NodeCrud extends React.Component {
   }
 
   handleAddNode=()=>{
-    this.props.addGarbageNode(this.state.name, this.props.node, this.props.catalogue_data, this.props.collection_type);
+    this.props.addGarbageNode(
+      this.state.name,
+      this.props.node,
+      this.props.catalogue_data,
+      this.props.collection_type
+    );
   }
 
   handleUpdateNode=()=>{
-    this.props.updateGarbageNode(this.props.node, this.state.name, this.props.node_parent, this.props.catalogue_data, this.props.collection_type);
+    this.props.updateGarbageNode(
+      this.props.node,
+      this.state.name,
+      this.props.node_parent,
+      this.props.catalogue_data,
+      this.props.collection_type
+    );
   }
 
   bodyListener = (e)=>{
@@ -35,7 +47,12 @@ export class NodeCrud extends React.Component {
     e.preventDefault();
     let node_id = this.props.node;
     let parent_id = e.target.id.substring(0, e.target.id.length-7);
-    this.props.stopNodeRebase(node_id, parent_id, this.props.catalogue_data, this.props.collection_type);
+    this.props.stopNodeRebase(
+      node_id,
+      parent_id,
+      this.props.catalogue_data,
+      this.props.collection_type
+    );
     document.body.removeEventListener("click",this.bodyListener,false);
   }
 
@@ -45,7 +62,12 @@ export class NodeCrud extends React.Component {
   }
 
   handleRemoveNode=()=>{
-    this.props.removeGarbageNode(this.props.node, this.props.node_parent, this.props.catalogue_data, this.props.collection_type);
+    this.props.removeGarbageNode(
+      this.props.node,
+      this.props.node_parent,
+      this.props.catalogue_data,
+      this.props.collection_type
+    );
   }
 
   render() {

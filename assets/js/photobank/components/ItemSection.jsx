@@ -1,14 +1,13 @@
 import React from 'react';
-// import $ from 'jquery';
 import { hex_md5 } from '../../vendor/md5';
+import {connect} from 'react-redux';
+
 import ExistingResources from './ExistingResources';
 import Uploads from './Uploads';
 import {ItemService} from '../services/ItemService';
 import {NotificationService} from '../../services/NotificationService';
-
-import {connect} from 'react-redux';
 import selectors from '../selectors';
-import {pushResumable, chooseListViewType, fetchItemData} from '../actionCreator';
+import {chooseListViewType, fetchItemData, pushResumable} from '../actionCreator';
 
 /**
  * Компонент интерфейса работы с определенным товаром
@@ -44,13 +43,13 @@ export class ItemSection extends React.Component{
     let render_upload = this.props.item&&this.props.resumable&&this.props.authorized;
     let viewBtn = (
       <div className="button-block">
-        <button type="button" data-view="0" title="Большие иконки" className={this.props.view==0?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={()=>{this.handleViewChoice("0")}}>
+        <button type="button" data-view="0" title="Большие иконки" className={this.props.view===0?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={()=>{this.handleViewChoice("0")}}>
           <i className="fas fa-th-large"></i>
         </button>
-        <button type="button" data-view="1" title="Маленькие иконки" className={this.props.view==1?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={()=>{this.handleViewChoice("1")}}>
+        <button type="button" data-view="1" title="Маленькие иконки" className={this.props.view===1?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={()=>{this.handleViewChoice("1")}}>
           <i className="fas fa-th"></i>
         </button>
-        <button type="button" data-view="2" title="Таблица" className={this.props.view==2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={()=>{this.handleViewChoice("2")}}>
+        <button type="button" data-view="2" title="Таблица" className={this.props.view===2?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={()=>{this.handleViewChoice("2")}}>
           <i className="fas fa-list-ul"></i>
         </button>
       </div>
@@ -65,7 +64,7 @@ export class ItemSection extends React.Component{
          </button>
         :null
       } {
-        typeof this.props.item != "undefined"
+          !!this.props.item
           ? <div className="item-view__item-title">Товар #{this.props.item.id}"{this.props.item.name}"</div>
           : null
       }<div className={"item-view__inner " + (

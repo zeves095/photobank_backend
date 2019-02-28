@@ -17,7 +17,8 @@ class UploadService{
   static fetchUnfinished(){
     let unfinished = [];
     return new Promise((resolve, reject)=>{
-      fetch(utility.config.unfinished_uploads_url,{'method':'GET'}).then((data)=>{
+      fetch(utility.config.unfinished_uploads_url,{'method':'GET'})
+.then((data)=>{
         resolve(data);
       });
     });
@@ -65,7 +66,8 @@ class UploadService{
    */
   static processFile(file, existingUploads, itemId){
     return new Promise((resolve, reject)=>{
-      this._getHash(file, itemId).then((uniqueIdentifier)=>{
+      this._getHash(file, itemId)
+.then((uniqueIdentifier)=>{
         resolve(uniqueIdentifier);
       });
     });
@@ -135,7 +137,8 @@ class UploadService{
         for(let i = 0; i<Object.keys(obj).length; i++){
           formData.set(Object.keys(obj)[i],obj[Object.keys(obj)[i]]);
         }
-        fetch(utility.config.commit_upload_url, {method: 'POST', body: formData}).then(()=>{
+        fetch(utility.config.commit_upload_url, {method: 'POST', body: formData})
+.then(()=>{
           resolve(true);
         });
       }

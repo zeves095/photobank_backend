@@ -75,7 +75,8 @@ export function init(){
         payload: "",
       });
     });
-    return Promise.all([getPresets,getTypes,getUserInfo]).then(()=>{
+    return Promise.all([getPresets,getTypes,getUserInfo])
+.then(()=>{
       dispatch(fetchLinks());
     });
   }
@@ -286,7 +287,8 @@ export function deleteLink(id){
         type: LINK_DELETE+SUCCESS,
         payload: response,
       });
-    }).then(()=>{
+    })
+.then(()=>{
       return new Promise((resolve, reject)=>{
         setTimeout(()=>{dispatch(fetchLinks());resolve()},400);
       });
@@ -397,7 +399,8 @@ export function updateLink(form, link){
       method: "POST",
       body: JSON.stringify(form)
     }
-    return fetch("/api/links/update/"+link, params).then((response)=>{
+    return fetch("/api/links/update/"+link, params)
+.then((response)=>{
       if(response.status === 200){
         dispatch({
           type: LINK_UPDATE+SUCCESS,

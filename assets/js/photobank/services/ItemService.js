@@ -15,7 +15,8 @@ class ItemService{
    */
   static fetchItems(query){
     return new Promise((resolve, reject)=>{
-        this._getItems(query).then((data)=>{
+        this._getItems(query)
+.then((data)=>{
           if(data.length == 0){resolve([])}
           resolve(data);
         }).catch((e)=>{
@@ -30,7 +31,8 @@ class ItemService{
    */
   static getIdentity(id){
     return new Promise((resolve,reject)=>{
-        fetch(utility.config.item_url+id, {method: 'GET'}).then((data)=>{
+        fetch(utility.config.item_url+id, {method: 'GET'})
+.then((data)=>{
           resolve(data);
         });
     });

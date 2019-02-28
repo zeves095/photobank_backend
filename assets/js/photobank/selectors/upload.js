@@ -2,7 +2,7 @@ import {createSelector, createStructuredSelector} from 'reselect';
 import {Map,List,Set,Record} from 'immutable';
 
 export const unfinishedUploads = (store,props)=>store.upload.get('uploads_unfinished');
-export const currentItemId = (store,props)=>store.catalogue.collection_type==0?(props.item_id||store.catalogue.get('current_item')):store.catalogue.get('current_garbage_node');
+export const currentItemId = (store,props)=>store.catalogue.get('collection_type')===0?(props.item_id||store.catalogue.get('current_item')):store.catalogue.get('current_garbage_node');
 export const currentNodeId = (store,props)=>store.catalogue.get('current_node');
 export const items = (store,props)=>store.catalogue.get('items');
 export const resumableContainer = (store,props)=>store.upload.get('resumable_container');

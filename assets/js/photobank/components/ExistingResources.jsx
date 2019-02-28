@@ -1,12 +1,11 @@
 import React from 'react';
+import { hex_md5 } from '../../vendor/md5';
+import {connect} from 'react-redux';
 
 import ExistingResource from './ExistingResource';
-import { hex_md5 } from '../../vendor/md5';
 import {ResourceService} from './../../services/ResourceService';
 import {NotificationService} from '../../services/NotificationService';
 import {LocalStorageService} from '../services/LocalStorageService';
-
-import {connect} from 'react-redux';
 import {fetchExisting, fetchPresets} from '../actionCreator';
 import selectors from '../selectors';
 
@@ -56,11 +55,11 @@ export class ExistingResources extends React.Component{
     let start = this.state.pagination_start;
     let limit = parseInt(this.state.pagination_limit,10);
     let target = e.target;
-    if(e.type == "click"){
-      if(target.tagName != "BUTTON"){
+    if(e.type === "click"){
+      if(target.tagName !== "BUTTON"){
         target = target.parentNode;
       }
-      if(target.dataset.direction == 0){
+      if(target.dataset.direction === 0){
         if((start-=limit) < 0){start=0};
         changed = true;
       }else{
@@ -105,7 +104,7 @@ export class ExistingResources extends React.Component{
       presets.push(<span key={"preset"+preset} className="info__info-field info__info-field--title info__info-field--preset">{preset}</span>);
     }
     this.preset_headers = presets;
-    this.props.fetchExisting(this.props.item_id, this.props.collection_type);
+    console.log(this.props.collection_type);this.props.fetchExisting(this.props.item_id, this.props.collection_type);
     this.setState({
       "pagination_limit": LocalStorageService.get("pagination_limit"),
       "pagination_end": LocalStorageService.get("pagination_limit"),
@@ -118,7 +117,7 @@ export class ExistingResources extends React.Component{
         "view_type": this.props.default_view,
       });
       if(this.props.need_refresh){
-        this.props.fetchExisting(this.props.item_id, this.props.collection_type);
+        console.log(this.props.collection_type);this.props.fetchExisting(this.props.item_id, this.props.collection_type);
       }
     }
     if(this.props.existing != prevProps.existing){
@@ -145,7 +144,7 @@ export class ExistingResources extends React.Component{
 
     let paginationControls = this.props.existing.length!=0?(
       <div className="item-view__pagination-controls pagination-controls">
-          <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="0" type="button" disabled={this.state.pagination_start==0}><i className="fas fa-arrow-left"></i></button>
+          <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="0" type="button" disabled={this.state.pagination_start===0}><i className="fas fa-arrow-left"></i></button>
         <p>{this.state.pagination_current_page}/{this.state.pagination_total_pages}</p>
       <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="1" type="button" disabled={this.state.pagination_end>=this.props.existing.length}><i className="fas fa-arrow-right"></i></button>
     <p>На странице:</p><input onKeyUp={this.handlePagination} type="text" name="pagination_limit" defaultValue={this.state.pagination_limit}></input>
@@ -154,7 +153,7 @@ export class ExistingResources extends React.Component{
 
     return (
       <div className="item-view__existing">
-        <h4 className="item-view__subheader">Файлы товара<div className="button-block"><button type="button" onClick={()=>{this.props.fetchExisting(this.props.item_id, this.props.collection_type);this.fetchPresets();}}><i className="fas fa-redo-alt"></i>Обновить</button></div></h4>
+        <h4 className="item-view__subheader">Файлы товара<div className="button-block"><button type="button" onClick={()=>{console.log(this.props.collection_type);this.props.fetchExisting(this.props.item_id, this.props.collection_type);this.fetchPresets();}}><i className="fas fa-redo-alt"></i>Обновить</button></div></h4>
         {paginationControls}
         {this.props.existing.length==0?"Нет загруженных файлов":null}
         <div className={(this.props.loading?"loading ":"") + "item-resources"}>

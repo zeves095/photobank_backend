@@ -16,7 +16,8 @@ export function fetchUsers(){
       type:FETCH_USERS+START,
       payload:""
     })
-    return UserService.fetchUsers().then((users)=>{
+    return UserService.fetchUsers()
+.then((users)=>{
       dispatch({
         type:FETCH_USERS+SUCCESS,
         payload:users
@@ -56,7 +57,8 @@ export function submitUser(user){
       type: SUBMIT_USER+START,
       payload: user.id
     });
-    return UserService.submitUser(user).then(result=>{
+    return UserService.submitUser(user)
+.then(result=>{
       dispatch({
         type:SUBMIT_USER+SUCCESS,
         payload: user

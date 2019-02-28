@@ -17,11 +17,11 @@ class GarbageService{
   /**
     * Инструмент работы с сущностями Doctrine ORM
     */
-  private $entityManager;
+  protected $entityManager;
   /**
     * Сервис-контейнер Symfony
     */
-  private $container;
+  protected $container;
 
   /**
     * Конструктор класса

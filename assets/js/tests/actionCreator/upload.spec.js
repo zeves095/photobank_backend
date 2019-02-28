@@ -119,7 +119,7 @@ describe('Actions', ()=>{
         payload: nodeResponses},
     ];
     const store = mockStore(mockUploadStore);
-    return store.dispatch(actions.fetchRootNodes(nodes[0], 0)).then(()=>{
+    return store.dispatch(actions.fetchRootNodes(nodes[0], constants.CATALOGUE_COLLECTION)).then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
 
@@ -128,8 +128,8 @@ describe('Actions', ()=>{
   it('Получение списка дочерних разделов каталога', ()=>{
 
     let cat_data = mockUploadStore.catalogue.catalogue_data;
-    let firstId = cat_data[0].id;
-    let children = cat_data.filter(node=>node.parent = firstId);
+    let firstId = cat_data[0][0].id;
+    let children = cat_data[0].filter(node=>node.parent = firstId);
 
     fetchMock.getOnce(utility.config.get_nodes_url+firstId,{
         body: JSON.stringify(children),
@@ -149,7 +149,7 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.fetchNodes(firstId,cat_data, 0)).then(()=>{
+    return store.dispatch(actions.fetchNodes(firstId, cat_data[0], constants.CATALOGUE_COLLECTION)).then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
 
@@ -159,8 +159,8 @@ describe('Actions', ()=>{
 
     let cat_data = mockUploadStore.catalogue.catalogue_data;
     let items = mockUploadStore.catalogue.items;
-    let node = cat_data.filter(node=>items.map(item=>item.node).includes(node.id))[0];
-    let subnodes = cat_data.filter(node=>node.parent===node.id);
+    let node = cat_data[0].filter(node=>items.map(item=>item.node).includes(node.id))[0];
+    let subnodes = cat_data[0].filter(node=>node.parent===node.id);
     let chosen_items = items.filter(item=>item.node===node.id);
 
     fetchMock.getOnce(utility.config.get_items_url+node.id,{
@@ -175,16 +175,16 @@ describe('Actions', ()=>{
 
     let expectedActions = [
       {
-        type:  constants.ITEMS_FETCH+constants.START,
-        payload: ""
-      },
-      {
         type:  constants.LOCAL_STORAGE_VALUE_SET,
         payload: {key:"current_node", value:node.id}
       },
       {
         type:  constants.CATALOGUE_DATA_FETCH+constants.START,
         payload: ''
+      },
+      {
+        type:  constants.ITEMS_FETCH+constants.START,
+        payload: ""
       },
       {
         type:  constants.CATALOGUE_DATA_FETCH+constants.SUCCESS,
@@ -202,7 +202,7 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.chooseNode(node.id, cat_data)).then(()=>{
+    return store.dispatch(actions.chooseNode(node.id, cat_data[0], constants.CATALOGUE_COLLECTION)).then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
 
@@ -234,7 +234,7 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.fetchExisting(item.id)).then(()=>{
+    return store.dispatch(actions.fetchExisting(item.id, constants.CATALOGUE_COLLECTION)).then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
 
@@ -319,7 +319,8 @@ describe('Actions', ()=>{
 
     const store = mockStore(mockUploadStore);
 
-    return store.dispatch(actions.chooseItem(itemId)).then(()=>{
+    return store.dispatch(actions.chooseItem(itemId))
+    .then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
 
@@ -330,7 +331,7 @@ describe('Actions', ()=>{
     let cat_data = mockUploadStore.catalogue.catalogue_data;
     let items = mockUploadStore.catalogue.items;
     let resources = mockUploadStore.resource.resources_existing;
-    let node = cat_data.filter(node=>items.map(item=>item.node).includes(node.id))[0];
+    let node = cat_data[0].filter(node=>items.map(item=>item.node).includes(node.id))[0];
     let child_items = items.filter(item=>item.node===node.id);
 
     fetchMock.getOnce(utility.config.get_items_url+node.id,{
@@ -633,7 +634,7 @@ describe('Actions', ()=>{
       item:itemId
     }
 
-    return store.dispatch(actions.updateResourceField(params)).then(()=>{
+    return store.dispatch(actions.updateResourceField(params, constants.CATALOGUE_COLLECTION)).then(()=>{
       expect(store.getActions()).toEqual(expectedActions);
     });
   });
@@ -678,14 +679,14 @@ describe('Actions', ()=>{
   it("Получение хлебных крошек", ()=>{
 
     let cat_data = mockUploadStore.catalogue.catalogue_data;
-    let node = cat_data[0];
+    let node = cat_data[0][0];
 
     let expectedAction = {
       type: constants.CRUMBS_UPDATE,
-      payload: CatalogueService.getCrumbs(cat_data, node.id)
+      payload: CatalogueService.getCrumbs(cat_data[0], node.id)
     };
 
-    return expect(actions.pushCrumbs(cat_data, node.id)).toEqual(expectedAction);
+    return expect(actions.pushCrumbs(cat_data[0], node.id)).toEqual(expectedAction);
   });
 
   it("Удаление ресурса из списка загрузок", ()=>{

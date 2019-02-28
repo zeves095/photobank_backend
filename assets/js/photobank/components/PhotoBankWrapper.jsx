@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import PhotoBank from './PhotoBank';
 import {Provider} from 'react-redux';
+
+import PhotoBank from './PhotoBank';
 import {store} from '../store';
 
 /**

@@ -196,7 +196,6 @@ class ResourceRepository extends ServiceEntityRepository
           ,$queryBuilder->expr()->like('parent5.id', ':pcode')
           ,$queryBuilder->expr()->like('parent6.id', ':pcode')
          ))
-         // ->orderBy('parent.name,parent2.name,parent3.name,parent4.name,parent5.name,parent6.name','ASC')
          ->orderBy('parent.name', 'ASC')
          ->setParameter('pname', $queryObject->getField("item_query")->getField("parent_name").'%')
          ->setParameter('pcode', '%'.$queryObject->getField("item_query")->getField("parent_name"));
@@ -222,32 +221,4 @@ class ResourceRepository extends ServiceEntityRepository
 
       }
 
-//    /**
-//     * @return Resource[] Returns an array of Resource objects
-//     */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Resource
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

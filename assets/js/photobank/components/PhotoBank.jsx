@@ -1,4 +1,5 @@
 import React from 'react';
+import {connect} from 'react-redux';
 
 import CatalogueTree from './CatalogueTree';
 import NodeViewer from './NodeViewer';
@@ -10,8 +11,6 @@ import {CatalogueService} from '../services/CatalogueService';
 import {LocalStorageService} from '../services/LocalStorageService';
 import {NotificationService} from '../../services/NotificationService';
 import {UtilityService} from '../services/UtilityService';
-
-import {connect} from 'react-redux';
 import { fetchUnfinished, getLocalStorage, getUserInfo, init } from '../actionCreator'
 import selectors from '../selectors';
 
@@ -34,7 +33,8 @@ export class PhotoBank extends React.Component {
    * Инициализирует конфигурацию, localstorage, получает список незаконченных загрузок
    */
   componentWillMount(){
-    this.props.init().then(()=>{
+    this.props.init()
+.then(()=>{
       this.setState({
         ready:true
       });
@@ -42,14 +42,14 @@ export class PhotoBank extends React.Component {
   }
 
   render() {
-    if(this.props.catalogue_data == {} || !this.state.ready){return (<h1>ЗАГРУЗКА...</h1>)}
+    if(this.props.catalogue_data === {} || !this.state.ready){return (<h1>ЗАГРУЗКА...</h1>)}
     return (
       <div className="photobank-main">
         <div id="notification-overlay"></div>
       <div className="photobank-main__main-block">
         <CatalogueTree />
         <Draggable box1=".catalogue-tree" box2=".node-viewer" id="1" />
-        {this.props.show_node_viewer == null?null:<NodeViewer />}
+      {null===this.props.show_node_viewer?null:<NodeViewer />}
         </div>
         <div className="photobank-main__butt-wrapper">
         </div>
@@ -60,7 +60,7 @@ export class PhotoBank extends React.Component {
 
 const mapStateToProps = (state,props) =>{
   return {
-    show_node_viewer: state.catalogue.item_query_object==null,
+    show_node_viewer: null===state.catalogue.item_query_object,
     catalogue_data: selectors.catalogue.getCatalogueData(state,props),
   }
 }

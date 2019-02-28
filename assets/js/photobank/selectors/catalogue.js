@@ -73,7 +73,7 @@ export const getCrumbString = createSelector(breadcrumbs, (crumbs)=>{
 });
 
 export const getCollectionType = createSelector(collectionType, (type)=>{
-  return type;
+  return parseInt(type,10);
 });
 
 export const getNodeMoving = createSelector(nodeMoving, (mov)=>{

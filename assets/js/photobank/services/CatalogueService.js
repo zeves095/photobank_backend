@@ -1,4 +1,5 @@
 import utility from './UtilityService';
+import * as constants from '../constants';
 /**
  * Сервис для получения и обновления данных по структуре каталога
  */
@@ -16,7 +17,7 @@ class CatalogueService{
     let result = prevresult;
     return new Promise((resolve, reject)=>{
       let searchNode = (currentNode!=null?currentNode:"");
-      let url = collection==0?utility.config.get_nodes_url:utility.config.get_garbage_nodes_url;
+      let url = constants.CATALOGUE_COLLECTION===collection?utility.config.get_nodes_url:utility.config.get_garbage_nodes_url;
       fetch(url+searchNode, {method:"GET"})
       .then(response=>response.json())
       .then((data)=>{
@@ -25,8 +26,10 @@ class CatalogueService{
           resolve(result);
         }
         else{
-          this._fetchNodeParent(currentNode, collection).then((parent)=>{
-            this.fetchRootNodes(parent, collection,result).then((result)=>{
+          this._fetchNodeParent(currentNode, collection)
+.then((parent)=>{
+            this.fetchRootNodes(parent, collection,result)
+.then((result)=>{
               resolve(result);
             });
           });
@@ -42,8 +45,9 @@ class CatalogueService{
   static fetchNodes(id, collection){
     return new Promise((resolve,reject)=>{
       let searchNode = (id!=null?id:"");
-      let url = collection==0?utility.config.get_nodes_url:utility.config.get_garbage_nodes_url;
-      fetch(url+searchNode,{'method':'GET'}).then((nodes)=>{
+      let url = constants.CATALOGUE_COLLECTION===collection?utility.config.get_nodes_url:utility.config.get_garbage_nodes_url;
+      fetch(url+searchNode,{'method':'GET'})
+.then((nodes)=>{
         resolve(nodes);
       })
     });

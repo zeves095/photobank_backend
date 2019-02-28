@@ -1,4 +1,6 @@
 import React from 'react';
+import {connect} from 'react-redux';
+
 import ItemSection from './ItemSection';
 import ItemList from './ItemList';
 import ListFilter from './ListFilter';
@@ -7,8 +9,6 @@ import DownloadPool from './DownloadPool';
 import {Draggable} from './../../common/Draggable';
 import {LocalStorageService} from '../services/LocalStorageService';
 import {NotificationService} from '../../services/NotificationService';
-
-import {connect} from 'react-redux';
 import selectors from '../selectors';
 
 /**
@@ -31,12 +31,8 @@ export class NodeViewer extends React.Component{
    * Обработчик открытия интерфейса очереди загрузки/выгрузки
    * @param  {Event} e Событие клика
    */
-  handlePoolClick = (e)=>{
-    let poolVal = '';
-    poolVal = this.state.view_pool == e.target.dataset["pool"]?0:e.target.dataset["pool"];
-    this.setState({
-      "view_pool" : poolVal
-    })
+  handlePoolClick = (view_pool)=>{
+    this.setState({view_pool})
   }
 
   /**
@@ -72,16 +68,16 @@ export class NodeViewer extends React.Component{
 
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
-          {this.props.collection_type==0?<ItemList />:null}
-          {this.props.collection_type==0?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
+          {0===this.props.collection_type?<ItemList />:null}
+          {0===this.props.collection_type?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
           <div className="view-inner__item-section" key={this.props.current_item!=null?this.props.current_item.id:""}>
             <span className="titlefix">
               <h2 className="node-viewer__component-title component-title">
                 <p>Файлы</p>
                 <i className="crumb-string">{this.props.crumbs}</i>
                 <div className="view-switcher-button-block">
-                  <button type="button" className="item-section-switcher" data-pool="1" onClick={this.handlePoolClick}>{this.state.view_pool==1?"К последнему товару":"Выгрузка"}</button>
-                  {this.props.authorized?<button type="button" className="item-section-switcher" data-pool="2" onClick={this.handlePoolClick}>{this.state.view_pool==2?"К последнему товару":"Загрузка"}</button>:null}
+                  <button type="button" className="item-section-switcher" data-pool="1" onClick={()=>{this.handlePoolClick(1)}}>{1===this.state.view_pool?"К последнему товару":"Выгрузка"}</button>
+                {this.props.authorized?<button type="button" className="item-section-switcher" data-pool="2" onClick={()=>{this.handlePoolClick(2)}}>{2===this.state.view_pool?"К последнему товару":"Загрузка"}</button>:null}
                 </div>
               </h2>
         </span>
