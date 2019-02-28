@@ -40,7 +40,6 @@ export class ItemSection extends React.Component{
   }
 
   render() {
-    console.log(this.props.item_id);
     if(!this.props.item){this.props.fetchItemData(this.props.item_id);return null;}
     let render_upload = this.props.item&&this.props.resumable&&this.props.authorized;
     let viewBtn = (
