@@ -24,6 +24,7 @@ export const NODE_CREATE = 'NODE_CREATE';
 export const NODE_UPDATE = 'NODE_UPDATE';
 export const NODE_REMOVE = 'NODE_REMOVE';
 export const NODE_REBASE = 'NODE_REBASE';
+export const SHOW_DELETED = 'SHOW_DELETED';
 
 export const CATALOGUE_TREE_VIEW = 1;
 export const CATALOGUE_LIST_VIEW = 2;

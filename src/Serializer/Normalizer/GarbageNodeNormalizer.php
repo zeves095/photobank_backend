@@ -26,6 +26,7 @@ class GarbageNodeNormalizer extends CustomNormalizer implements NormalizerInterf
         $main_data = [
             'id'     => $object->getId(),
             'name'   => $object->getName(),
+            'deleted'   => $object->getDeleted(),
             'parent' => $object->getParent()?$object->getParent()->getId():$object->getParent(),
             'children' => array_map(
                 function (GarbageNode $child) {

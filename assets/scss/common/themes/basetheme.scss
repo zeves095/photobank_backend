@@ -484,6 +484,13 @@ fieldset{
   }
 }
 
+.deleted{
+  a{
+    text-decoration: line-through !important;
+    color: #e45c75 !important;
+    .jstree-icon::before{color: #e45c75 !important;}
+  }
+}
 
 .node-crud{
   .button-block{
