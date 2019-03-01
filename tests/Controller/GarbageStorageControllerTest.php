@@ -15,7 +15,7 @@ class GarbageStorageControllerTest extends BaseTest
     public function testNodeGet()
     {
 
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createRealAdmin();
         $crawler = $client->request('GET', '/garbage/node/'.$this->sampleData->garbageNodes[0]);
         $response = $client->getResponse();
         $responseJson = json_decode($response->getContent());
@@ -44,7 +44,7 @@ class GarbageStorageControllerTest extends BaseTest
 
     public function testNodesGet()
     {
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createRealAdmin();
 
         $crawler = $client->request('GET', '/garbage/nodes/'.$this->sampleData->garbageNodeWithChildren);
         $response = $client->getResponse();
@@ -81,7 +81,7 @@ class GarbageStorageControllerTest extends BaseTest
 
     public function testResourceGet()
     {
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createRealAdmin();
 
         $crawler = $client->request('GET', '/catalogue/node/item/resource/'.$this->sampleData->garbageResource);
         $response = $client->getResponse();

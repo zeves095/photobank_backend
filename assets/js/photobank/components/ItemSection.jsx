@@ -38,9 +38,14 @@ export class ItemSection extends React.Component{
     this.props.item&&this.props.pushResumable(this.props.item.id);
   }
 
+  componentDidUpdate(prevProps){
+    if(this.props.open_by_default!==prevProps.open_by_default)this.setState({open:this.props.open_by_default});
+  }
+
   render() {
     if(!this.props.item){this.props.fetchItemData(this.props.item_id);return null;}
     let render_upload = this.props.item&&this.props.resumable&&this.props.authorized;
+    console.log(this.props.item,this.props.resumable,this.props.authorized);
     let viewBtn = (
       <div className="button-block">
         <button type="button" data-view="0" title="Большие иконки" className={this.props.view===0?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={()=>{this.handleViewChoice("0")}}>
@@ -65,7 +70,7 @@ export class ItemSection extends React.Component{
         :null
       } {
           !!this.props.item
-          ? <div className="item-view__item-title">Товар #{this.props.item.id}"{this.props.item.name}"</div>
+          ? <div className="item-view__item-title">{this.props.collection_type===0?("Товар #"+this.props.item.id):""}"{this.props.item.name}"</div>
           : null
       }<div className={"item-view__inner " + (
           this.state.open
@@ -88,6 +93,7 @@ const mapStateToProps = (state, props) =>{
     render_existing: (typeof props.render_existing !== 'undefined')?props.render_existing:true,
     authorized: selectors.user.getAuthorized(state,props),
     open_by_default: (typeof props.open_by_default !== 'undefined')?props.open_by_default:true,
+    collection_type: selectors.catalogue.getCollectionType(state,props),
   }
 }
 

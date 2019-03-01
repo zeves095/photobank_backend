@@ -104,7 +104,7 @@ export class ExistingResources extends React.Component{
       presets.push(<span key={"preset"+preset} className="info__info-field info__info-field--title info__info-field--preset">{preset}</span>);
     }
     this.preset_headers = presets;
-    console.log(this.props.collection_type);this.props.fetchExisting(this.props.item_id, this.props.collection_type);
+    this.props.fetchExisting(this.props.item_id, this.props.collection_type);
     this.setState({
       "pagination_limit": LocalStorageService.get("pagination_limit"),
       "pagination_end": LocalStorageService.get("pagination_limit"),
@@ -117,7 +117,7 @@ export class ExistingResources extends React.Component{
         "view_type": this.props.default_view,
       });
       if(this.props.need_refresh){
-        console.log(this.props.collection_type);this.props.fetchExisting(this.props.item_id, this.props.collection_type);
+        this.props.fetchExisting(this.props.item_id, this.props.collection_type);
       }
     }
     if(this.props.existing != prevProps.existing){
@@ -153,7 +153,7 @@ export class ExistingResources extends React.Component{
 
     return (
       <div className="item-view__existing">
-        <h4 className="item-view__subheader">Файлы товара<div className="button-block"><button type="button" onClick={()=>{console.log(this.props.collection_type);this.props.fetchExisting(this.props.item_id, this.props.collection_type);this.fetchPresets();}}><i className="fas fa-redo-alt"></i>Обновить</button></div></h4>
+        <h4 className="item-view__subheader">Файлы {this.props.collection_type===0&&"товара"}<div className="button-block"><button type="button" onClick={()=>{console.log(this.props.collection_type);this.props.fetchExisting(this.props.item_id, this.props.collection_type);this.fetchPresets();}}><i className="fas fa-redo-alt"></i>Обновить</button></div></h4>
         {paginationControls}
         {this.props.existing.length==0?"Нет загруженных файлов":null}
         <div className={(this.props.loading?"loading ":"") + "item-resources"}>

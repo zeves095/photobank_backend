@@ -27,6 +27,7 @@ import {
   NODE_UPDATE,
   NODE_REMOVE,
   NODE_REBASE,
+  SHOW_DELETED,
   START,
   SUCCESS,
   FAIL,
@@ -176,7 +177,7 @@ export function chooseNode(id, data, collection){
     ];
     0===parseInt(collection,10)
     ?actions.push(dispatch(fetchItems(qo)))
-    :actions.push(dispatch(pushResumable(id)));
+    :actions.push(dispatch(pushResumable(id),dispatch(purgeEmptyItems())));
     return Promise.all(actions)
     .then(result=>{
       dispatch({
@@ -738,5 +739,17 @@ export function stopNodeRebase(node_id=null, parent_id=null, data, type){
       type:NODE_REBASE+SUCCESS,
       payload:{node_id, parent_id}
     });
+  }
+}
+
+/**
+ * Показать удаленные ноды свалки
+ */
+export function showDeletedNodes(val){
+  return dispatch=>{
+    dispatch({
+      type: SHOW_DELETED,
+      payload:val
+    })
   }
 }

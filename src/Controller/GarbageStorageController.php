@@ -81,27 +81,24 @@ class GarbageStorageController extends AbstractController
             );
         }
 
+        $user = $this->getUser();
+        $auth = !!sizeof(array_diff(["ROLE_WRITER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN"],$user->getRoles()))!==3;
         $response = new JsonResponse();
 
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository(GarbageNode::class);
 
+        $params = [];
+
         if(!$gnode){
-            $children = $repo->findBy([
-                'parent' => null,
-                'deleted' => false
-            ],[
-              'name'=>'ASC'
-            ]);
+          $params['parent'] = null;
         }else{
-            // $children = $gnode->getChildren();
-            $children = $repo->findBy([
-                'parent' => $gnode->getId(),
-                'deleted' => false
-            ],[
-              'name'=>'ASC'
-            ]);
+          $params['parent'] = $gnode->getId();
         }
+        if(!$auth){$params['deleted']=false;}
+        $children = $repo->findBy($params,[
+          'name'=>'ASC'
+        ]);
         $gnodeArray = $serializer->normalize($children, null, array(
             'add-relation' => false,
             'add-item-count' => true
