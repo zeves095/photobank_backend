@@ -25,7 +25,7 @@ class BaseController extends AbstractController
      */
     public function index()
     {
-        return $this->redirectToRoute('upload');
+        return $this->render('app/index.html.twig',[]);
     }
 
     /**

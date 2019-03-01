@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Фотобанк{% endblock %}
+
+{% block head %}
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('build/photobank-app.css') }}">
+{% endblock %}
+
+{% block body %}
+  <div id="photobank-root"></div>
+{% endblock %}
+
+{% block javascripts %}
+  <script src="{{ asset('build/app.js') }}"></script>
+
+{% endblock %}

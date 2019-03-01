@@ -20,6 +20,7 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
+    .addEntry('app', './assets/js/app.js')
     .addEntry('photobank-app', './assets/js/photobank-app.js')
     .addEntry('usermanager-app', './assets/js/usermanager-app.js')
     .addEntry('linkmanager-app', './assets/js/linkmanager-app.js')
