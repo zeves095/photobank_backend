@@ -19,7 +19,7 @@ class AccountController extends AbstractController
     /**
       * Рендерит страницу личного кабинета, сейчас это интерфейс добавления ссылок
       *
-      * @Route("/", name="account")
+      * @Route("/oldaccount", name="account")
       */
     public function index()
     {
