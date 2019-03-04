@@ -24,11 +24,9 @@ Encore
     .addEntry('photobank-app', './assets/js/photobank-app.js')
     .addEntry('usermanager-app', './assets/js/usermanager-app.js')
     .addEntry('linkmanager-app', './assets/js/linkmanager-app.js')
-    // .addEntry('crc32', './assets/js/vendor/crc32.js')
-    // .addEntry('md5', './assets/js/vendor/md5.js')
-    // .addEntry('resumable', './assets/js/vendor/resumable.js')
-    //.addStyleEntry('main_style', './assets/scss/app.scss')
-    //.addStyleEntry('color_theme_default', './assets/scss/photobank/themes/default.scss')
+    .addStyleEntry('photobank-style', './assets/scss/photobank.scss')
+    .addStyleEntry('usermanager-style', './assets/scss/usermanager.scss')
+    .addStyleEntry('linkmanager-style', './assets/scss/account.scss')
 
 
     /*

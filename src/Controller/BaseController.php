@@ -21,7 +21,7 @@ class BaseController extends AbstractController
     /**
       * Перекидывает на интерфейс загрузки
       *
-     * @Route("/", name="index")
+     * @Route("/{placeholder}/", name="index", requirements={"placeholder"="(upload|account|usermanager)?"})
      */
     public function index()
     {
