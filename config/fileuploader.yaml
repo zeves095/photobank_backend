@@ -9,6 +9,7 @@ parameters:
   resource_url: '/catalogue/node/item/resource/'
   item_url: '/catalogue/node/item/'
   item_search_url: '/catalogue/search/items/'
+  garbage_search_url: '/catalogue/search/garbage/'
   get_nodes_url: '/catalogue/nodes/'
   get_garbage_nodes_url: '/garbage/nodes/'
   get_node_url: '/catalogue/node/'
