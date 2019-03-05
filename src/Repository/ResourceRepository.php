@@ -135,6 +135,7 @@ class ResourceRepository extends ServiceEntityRepository
 
       public function search(ResourceQueryObject $queryObject)
       {
+        $startTime = microtime();
         $queryBuilder = $this->createQueryBuilder('r');
         if($queryObject->getField("item_query")->getField("name") != ""){
           $queryBuilder->innerJoin('r.item', 'i')
@@ -142,22 +143,36 @@ class ResourceRepository extends ServiceEntityRepository
           ->setParameter('iname', '%'.$queryObject->getField("item_query")->getField("name").'%');
         }
         if($queryObject->getField("item_query")->getField("code") != ""){
-          $queryBuilder->innerJoin('r.item', 'ic');
-          $codes = $queryObject->getField("item_query")->getField("code");
-          if(sizeof($codes)===1){
+          $allCodes = $queryObject->getField("item_query")->getField("code");
+          $garbageCodes = [];
+          $itemCodes = [];
+          foreach($allCodes as $code){
+            if(substr($code,0,1)==="9"){
+              $garbageCodes[] = $code;
+            }else{
+              $itemCodes[] = $code;
+            }
+          }
+          sizeof($itemCodes)&&$queryBuilder->innerJoin('r.item', 'ic');
+          if(sizeof($itemCodes)===1){
             $queryBuilder->andWhere('ic.id LIKE :iccode')
-            ->setParameter('iccode', '%'.$codes[0]);
+            ->setParameter('iccode', '%'.$itemCodes[0]);
           }else{
             $codeCounter = 0;
-            foreach($codes as $code){
+            foreach($itemCodes as $code){
               $queryBuilder->orWhere('ic.id = :iccode'.++$codeCounter)
               ->setParameter('iccode'.$codeCounter, $code);
             }
           }
           $codeCounter = 0;
-
+          $garbageCodeCounter = 0;
+          foreach($garbageCodes as $code){
+            $queryBuilder->orWhere('r.garbageNode = :gccode'.++$garbageCodeCounter)
+            ->setParameter('gccode'.$garbageCodeCounter, $code);
+          }
+          $garbageCodeCounter = 0;
         }
-        if($queryObject->getField("item_query")->getField("article") != ""){
+        if(null!==$queryObject->getField("item_query")->getField("article")&&sizeof($queryObject->getField("item_query")->getField("article"))>0){
           $articleCounter = 0;
           $queryBuilder->innerJoin('r.item', 'ia');
           foreach($queryObject->getField("item_query")->getField("article") as $article){

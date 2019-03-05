@@ -1,4 +1,4 @@
-import {UploadService, NotificationService, CatalogueService, ResourceService, ItemQueryObject, ItemService, LocalStorageService} from '../services/';
+import {UploadService, NotificationService, CatalogueService, ResourceService, ItemQueryObject, GarbageQueryObject, ItemService, LocalStorageService} from '../services/';
 import utility from '../services/UtilityService';
 
 import {
@@ -573,6 +573,22 @@ export function searchItems(query){
       qo[key]=query[key];
     });
     return dispatch(fetchItems(qo));
+  }
+}
+
+/**
+ * Отправляет на сервер запрос на поиск нод свалки
+ * @param  {GarbageQueryObject} query Объект поиска
+ */
+export function searchGarbage(query){
+  return dispatch=>{
+    let fetchBody = {"node_name":query.node_name||"","file_name":query.file_name||""};
+    let getParams = "?"+Object.entries(fetchBody).map(entry=>entry[0]+"="+entry[1]).join("&");
+    fetch(utility.config.garbage_search_url+getParams)
+    .then((response)=>response.json())
+    .then((data)=>{
+      console.log(data);
+    });
   }
 }
 
