@@ -56,13 +56,13 @@ private $container;
             'priority' => $object->getPriority(),
             'comment' => $object->getComment(),
             'item' => $object->getItem()?$object->getItem()->getId():$object->getItem(),
-            //'garbage_node' => $object->getGarbageNode()?$object->getGarbageNode()->getId():$object->getGarbageNode(),
+            'garbage_node' => $object->getGarbageNode()?$object->getGarbageNode()->getId():$object->getGarbageNode(),
         ];
 
         if($context['add-relation']??false){
             $main_data = array_merge($main_data, [
                 'item' => $this->serializer->normalize($object->getItem(), $format, []),
-                //'garbage_node'=>$this->serializer->normalize($object->getGarbageNode(), $format, [])
+                'garbage_node'=>$this->serializer->normalize($object->getGarbageNode(), $format, [])
             ]);
         }
 
