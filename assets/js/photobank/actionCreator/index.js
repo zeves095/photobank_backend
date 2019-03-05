@@ -23,6 +23,7 @@ import {
   CONFIG_GET,
   DOWNLOAD_DATA_FETCH,
   CHOOSE_COLLECTION,
+  GARBAGE_SEARCH,
   NODE_CREATE,
   NODE_UPDATE,
   NODE_REMOVE,
@@ -577,10 +578,17 @@ export function searchGarbage(query){
   return dispatch=>{
     let fetchBody = {"node_name":query.node_name||"","file_name":query.file_name||""};
     let getParams = "?"+Object.entries(fetchBody).map(entry=>entry[0]+"="+entry[1]).join("&");
-    fetch(utility.config.garbage_search_url+getParams)
+    return fetch(utility.config.garbage_search_url+getParams)
     .then((response)=>response.json())
     .then((data)=>{
-      console.log(data);
+      dispatch({
+        type:GARBAGE_SEARCH+SUCCESS,
+        payload:data
+      });
+      dispatch({
+        type:CATALOGUE_DATA_FETCH+SUCCESS,
+        payload:data
+      });
     });
   }
 }

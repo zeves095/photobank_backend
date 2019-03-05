@@ -64,7 +64,7 @@ export class GarbageSearch extends React.Component {
       <input type="text" id={this.props.filterid + "inpt1"} name="node_name" placeholder="Название" onChange={this.handleChange}></input>
       <label id={this.props.filterid + "inpt1"}>Название файла</label>
       <input type="text" id={this.props.filterid + "inpt2"} name="file_name" placeholder="Название" onChange={this.handleChange}></input>
-      <button type="button" id="garbage_search_submit" onClick={this.handleSubmit}>
+    <button type="button" id={this.props.filterid + "btn"} onClick={this.handleSubmit}>
         <i className="fas fa-search"></i>
       </button>
     </div>);
