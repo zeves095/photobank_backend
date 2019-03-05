@@ -199,7 +199,7 @@ export function searchResources(searchObject={}){
       method: "GET",
     }
     return fetch("/catalogue/search/resources"+"?"+Object.keys(searchObject).map(
-      key=>{if(typeof searchObject[key] === 'undefined'){return "";}return key + '=' + searchObject[key]}).join('&'),
+      key=>{if(typeof searchObject[key] === 'undefined'){return key+"=";}return key + '=' + searchObject[key]}).join('&'),
       params)
     .then((response)=>response.json())
     .then((response)=>{

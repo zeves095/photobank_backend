@@ -5,6 +5,7 @@
 namespace App\Service\Search;
 
 use App\Entity\Search\ItemQueryObject;
+use App\Entity\Search\GarbageQueryObject;
 use App\Entity\Search\ResourceQueryObject;
 use Symfony\Component\HttpFoundation\Request;
 /**
@@ -56,5 +57,22 @@ class SearchQueryBuilder {
     }
     return $queryObject;
   }
+  /**
+   * Создает объект поиска ресурсов
+   * @param  Request $request Объект текущего http-запроса
+   * @return GarbageQueryObject Полученный объект поиска
+   */
+  public function makeGarbageQuery(Request $request){
+    $query = $request->query;
+    $queryObject = new GarbageQueryObject();
+    $fields = array_keys($queryObject->getFields());
+    foreach($query as $key=>$value){
+      if(in_array($key, $fields)){
+        $queryObject->setField($key, $value);
+      }
+      }
+    return $queryObject;
+  }
+
 
 }

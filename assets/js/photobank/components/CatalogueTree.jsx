@@ -4,6 +4,7 @@ import selectors from '../selectors';
 import TreeView from 'react-simple-jstree';
 
 import ItemSearch from './ItemSearch';
+import GarbageSearch from './GarbageSearch';
 import NodeCrud from './NodeCrud';
 import {ItemQueryObject} from '../services/ItemQueryObject';
 import {CatalogueService} from '../services/CatalogueService';
@@ -109,7 +110,7 @@ export class CatalogueTree extends React.Component {
         viewClass = "tree-view";
         break;
       case 3:
-        view = <ItemSearch searchQueryHandler={this.handleQuery} filterid="srch" />;
+        view = this.props.collection_type===0?<ItemSearch searchQueryHandler={this.handleQuery} filterid="srch" />:<GarbageSearch searchQueryHandler={this.handleQuery} filterid="gsrch" />;
         viewClass = "search-view";
         break;
     }
@@ -121,7 +122,7 @@ export class CatalogueTree extends React.Component {
         <span className="titlefix"><h2 className="catalogue-tree__component-title component-title">
           Каталог
           <span className="component-title__view-icons"><i className="fas fa-sitemap" title="Дерево" data-view="2" onClick={()=>{this.handleViewChoice("2")}}></i><i className="fas fa-list" title="Список" data-view="1" onClick={()=>{this.handleViewChoice("1")}}></i>
-        {this.props.collection_type!=1&&<i title="Поиск" data-view="3" onClick={()=>{this.handleViewChoice("3")}} className="fas fa-search"></i>}
+        <i title="Поиск" data-view="3" onClick={()=>{this.handleViewChoice("3")}} className="fas fa-search"></i>
         </span>
         </h2>
         <div className="collection-tabs">
