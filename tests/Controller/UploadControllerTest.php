@@ -12,7 +12,7 @@ class UploadControllerTest extends BaseTest
   public function testIndex()
   {
     $client = $this->createAuthenticatedClient();
-    $crawler = $client->request('GET', '/upload');
+    $crawler = $client->request('GET', '/upload/');
     $response = $client->getResponse();
     $this->assertEquals(200, $response->getStatusCode());
 

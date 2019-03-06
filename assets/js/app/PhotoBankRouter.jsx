@@ -24,6 +24,9 @@ class PhotoBankRouter extends React.Component {
           <Route path="/upload/" component={PhotoBankWrapper} />
           <Route path="/account/" component={LinkManagerWrapper} />
           <Route path="/usermanager/" component={UserManagerWrapper} />
+            <Route exact path="/" render={() => (
+              <Redirect to="/upload/"/>
+            )}/>
         </div>
       </Router>
     )

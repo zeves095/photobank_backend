@@ -70,7 +70,7 @@ async function waitForEl(driver,selector){
       ITEM_SEARCH_ITEM_CODE: '#srchinpt3',
       ITEM_SEARCH_NESTED_INPUT: '#srchinpt4',
       ITEM_SEARCH_SUBMIT_BTN: '#srchbtn',
-      ITEM_LIST_ITEM: '.view-inner__item-list .list-item',
+      ITEM_LIST_ITEM: '.item-list .list-item',
       ITEM_LIST_FILTER: '#nodesearchinpt',
       CATALOGUE_TREE_SEARCH_VIEW: '.component-title__view-icons>i[data-view="3"]',
       CATALOGUE_TREE_LIST_VIEW: '.component-title__view-icons>i[data-view="1"]',
@@ -96,7 +96,7 @@ async function waitForEl(driver,selector){
       RESOURCE_SEARCH_SELECT_ALL: ".resource-search-results button[name=button]",
     },
     notloading:{
-      ITEM_LIST: ".view-inner__item-list .view-inner__container:not(.loading)",
+      ITEM_LIST: ".item-list .view-inner__container:not(.loading)",
       NODE_LIST: ".catalogue-tree__view-inner:not(.loading)",
       RESOURCE_SEARCH_RESULTS: ".resource-search-results:not(.loading)",
       UNFINISHED_UPLOADS: ".item-uploads__unfinished:not(.loading)",
@@ -141,6 +141,7 @@ describe('Проверка аутентификации', function () {
 
   it('кнопка Выход разлогинивает пользователя и перенаправляет на страницу аутентификации', async function () {
     try{
+      await waitForEl(driver, SELECTORS.LOGOUT_BUTTON);
       const logoutBtn = await driver.findElement(By.css(SELECTORS.LOGOUT_BUTTON));
       await logoutBtn.click();
       await driver.get(SITE_URL + PAGE_UPLOAD); // проверяем что после клика по выходу - мы разлогинены и нас будет перекидывать на страницу аутентификации.;
