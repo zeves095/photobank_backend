@@ -110,6 +110,9 @@
     "photobank/file-uploader-bundle": {
         "version": "dev-master"
     },
+    "photobank/prod-console-commands-bundle": {
+        "version": "dev-master"
+    },
     "phpdocumentor/reflection-common": {
         "version": "1.0.1"
     },
