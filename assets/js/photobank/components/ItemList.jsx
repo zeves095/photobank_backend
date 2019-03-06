@@ -5,7 +5,7 @@ import { ListFilter } from './ListFilter';
 import {ItemService} from '../services/ItemService';
 import {LocalStorageService} from '../services/LocalStorageService';
 import {NotificationService} from '../../services/NotificationService';
-import {chooseItem, fetchItems} from '../actionCreator';
+import {chooseNode, chooseItem, fetchItems} from '../actionCreator';
 import selectors from '../selectors';
 /**
  * Компонент интерфейса для работы со списком товаров раздела каталога
@@ -27,7 +27,9 @@ export class ItemList extends React.Component{
    * @param  {String} itemId Код 1С товара
    */
   itemClickHandler=(itemId)=>{
-    this.props.chooseItem(itemId);
+    0===this.props.collection_type
+    ?this.props.chooseItem(itemId)
+    :this.props.chooseNode(itemId,this.props.catalogue_data,this.props.colleciton_type);
   }
 
   /**
@@ -41,7 +43,8 @@ export class ItemList extends React.Component{
   }
 
   render() {
-    let nodeItemList = this.props.items.filter((item)=>{if(!this.state.filter_query) return true; return JSON.stringify(item).toLowerCase().includes(this.state.filter_query.toLowerCase());})
+    let nodeItemList = this.props.items
+    .filter((item)=>{if(!this.state.filter_query) return true; return JSON.stringify(item).toLowerCase().includes(this.state.filter_query.toLowerCase());})
     .map((item)=>
       <div className={"list-item"+((this.props.current_item!=null&&item.id===this.props.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={()=>{this.itemClickHandler(item.id)}}>
         <h4 className={"list-item__title"} data-item={item.id} onClick={()=>{this.itemClickHandler(item.id)}} title={item.node}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
@@ -71,11 +74,14 @@ const mapStateToProps = (state,props) =>{
     items: selectors.catalogue.getNodeItems(state,props),
     items_filtered: selectors.catalogue.filterItems(state,props),
     loading: selectors.catalogue.getLoadingItems(state,props),
+    collection_type: selectors.catalogue.getCollectionType(state,props),
+    catalogue_data: selectors.catalogue.getCatalogueData(state,props),
   }
 }
 
 const mapDispatchToProps = {
   chooseItem,
+  chooseNode,
   fetchItems
 }
 

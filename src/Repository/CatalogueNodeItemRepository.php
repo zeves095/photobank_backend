@@ -60,7 +60,7 @@ class CatalogueNodeItemRepository extends ServiceEntityRepository
       }
       if($queryObject->getField("parent_name") != "" && $queryObject->getField("search_nested") == 0){
         $queryBuilder->leftJoin('c.node', 'parentn')
-        ->andwhere('parentn.name LIKE :pnamen')
+        ->andWhere('parentn.name LIKE :pnamen')
         ->orWhere('parentn.id LIKE :pcoden')
         ->setParameter('pnamen', '%'.$queryObject->getField("parent_name").'%')
         ->setParameter('pcoden', '%'.$queryObject->getField("parent_name"));
