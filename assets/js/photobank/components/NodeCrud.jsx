@@ -76,7 +76,7 @@ export class NodeCrud extends React.Component {
         {/* <p>Добавить папку</p> */}
       <label htmlFor="node-name">Название</label>
         <input type="text" name="name" id="node-name" onChange={(e)=>this.setState({name:e.target.value})} />
-        <span className="button-block"><button onClick={()=>{this.handleAddNode()}}><i className="fas fa-folder-plus"></i>Добавить</button></span>
+        <span className="button-block"><button onClick={()=>{this.handleAddNode()}}><i className="fas fa-folder-plus"></i>Добавить подпапку</button></span>
       </div>
     );
     const renameElement = (
@@ -103,7 +103,7 @@ export class NodeCrud extends React.Component {
     return (
       <div className="catalogue-tree__node-crud node-crud">
         <div className="node-crud__operations button-block">
-          <button className="btn" onClick={()=>this.handleChooseOperation(0)} title="Добавить папку"><i className="fas fa-folder-plus"></i></button>
+          <button className="btn" onClick={()=>this.handleChooseOperation(0)} title="Добавить подпапку"><i className="fas fa-folder-plus"></i></button>
         <button className="btn" onClick={()=>this.handleChooseOperation(1)} title="Переименовать папку"><i className="fas fa-sync-alt"></i></button>
       <button className="btn" onClick={()=>this.handleChooseOperation(2)} title="Выбрать нового родителя"><i className="fas fa-hand-pointer"></i></button>
     <button className="btn" onClick={()=>this.handleChooseOperation(3)} title="Удалить папку"><i className="fas fa-folder-minus"></i></button>

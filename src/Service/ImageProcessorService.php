@@ -126,10 +126,12 @@ private $fileSystem;
       'mode'=>1
     ]);
 
-    $filename = $this->resourceService->getUniqueIdentifier(file_get_contents($targetPath), $resource->getItem()->getId(),filesize($targetPath)).'.'.$extension;
+    $parentEntityId = $resource->getItem()?$resource->getItem()->getId():$resource->getGarbageNode()->getId();
+
+    $filename = $this->resourceService->getUniqueIdentifier(file_get_contents($targetPath), $parentEntityId,filesize($targetPath)).'.'.$extension;
 
     $resourceParameters = [
-      'item_id' => $resource->getItem()->getId(),
+      'item_id' => $parentEntityId,
       'extension' => $extension,
       'path' => $targetPath,
       'username' => $resource->getUsername(),

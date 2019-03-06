@@ -11,6 +11,7 @@ import {
   CHOOSE_COLLECTION,
   NODE_REMOVE,
   NODE_REBASE,
+  SHOW_DELETED,
   START,
   SUCCESS,
   FAIL
@@ -33,7 +34,8 @@ let defaultState = Map({
   fetching_catalogue: true,
   fetching_items: true,
   crumbs: null,
-  moving_node:false
+  moving_node:false,
+  show_deleted:false
 })
 
 export default (catalogue = defaultState, action) => {
@@ -122,6 +124,9 @@ export default (catalogue = defaultState, action) => {
     }
     case NODE_REBASE+SUCCESS:{
       return catalogue.set('moving_node', false);
+    }
+    case SHOW_DELETED:{
+      return catalogue.set('show_deleted', action.payload);
     }
   }
   return catalogue
