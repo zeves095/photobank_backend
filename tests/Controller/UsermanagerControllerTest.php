@@ -12,7 +12,7 @@ class UsermanagerControllerTest extends BaseTest
   public function testIndex()
   {
     $client = $this->createAdminClient();
-    $crawler = $client->request('GET', '/usermanager');
+    $crawler = $client->request('GET', '/usermanager/');
     $response = $client->getResponse();
 
     $this->assertEquals(200, $response->getStatusCode());

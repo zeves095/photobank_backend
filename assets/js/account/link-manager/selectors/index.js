@@ -21,8 +21,13 @@ export const linkArr = (store)=>store.link.links_done;
  * link_exists - существует ли ссылка на этот ресурс
  * link_targets - группы ссылок, в которых уже есть ссылка на данные ресурс
  */
-export const getChosenResource = createSelector(resourceChosen, linkArr, (chosen, links)=>{
+export const getChosenResource = createSelector(resourceChosen, linkArr, thumbArr, (chosen, links, thumbs)=>{
   let res_chosen = chosen.map((res)=>{
+    let th = thumbs.find((thumb)=>thumb.id === res.id);
+    if(typeof th !== 'undefined'){
+      res['thumbnail'] = th.thumb_id;
+    }
+
     let targLinks = links.filter((link)=>{return link.resource_id === res.id});
     if(targLinks.length>0){
       res.link_exists = true;
