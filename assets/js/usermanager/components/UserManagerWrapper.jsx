@@ -6,7 +6,13 @@ import {Provider} from 'react-redux';
 /**
  * Интерфейс работы с поьзователями
  */
-let UserManagerWrapper = () => {
+export class UserManagerWrapper extends React.Component {
+  constructor(props){
+    super(props);
+
+  }
+
+  render(){
     return(
       <div className="user-manager-wrapper">
         <Provider store={store}>
@@ -14,6 +20,8 @@ let UserManagerWrapper = () => {
         </Provider>
       </div>
     );
+  }
+
 }
 
 export default UserManagerWrapper;

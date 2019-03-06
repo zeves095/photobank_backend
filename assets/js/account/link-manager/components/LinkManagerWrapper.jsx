@@ -6,7 +6,13 @@ import {store} from '../store';
 /**
  * Обертка для основного компонента, служит для коннекта к Redux
  */
-class LinkManagerWrapper extends Component {
+export class LinkManagerWrapper extends Component {
+
+  constructor(props){
+    super(props);
+    import('../../../../scss/account.scss')
+  }
+
   render() {
     return (
       <div id="link-manager">
