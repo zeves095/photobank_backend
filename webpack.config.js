@@ -41,11 +41,11 @@ Encore
 
     // enables Sass/SCSS support
     .enableSassLoader()
-    // .enablePostCssLoader((options) => {
-    //   options.config = {
-    //       path: './postcss.config.js'
-    //   };
-    // })
+    .enablePostCssLoader((options) => {
+      options.config = {
+          path: './postcss.config.js'
+      };
+    })
     // uncomment if you use TypeScript
     // .enableTypeScriptLoader()
 
