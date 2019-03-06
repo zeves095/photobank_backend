@@ -13,19 +13,6 @@
     display: flex;
     align-items: flex-start;
 
-    &__item-list {
-      overflow: hidden;
-      min-width: 210px;
-      display: flex;
-      flex: 1 1 20%;
-      overflow: overlay;
-      @include component-section();
-      .list-item{
-        @include list-item();
-        cursor: pointer;
-      }
-    }
-
     &__item-section {
       overflow: hidden;
       display: flex;

@@ -41,19 +41,11 @@ import {
 export function init(){
   return dispatch=>{
     return Promise.all([
-      utility.fetchConfig(),
-      utility.initLocalstorage(),
-    ])
-    .then(()=>{
-      Promise.all([
-        getLocalStorage()(dispatch),
-        fetchUnfinished()(dispatch),
-        getUserInfo()(dispatch),
-      ]);
-    }).catch((e)=>{
-      console.log(e);
-    });
-  }
+      getLocalStorage()(dispatch),
+      fetchUnfinished()(dispatch),
+      getUserInfo()(dispatch),
+    ]);
+  };
 }
 
 /**

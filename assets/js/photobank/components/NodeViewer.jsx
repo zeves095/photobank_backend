@@ -31,8 +31,8 @@ export class NodeViewer extends React.Component{
    * Обработчик открытия интерфейса очереди загрузки/выгрузки
    * @param  {Event} e Событие клика
    */
-  handlePoolClick = (pool)=>{
-    let view_pool = (this.state.view_pool==pool)?0:pool;
+    if(this.state.view_pool === view_pool)view_pool=0;
+  handlePoolClick = (view_pool)=>{
     this.setState({view_pool})
   }
 

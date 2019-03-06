@@ -21,11 +21,11 @@ class BaseController extends AbstractController
     /**
       * Перекидывает на интерфейс загрузки
       *
-     * @Route("/", name="index")
+     * @Route("/{placeholder}/", name="app", requirements={"placeholder"="(upload|account|usermanager)?"})
      */
     public function index()
     {
-        return $this->redirectToRoute('upload');
+        return $this->render('app/index.html.twig',[]);
     }
 
     /**

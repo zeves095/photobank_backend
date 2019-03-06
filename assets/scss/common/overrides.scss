@@ -15,14 +15,18 @@
   display: none !important;
 }
 
-.jstree-anchor .jstree-icon{
-  background:none;
-  &::before{
-    font-weight: bold;
-    color: #36647d;
-    font-size: 15px;
-    font-family: "Font Awesome 5 Free";
-    content:"\f07b";
+.jstree-anchor {
+  color:#36647d;
+  .jstree-icon{
+    background:none;
+    padding-left: 8px;
+    &::before{
+      font-weight: bold;
+      color: #36647d;
+      font-size: 15px;
+      font-family: "Font Awesome 5 Free";
+      content:"\f07b";
+    }
   }
 }
 
@@ -30,4 +34,9 @@
   &:before{
     content: "\f07c";
   }
+}
+
+.collapsible{
+  box-shadow: none !important;
+  border:none;
 }
