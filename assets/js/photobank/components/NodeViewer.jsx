@@ -31,8 +31,8 @@ export class NodeViewer extends React.Component{
    * Обработчик открытия интерфейса очереди загрузки/выгрузки
    * @param  {Event} e Событие клика
    */
+  handlePoolClick=(view_pool)=>{
     if(this.state.view_pool === view_pool)view_pool=0;
-  handlePoolClick = (view_pool)=>{
     this.setState({view_pool})
   }
 
@@ -74,7 +74,7 @@ export class NodeViewer extends React.Component{
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
           {itemList}
-          {0===this.props.collection_type?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
+          {0===this.props.collection_type?<Draggable box1=".item-list" box2=".view-inner__item-section" id="2" />:null}
           <div className="view-inner__item-section" key={this.props.current_item!=null?this.props.current_item.id:""}>
             <span className="titlefix">
               <h2 className="node-viewer__component-title component-title">
