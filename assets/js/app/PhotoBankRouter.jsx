@@ -12,6 +12,7 @@ class PhotoBankRouter extends React.Component {
 
   constructor(props){
     super(props);
+    import('../../scss/app.scss');
     utility.initLocalstorage();
     this.state={
       menu_open:true,//LocalStorageService.get('menu_open'),

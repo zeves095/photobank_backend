@@ -1,4 +1,5 @@
 var Encore = require('@symfony/webpack-encore');
+var webpack = require('webpack');
 
 Encore
     // .configureBabel((config) => {
@@ -24,10 +25,6 @@ Encore
     .addEntry('photobank-app', './assets/js/photobank-app.js')
     .addEntry('usermanager-app', './assets/js/usermanager-app.js')
     .addEntry('linkmanager-app', './assets/js/linkmanager-app.js')
-    .addStyleEntry('photobank-style', './assets/scss/photobank.scss')
-    .addStyleEntry('usermanager-style', './assets/scss/usermanager.scss')
-    .addStyleEntry('linkmanager-style', './assets/scss/account.scss')
-
 
     /*
      * FEATURE CONFIG
@@ -44,13 +41,13 @@ Encore
 
     // enables Sass/SCSS support
     .enableSassLoader()
-    .enablePostCssLoader((options) => {
-      options.config = {
-          path: './postcss.config.js'
-      };
-    })
+    // .enablePostCssLoader((options) => {
+    //   options.config = {
+    //       path: './postcss.config.js'
+    //   };
+    // })
     // uncomment if you use TypeScript
-    //.enableTypeScriptLoader()
+    // .enableTypeScriptLoader()
 
     // uncomment if you're having problems with a jQuery plugin
     .autoProvidejQuery()
