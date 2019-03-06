@@ -207,6 +207,7 @@ class ResourceService{
         $presetCollection = $collection['presets'];
       }
     }
+    var_dump($presetCollection);
     foreach($presetCollection as $preset){
       $presetData = [
         'resourceId'=>$resource,

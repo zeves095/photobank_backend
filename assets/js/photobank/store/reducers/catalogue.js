@@ -12,6 +12,7 @@ import {
   GARBAGE_SEARCH,
   NODE_REMOVE,
   NODE_REBASE,
+  SHOW_DELETED,
   START,
   SUCCESS,
   FAIL
@@ -35,7 +36,8 @@ let defaultState = Map({
   fetching_items: false,
   crumbs: null,
   moving_node:false,
-  found_garbage_nodes: List([])
+  found_garbage_nodes: List([]),
+  show_deleted:false
 })
 
 export default (catalogue = defaultState, action) => {
@@ -128,6 +130,9 @@ export default (catalogue = defaultState, action) => {
     }
     case NODE_REBASE+SUCCESS:{
       return catalogue.set('moving_node', false);
+    }
+    case SHOW_DELETED:{
+      return catalogue.set('show_deleted', action.payload);
     }
   }
   return catalogue

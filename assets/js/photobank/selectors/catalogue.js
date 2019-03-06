@@ -4,7 +4,7 @@ import {Map,List,Set,Record} from 'immutable';
 export const unfinishedUploads = (store, props)=>store.upload.get('uploads_unfinished');
 export const currentItemId = (store, props)=>props.item_id||store.catalogue.get('current_item');
 export const currentNodeId = (store, props)=>store.catalogue.get('current_node');
-export const currentgarbageNodeId = (store, props)=>store.catalogue.get('current_garbage_node');
+export const currentGarbageNodeId = (store, props)=>props.item_id||store.catalogue.get('current_garbage_node');
 export const catalogueData = (store, props)=>store.catalogue.get('catalogue_data');
 export const items = (store, props)=>props.items||store.catalogue.get('items');
 export const resumableContainer = (store, props)=>store.upload.get('resumable_container');
@@ -16,13 +16,17 @@ export const localStorage = (store, props)=>store.localstorage.get('localstorage
 export const collectionType = (store, props)=>localStorage(store,props).get('collection_type')||store.catalogue.get('collection_type');
 export const nodeMoving = (store,props)=>store.catalogue.get('moving_node');
 export const foundGarbageNodes = (store,props)=>store.catalogue.get('found_garbage_nodes');
+export const showDeleted = (store,props)=>store.catalogue.get('show_deleted');
 
-export const getCatalogueData = createSelector(catalogueData, collectionType,(catalogue, type)=>{
-  const cat_data = catalogue.get(type);
+export const getCatalogueData = createSelector(catalogueData, collectionType, showDeleted, (catalogue, type, deleted)=>{
+  let cat_data = catalogue.get(type);
+  if(!deleted){
+    cat_data = cat_data.filter(item=>!item.deleted);
+  }
   return cat_data.toArray();
 });
 
-export const getCurrentNode = createSelector(currentNodeId, currentgarbageNodeId, collectionType, localStorage, (node, garbage_node, type, storage)=>{
+export const getCurrentNode = createSelector(currentNodeId, currentGarbageNodeId, collectionType, localStorage, (node, garbage_node, type, storage)=>{
   let result = type==0?node:garbage_node;
   if(!result){
     result = type==0?storage.get('current_node'):storage.get('current_garbage_node');
@@ -45,8 +49,7 @@ export const filterItems = createSelector(getNodeItems, items, currentNodeId, (n
 });
 
 export const getItemObject = createSelector(items, catalogueData, currentItemId, currentgarbageNodeId, collectionType, (items, cat, id, garbageId, type)=>{
-  //console.log(id,type,cat.get(type).find(node=>node.id===garbageId));
-  let item = type==0
+  let item = type===0
   ?items.find(item=>item.id===id)
   :cat.get(type).find(node=>node.id===garbageId);
   if(!item)item=null;

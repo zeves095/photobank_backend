@@ -10,7 +10,7 @@ import {ItemQueryObject} from '../services/ItemQueryObject';
 import {CatalogueService} from '../services/CatalogueService';
 import {LocalStorageService} from '../services/LocalStorageService';
 import {NotificationService} from '../../services/NotificationService';
-import {chooseCatalogueViewType, chooseCollectionType, chooseNode, pushCrumbs} from '../actionCreator';
+import {chooseCatalogueViewType, chooseCollectionType, chooseNode, pushCrumbs, showDeletedNodes} from '../actionCreator';
 /**
  * [state description]
  * @type {Object}
@@ -25,6 +25,7 @@ export class CatalogueTree extends React.Component {
     super(props);
     this.state ={
       "crumbs": [],
+      show_deleted:false,
     }
     this.nodeChoiceDebounce=null;
   }
@@ -69,11 +70,20 @@ export class CatalogueTree extends React.Component {
    * @param {Number} type Тип коллекции
    *
    */
-  handleCollectionChoice(type){
+  handleCollectionChoice=(type)=>{
     if(!this.props.loading){
-    this.props.chooseCollectionType(type);
+      this.props.chooseCollectionType(type);
     }
   }
+
+  /**
+   * [traverseUp description]
+   * @type {[type]}
+   */
+   handleShowDeleted=()=>{
+     this.props.showDeletedNodes(!this.state.show_deleted);
+     this.setState({show_deleted:!this.state.show_deleted});
+   }
 
   /**
    * Смещает выбор текущего уровня каталога на уровень выше (для кнопки "../" в представлении списка)
@@ -129,6 +139,7 @@ export class CatalogueTree extends React.Component {
           <span className={"collection-tabs__tab" + (0==parseInt(this.props.collection_type,10)?" active":"")} onClick={()=>{this.handleCollectionChoice(0)}}>Товары</span>
         <span className={"collection-tabs__tab" + (1==parseInt(this.props.collection_type,10)?" active":"")} onClick={()=>{this.handleCollectionChoice(1)}}>Свалка</span>
         </div>
+        {this.props.isAuthorized&&this.props.collection_type===1?<div><input type="checkbox" onChange={this.handleShowDeleted} defaultChecked={this.state.show_deleted} /><span style={{marginLeft:"20px"}}>Показать удаленное</span></div>:null}
       </span>
       <div className="inner-bump">
           <div className="catalogue-tree__crumbs crumbs">
@@ -163,7 +174,8 @@ const mapDispatchToProps = {
   chooseNode,
   chooseCatalogueViewType,
   pushCrumbs,
-  chooseCollectionType
+  chooseCollectionType,
+  showDeletedNodes,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogueTree);

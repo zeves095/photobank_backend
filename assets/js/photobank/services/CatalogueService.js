@@ -82,9 +82,10 @@ class CatalogueService{
           'text':item.name,
           'parent':item.parent||"#",
           'id':item.id,
+          'li_attr':{class:item.deleted?"deleted":""},
           'state':{
             'selected':currentNode===item.id,
-            'opened':currentNode===item.id
+            'opened':currentNode===item.id,
           }
         };
         tree['core']['data'].push(node);

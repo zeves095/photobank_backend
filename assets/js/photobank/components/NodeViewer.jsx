@@ -31,7 +31,8 @@ export class NodeViewer extends React.Component{
    * Обработчик открытия интерфейса очереди загрузки/выгрузки
    * @param  {Event} e Событие клика
    */
-  handlePoolClick = (view_pool)=>{
+  handlePoolClick = (pool)=>{
+    let view_pool = (this.state.view_pool==pool)?0:pool;
     this.setState({view_pool})
   }
 
@@ -47,7 +48,7 @@ export class NodeViewer extends React.Component{
   }
 
   render() {
-    let itemSection = this.props.current_item!=null?(<ItemSection item_id={this.props.stored_item_id} />):"Не выбран товар";
+    let itemSection = this.props.current_item!=null?(<ItemSection item_id={this.props.item.id} />):"Не выбран товар";
 
     let section = "";
     switch(parseInt(this.state.view_pool)){
@@ -98,7 +99,7 @@ export class NodeViewer extends React.Component{
 const mapStateToProps = (state,props) =>{
   return {
     current_item: selectors.catalogue.getItemObject(state,props)||selectors.localstorage.getStoredItem(state,props),
-    stored_item_id: selectors.localstorage.getStoredItemId(state,props),
+    item: selectors.catalogue.getItemObject(state,props)||{id:selectors.localstorage.getStoredItemId(state,props)},
     crumbs: selectors.catalogue.getCrumbString(state,props),
     authorized: selectors.user.getAuthorized(state,props),
     collection_type: selectors.catalogue.getCollectionType(state,props),
