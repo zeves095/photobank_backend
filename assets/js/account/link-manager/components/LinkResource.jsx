@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {getChosenResource} from '../selectors';
+import * as selectors from '../selectors';
 import { removeResourceFromPool, removeAllFromPool } from '../actionCreator';
 import {ModalImage} from '../../../common/ModalImage';
 
@@ -88,10 +88,9 @@ export class LinkResource extends React.Component{
 
 }
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state,props) =>{
   return {
-    //resources: getChosenResource(state)
-    resources: getChosenResource(state),
+    resources: selectors.getChosenResource(state, props),
   }
 }
 

@@ -8,9 +8,15 @@ import {store} from '../store';
  * Обертка для основного компонента, служит для коннекта к Redux
  */
 export class PhotoBankWrapper extends Component {
+
+  constructor(props){
+    super(props);
+    import('../../../scss/photobank.scss')
+  }
+
   render() {
     return (
-      <div id="photobank-main">
+      <div id="photobank-main" onClick={this.testImport}>
         <Provider store = {store}>
           <PhotoBank />
         </Provider>

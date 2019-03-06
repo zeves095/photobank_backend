@@ -132,7 +132,7 @@ body {
 
 .node-viewer {
   .view-inner {
-    &__item-list {
+    .item-list {
       @include component-section-color();
       .list-item{
         @include list-item-color();

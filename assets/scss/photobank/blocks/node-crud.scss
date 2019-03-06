@@ -1,9 +1,13 @@
 .node-crud{
   padding: 10px;
   .button-block{
+    display: flex;
     button{
       @include button();
-      padding: 10px 8px;
+      box-shadow: none;
+    padding: 0;
+        line-height: 29px;
+    flex: 1 0 auto;
     }
   }
 }

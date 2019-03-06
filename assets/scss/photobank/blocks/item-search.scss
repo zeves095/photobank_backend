@@ -6,10 +6,16 @@
     display: block;
     margin:20px 0;
     width: 200px;
+    color:#333;
+  }
+
+  input{
+    height: 27px !important;
+    background-color: white !important;
   }
 
   .subinput{
-    margin-top: -19px;
+    // margin-top: -19px;
     font-size: 10px;
     input{
       display:inline-block;
@@ -21,6 +27,8 @@
   input[type="checkbox"]{
         //Обязательно для тестов selenium
     width: 1px;
+        pointer-events: all;
+    opacity: 1;
   }
 
   // input[type="checkbox"]{

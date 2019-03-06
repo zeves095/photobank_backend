@@ -1,4 +1,5 @@
 var Encore = require('@symfony/webpack-encore');
+var webpack = require('webpack');
 
 Encore
     // .configureBabel((config) => {
@@ -20,15 +21,10 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
+    .addEntry('app', './assets/js/app.js')
     .addEntry('photobank-app', './assets/js/photobank-app.js')
     .addEntry('usermanager-app', './assets/js/usermanager-app.js')
     .addEntry('linkmanager-app', './assets/js/linkmanager-app.js')
-    // .addEntry('crc32', './assets/js/vendor/crc32.js')
-    // .addEntry('md5', './assets/js/vendor/md5.js')
-    // .addEntry('resumable', './assets/js/vendor/resumable.js')
-    //.addStyleEntry('main_style', './assets/scss/app.scss')
-    //.addStyleEntry('color_theme_default', './assets/scss/photobank/themes/default.scss')
-
 
     /*
      * FEATURE CONFIG
@@ -39,7 +35,7 @@ Encore
      */
     .cleanupOutputBeforeBuild()
     .enableBuildNotifications()
-    .enableSourceMaps(!Encore.isProduction())
+    //.enableSourceMaps(!Encore.isProduction())
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
 
@@ -51,7 +47,7 @@ Encore
       };
     })
     // uncomment if you use TypeScript
-    //.enableTypeScriptLoader()
+    // .enableTypeScriptLoader()
 
     // uncomment if you're having problems with a jQuery plugin
     .autoProvidejQuery()
@@ -61,7 +57,8 @@ Encore
       // 'window.jQuery': 'jquery',
       'Resumable': __dirname + '/assets/js/vendor/resumable.js',
       'window.Resumable': __dirname + '/assets/js/vendor/resumable.js',
-      'CRC32': __dirname + '/assets/js/vendor/crc32.js'
+      'CRC32': __dirname + '/assets/js/vendor/crc32.js',
+      'jstree': __dirname + '/node_modules/jstree/dist/themes/default/style.css'
     })
     .enableReactPreset()
 ;
