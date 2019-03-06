@@ -44,13 +44,13 @@ export class ItemList extends React.Component{
     let nodeItemList = this.props.items.filter((item)=>{if(!this.state.filter_query) return true; return JSON.stringify(item).toLowerCase().includes(this.state.filter_query.toLowerCase());})
     .map((item)=>
       <div className={"list-item"+((this.props.current_item!=null&&item.id===this.props.current_item.id)?" list-item--active":"")} key={item.id} data-item={item.id} onClick={()=>{this.itemClickHandler(item.id)}}>
-        <h4 data-item={item.id} onClick={()=>{this.itemClickHandler(item.id)}} title={item.node}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
+        <h4 className={"list-item__title"} data-item={item.id} onClick={()=>{this.itemClickHandler(item.id)}} title={item.node}><i className="fas fa-circle" style={{"fontSize":"7pt", "margin": "3px"}}></i>Товар №{item.itemCode} "{item.name}"</h4>
       </div>
     );
     let tooBroadMsg = this.props.items_filtered.length >= 100?"Показаны не все результаты. Необходимо сузить критерии поиска.":"";
     return (
 
-      <div className={"view-inner__item-list"}>
+      <div className={"item-list"}>
         <span className="titlefix"><h2 className="node-viewer__component-title component-title">Товары</h2></span>
       <div className={(this.props.loading?"loading ":"")+"view-inner__container inner-bump"}>
         <ListFilter filterHandler={this.filterQueryHandler} filterid="nodesearch" placeholder="Фильтр по выбранному" />

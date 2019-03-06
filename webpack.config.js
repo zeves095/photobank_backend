@@ -35,17 +35,17 @@ Encore
      */
     .cleanupOutputBeforeBuild()
     .enableBuildNotifications()
-    .enableSourceMaps(!Encore.isProduction())
+    //.enableSourceMaps(!Encore.isProduction())
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
 
     // enables Sass/SCSS support
     .enableSassLoader()
-    // .enablePostCssLoader((options) => {
-    //   options.config = {
-    //       path: './postcss.config.js'
-    //   };
-    // })
+    .enablePostCssLoader((options) => {
+      options.config = {
+          path: './postcss.config.js'
+      };
+    })
     // uncomment if you use TypeScript
     // .enableTypeScriptLoader()
 
@@ -57,7 +57,8 @@ Encore
       // 'window.jQuery': 'jquery',
       'Resumable': __dirname + '/assets/js/vendor/resumable.js',
       'window.Resumable': __dirname + '/assets/js/vendor/resumable.js',
-      'CRC32': __dirname + '/assets/js/vendor/crc32.js'
+      'CRC32': __dirname + '/assets/js/vendor/crc32.js',
+      'jstree': __dirname + '/node_modules/jstree/dist/themes/default/style.css'
     })
     .enableReactPreset()
 ;

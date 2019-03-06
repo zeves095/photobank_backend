@@ -70,7 +70,7 @@ export class NodeViewer extends React.Component{
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
           {0===this.props.collection_type?<ItemList />:null}
-          {0===this.props.collection_type?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
+          {0===this.props.collection_type?<Draggable box1=".item-list" box2=".view-inner__item-section" id="2" />:null}
           <div className="view-inner__item-section" key={this.props.current_item!=null?this.props.current_item.id:""}>
             <span className="titlefix">
               <h2 className="node-viewer__component-title component-title">
