@@ -7,6 +7,10 @@
   font-size: 1.2em;
 }
 
+#link-manager{
+  width: 100%;
+}
+
 .link-section, .resource-section{
   flex:1 0 30%;
   overflow: hidden;
@@ -15,6 +19,12 @@
   }
   .component-header{
     margin: 0 -10px;
+  }
+}
+
+.link-list{
+  .button-block button{
+    box-shadow: none !important;
   }
 }
 
@@ -36,6 +46,13 @@
     .resource-search-form{
       flex: 1 0 auto;
       flex-grow: 0;
+      label{
+        color:#333;
+      }
+      input{
+        height: 27px;
+        background-color: white;
+      }
     }
     .resource-search-results{
       flex: 1 1 auto;
@@ -53,6 +70,13 @@
       flex: 0 0 0;
       padding: 0;
       overflow: hidden;
+      label{
+        color:#333;
+      }
+      input{
+        height: 27px !important;
+        background-color: white !important;
+      }
       &.open{
         overflow: visible;
         padding: 30px;
@@ -343,4 +367,8 @@ button{
 
 .loading{
   @include loading();
+}
+
+.button-block i{
+  line-height: 26px;
 }

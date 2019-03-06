@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
-
 import {SideMenu} from './SideMenu';
 import PhotoBankWrapper from '../photobank/components/PhotoBankWrapper';
 import LinkManagerWrapper from '../account/link-manager/components/LinkManagerWrapper';
@@ -12,7 +11,6 @@ class PhotoBankRouter extends React.Component {
 
   constructor(props){
     super(props);
-    import('../../scss/app.scss');
     utility.initLocalstorage();
     this.state={
       menu_open:true,//LocalStorageService.get('menu_open'),
@@ -22,12 +20,11 @@ class PhotoBankRouter extends React.Component {
   render(){
     return (
       <Router>
-        <div className="router-wrapper">
+        <div onClick={()=>{console.log('importing');import('react-simple-jstree')}} className="router-wrapper">
           <SideMenu />
           <Route path="/upload/" component={PhotoBankWrapper} />
           <Route path="/account/" component={LinkManagerWrapper} />
           <Route path="/usermanager/" component={UserManagerWrapper} />
-          <Redirect from="/" to="/upload/" />
         </div>
       </Router>
     )

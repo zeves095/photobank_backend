@@ -1,7 +1,7 @@
 .photobank-main {
 
   max-width: 100vw;
-  .catalogue-tree,.view-inner__item-list,.view-inner__item-section{
+  .catalogue-tree,.item-list,.view-inner__item-section{
     display:flex;
     flex-direction: column;
     .view-inner__container{
@@ -34,9 +34,6 @@
       position: relative;
     }
 
-    .component-title {
-      @include component-title();
-    }
     .draggable{
       width: 2px;
       height: 100vh;
@@ -53,11 +50,15 @@
   }
 }
 
+.component-title {
+  @include component-title();
+}
+
 .view-inner__container{
   width: 100%;
 }
 
-  .titlefix{
-    flex: 0 0 40px;
-    min-width: inherit;
-  }
+.titlefix{
+  flex: 0 0 40px;
+  min-width: inherit;
+}
