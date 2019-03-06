@@ -52,7 +52,6 @@ export class ItemList extends React.Component{
     );
     let tooBroadMsg = this.props.items_filtered.length >= 100?"Показаны не все результаты. Необходимо сузить критерии поиска.":"";
     return (
-
       <div className={"item-list"}>
         <span className="titlefix"><h2 className="node-viewer__component-title component-title">Товары</h2></span>
       <div className={(this.props.loading?"loading ":"")+"view-inner__container inner-bump"}>

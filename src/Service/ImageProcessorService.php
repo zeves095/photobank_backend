@@ -127,7 +127,6 @@ private $fileSystem;
     ]);
 
     $parentEntityId = $resource->getItem()?$resource->getItem()->getId():$resource->getGarbageNode()->getId();
-
     $filename = $this->resourceService->getUniqueIdentifier(file_get_contents($targetPath), $parentEntityId,filesize($targetPath)).'.'.$extension;
 
     $resourceParameters = [

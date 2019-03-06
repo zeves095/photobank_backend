@@ -36,6 +36,7 @@ let defaultState = Map({
   fetching_items: false,
   crumbs: null,
   moving_node:false,
+  found_garbage_nodes: List([]),
   show_deleted:false
   found_garbage_nodes: List([])
 })

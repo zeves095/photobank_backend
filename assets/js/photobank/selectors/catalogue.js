@@ -48,7 +48,7 @@ export const filterItems = createSelector(getNodeItems, items, currentNodeId, (n
   return nodeItems;
 });
 
-export const getItemObject = createSelector(items, catalogueData, currentItemId, currentGarbageNodeId, collectionType, (items, cat, id, garbageId, type)=>{
+export const getItemObject = createSelector(items, catalogueData, currentItemId, currentgarbageNodeId, collectionType, (items, cat, id, garbageId, type)=>{
   let item = type===0
   ?items.find(item=>item.id===id)
   :cat.get(type).find(node=>node.id===garbageId);
