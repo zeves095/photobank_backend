@@ -38,7 +38,6 @@ let defaultState = Map({
   moving_node:false,
   found_garbage_nodes: List([]),
   show_deleted:false
-  found_garbage_nodes: List([])
 })
 
 export default (catalogue = defaultState, action) => {
