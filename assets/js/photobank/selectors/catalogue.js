@@ -6,7 +6,7 @@ export const currentItemId = (store, props)=>props.item_id||store.catalogue.get(
 export const currentNodeId = (store, props)=>store.catalogue.get('current_node');
 export const currentGarbageNodeId = (store, props)=>props.item_id||store.catalogue.get('current_garbage_node');
 export const catalogueData = (store, props)=>store.catalogue.get('catalogue_data');
-export const items = (store, props)=>store.catalogue.get('items');
+export const items = (store, props)=>props.items||store.catalogue.get('items');
 export const resumableContainer = (store, props)=>store.upload.get('resumable_container');
 export const fetchingCatalogue = (store, props)=>store.catalogue.get('fetching_catalogue');
 export const fetchingItems = (store, props)=>store.catalogue.get('fetching_items');
@@ -15,6 +15,7 @@ export const breadcrumbs = (store, props)=>store.catalogue.get('crumbs');
 export const localStorage = (store, props)=>store.localstorage.get('localstorage');
 export const collectionType = (store, props)=>localStorage(store,props).get('collection_type')||store.catalogue.get('collection_type');
 export const nodeMoving = (store,props)=>store.catalogue.get('moving_node');
+export const foundGarbageNodes = (store,props)=>store.catalogue.get('found_garbage_nodes');
 export const showDeleted = (store,props)=>store.catalogue.get('show_deleted');
 
 export const getCatalogueData = createSelector(catalogueData, collectionType, showDeleted, (catalogue, type, deleted)=>{
@@ -38,8 +39,8 @@ export const getCurrentNodeParent = createSelector(getCurrentNode, getCatalogueD
   return parent?parent.parent:null;
 });
 
-export const getNodeItems = createSelector(items, currentNodeId, (items, id)=>{
-  let newItems = id!==null?items.filter(item=>item.node===id):items;
+export const getNodeItems = createSelector(items, currentNodeId, collectionType, (items, id, type)=>{
+  let newItems = id!==null&&1!==type?items.filter(item=>item.node===id):List(items);
   return newItems.toArray();
 });
 
@@ -47,7 +48,7 @@ export const filterItems = createSelector(getNodeItems, items, currentNodeId, (n
   return nodeItems;
 });
 
-export const getItemObject = createSelector(items, catalogueData, currentItemId, currentGarbageNodeId, collectionType, (items, cat, id, garbageId, type)=>{
+export const getItemObject = createSelector(items, catalogueData, currentItemId, currentgarbageNodeId, collectionType, (items, cat, id, garbageId, type)=>{
   let item = type===0
   ?items.find(item=>item.id===id)
   :cat.get(type).find(node=>node.id===garbageId);
@@ -89,3 +90,7 @@ export const getPaginationLimit = createSelector(localStorage, (storage=>{
   if(!limit){limit=20;}
   return limit;
 }));
+
+export const getFoundGarbageNodes = createSelector(foundGarbageNodes, (nodes)=>{
+  return nodes;
+})

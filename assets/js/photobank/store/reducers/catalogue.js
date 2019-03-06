@@ -9,6 +9,7 @@ import {
   ITEMS_FETCH,
   CRUMBS_UPDATE,
   CHOOSE_COLLECTION,
+  GARBAGE_SEARCH,
   NODE_REMOVE,
   NODE_REBASE,
   SHOW_DELETED,
@@ -32,10 +33,12 @@ let defaultState = Map({
   current_item: null,
   item_query_object: null,
   fetching_catalogue: true,
-  fetching_items: true,
+  fetching_items: false,
   crumbs: null,
   moving_node:false,
+  found_garbage_nodes: List([]),
   show_deleted:false
+  found_garbage_nodes: List([])
 })
 
 export default (catalogue = defaultState, action) => {
@@ -71,6 +74,10 @@ export default (catalogue = defaultState, action) => {
       cat_data = cat_data.set(catalogue.get('collection_type'), fetchCatalogueData);
       return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
       break;
+    }
+    case GARBAGE_SEARCH+SUCCESS:{
+      let found = action.payload;
+      return catalogue.set('found_garbage_nodes',found);
     }
     case NODE_REMOVE+SUCCESS:{
       let del_id = action.payload;

@@ -65,12 +65,16 @@ export class NodeViewer extends React.Component{
         section = itemSection;
         break;
     }
+    let itemList;
+    if(0===this.props.collection_type)
+      {itemList = <ItemList />}
+    else if(3===this.props.catalogue_view)
+      {itemList = <ItemList items={this.props.found_garbage_nodes} />}
     return (
-
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
-          {0===this.props.collection_type?<ItemList />:null}
-          {0===this.props.collection_type?<Draggable box1=".item-list" box2=".view-inner__item-section" id="2" />:null}
+          {itemList}
+          {0===this.props.collection_type?<Draggable box1=".view-inner__item-list" box2=".view-inner__item-section" id="2" />:null}
           <div className="view-inner__item-section" key={this.props.current_item!=null?this.props.current_item.id:""}>
             <span className="titlefix">
               <h2 className="node-viewer__component-title component-title">
@@ -99,6 +103,8 @@ const mapStateToProps = (state,props) =>{
     crumbs: selectors.catalogue.getCrumbString(state,props),
     authorized: selectors.user.getAuthorized(state,props),
     collection_type: selectors.catalogue.getCollectionType(state,props),
+    catalogue_view: selectors.localstorage.getStoredCatalogueViewtype(state,props),
+    found_garbage_nodes: selectors.catalogue.getFoundGarbageNodes(state,props),
   }
 }
 

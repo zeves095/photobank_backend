@@ -215,4 +215,29 @@ class GarbageStorageController extends AbstractController
         return $response;
     }
 
+    /**
+     * Осуществляет поиск среди од свалки
+     *
+     * @param Request $request Объект актуального запроса
+     * @param SearchQueryBuilder $queryBuilder Сервис создания поискового объекта
+     * @param SearchService $searchService Сервис, осуществляющий поиск через репозиторий
+     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     *
+     * @Route("/catalogue/search/garbage",
+     * methods={"GET"},
+     * name="catalogue_search_garbage")
+     */
+    public function searchItems(Request $request, SearchQueryBuilder $queryBuilder, SearchService $searchService,AppSerializer $serializer)
+    {
+      $response = new JsonResponse();
+      $queryObject = $queryBuilder->makeGarbageQuery($request);
+      $garbage = $searchService->search($queryObject);
+      $garbageArray = $serializer->normalize($garbage, null, array(
+          ObjectNormalizer::ENABLE_MAX_DEPTH => true,
+          'groups' => array('main')
+      ));
+      $response->setData($garbageArray);
+      return $response;
+    }
+
 }

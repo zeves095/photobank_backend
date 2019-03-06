@@ -61,13 +61,14 @@ export class ResourceSearchResults extends React.Component{
   render(){
     let tooManyResources = this.props.resources_found.length == 100;
     let resources = this.props.resources_found.map((resource)=>{
+      let parent=resource.item?resource.item:resource.garbage_node;
       let colorclass = this.props.resources_chosen.find((res)=>{return res.id === resource.id})?"selected":"default";
       let thumb_style = typeof resource.thumbnail === 'undefined'?{}:{backgroundImage:"url(/catalogue/node/item/resource/"+resource.thumbnail+".jpg)"};
       return(
         <div data-res={resource.id} key={"resource"+resource.id} className={"resource list-item "+colorclass} onClick={this.handleAddResourceToPool}>
           <span className={"resource-preview"+(typeof resource.thumbnail === 'undefined'?" resource-preview--loading":"")} style={thumb_style}  onClick={(e)=>{e.stopPropagation();this.handleModalImage("/catalogue/node/item/resource/"+resource.id+".jpg")}}></span>
 
-        {resource.item.name+"("+resource.item.id+")"}
+        {parent.name+"("+parent.id+")"}
         {resource.size_px}
         </div>
       )
