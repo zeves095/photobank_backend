@@ -5,7 +5,6 @@ import utility from '../../photobank/services/UtilityService';
 class UserService{
 
   __construct(){
-
   }
 
   /**
