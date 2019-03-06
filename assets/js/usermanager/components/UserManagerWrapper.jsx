@@ -9,7 +9,7 @@ import {Provider} from 'react-redux';
 export class UserManagerWrapper extends React.Component {
   constructor(props){
     super(props);
-
+    import('../../../scss/usermanager.scss');
   }
 
   render(){
