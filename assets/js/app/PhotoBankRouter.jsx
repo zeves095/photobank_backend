@@ -19,7 +19,7 @@ class PhotoBankRouter extends React.Component {
   render(){
     return (
       <Router>
-        <div onClick={()=>{console.log('importing');import('react-simple-jstree')}} className="router-wrapper">
+        <div className="router-wrapper">
           <SideMenu />
           <Route path="/upload/" component={PhotoBankWrapper} />
           <Route path="/account/" component={LinkManagerWrapper} />

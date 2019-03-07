@@ -139,7 +139,7 @@ export class CatalogueTree extends React.Component {
           <span className={"collection-tabs__tab" + (0==parseInt(this.props.collection_type,10)?" active":"")} onClick={()=>{this.handleCollectionChoice(0)}}>Товары</span>
         <span className={"collection-tabs__tab" + (1==parseInt(this.props.collection_type,10)?" active":"")} onClick={()=>{this.handleCollectionChoice(1)}}>Свалка</span>
         </div>
-        {this.props.isAuthorized&&this.props.collection_type===1?<div><input type="checkbox" onChange={this.handleShowDeleted} defaultChecked={this.state.show_deleted} /><span style={{marginLeft:"20px"}}>Показать удаленное</span></div>:null}
+        {this.props.isAuthorized&&this.props.collection_type===1?<div><input type="checkbox" onChange={this.handleShowDeleted} defaultChecked={this.state.show_deleted} /><span className="lever" style={{marginLeft:"20px"}}>Показать удаленное</span></div>:null}
       </span>
       <div className="inner-bump">
           <div className="catalogue-tree__crumbs crumbs">

@@ -9,7 +9,7 @@
     color:#333;
   }
 
-  input{
+  input[type="text"]{
     height: 27px !important;
     background-color: white !important;
   }
@@ -28,6 +28,8 @@
         //Обязательно для тестов selenium
     width: 1px;
         pointer-events: all;
+        position: relative;
+        vertical-align: baseline;
     opacity: 1;
   }
 

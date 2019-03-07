@@ -17,4 +17,5 @@ return [
     PhotoBank\FileUploaderBundle\FileUploaderBundle::class => ['all' => true],
     PhotoBank\DevConsoleCommandBundle\DevConsoleCommandBundle::class => ['dev' => true, 'test' => true],
     PhotoBank\ProdConsoleCommandBundle\ProdConsoleCommandBundle::class => ['all' => true],
+    Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
 ];
