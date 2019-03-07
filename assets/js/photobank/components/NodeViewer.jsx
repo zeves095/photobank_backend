@@ -48,12 +48,12 @@ export class NodeViewer extends React.Component{
   }
 
   render() {
-    let itemSection = this.props.current_item!=null?(<ItemSection item_id={this.props.item.id} />):"Не выбран товар";
+    let itemSectionOutput = this.props.current_item!=null?(<ItemSection item_id={this.props.item.id} />):"Не выбран товар";
 
     let section = "";
     switch(parseInt(this.state.view_pool)){
       case 0:
-        section = itemSection;
+        section = itemSectionOutput;
         break;
       case 1:
         section = <DownloadPool />
@@ -62,36 +62,37 @@ export class NodeViewer extends React.Component{
         section = <UploadPool />
         break;
       default:
-        section = itemSection;
+        section = itemSectionOutput;
         break;
     }
-    let itemList, draggable;
+    let itemSection = (
+      <div className="view-inner__item-section" key={this.props.current_item!=null?this.props.current_item.id:""}>
+        <span className="titlefix">
+          <h2 className="node-viewer__component-title component-title">
+            <p>Файлы</p>
+            <i className="crumb-string">{this.props.crumbs}</i>
+            <div className="view-switcher-button-block">
+              <button type="button" className="item-section-switcher" data-pool="1" onClick={()=>{this.handlePoolClick(1)}}>{1===this.state.view_pool?"К последнему товару":"Выгрузка"}</button>
+            {this.props.authorized?<button type="button" className="item-section-switcher" data-pool="2" onClick={()=>{this.handlePoolClick(2)}}>{2===this.state.view_pool?"К последнему товару":"Загрузка"}</button>:null}
+            </div>
+          </h2>
+    </span>
+      <div className="view-inner__container inner-bump">
+        {section}
+      </div>
+      </div>
+    );
+    let inner;
     if(0===this.props.collection_type)
-      {itemList = <ItemList />;
-      draggable = <Draggable box1=".item-list" box2=".view-inner__item-section" id="2" />;}
+      {inner = <Draggable basew="30" maxw1="50" maxw2="78" minw1="205" parent={this.refs.draggable_parent} box1={<ItemList />} box2={itemSection} id="2" />;}
     else if(3===this.props.catalogue_view)
-      {itemList = <ItemList items={this.props.found_garbage_nodes} />
-      draggable = <Draggable box1=".item-list" box2=".view-inner__item-section" id="2" />;}
+      {inner = <Draggable basew="30" maxw1="50" maxw2="78" minw1="205" parent={this.refs.draggable_parent} box1={<ItemList items={this.props.found_garbage_nodes} />} box2={itemSection} id="2" />;}
+    else
+      {inner = itemSection}
     return (
       <div className="node-viewer">
-        <div className="node-viewer__view-inner view-inner">
-          {itemList}
-          {draggable}
-          <div className="view-inner__item-section" key={this.props.current_item!=null?this.props.current_item.id:""}>
-            <span className="titlefix">
-              <h2 className="node-viewer__component-title component-title">
-                <p>Файлы</p>
-                <i className="crumb-string">{this.props.crumbs}</i>
-                <div className="view-switcher-button-block">
-                  <button type="button" className="item-section-switcher" data-pool="1" onClick={()=>{this.handlePoolClick(1)}}>{1===this.state.view_pool?"К последнему товару":"Выгрузка"}</button>
-                {this.props.authorized?<button type="button" className="item-section-switcher" data-pool="2" onClick={()=>{this.handlePoolClick(2)}}>{2===this.state.view_pool?"К последнему товару":"Загрузка"}</button>:null}
-                </div>
-              </h2>
-        </span>
-          <div className="view-inner__container inner-bump">
-            {section}
-          </div>
-          </div>
+        <div className="node-viewer__view-inner view-inner" ref="draggable_parent">
+          {inner}
         </div>
       </div>
     );

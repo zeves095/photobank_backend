@@ -119,6 +119,7 @@ body {
   }
 
   &__crumbs{
+        min-height: 27px;
     .crumbs__crumb{
       background-color: $color-main-fade;
       border-right:1px solid $color-main;

@@ -6,77 +6,70 @@ export class Draggable extends React.Component{
 
   /**
    * Конструктор класса
-   * id - Уникальная строка, для исключения конфликтов с другими компонентами того же типа
-   * box1 - Селектор первого элемента
-   * box2 - Селектор второго элемента
-   * parent - Родительский элемент над обоими элементами
-   * boundrect - Размер родительского дива
-   * mouseX - Положение курсора на оси X
    * dragging - Активен ли элемент в данный момент
    */
   constructor(props){
     super(props);
     this.state={
-      "id": this.props.id,
-      "box1": null,
-      "box2": null,
-      "parent": null,
-      "boundrect": null,
-      "mouseX": null,
-      "dragging": false
+      width: [this.props.basew,100-parseInt(this.props.basew)],
+      dragging: false
     };
-
-    this.handleDrag = this.handleDrag.bind(this);
-    this.handleRelease = this.handleRelease.bind(this);
-    this.calc = this.calc.bind(this);
   };
 
   /**
    * Обработчик начала передвидения элемента
    * @param  {Event} e Событие
    */
-  handleDrag(e){
-    this.state.box1 = $(this.props.box1);
-    this.state.box2 = $(this.props.box2);
+  handleDrag=(e)=>{
+    document.addEventListener('mousemove', this.calc, true);
     e.preventDefault();
-    this.state.dragging = true;
+    this.setState({dragging:true});
   }
 
   /**
    * Обработчик конца передвижения элемента
    */
-  handleRelease(){
-    this.state.dragging = false;
+  handleRelease=()=>{
+    document.removeEventListener('mousemove', this.calc, true);
+    this.setState({dragging:false});
   }
 
   /**
    * Высчитывает ширину двух элементов в процентах в зависимости от положения компонента
    */
-  calc(){
-    this.state.boundrect = this.state.parent.get(0).getBoundingClientRect();
-    let b1w = 100/(this.state.boundrect.width/(this.state.mouseX - this.state.boundrect.left));
+  calc=(e)=>{
+    let boundrect = this.props.parent.getBoundingClientRect();
+    let b1w = 100/(boundrect.width/(e.pageX - boundrect.left));
     let b2w = 100-b1w;
-    this.state.box1.css('flex-basis', b1w+'%');
-    this.state.box2.css('flex-basis', b2w+'%');
+    let width = [b1w,b2w];
+    this.setState({width});
   }
 
   componentDidMount(){
-    this.state.box1 = $(this.props.box1);
-    this.state.box2 = $(this.props.box2);
-    this.state.parent = this.state.box1.parent();
-    this.state.boundrect = this.state.parent.get(0).getBoundingClientRect();
-    $(document).mousemove((e)=>{
-        this.state.mouseX = e.pageX;
-        if(this.state.dragging){this.calc()};
-    });
-    $(document).mouseup((e)=>{
-        this.handleRelease();
-    });
+    document.addEventListener('mouseup', this.handleRelease);
   }
 
   render(){
+    let style1 = {
+      flexBasis:this.state.width[0]+"%",
+      maxWidth:this.props.maxw1+"%",
+      minWidth:this.props.minw1?this.props.minw1+"px":100-parseInt(this.props.maxw2,10)+"%",
+    };
+    let style2 = {
+      flexBasis:this.state.width[1]+"%",
+      maxWidth:this.props.maxw2+"%",
+      minWidth:this.props.minw2?this.props.minw2+"px":100-parseInt(this.props.maxw1,10)+"%",
+    };
     return(
+      <React.Fragment>
+      <div className="draggable--flex" style={style1}>
+        {this.props.box1}
+      </div>
       <div className="draggable" onMouseDown={this.handleDrag} onMouseUp={this.handleRelease} id={"draggable-"+this.state.id}></div>
+      <div className="draggable--flex" style={style2}>
+        {this.props.box2}
+      </div>
+    </React.Fragment>
     );
   }
 }

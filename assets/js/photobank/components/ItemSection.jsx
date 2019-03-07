@@ -45,7 +45,6 @@ export class ItemSection extends React.Component{
   render() {
     if(!this.props.item){this.props.fetchItemData(this.props.item_id);return null;}
     let render_upload = this.props.item&&this.props.resumable&&this.props.authorized;
-    console.log(this.props.item,this.props.resumable,this.props.authorized);
     let viewBtn = (
       <div className="button-block">
         <button type="button" data-view="0" title="Большие иконки" className={this.props.view===0?"item-view__view-button--active item-view__view-button":"item-view__view-button"} onClick={()=>{this.handleViewChoice("0")}}>
