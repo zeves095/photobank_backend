@@ -17,12 +17,6 @@ class UsermanagerControllerTest extends BaseTest
 
     $this->assertEquals(200, $response->getStatusCode());
 
-    $config = json_decode($crawler->filter("#usermanager-wrapper")->first()->attr("data-config"));
-    $configVars = ["user_get_url", "user_get_url"];
-    foreach($configVars as $var){
-      $this->assertObjectHasAttribute($var, $config);
-    }
-
     $client = $this->createAuthenticatedClient();
     $crawler = $client->request('GET', '/usermanager');
     $response = $client->getResponse();
