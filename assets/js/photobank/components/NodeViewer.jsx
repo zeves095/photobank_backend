@@ -65,16 +65,18 @@ export class NodeViewer extends React.Component{
         section = itemSection;
         break;
     }
-    let itemList;
+    let itemList, draggable;
     if(0===this.props.collection_type)
-      {itemList = <ItemList />}
+      {itemList = <ItemList />;
+      draggable = <Draggable box1=".item-list" box2=".view-inner__item-section" id="2" />;}
     else if(3===this.props.catalogue_view)
-      {itemList = <ItemList items={this.props.found_garbage_nodes} />}
+      {itemList = <ItemList items={this.props.found_garbage_nodes} />
+      draggable = <Draggable box1=".item-list" box2=".view-inner__item-section" id="2" />;}
     return (
       <div className="node-viewer">
         <div className="node-viewer__view-inner view-inner">
           {itemList}
-          {0===this.props.collection_type?<Draggable box1=".item-list" box2=".view-inner__item-section" id="2" />:null}
+          {draggable}
           <div className="view-inner__item-section" key={this.props.current_item!=null?this.props.current_item.id:""}>
             <span className="titlefix">
               <h2 className="node-viewer__component-title component-title">

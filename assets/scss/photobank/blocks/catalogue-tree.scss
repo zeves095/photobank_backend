@@ -54,6 +54,9 @@
         //Обязательно для тестов selenium
     width: 1px;
         pointer-events: all;
+        position: relative;
+        vertical-align: baseline;
+        padding:0 3px;
     opacity: 1;
   }
   &__crumbs{
