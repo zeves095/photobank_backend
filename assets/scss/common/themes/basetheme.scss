@@ -213,7 +213,7 @@ body {
     }
     &--icons-lg{
       .existing-download-controls, .existing-download{
-        background-color: transparent !important;
+        background-color: transparent;
         i{
           transition: margin-top 0.2s;
           color: $color-text-alt;
@@ -250,7 +250,7 @@ body {
     }
     &--icons-sm{
       .existing-download-controls, .existing-download{
-        background-color: transparent !important;
+        background-color: transparent;
         i{
           transition: margin-top 0.2s;
           color: $color-text-alt;
@@ -288,7 +288,7 @@ body {
     &--detailed{
       .existing-download-controls, .existing-download{
         overflow: hidden;
-        background-color: transparent !important;
+        background-color: transparent;
         i{
           transition: margin-top 0.2s;
           font-size: 12px;
