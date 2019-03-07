@@ -111,7 +111,7 @@
 
 @mixin download-controls{
   overflow: hidden;
-  background-color: transparent !important;
+  background-color: transparent;
   i{
     transition: margin-top 0.1s;
     font-size: 12px;
@@ -121,6 +121,7 @@
     height: 100%;
     padding: 5px 0;
     cursor:pointer;
+    box-sizing: content-box;
     &.get-url{
       left: 0;
     }
