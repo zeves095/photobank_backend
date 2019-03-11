@@ -3,7 +3,7 @@
 
 module.exports = {
   // All imported modules in your tests should be mocked automatically
-  // automock: false,
+  //automock: true,
 
   // Stop running tests after the first failure
   // bail: false,

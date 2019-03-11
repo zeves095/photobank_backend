@@ -361,7 +361,14 @@ button{
 .link-add-form, .resource-search-form{
   @include form();
   input[type='checkbox']{
-    width:auto
+    width:auto;
+    //Обязательно для тестов selenium
+    width: 1px;
+    margin: 0 0 0 -10px;
+    pointer-events: all;
+  }
+  .checkbox{
+    position: relative;
   }
 }
 

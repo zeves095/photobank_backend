@@ -12,7 +12,10 @@ let bareProps = {
   stored_item_id: null,
   crumbs: [],
   authorized: null,
-  collection_type: 0
+  catalogue_view: 1,
+  collection_type: 0,
+  found_garbage_nodes: [],
+  item: null
 };
 
 let itemChosenProps = {
@@ -25,7 +28,14 @@ let itemChosenProps = {
   stored_item_id: "00010598085",
   crumbs: [],
   authorized: null,
-  collection_type: 0
+  catalogue_view: 1,
+  collection_type: 0,
+  found_garbage_nodes: [],
+  item: {
+    id:"00010598085",
+    itemCode:"00010598085",
+    name:"Гель для посудомоечных машин \"Очарование\" флакон-дозатор, 480гр",
+    node:"00010598084"}
 };
 
 function setup(props){
@@ -44,12 +54,7 @@ describe('NodeViewer', ()=>{
     });
     it('Компонент отображает вложенные компоненты', ()=>{
       const {component} = setup(bareProps);
-      expect(component.find(selectors.components.ITEM_LIST_COMPONENT).exists()).toBe(true);
-      expect(component.find(selectors.upload.ITEM_SECTION_OUTER).exists()).toBe(true);
-    });
-    it('Компонент отображает выбранный товар', ()=>{
-      const {component} = setup(itemChosenProps);
-      expect(component.find(selectors.components.ITEM_SECTION_COMPONENT).exists()).toBe(true);
+      expect(component.find(selectors.components.DRAGGABLE_COMPONENT).exists()).toBe(true);
     });
   });
 });
