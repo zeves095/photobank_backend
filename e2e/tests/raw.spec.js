@@ -52,11 +52,11 @@ async function waitForEl(driver,selector){
       LOGIN: 'none',
       PASSWORD: 'none'
     }
-  }
+  };
   const FORM_DATA = {
     ITEM_NAME: 'Кружка',
     NODE_NAME: 'Кружка',
-  }
+  };
   const SELECTORS = {
     LOGIN: 'input[name="_username"]',
     PASSWORD: 'input[name="_password"]',
@@ -103,7 +103,7 @@ async function waitForEl(driver,selector){
       RESOURCE_LIST: ".item-resources:not(.loading)",
       LINK_LIST: ".link-list .component-body:not(.loading)"
     }
-  }
+  };
 
 describe('Проверка аутентификации', function () {
   this.timeout(0); // set timelimit to infinity - otherwise you'll get 2000ms timeUp error.;
@@ -342,7 +342,7 @@ describe('Проверка навигации по каталогам', function
       let catNodes = await driver.findElements(By.css(SELECTORS.upload.CATALOGUE_TREE_TREE_NODE));
       await catNodes[browseStep++].click();
       await waitForEl(driver, SELECTORS.notloading.ITEM_LIST);
-      await driver.findElements(By.css(SELECTORS.upload.ITEM_LIST_ITEM)).then((items)=>{numOfItemsInNode = items.length});
+      await driver.findElements(By.css(SELECTORS.upload.ITEM_LIST_ITEM)).then((items)=>{numOfItemsInNode = items.length;});
     }
     let foundItems = await driver.findElements(By.css(SELECTORS.upload.ITEM_LIST_ITEM));
     expect(foundItems).to.have.lengthOf.at.least(1);
@@ -380,7 +380,7 @@ describe('Проверка навигации по каталогам', function
         const curNode = await driver.findElement(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM));
         curNode.click();
         await waitForEl(driver, SELECTORS.notloading.ITEM_LIST);
-        await driver.findElements(By.css(SELECTORS.upload.ITEM_LIST_ITEM)).then((items=>{itemsInNode = items.length}));
+        await driver.findElements(By.css(SELECTORS.upload.ITEM_LIST_ITEM)).then((items=>{itemsInNode = items.length;}));
       }
     }catch(e){
       expect(false, e);
@@ -404,6 +404,7 @@ describe('Проверка навигации по каталогам', function
     await waitForEl(driver, SELECTORS.upload.CATALOGUE_TREE_LIST_UP);
     const traverseUpBtn = await driver.findElement(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_UP));
     traverseUpBtn.click();
+    await w(driver);
     await waitForEl(driver, SELECTORS.notloading.NODE_LIST);
     firstNode = await driver.findElement(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM));
     let newNodeCode = await firstNode.getAttribute('data-node');
@@ -504,11 +505,11 @@ describe('Проверка поисковой системы по ресурса
       await addLinkButton.click();
       let nodeInput = await driver.findElement(By.css(SELECTORS.linkmanager.RESOURCE_SEARCH_NODE_NAME));
       nodeInput.sendKeys(nodeWithResources);
-      let presetInput = await driver.findElement(By.css(SELECTORS.linkmanager.RESOURCE_SEARCH_PRESET_ID))
+      let presetInput = await driver.findElement(By.css(SELECTORS.linkmanager.RESOURCE_SEARCH_PRESET_ID));
       presetInput.sendKeys(Key.BACK_SPACE);
-      let typeInput = await driver.findElement(By.css(SELECTORS.linkmanager.RESOURCE_SEARCH_TYPE_ID))
+      let typeInput = await driver.findElement(By.css(SELECTORS.linkmanager.RESOURCE_SEARCH_TYPE_ID));
       typeInput.sendKeys(Key.BACK_SPACE);
-      let nestedInput = await driver.findElement(By.css(SELECTORS.linkmanager.RESOURCE_SEARCH_SEARCH_NESTED))
+      let nestedInput = await driver.findElement(By.css(SELECTORS.linkmanager.RESOURCE_SEARCH_SEARCH_NESTED));
       nestedInput.click();
       const searchSubmitBtn = await driver.findElement(By.css(SELECTORS.linkmanager.RESOURCE_SEARCH_SUBMIT));
       await searchSubmitBtn.click();
@@ -624,14 +625,14 @@ async function getVerifiedData(driver){
     await firstListItem.click();
     await waitForEl(driver, SELECTORS.notloading.ITEM_LIST);
 
-    await driver.findElements(By.css(SELECTORS.upload.ITEM_LIST_ITEM)).then((items=>{numOfItemsInNode = items.length}));
+    await driver.findElements(By.css(SELECTORS.upload.ITEM_LIST_ITEM)).then((items=>{numOfItemsInNode = items.length;}));
 
     await waitForEl(driver, SELECTORS.notloading.NODE_LIST);
     await waitForEl(driver, SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM);
-    await driver.findElements(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM)).then((items=>{numOfSubNodes = items.length}));
+    await driver.findElements(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM)).then((items=>{numOfSubNodes = items.length;}));
     await waitForEl(driver, SELECTORS.notloading.ITEM_LIST);
 
-  }while(numOfItemsInNode < 1)
+  }while(numOfItemsInNode < 1);
 
   numOfNestedItems = numOfItemsInNode;
   let itemResults = await driver.findElements(By.css(SELECTORS.upload.ITEM_LIST_ITEM));
@@ -659,8 +660,8 @@ async function getVerifiedData(driver){
     await firstListItem.click();
     await waitForEl(driver, SELECTORS.notloading.ITEM_LIST);
 
-    try{await driver.findElements(By.css(SELECTORS.upload.ITEM_LIST_ITEM)).then((items=>{numOfNestedItems += items.length}))}catch(e){};
-    try{await driver.findElements(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM)).then((items=>{numOfSubNodes = items.length}))}catch(e){};
+    try{await driver.findElements(By.css(SELECTORS.upload.ITEM_LIST_ITEM)).then((items=>{numOfNestedItems += items.length;}));}catch(e){}
+    try{await driver.findElements(By.css(SELECTORS.upload.CATALOGUE_TREE_LIST_ITEM)).then((items=>{numOfSubNodes = items.length;}));}catch(e){}
   }
 
   return {
@@ -674,5 +675,5 @@ async function getVerifiedData(driver){
     nodeWithResources,
     itemsWithResources,
     numOfResources
-  }
+  };
 }

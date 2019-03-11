@@ -5,6 +5,10 @@ import {selectors} from '../../constants';
 
 import {CatalogueTree} from '../../../photobank/components/CatalogueTree';
 
+import {jQuery} from 'jquery';
+console.log(jQuery);
+jest.mock('jquery');
+
 Enzyme.configure({adapter: new Adapter()});
 
 let bareProps = {

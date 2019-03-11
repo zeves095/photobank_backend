@@ -6,7 +6,7 @@ export const upload = {
   DOWNLOAD_POOL_WRAPPER:'.download-pool',
   EXISTING_RESOURCE_WRAPPER: '.existing-files__file',
   EXISTING_RESOURCES_WRAPPER: '.item-view__existing',
-  ITEM_LIST_WRAPPER: '.view-inner__item-list',
+  ITEM_LIST_WRAPPER: '.item-list',
   ITEM_LIST_ITEM: '.list-item',
   ITEM_SEARCH_WRAPPER: '.item-search',
   ITEM_SECTION_WRAPPER: '.item-view',

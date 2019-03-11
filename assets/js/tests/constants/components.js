@@ -24,4 +24,5 @@ export const components = {
   UPLOAD_POOL_COMPONENT:'Connect(UploadPool)',
   UPLOADS_COMPONENT:'Connect(Uploads)',
   DOWNLOAD_POOL_COMPONENT:'Connect(DownloadPool)',
+  DRAGGABLE_COMPONENT:'Draggable',
 }
