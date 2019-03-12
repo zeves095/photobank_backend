@@ -88,14 +88,15 @@ class CatalogueService{
             'opened':currentNode===item.id,
           }
         };
-        tree['core']['data'].push(node);
-        if(node['state']['selected']===true){
+        tree.core.data.push(node);
+        if(node.state.selected===true){
           nodeToOpen = node;
+          tree.selected=[node.id];
         }
       });
       while(typeof nodeToOpen != "undefined"){
-        nodeToOpen['state']['opened'] = true;
-        nodeToOpen = tree['core']['data'].find((parent)=>{return parent.id === nodeToOpen.parent});
+        nodeToOpen.state.opened = true;
+        nodeToOpen = tree.core.data.find((parent)=>{return parent.id === nodeToOpen.parent});
       }
       return tree;
     }
