@@ -14,31 +14,29 @@ class JSTree extends React.Component {
   }
 
   makeTree=()=>{
-    let settings=this.state.settings;
     let treeData = this.populateTree();
-    settings = Object.assign(this.state.settings, treeData);
+    let settings=this.state.settings;
+    settings = {...this.state.settings, ...treeData};
     if(this.props.crud_enabled){
-        settings = this.configureCrud(settings);
+      settings = this.configureCrud(settings);
     }
     $(this.treeContainer).jstree(settings);
-    this.assignHandlers();
-    //this.setState(settings);
+    $(this.treeContainer).jstree(true).refresh(true);
+
   }
 
   updateTree = ()=>{
     let treeData = this.populateTree();
-    // let settings = Object.assign(this.state.settings,treeData);
-    let settings = $(this.treeContainer).jstree(true).settings;
+    let settings = this.state.settings;
     settings.core.data = treeData.core.data;
     settings.selected = treeData.selected;
-    $(this.treeContainer).jstree(true).settings = settings;
-    $(this.treeContainer).jstree(true).refresh();
-    //this.setState({settings});
+    //$(this.treeContainer).jstree(true).settings = settings;
+    $.jstree.defaults = settings;
+    $(this.treeContainer).jstree(true).refresh(true);
   }
 
   populateTree = ()=>{
-    let settings = this.baseSettings;
-    let nodeToOpen;
+    let settings = this.state.settings;
     let treeData = this.props.catalogue_data.map((item)=>{
       let node = {
         'text':item.name,
@@ -50,27 +48,26 @@ class JSTree extends React.Component {
           'opened':this.props.current_node===item.id,
         }
       };
-      if(node.state.selected===true){
-        nodeToOpen = node;
-        settings.selected=[node.id];
-      }
       return node;
     });
+    let nodeToOpen = treeData.find(item=>item.state.selected===true);
+    settings.selected=[nodeToOpen.id];
     while(typeof nodeToOpen != "undefined"){
       nodeToOpen.state.opened = true;
-      nodeToOpen = settings.core.data.find((parent)=>{return parent.id === nodeToOpen.parent});
+      nodeToOpen = treeData.find((parent)=>{return parent.id === nodeToOpen.parent});
     }
     settings.core.data = treeData;
     return settings;
   }
 
   configureCrud = (settings)=>{
-    settings.plugins = ['contextmenu', 'dnd', "themes", "html_data"];
+    settings.plugins = ['contextmenu', 'dnd', "themes", "html_data", "state"];
     settings.core.check_callback = true;
     settings.contextmenu = {
       show_at_node: true,
       items: (node)=>{
-        let tree = $(this.treeContainer).jstree(true);
+        let tree = $.jstree.reference($(this.treeContainer));
+        console.log(tree);
         return{
           "add": {
             "label": "Создать подкаталог...",
@@ -104,28 +101,23 @@ class JSTree extends React.Component {
   }
 
   handleRenameNode = (id,text,parent)=>{
-    console.log("handleRenameNode", id, text);
     this.props.onRename(id,text,parent);
   }
 
   handleDeleteNode = (id,parent)=>{
-    console.log("handleDeleteNode", id);
     this.props.onDelete(id,parent);
   }
 
   handleAddNode = (parent, text)=>{
-    console.log("handleAddNode", parent, text);
     this.props.onCreate(parent,text);
   }
 
   handleMoveNode = (id, parent)=>{
-    console.log("handleMoveNode", id, parent);
     this.props.onMove(id,parent);
   }
 
   handleSelectNode = (id)=>{
-    console.log("handleSelectNode", id);
-    this.props.onSelect(id);
+    if(this.props.current_node!==id)this.props.onSelect(id);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -145,17 +137,17 @@ class JSTree extends React.Component {
       :this.handleRenameNode(data.node.id, data.text, data.node.parent);
     });
     $(this.treeContainer).on('changed.jstree', (e, data) => {
-      console.log("CHONG",data.instance.settings);
       this.setState({settings:data.instance.settings});
     });
   }
 
   componentDidMount() {
     let treeData = this.makeTree();
+    this.assignHandlers();
   }
 
-  componentDidUpdate() {
-    let treeData = this.updateTree();
+  componentDidUpdate(prevProps) {
+    this.props.collection!==prevProps.collection?this.makeTree():this.updateTree();
   }
 
   render() {
