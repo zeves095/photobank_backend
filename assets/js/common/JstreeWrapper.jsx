@@ -10,7 +10,8 @@ class JSTree extends React.Component {
     this.baseSettings = { core: { data: [] }, 'selected':[]};
     this.state = {
       settings : this.baseSettings
-    }
+    };
+    this.treeContainer = React.createRef();
   }
 
   makeTree=()=>{
@@ -36,6 +37,7 @@ class JSTree extends React.Component {
   }
 
   populateTree = ()=>{
+    console.log("POOP", this.props.current_node);
     let settings = this.state.settings;
     let treeData = this.props.catalogue_data.map((item)=>{
       let node = {
@@ -45,13 +47,13 @@ class JSTree extends React.Component {
         'li_attr':{class:item.deleted?"deleted":""},
         'state':{
           'selected':this.props.current_node===item.id,
-          'opened':this.props.current_node===item.id,
+          'opened':this.props.current_node===item.id||!!settings.core.data.find(op=>op.id===item.id&&op.state.opened),
         }
       };
       return node;
     });
     let nodeToOpen = treeData.find(item=>item.state.selected===true);
-    settings.selected=[nodeToOpen.id];
+    if(!!nodeToOpen)settings.selected=[nodeToOpen.id];
     while(typeof nodeToOpen != "undefined"){
       nodeToOpen.state.opened = true;
       nodeToOpen = treeData.find((parent)=>{return parent.id === nodeToOpen.parent});
@@ -63,6 +65,9 @@ class JSTree extends React.Component {
   configureCrud = (settings)=>{
     settings.plugins = ['contextmenu', 'dnd', "themes", "html_data", "state"];
     settings.core.check_callback = true;
+    settings.state =  {
+       "key" : "catalogue_tree"
+    };
     settings.contextmenu = {
       show_at_node: true,
       items: (node)=>{
@@ -121,7 +126,9 @@ class JSTree extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.current_node !== this.props.current_node || nextProps.crud_enabled !== this.props.crud_enabled;
+    // return nextProps.current_node !== this.props.current_node || nextProps.colleciton !== this.props.colleciton || nextProps.catalogue_data.length !== this.props.catalogue_data.length;
+    //return nextProps!==this.props;
+    return nextProps.current_node !== this.props.current_node ||  nextProps.catalogue_data !== this.props.catalogue_data;
   }
 
   assignHandlers = ()=>{
@@ -136,8 +143,14 @@ class JSTree extends React.Component {
       ?this.handleAddNode(data.node.parent, data.text)
       :this.handleRenameNode(data.node.id, data.text, data.node.parent);
     });
-    $(this.treeContainer).on('changed.jstree', (e, data) => {
-      this.setState({settings:data.instance.settings});
+    $(this.treeContainer).on('select_node.jstree after_open.jstree after_close.jstree', (e, data) => {
+      // console.log(data);
+      let settings = data.instance.settings;
+      if(e.type==="after_close"||e.type==="after_open"){
+        data.instance.settings.core.data.find(item=>item.id===data.node.id).state.opened = data.node.state.opened;
+        data.instance.refresh(true);
+      }
+      this.setState({settings:settings});
     });
   }
 
@@ -147,6 +160,7 @@ class JSTree extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    console.log(prevProps.current_node, this.props.current_node);
     this.props.collection!==prevProps.collection?this.makeTree():this.updateTree();
   }
 

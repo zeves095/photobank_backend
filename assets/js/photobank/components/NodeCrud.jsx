@@ -25,23 +25,10 @@ export class NodeCrud extends React.Component {
 
   handleAddNode=()=>{
     this.props.onCreate(this.props.node,this.state.name);
-    // this.props.addGarbageNode(
-    //   this.state.name,
-    //   this.props.node,
-    //   this.props.catalogue_data,
-    //   this.props.collection_type
-    // );
   }
 
   handleRenameNode=()=>{
     this.props.onRename(this.props.node,this.state.name,this.props.node_parent);
-    // this.props.updateGarbageNode(
-    //   this.props.node,
-    //   this.state.name,
-    //   this.props.node_parent,
-    //   this.props.catalogue_data,
-    //   this.props.collection_type
-    // );
   }
 
   handleStartParentChoice=()=>{
@@ -50,13 +37,7 @@ export class NodeCrud extends React.Component {
   }
 
   handleRemoveNode=()=>{
-    this.props.onDelete(this.props.node);
-    // this.props.removeGarbageNode(
-    //   this.props.node,
-    //   this.props.node_parent,
-    //   this.props.catalogue_data,
-    //   this.props.collection_type
-    // );
+    this.props.onDelete(this.props.node,this.props.node_parent);
   }
 
   bodyListener = (e)=>{

@@ -22,6 +22,7 @@ import {
   startNodeRebase,
   stopNodeRebase,
   updateGarbageNode,
+  fetchNodes
 } from '../actionCreator';
 /**
  * [state description]
@@ -98,6 +99,8 @@ export class CatalogueTree extends React.Component {
       this.props.catalogue_data,
       this.props.collection_type
     );
+    this.props.fetchNodes(parent, this.props.catalogue_data, this.props.collection_type);
+    this.props.chooseNode(parent, this.props.catalogue_data, this.props.collection_type);
   }
 
   handleDeleteNode = (id,parent)=>{
@@ -107,6 +110,7 @@ export class CatalogueTree extends React.Component {
       this.props.catalogue_data,
       this.props.collection_type
     );
+    this.props.chooseNode(parent, this.props.catalogue_data, this.props.collection_type);
   }
 
   handleRenameNode = (id, text, parent)=>{
@@ -117,6 +121,7 @@ export class CatalogueTree extends React.Component {
       this.props.catalogue_data,
       this.props.collection_type
     );
+    this.props.chooseNode(id, this.props.catalogue_data, this.props.collection_type);
   }
 
   handleMoveNode = (id, parent)=>{
@@ -126,6 +131,7 @@ export class CatalogueTree extends React.Component {
       this.props.catalogue_data,
       this.props.collection_type
     );
+    //this.props.chooseNode(parent, this.props.catalogue_data, this.props.collection_type);
   }
 
   /**
@@ -230,6 +236,7 @@ const mapDispatchToProps = {
   removeGarbageNode,
   startNodeRebase,
   stopNodeRebase,
+  fetchNodes
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogueTree);
