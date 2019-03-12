@@ -1,7 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import selectors from '../selectors';
-import TreeView from 'react-simple-jstree';
+//import TreeView from 'react-simple-jstree';
+import TreeView from '../../common/JstreeWrapper';
 
 import ItemSearch from './ItemSearch';
 import GarbageSearch from './GarbageSearch';
