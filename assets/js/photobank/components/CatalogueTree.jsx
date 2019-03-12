@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import selectors from '../selectors';
 //import TreeView from 'react-simple-jstree';
-import TreeView from '../../common/JstreeWrapper';
+import JSTree from '../../common/JstreeWrapper';
 
 import ItemSearch from './ItemSearch';
 import GarbageSearch from './GarbageSearch';
@@ -11,7 +11,18 @@ import {ItemQueryObject} from '../services/ItemQueryObject';
 import {CatalogueService} from '../services/CatalogueService';
 import {LocalStorageService} from '../services/LocalStorageService';
 import {NotificationService} from '../../services/NotificationService';
-import {chooseCatalogueViewType, chooseCollectionType, chooseNode, pushCrumbs, showDeletedNodes} from '../actionCreator';
+import {
+  addGarbageNode,
+  chooseCatalogueViewType,
+  chooseCollectionType,
+  chooseNode,
+  pushCrumbs,
+  removeGarbageNode,
+  showDeletedNodes,
+  startNodeRebase,
+  stopNodeRebase,
+  updateGarbageNode,
+} from '../actionCreator';
 /**
  * [state description]
  * @type {Object}
@@ -36,23 +47,6 @@ export class CatalogueTree extends React.Component {
    */
   handleNodeChoice = (id)=>{
     if(!this.props.clicks_disabled)this.props.chooseNode(id, this.props.catalogue_data, this.props.collection_type);
-  }
-
-  /**
-   * Выбирает созраненный раздел каталога как активный
-   */
-  componentWillMount(){
-    this.props.chooseCollectionType(this.props.collection_type);
-    this.handleNodeChoice(this.props.current_node);
-  }
-
-  componentDidUpdate(prevProps){
-    if((this.props.current_node !== prevProps.current_node || this.props.catalogue_data !== prevProps.catalogue_data)&&this.props.catalogue_data.length){
-      this.props.pushCrumbs(this.props.catalogue_data, this.props.current_node);
-    }
-    if(this.props.collection_type !== prevProps.collection_type){
-      this.handleNodeChoice(this.props.current_node);
-    }
   }
 
   /**
@@ -97,6 +91,60 @@ export class CatalogueTree extends React.Component {
     }
   }
 
+  handleAddNode = (parent,text)=>{
+    this.props.addGarbageNode(
+      text,
+      parent,
+      this.props.catalogue_data,
+      this.props.collection_type
+    );
+  }
+
+  handleDeleteNode = (id,parent)=>{
+    this.props.removeGarbageNode(
+      id,
+      parent,
+      this.props.catalogue_data,
+      this.props.collection_type
+    );
+  }
+
+  handleRenameNode = (id, text, parent)=>{
+    this.props.updateGarbageNode(
+      id,
+      text,
+      parent,
+      this.props.catalogue_data,
+      this.props.collection_type
+    );
+  }
+
+  handleMoveNode = (id, parent)=>{
+    this.props.stopNodeRebase(
+      id,
+      parent,
+      this.props.catalogue_data,
+      this.props.collection_type
+    );
+  }
+
+  /**
+   * Выбирает созраненный раздел каталога как активный
+   */
+  componentWillMount(){
+    this.props.chooseCollectionType(this.props.collection_type);
+    this.handleNodeChoice(this.props.current_node);
+  }
+
+  componentDidUpdate(prevProps){
+    if((this.props.current_node !== prevProps.current_node || this.props.catalogue_data !== prevProps.catalogue_data)&&this.props.catalogue_data.length){
+      this.props.pushCrumbs(this.props.catalogue_data, this.props.current_node);
+    }
+    if(this.props.collection_type !== prevProps.collection_type){
+      this.handleNodeChoice(this.props.current_node);
+    }
+  }
+
   render() {
     let view = "";
     let viewClass = "";
@@ -116,8 +164,8 @@ export class CatalogueTree extends React.Component {
         break;
       case 2:
         if(0===this.props.catalogue_data.length){view = "";break;}
-        let tree=CatalogueService.makeTree(this.props.catalogue_data, this.props.current_node);
-        view = <TreeView treeData={tree} onChange={(e,data)=>{if(data.action==='select_node' && data.selected[0] != this.props.current_node){this.handleNodeChoice(data.selected[0])}}} />;
+        let crud_enabled = this.props.isAuthorized&&this.props.collection_type===1;
+        view = <JSTree collection={this.props.collection_type} catalogue_data={this.props.catalogue_data} current_node={this.props.current_node} crud_enabled={crud_enabled} onSelect={this.handleNodeChoice} onCreate={this.handleAddNode} onDelete={this.handleDeleteNode} onRename={this.handleRenameNode} onMove={this.handleMoveNode} />;
         viewClass = "tree-view";
         break;
       case 3:
@@ -151,7 +199,7 @@ export class CatalogueTree extends React.Component {
               {view}
             </div>
           </div>
-          {this.props.collection_type===1&&this.props.isAuthorized?<NodeCrud />:null}
+          {this.props.collection_type===1&&this.props.isAuthorized?<NodeCrud onSelect={this.handleNodeChoice} onCreate={this.handleAddNode} onDelete={this.handleDeleteNode} onRename={this.handleRenameNode} onMove={this.handleMoveNode} />:null}
         </div>
       </div>
     );
@@ -177,6 +225,11 @@ const mapDispatchToProps = {
   pushCrumbs,
   chooseCollectionType,
   showDeletedNodes,
+  addGarbageNode,
+  updateGarbageNode,
+  removeGarbageNode,
+  startNodeRebase,
+  stopNodeRebase,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogueTree);
