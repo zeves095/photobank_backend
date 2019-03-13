@@ -15,29 +15,32 @@ class JSTree extends React.Component {
   }
 
   makeTree=()=>{
+    if($(this.treeContainer).jstree(true)){$(this.treeContainer).jstree(true).destroy();}
     let treeData = this.populateTree();
     let settings=this.state.settings;
     settings = {...this.state.settings, ...treeData};
+    settings.state =  {
+       "key" : this.props.collection===0?"catalogue_tree":"garbage_tree",
+    };
     if(this.props.crud_enabled){
       settings = this.configureCrud(settings);
+    }else{
+      settings.plugins = ["themes", "html_data", "state"];
     }
     $(this.treeContainer).jstree(settings);
+    this.assignHandlers();
     $(this.treeContainer).jstree(true).refresh(true);
-
   }
 
   updateTree = ()=>{
     let treeData = this.populateTree();
     let settings = this.state.settings;
-    settings.core.data = treeData.core.data;
-    settings.selected = treeData.selected;
-    //$(this.treeContainer).jstree(true).settings = settings;
-    $.jstree.defaults = settings;
+    $(this.treeContainer).jstree(true).settings.core.data = treeData.core.data;
+    $(this.treeContainer).jstree(true).settings.selected = treeData.selected;
     $(this.treeContainer).jstree(true).refresh(true);
   }
 
   populateTree = ()=>{
-    console.log("POOP", this.props.current_node);
     let settings = this.state.settings;
     let treeData = this.props.catalogue_data.map((item)=>{
       let node = {
@@ -65,20 +68,20 @@ class JSTree extends React.Component {
   configureCrud = (settings)=>{
     settings.plugins = ['contextmenu', 'dnd', "themes", "html_data", "state"];
     settings.core.check_callback = true;
-    settings.state =  {
-       "key" : "catalogue_tree"
-    };
     settings.contextmenu = {
       show_at_node: true,
+      select_node:false,
       items: (node)=>{
         let tree = $.jstree.reference($(this.treeContainer));
-        console.log(tree);
         return{
           "add": {
             "label": "Создать подкаталог...",
             "action": () => {
-              let newNode = tree.create_node(node.id, {id:"%", text:"Новая папка"});
-              tree.edit(newNode);
+              tree.select_node(node);
+              setTimeout(()=>{
+                let newNode = tree.create_node(node.id, {id:"%", text:"Новая папка"});
+                tree.edit(newNode);
+              },500);
             }
           },
           "rename": {
@@ -126,8 +129,6 @@ class JSTree extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    // return nextProps.current_node !== this.props.current_node || nextProps.colleciton !== this.props.colleciton || nextProps.catalogue_data.length !== this.props.catalogue_data.length;
-    //return nextProps!==this.props;
     return nextProps.current_node !== this.props.current_node ||  nextProps.catalogue_data !== this.props.catalogue_data;
   }
 
@@ -136,7 +137,9 @@ class JSTree extends React.Component {
       this.handleMoveNode(data.node.id, data.parent);
     });
     $(this.treeContainer).on('select_node.jstree', (e, data) => {
+      let settings = data.instance.settings;
       this.handleSelectNode(data.node.id);
+      this.setState({settings});
     });
     $(this.treeContainer).on('rename_node.jstree', (e, data) => {
       data.node.id === "%"
@@ -144,13 +147,8 @@ class JSTree extends React.Component {
       :this.handleRenameNode(data.node.id, data.text, data.node.parent);
     });
     $(this.treeContainer).on('select_node.jstree after_open.jstree after_close.jstree', (e, data) => {
-      // console.log(data);
-      let settings = data.instance.settings;
-      if(e.type==="after_close"||e.type==="after_open"){
         data.instance.settings.core.data.find(item=>item.id===data.node.id).state.opened = data.node.state.opened;
         data.instance.refresh(true);
-      }
-      this.setState({settings:settings});
     });
   }
 
@@ -160,7 +158,6 @@ class JSTree extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log(prevProps.current_node, this.props.current_node);
     this.props.collection!==prevProps.collection?this.makeTree():this.updateTree();
   }
 
