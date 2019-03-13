@@ -5,11 +5,13 @@ import {
   ITEM_INFO_FETCH,
   CATALOGUE_ROOT_NODES_FETCH,
   NODE_CHOICE,
+  NODE_UPDATE,
   ITEM_CHOICE,
   ITEMS_FETCH,
   CRUMBS_UPDATE,
   CHOOSE_COLLECTION,
   GARBAGE_SEARCH,
+  NODE_CREATE,
   NODE_REMOVE,
   NODE_REBASE,
   SHOW_DELETED,
@@ -74,6 +76,11 @@ export default (catalogue = defaultState, action) => {
       return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
       break;
     }
+    case CATALOGUE_DATA_FETCH+FAIL:{
+      let cat_data = List(catalogue.get('catalogue_data'));
+      return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
+      break;
+    }
     case GARBAGE_SEARCH+SUCCESS:{
       let found = action.payload;
       return catalogue.set('found_garbage_nodes',found);
@@ -134,6 +141,22 @@ export default (catalogue = defaultState, action) => {
     case SHOW_DELETED:{
       return catalogue.set('show_deleted', action.payload);
     }
+    case NODE_UPDATE+FAIL:{
+      let cat_data = List(catalogue.get('catalogue_data'));
+      return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
+    }
+    case NODE_CREATE+FAIL:{
+      let cat_data = List(catalogue.get('catalogue_data'));
+      return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
+    }
+    case ITEMS_FETCH+FAIL:{
+      let cat_data = List(catalogue.get('catalogue_data'));
+      return catalogue.set('fetching_catalogue',false).set('fetching_items',false).set('catalogue_data',cat_data);
+    }
+    case ITEM_INFO_FETCH+FAIL:{
+      let cat_data = List(catalogue.get('catalogue_data'));
+      return catalogue.set('fetching_catalogue',false).set('fetching_items',false).set('catalogue_data',cat_data);
+    }
   }
-  return catalogue
-}
+  return catalogue;
+};

@@ -13,6 +13,8 @@ class NotificationService{
     let keys = {
       "unknown-error": "Неизвестная ошибка",
       "failed-root-nodes": "Не удалось получить структуру каталога",
+      "fetch-nodes-fail": "Не удалось получить структуру каталога",
+      "server-error": "Ошибка подключения к серверу",
       "request-failed": "Ошибка запроса",
       "none-found": "Ничего не найдено",
       "ext-not-supported": "Тип файла не поддерживается",
@@ -31,6 +33,10 @@ class NotificationService{
       "link-fetch-error":"Невозможно получить список ссылок",
       "thumbnail-error":"Невозможно получить изображения ресурсов",
       "clipboard-error":"Скачайте нормальный брузер",
+      "remove-upload-error":"Не удалось удалить загрузку",
+      "node-update-fail":"Не удалось обновить раздел каталога",
+      "node-remove-fail":"Не удалось удалить раздел. Возможно, папка не пуста.",
+      "node-create-fail":"Не удалось создать раздел.",
     }
     return keys;
   }

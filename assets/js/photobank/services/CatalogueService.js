@@ -43,14 +43,12 @@ class CatalogueService{
    * @param {Number} id Код 1С раздела каталога
    */
   static fetchNodes(id, collection){
-    return new Promise((resolve,reject)=>{
-      let searchNode = (id!=null?id:"");
-      let url = constants.CATALOGUE_COLLECTION===collection?utility.config.get_nodes_url:utility.config.get_garbage_nodes_url;
-      fetch(url+searchNode,{'method':'GET'})
-.then((nodes)=>{
-        resolve(nodes);
-      })
-    });
+    let searchNode = (id!=null?id:"");
+    let url = constants.CATALOGUE_COLLECTION===collection?utility.config.get_nodes_url:utility.config.get_garbage_nodes_url;
+    return fetch(url+searchNode,{'method':'GET'})
+    .then((nodes)=>{
+      resolve(nodes);
+    })
   }
 
   /**
@@ -134,8 +132,8 @@ class CatalogueService{
       .then(response=>response.json())
       .then((data)=>{
         resolve(data.parent);
-      }).catch(()=>{
-        reject("request-failed");
+      }).catch((e)=>{
+        reject(e);
       });
     });
   }
