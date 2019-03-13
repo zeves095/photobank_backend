@@ -27,8 +27,8 @@ class JSTree extends React.Component {
     }else{
       settings.plugins = ["themes", "html_data", "state"];
     }
-    $(this.treeContainer).jstree(settings);
     this.assignHandlers();
+    $(this.treeContainer).jstree(settings);
     $(this.treeContainer).jstree(true).refresh(true);
   }
 
@@ -77,11 +77,12 @@ class JSTree extends React.Component {
           "add": {
             "label": "Создать подкаталог...",
             "action": () => {
+              console.log("AAAAAADDDDDDDDDd");
               tree.select_node(node);
               setTimeout(()=>{
                 let newNode = tree.create_node(node.id, {id:"%", text:"Новая папка"});
                 tree.edit(newNode);
-              },500);
+              },600);
             }
           },
           "rename": {
@@ -129,27 +130,33 @@ class JSTree extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
+    console.log("SHOULD???",nextProps.current_node !== this.props.current_node ||  nextProps.catalogue_data !== this.props.catalogue_data);
     return nextProps.current_node !== this.props.current_node ||  nextProps.catalogue_data !== this.props.catalogue_data;
   }
 
   assignHandlers = ()=>{
-    $(this.treeContainer).on('move_node.jstree', (e, data) => {
-      this.handleMoveNode(data.node.id, data.parent);
-    });
-    $(this.treeContainer).on('select_node.jstree', (e, data) => {
-      let settings = data.instance.settings;
-      this.handleSelectNode(data.node.id);
-      this.setState({settings});
-    });
-    $(this.treeContainer).on('rename_node.jstree', (e, data) => {
-      data.node.id === "%"
-      ?this.handleAddNode(data.node.parent, data.text)
-      :this.handleRenameNode(data.node.id, data.text, data.node.parent);
-    });
-    $(this.treeContainer).on('select_node.jstree after_open.jstree after_close.jstree', (e, data) => {
-        data.instance.settings.core.data.find(item=>item.id===data.node.id).state.opened = data.node.state.opened;
+    if(!$.jstree.reference($(this.treeContainer))){
+      $(this.treeContainer).on('move_node.jstree', (e, data) => {
+        this.handleMoveNode(data.node.id, data.parent);
         data.instance.refresh(true);
-    });
+      });
+      $(this.treeContainer).on('select_node.jstree', (e, data) => {
+        console.log(e,data);
+        let settings = data.instance.settings;
+        this.handleSelectNode(data.node.id);
+        this.setState({settings});
+      });
+      $(this.treeContainer).on('rename_node.jstree', (e, data) => {
+        console.log(e,data);
+        data.node.id === "%"
+        ?this.handleAddNode(data.node.parent, data.text)
+        :this.handleRenameNode(data.node.id, data.text, data.node.parent);
+      });
+      $(this.treeContainer).on('after_open.jstree after_close.jstree', (e, data) => {
+          data.instance.settings.core.data.find(item=>item.id===data.node.id).state.opened = data.node.state.opened;
+          data.instance.refresh(true);
+      });
+    }
   }
 
   componentDidMount() {

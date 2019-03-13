@@ -35,6 +35,8 @@ import {
   ALL
 } from '../constants/';
 
+import * as constants from '../constants';
+
 /**
  * Инициализвация приложения. Получает конфигурацию, данные из localStorage, незаконченные загрузки и данные о текущем пользователе
  */
@@ -71,12 +73,11 @@ export function fetchUnfinished(){
         });
       });
     }).catch((error)=>{
-      console.log(error);
       dispatch({
         type: UPLOADS_UNFINISHED_FETCH+FAIL,
         payload: ''
       });
-      NotificationService.throw('custom',error);
+      NotificationService.throw('server-error');
     });
   }
 }
@@ -110,12 +111,11 @@ export function fetchRootNodes(id, collection){
         payload: data
       });
     }).catch((error)=>{
-      console.log(error);
       dispatch({
         type: CATALOGUE_ROOT_NODES_FETCH+FAIL,
         payload: id
       });
-      NotificationService.throw('custom',error);
+      NotificationService.throw('failed-root-nodes');
     });
   }
 }
@@ -135,20 +135,31 @@ export function fetchNodes(id, data, collection){
       type: CATALOGUE_DATA_FETCH+START,
       payload: ''
     });
-    return CatalogueService.fetchNodes(id, collection)
-    .then((response)=>response.json())
+    let searchNode = (id!=null?id:"");
+    let url = constants.CATALOGUE_COLLECTION===collection?utility.config.get_nodes_url:utility.config.get_garbage_nodes_url;
+    return fetch(url+searchNode,{'method':'GET'})
+    .then((response)=>{
+      if(!response.ok){
+        dispatch({
+          type: CATALOGUE_DATA_FETCH+FAIL,
+          payload: ''
+        });
+        NotificationService.throw('fetch-nodes-fail');
+      }else{
+        return response.json()}
+      }
+    )
     .then((data)=>{
       dispatch({
         type: CATALOGUE_DATA_FETCH+SUCCESS,
         payload: data
       });
     }).catch((error)=>{
-      console.log(error);
       dispatch({
         type: CATALOGUE_DATA_FETCH+FAIL,
         payload: ''
       });
-      NotificationService.throw('custom',error);
+      NotificationService.throw('fetch-nodes-fail');
     });
   }
 }
@@ -199,12 +210,11 @@ export function fetchExisting(id, collection){
         payload: data
       });
     }).catch((error)=>{
-      console.log(error);
       dispatch({
         type: EXISTING_RESOURCES_FETCH+FAIL,
         payload: ''
       });
-      NotificationService.throw('custom',error);
+      NotificationService.throw('server-error');
     });
   }
 }
@@ -231,7 +241,7 @@ export function fetchPresets(pagination, existing){
         type: EXISTING_PRESETS_FETCH+FAIL,
         payload: ''
       });
-      NotificationService.throw('custom',error);
+      NotificationService.throw('server-error');
     });
   }
 }
@@ -274,12 +284,11 @@ export function fetchItems(query){
         payload: data
       });
     }).catch((error)=>{
-      console.log(error);
       dispatch({
         type: ITEMS_FETCH+FAIL,
         payload: ''
       });
-      NotificationService.throw('custom',error);
+      NotificationService.throw('server-error');
     });
   }
 }
@@ -320,8 +329,7 @@ export function deleteUpload(filehash, item){
         payload: {hash:filehash,item}
       });
     }).catch((e)=>{
-      console.log(e);
-      NotificationService.throw('custom', e)
+      NotificationService.throw('remove-upload-error')
     });
   }
 }
@@ -502,6 +510,7 @@ export function getUserInfo(){
         type: USER_INFO_FETCH+FAIL,
         payload: "",
       });
+      NotificationService.throw('server-error');
     });
   }
 }
@@ -524,6 +533,7 @@ export function fetchItemData(id){
         type: ITEM_INFO_FETCH+FAIL,
         payload: "",
       });
+      NotificationService.throw('server-error');
     });
   }
 }
@@ -678,12 +688,27 @@ export function addGarbageNode(name,parent,data,type){
   return dispatch=>{
     let body = JSON.stringify({name,parent});
     return fetch(utility.config.add_garbage_node_url,{method:"POST", body})
-    .then(()=>{
-      dispatch({
-        type: NODE_CREATE+SUCCESS,
-        payload: name
-      });
+    .then((response)=>{
+      if(response.ok){
+        dispatch({
+          type: NODE_CREATE+SUCCESS,
+          payload: name
+        });
+      }else{
+        dispatch({
+          type: NODE_CREATE+FAIL,
+          payload: name
+        });
+        NotificationService.throw('node-create-fail');
+      }
       dispatch(fetchNodes(parent,data,type));
+    }).catch((e)=>{
+      console.error(e);
+      dispatch({
+        type: NODE_CREATE+FAIL,
+        payload: e
+      });
+      NotificationService.throw('node-create-fail');
     });
   }
 }
@@ -700,12 +725,26 @@ export function updateGarbageNode(id,name,parent,data,type){
   return dispatch=>{
     let body = JSON.stringify(Object.assign({},{id,name,parent}));
     return fetch(utility.config.update_garbage_node_url,{method:"POST", body})
-    .then(()=>{
-      dispatch({
-        type: NODE_UPDATE+SUCCESS,
-        payload: id
-      });
+    .then((response)=>{
+      if(response.ok){
+        dispatch({
+          type: NODE_UPDATE+SUCCESS,
+          payload: id
+        });
+      }else{
+        dispatch({
+          type: NODE_UPDATE+FAIL,
+          payload: id
+        });
+        NotificationService.throw('node-update-fail');
+      }
       dispatch(fetchNodes(parent,data,type));
+    }).catch((e)=>{
+      dispatch({
+        type: NODE_UPDATE+FAIL,
+        payload: e
+      });
+      NotificationService.throw('node-update-fail');
     });
   }
 }
@@ -728,8 +767,21 @@ export function removeGarbageNode(id,parent,data,type){
           payload: id
         });
         dispatch(fetchNodes(parent,data,type));
+      }else{
+        dispatch({
+          type: NODE_REMOVE+FAIL,
+          payload: id
+        });
+        NotificationService.throw('node-remove-fail');
       }
-    });
+    }).catch((e)=>{
+      console.error(e);
+      dispatch({
+        type: NODE_REMOVE+FAIL,
+        payload: id
+      });
+      NotificationService.throw('node-remove-fail');
+    });;
   }
 }
 
@@ -750,10 +802,11 @@ export function startNodeRebase(){
  */
 export function stopNodeRebase(node_id=null, parent_id=null, data, type){
   return dispatch=>{
-    dispatch(updateGarbageNode(node_id, null, parent_id, data, type))
-    dispatch({
-      type:NODE_REBASE+SUCCESS,
-      payload:{node_id, parent_id}
+    dispatch(updateGarbageNode(node_id, null, parent_id, data, type)).then((result)=>{
+      dispatch({
+        type:NODE_REBASE+SUCCESS,
+        payload:{node_id, parent_id}
+      });
     });
   }
 }
