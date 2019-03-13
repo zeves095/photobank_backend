@@ -126,16 +126,11 @@ class CatalogueService{
    * @param  {Number} id Идентификатор дочернего разделы каталога
    */
   static _fetchNodeParent(id, collection){
-    return new Promise((resolve,reject)=>{
-      let url = collection==0?utility.config.get_node_url:utility.config.get_garbage_node_url;
-      fetch(url+id,{method:"GET"})
-      .then(response=>response.json())
-      .then((data)=>{
-        resolve(data.parent);
-      }).catch((e)=>{
-        reject(e);
-      });
-    });
+    if(id===null)return null;
+    let url = collection==0?utility.config.get_node_url:utility.config.get_garbage_node_url;
+    return fetch(url+id,{method:"GET"})
+    .then(response=>response.json())
+    .then(data=>data.parent);
   }
 
   /**

@@ -18,6 +18,7 @@ import {
   chooseNode,
   pushCrumbs,
   removeGarbageNode,
+  restoreGarbageNode,
   showDeletedNodes,
   startNodeRebase,
   stopNodeRebase,
@@ -113,6 +114,16 @@ export class CatalogueTree extends React.Component {
     this.props.chooseNode(parent, this.props.catalogue_data, this.props.collection_type);
   }
 
+  handleRestoreNode = (id,parent)=>{
+    this.props.restoreGarbageNode(
+      id,
+      parent,
+      this.props.catalogue_data,
+      this.props.collection_type
+    );
+    this.props.chooseNode(parent, this.props.catalogue_data, this.props.collection_type);
+  }
+
   handleRenameNode = (id, text, parent)=>{
     this.props.updateGarbageNode(
       id,
@@ -171,7 +182,7 @@ export class CatalogueTree extends React.Component {
       case 2:
         if(0===this.props.catalogue_data.length){view = "";break;}
         let crud_enabled = this.props.isAuthorized&&this.props.collection_type===1;
-        view = <JSTree key="catalogue" collection={this.props.collection_type} catalogue_data={this.props.catalogue_data} current_node={this.props.current_node} crud_enabled={crud_enabled} onSelect={this.handleNodeChoice} onCreate={this.handleAddNode} onDelete={this.handleDeleteNode} onRename={this.handleRenameNode} onMove={this.handleMoveNode} />;
+        view = <JSTree key="catalogue" collection={this.props.collection_type} catalogue_data={this.props.catalogue_data} current_node={this.props.current_node} crud_enabled={crud_enabled} onSelect={this.handleNodeChoice} onCreate={this.handleAddNode} onDelete={this.handleDeleteNode} onRestore={this.handleRestoreNode} onRename={this.handleRenameNode} onMove={this.handleMoveNode} />;
         viewClass = "tree-view";
         break;
       case 3:
@@ -205,7 +216,7 @@ export class CatalogueTree extends React.Component {
               {view}
             </div>
           </div>
-          {this.props.collection_type===1&&this.props.isAuthorized?<NodeCrud onSelect={this.handleNodeChoice} onCreate={this.handleAddNode} onDelete={this.handleDeleteNode} onRename={this.handleRenameNode} onMove={this.handleMoveNode} />:null}
+          {this.props.collection_type===1&&this.props.isAuthorized?<NodeCrud onSelect={this.handleNodeChoice} onCreate={this.handleAddNode} onDelete={this.handleDeleteNode} onRestore={this.handleRestoreNode} onRename={this.handleRenameNode} onMove={this.handleMoveNode} />:null}
         </div>
       </div>
     );
@@ -234,6 +245,7 @@ const mapDispatchToProps = {
   addGarbageNode,
   updateGarbageNode,
   removeGarbageNode,
+  restoreGarbageNode,
   startNodeRebase,
   stopNodeRebase,
   fetchNodes

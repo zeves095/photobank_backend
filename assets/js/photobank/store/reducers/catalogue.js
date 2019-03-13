@@ -73,7 +73,11 @@ export default (catalogue = defaultState, action) => {
         }
       });
       cat_data = cat_data.set(catalogue.get('collection_type'), fetchCatalogueData);
-      return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
+      let response = catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
+      if(!cat_data.find(node=>node.id===catalogue.get('current_node'))){
+        response = response.set('current_node', null);
+      }
+      return response;
       break;
     }
     case CATALOGUE_DATA_FETCH+FAIL:{
@@ -96,8 +100,12 @@ export default (catalogue = defaultState, action) => {
       break;
     }
     case NODE_CHOICE:{
-      let nodeKey = catalogue.get('collection_type')==0?'current_node':'current_garbage_node';
-      return catalogue.set(nodeKey,action.payload);
+      let chosen = action.payload;
+      let collectionType = catalogue.get('collection_type');
+      let nodeKey = collectionType==0?'current_node':'current_garbage_node';
+      let cat_data = catalogue.get('catalogue_data').get(collectionType);
+      if(!cat_data.find(node=>node.id===chosen)){chosen = null;}
+      return catalogue.set(nodeKey,chosen);
       break;
     }
     case ITEM_CHOICE:{

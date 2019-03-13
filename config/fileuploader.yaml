@@ -17,6 +17,7 @@ parameters:
   add_garbage_node_url: '/garbage/node/add'
   update_garbage_node_url: '/garbage/node/update'
   remove_garbage_node_url: '/garbage/node/remove'
+  restore_garbage_node_url: '/garbage/node/restore'
   get_items_url: '/catalogue/node/items/'
   upload_url: '/upload'
   max_main_resources: 1

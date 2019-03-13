@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
-import 'jstree/dist/jstree.min';
+import 'jstree/dist/jstree';
 import 'jstree/dist/themes/default/style.css';
 
 class JSTree extends React.Component {
@@ -15,6 +15,7 @@ class JSTree extends React.Component {
   }
 
   makeTree=()=>{
+    console.log("MAKETREE");
     if($(this.treeContainer).jstree(true)){$(this.treeContainer).jstree(true).destroy();}
     let treeData = this.populateTree();
     let settings=this.state.settings;
@@ -33,6 +34,7 @@ class JSTree extends React.Component {
   }
 
   updateTree = ()=>{
+    console.log("UPDATETREE");
     let treeData = this.populateTree();
     let settings = this.state.settings;
     $(this.treeContainer).jstree(true).settings.core.data = treeData.core.data;
@@ -41,6 +43,7 @@ class JSTree extends React.Component {
   }
 
   populateTree = ()=>{
+    console.log("POPULATETREE");
     let settings = this.state.settings;
     let treeData = this.props.catalogue_data.map((item)=>{
       let node = {
@@ -73,11 +76,26 @@ class JSTree extends React.Component {
       select_node:false,
       items: (node)=>{
         let tree = $.jstree.reference($(this.treeContainer));
+        let deleteElement;
+        if(node.li_attr.class==="deleted"){
+          deleteElement = {
+            "label": "Восстановить",
+            "action": () => {
+              this.handleRestoreNode(node.id,node.parent);
+            }
+          }
+        }else{
+          deleteElement = {
+            "label": "Удалить",
+            "action": () => {
+              this.handleDeleteNode(node.id,node.parent);
+            }
+          }
+        }
         return{
           "add": {
             "label": "Создать подкаталог...",
             "action": () => {
-              console.log("AAAAAADDDDDDDDDd");
               tree.select_node(node);
               setTimeout(()=>{
                 let newNode = tree.create_node(node.id, {id:"%", text:"Новая папка"});
@@ -91,12 +109,7 @@ class JSTree extends React.Component {
               tree.edit(node);
             }
           },
-          "delete": {
-            "label": "Удалить",
-            "action": () => {
-              this.handleDeleteNode(node.id,node.parent);
-            }
-          }
+          "delete": deleteElement
         };
       }
     };
@@ -110,18 +123,27 @@ class JSTree extends React.Component {
   }
 
   handleRenameNode = (id,text,parent)=>{
+    if(parent==="#")parent=null;
     this.props.onRename(id,text,parent);
   }
 
   handleDeleteNode = (id,parent)=>{
+    if(parent==="#")parent=null;
     this.props.onDelete(id,parent);
   }
 
+  handleRestoreNode = (id,parent)=>{
+    if(parent==="#")parent=null;
+    this.props.onRestore(id,parent);
+  }
+
   handleAddNode = (parent, text)=>{
+    if(parent==="#")parent=null;
     this.props.onCreate(parent,text);
   }
 
   handleMoveNode = (id, parent)=>{
+    if(parent==="#")parent=null;
     this.props.onMove(id,parent);
   }
 
@@ -130,7 +152,6 @@ class JSTree extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    console.log("SHOULD???",nextProps.current_node !== this.props.current_node ||  nextProps.catalogue_data !== this.props.catalogue_data);
     return nextProps.current_node !== this.props.current_node ||  nextProps.catalogue_data !== this.props.catalogue_data;
   }
 

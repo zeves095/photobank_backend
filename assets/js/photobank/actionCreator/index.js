@@ -27,6 +27,7 @@ import {
   NODE_CREATE,
   NODE_UPDATE,
   NODE_REMOVE,
+  NODE_RESTORE,
   NODE_REBASE,
   SHOW_DELETED,
   START,
@@ -766,7 +767,6 @@ export function removeGarbageNode(id,parent,data,type){
           type: NODE_REMOVE+SUCCESS,
           payload: id
         });
-        dispatch(fetchNodes(parent,data,type));
       }else{
         dispatch({
           type: NODE_REMOVE+FAIL,
@@ -781,8 +781,45 @@ export function removeGarbageNode(id,parent,data,type){
         payload: id
       });
       NotificationService.throw('node-remove-fail');
-    });;
-  }
+    });
+  };
+}
+
+/**
+ * Восстанавливает ноду свалки
+ * @param {Number} id     Id ноды для обновления
+ * @param {Number} parent Id родителя
+ * @param {Object} data   Структура каталога
+ * @param {Number} type   Тип коллекции
+ */
+export function restoreGarbageNode(id,parent,data,type){
+  return dispatch=>{
+    let body = JSON.stringify({id});
+    console.log(utility.config.restore_garbage_node_url);
+    return fetch(utility.config.restore_garbage_node_url,{method:"POST", body})
+    .then((response)=>{
+      if(response.ok){
+        dispatch({
+          type: NODE_RESTORE+SUCCESS,
+          payload: id
+        });
+        dispatch(fetchNodes(parent,data,type));
+      }else{
+        dispatch({
+          type: NODE_RESTORE+FAIL,
+          payload: id
+        });
+        NotificationService.throw('node-restore-fail');
+      }
+    }).catch((e)=>{
+      console.error(e);
+      dispatch({
+        type: NODE_RESTORE+FAIL,
+        payload: id
+      });
+      NotificationService.throw('node-restore-fail');
+    });
+  };
 }
 
 /**

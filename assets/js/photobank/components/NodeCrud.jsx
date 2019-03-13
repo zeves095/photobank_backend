@@ -40,6 +40,10 @@ export class NodeCrud extends React.Component {
     this.props.onDelete(this.props.node,this.props.node_parent);
   }
 
+  handleRestoreNode=()=>{
+    this.props.onRestore(this.props.node,this.props.node_parent);
+  }
+
   bodyListener = (e)=>{
     e.stopPropagation();
     e.preventDefault();
@@ -62,7 +66,7 @@ export class NodeCrud extends React.Component {
         <p>Добавить подпапку</p>
       <label htmlFor="node-name">Название</label>
         <input type="text" name="name" id="node-name" onChange={(e)=>this.setState({name:e.target.value})} />
-        <span className="button-block"><button onClick={()=>{this.handleAddNode()}}><i className="fas fa-folder-plus"></i>Добавить</button></span>
+        <span className="button-block"><button onClick={this.handleAddNode}><i className="fas fa-folder-plus"></i>Добавить</button></span>
       </div>
     );
     const renameElement = (
@@ -70,13 +74,13 @@ export class NodeCrud extends React.Component {
         <p>Переименовать папку</p>
       <label htmlFor="node-name">Название</label>
         <input type="text" name="name" id="node-name" onChange={(e)=>this.setState({name:e.target.value})} />
-        <span className="button-block"><button onClick={()=>{this.handleRenameNode()}}><i className="fas fa-sync-alt"></i>Сохранить</button></span>
+        <span className="button-block"><button onClick={this.handleRenameNode}><i className="fas fa-sync-alt"></i>Сохранить</button></span>
       </div>
     );
     const removeElement = (
       <div className="crud-controls crud-controls--add">
-        <p>Удалить папку</p>
-        <span className="button-block"><button onClick={()=>{this.handleRemoveNode()}}><i className="fas fa-folder-minus"></i>Удалить</button></span>
+        <p>{this.props.node_deleted?"Восстановить":"Удалить"} папку</p>
+        <span className="button-block"><button onClick={this.props.node_deleted?this.handleRestoreNode:this.handleRemoveNode}><i className="fas fa-folder-minus"></i>{this.props.node_deleted?"Восстановить":"Удалить"}</button></span>
       </div>
     );
     let elems = [addElement, renameElement, removeElement];
@@ -85,7 +89,7 @@ export class NodeCrud extends React.Component {
         <div className="node-crud__operations button-block">
           <button className="btn" onClick={()=>this.handleChooseOperation(0)} title="Добавить подпапку"><i className="fas fa-folder-plus"></i></button>
         <button className="btn" onClick={()=>this.handleChooseOperation(1)} title="Переименовать папку"><i className="fas fa-sync-alt"></i></button>
-    <button className="btn" onClick={()=>this.handleChooseOperation(2)} title="Удалить папку"><i className="fas fa-folder-minus"></i></button>
+    <button className="btn" onClick={()=>this.handleChooseOperation(2)} title={(this.props.node_deleted?"Восстановить":"Удалить")+" папку"}><i className="fas fa-folder-minus"></i></button>
         </div>
         {elems[this.state.operation]}
       </div>
@@ -98,6 +102,7 @@ const mapStateToProps = (state,props)=>{
   return {
     node: selectors.catalogue.getCurrentNode(state,props),
     node_parent: selectors.catalogue.getCurrentNodeParent(state,props),
+    node_deleted: selectors.catalogue.getCurrentNodeIsDeleted(state,props),
     collection_type: selectors.catalogue.getCollectionType(state,props),
     catalogue_data: selectors.catalogue.getCatalogueData(state,props),
   }
