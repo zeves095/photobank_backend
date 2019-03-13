@@ -39,6 +39,11 @@ export const getCurrentNodeParent = createSelector(getCurrentNode, getCatalogueD
   return parent?parent.parent:null;
 });
 
+export const getCurrentNodeIsDeleted = createSelector(getCurrentNode, getCatalogueData, (cur_node, data)=>{
+  let deleted = data.find(node=>cur_node===node.id);
+  return deleted?deleted.deleted:null;
+});
+
 export const getNodeItems = createSelector(items, currentNodeId, collectionType, (items, id, type)=>{
   let newItems = id!==null&&1!==type?items.filter(item=>item.node===id):List(items);
   return newItems.toArray();

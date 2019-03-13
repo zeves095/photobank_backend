@@ -64,6 +64,7 @@ class GarbageService{
     isset($params['name'])&&$node->setName($params['name']);
     if(isset($params['parent'])){
       if(!$this->_checkParentRecursion($id, $params['parent'])){return ['successful'=>false, 'error'=>'Нельзя переназначить ресурс на дочерний'];}
+      if($node->getParent()&&$node->getParent()->getDeleted()){return ['successful'=>false, 'error'=>'Нельзя перенести в удаленую папку'];}
       $parent = $repo->findOneBy(['id'=>$params['parent']]);
       $node->setParent($parent);
     }
@@ -79,13 +80,30 @@ class GarbageService{
   {
     $repo = $this->entityManager->getRepository(GarbageNode::class);
     $resRepo = $this->entityManager->getRepository(Resource::class);
-    if(sizeof($repo->findBy(['parent'=>$id, 'deleted' => false]))>0||sizeof($resRepo->findBy(['garbageNode'=>$id]))>0){
-      return ['successful'=>false, 'error'=>'Папка не пуста'];
-    }
     $node = $repo->findOneBy(['id'=>$id]);
+    $children = $repo->findBy(['parent'=>$id, 'deleted' => false]);
+    if(sizeof($children)>0){
+      foreach($children as $child){
+        $this->removeNode($child->getId());
+      }
+    }
     $node->setDeleted(true);
     $this->entityManager->flush();
     return ['successful'=>true];
+  }
+
+  public function restoreNode($id)
+  {
+    $repo = $this->entityManager->getRepository(GarbageNode::class);
+    $resRepo = $this->entityManager->getRepository(Resource::class);
+    $node = $repo->findOneBy(['id'=>$id]);
+    if(($node->getParent()&&!$node->getParent()->getDeleted())||$node->getParent()==NULL){
+      $node->setDeleted(false);
+      $this->entityManager->flush();
+      return ['successful'=>true];
+    }else{
+      return ['successful'=>false, 'error'=>'Нельзя восстановить ресурс внутри удаленного'];
+    }
   }
 
   /**
@@ -105,5 +123,7 @@ class GarbageService{
     }
     return true;
   }
+
+
 
 }

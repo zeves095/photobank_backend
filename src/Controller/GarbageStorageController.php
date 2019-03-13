@@ -110,8 +110,8 @@ class GarbageStorageController extends AbstractController
     /**
      * Получает нормализованный объект с информацией о разделе свалки
      *
-     * @param GarbageNode $gnode Обьект раздела, подтягивается через wildcard {id}
-     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     * @param Request $request объект текущего запроса
+     * @param GarbageService $garbageService Сервис для работы со свалкой
      *
      * @Route("/garbage/node/add",
      * methods={"POST"},
@@ -138,8 +138,8 @@ class GarbageStorageController extends AbstractController
     /**
      * Получает нормализованный объект с информацией о разделе свалки
      *
-     * @param GarbageNode $gnode Обьект раздела, подтягивается через wildcard {id}
-     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     * @param Request $request объект текущего запроса
+     * @param GarbageService $garbageService Сервис для работы со свалкой
      *
      * @Route("/garbage/node/update",
      * methods={"POST"},
@@ -164,10 +164,10 @@ class GarbageStorageController extends AbstractController
     }
 
     /**
-     * Получает нормализованный объект с информацией о разделе свалки
+     * Удаляет раздел свалки
      *
-     * @param GarbageNode $gnode Обьект раздела, подтягивается через wildcard {id}
-     * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
+     * @param Request $request объект текущего запроса
+     * @param GarbageService $garbageService Сервис для работы со свалкой
      *
      * @Route("/garbage/node/remove",
      * methods={"POST"},
@@ -181,8 +181,38 @@ class GarbageStorageController extends AbstractController
         );
 
         if(isset($data['id'])){
-          if(!$garbageService->removeNode($data['id'])['successful']){
-            throw new \Exception('Ошибка при удалении папки');
+          $response = $garbageService->removeNode($data['id']);
+          if(!$response['successful']){
+            throw new \Exception($response['error']);
+          }
+        }else{
+          throw new \Exception('Должен быть указан идентификатор ресурса');
+        }
+
+        return new JsonResponse();
+    }
+
+    /**
+     * Востанавливает удаленные раздел свалки
+     *
+     * @param Request $request объект текущего запроса
+     * @param GarbageService $garbageService Сервис для работы со свалкой
+     *
+     * @Route("/garbage/node/restore",
+     * methods={"POST"},
+     * name="garbage_restore_node")
+     */
+    public function restoreNode(Request $request, GarbageService $garbageService)
+    {
+        $data = json_decode(
+          $request->getContent(),
+          true
+        );
+
+        if(isset($data['id'])){
+          $response = $garbageService->restoreNode($data['id']);
+          if(!$response['successful']){
+            throw new \Exception($response['error']);
           }
         }else{
           throw new \Exception('Должен быть указан идентификатор ресурса');
@@ -196,7 +226,7 @@ class GarbageStorageController extends AbstractController
      *
      * @param GarbageNode $gitem Объект товара, подтягивается через wildcard {id}
      * @param AppSerializer $serializer Сериализатор для приведения к стандарту возвращаемого объекта
-     * @param EntityManagerInterface $entityManager Инструмент работы с сущностями Doctrine ORM
+     * @param ResourceService $resourceService Сервис для работы с ресурсами
      *
      * @Route(
      *      "/garbage/node/resources/{id}",
