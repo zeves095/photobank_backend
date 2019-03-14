@@ -19,7 +19,6 @@ class ResourceService{
       .then((data)=>{
         resolve(data);
       }).catch((e)=>{
-        console.log(e);
         reject("request-failed");
       });
     })
@@ -38,7 +37,6 @@ class ResourceService{
     .then((data)=>{
       return data;
     }).catch((e)=>{
-      console.log(e);
       reject("request-failed");
     });
   }

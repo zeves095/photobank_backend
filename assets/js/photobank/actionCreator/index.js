@@ -704,7 +704,6 @@ export function addGarbageNode(name,parent,data,type){
       }
       dispatch(fetchNodes(parent,data,type));
     }).catch((e)=>{
-      console.error(e);
       dispatch({
         type: NODE_CREATE+FAIL,
         payload: e
@@ -775,7 +774,6 @@ export function removeGarbageNode(id,parent,data,type){
         NotificationService.throw('node-remove-fail');
       }
     }).catch((e)=>{
-      console.error(e);
       dispatch({
         type: NODE_REMOVE+FAIL,
         payload: id
@@ -795,7 +793,6 @@ export function removeGarbageNode(id,parent,data,type){
 export function restoreGarbageNode(id,parent,data,type){
   return dispatch=>{
     let body = JSON.stringify({id});
-    console.log(utility.config.restore_garbage_node_url);
     return fetch(utility.config.restore_garbage_node_url,{method:"POST", body})
     .then((response)=>{
       if(response.ok){
@@ -812,7 +809,6 @@ export function restoreGarbageNode(id,parent,data,type){
         NotificationService.throw('node-restore-fail');
       }
     }).catch((e)=>{
-      console.error(e);
       dispatch({
         type: NODE_RESTORE+FAIL,
         payload: id

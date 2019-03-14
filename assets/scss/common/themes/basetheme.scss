@@ -115,6 +115,9 @@ body {
   .view-inner__list-view{
     .list-view__cat_item{
       @include list-item-color();
+      &.deleted{
+        color:#e45c75;
+      }
     }
   }
 

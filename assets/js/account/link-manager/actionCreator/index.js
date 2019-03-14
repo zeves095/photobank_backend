@@ -209,7 +209,6 @@ export function searchResources(searchObject={}){
       });
       dispatch(getResourceThumbnails(response));
     }).catch((error)=>{
-      console.log(error);
       dispatch({
         type: RESOURCE_SEARCH+FAIL,
         payload: error,

@@ -27,7 +27,6 @@ export function fetchUsers(){
         type:FETCH_USERS+FAIL,
         payload:""
       })
-      console.error(e);
     });
   }
 }
@@ -65,12 +64,10 @@ export function submitUser(user){
       });
       dispatch(fetchUsers());
     }).catch(e=>{
-      console.log(e);
       dispatch({
         type:SUBMIT_USER+FAIL,
         payload:""
       })
-      console.error(e);
     });
   }
 }

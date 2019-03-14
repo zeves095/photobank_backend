@@ -78,8 +78,6 @@ class GarbageServiceTest extends WebTestCase
 
     $result = $garbageService->removeNode($this->removeId);
     $this->assertTrue($result['successful']);
-    $result = $garbageService->removeNode($this->correctNode);
-    $this->assertFalse($result['successful']);
   }
 
 }
