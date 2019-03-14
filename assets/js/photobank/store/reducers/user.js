@@ -7,6 +7,7 @@ import {
 
 let defaultState = Map({
   isAuthorized: false,
+  isAuthorizedGarbage: false
 })
 
 export default (user = defaultState, action) => {
@@ -16,7 +17,8 @@ export default (user = defaultState, action) => {
       const user_info = Map(action.payload);
       const roles = user_info.get('user_roles');
       const authorized = roles.includes("ROLE_ADMIN")||roles.includes("ROLE_SUPER_ADMIN")||roles.includes("ROLE_WRITER");
-      return user.set('isAuthorized',authorized);
+      const authorizedGarbage = roles.includes("ROLE_SUPER_ADMIN")||roles.includes("ROLE_GARBAGE_ADMIN");
+      return user.set('isAuthorized',authorized).set('isAuthorizedGarbage', authorizedGarbage);
       break;
     }
   }

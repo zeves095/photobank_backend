@@ -7,5 +7,6 @@ security:
         - { path: ^/usermanager, roles: ROLE_ADMIN , requires_channel: http }
         - { path: ^/api/links/get, roles: IS_AUTHENTICATED_ANONYMOUSLY , requires_channel: http }
         - { path: ^/api/links/, roles: ROLE_USER, requires_channel: http }
+        - { path: ^/garbage/node/(remove|restore|add|update), roles: ROLE_GARBAGE_ADMIN, requires_channel: http }
         - { path: ^/, methods: [PATCH, POST], roles: ROLE_WRITER, requires_channel: http }
         - { path: ^/, roles: ROLE_USER , requires_channel: http }

@@ -82,7 +82,7 @@ class GarbageStorageController extends AbstractController
         }
 
         $user = $this->getUser();
-        $auth = !!sizeof(array_diff(["ROLE_WRITER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN"],$user->getRoles()))!==3;
+        $auth = sizeof(array_diff(["ROLE_GARBAGE_ADMIN", "ROLE_ADMIN", "ROLE_SUPER_ADMIN"],$user->getRoles()))!==3;
         $response = new JsonResponse();
 
         $em = $this->getDoctrine()->getManager();
