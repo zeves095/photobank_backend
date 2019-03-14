@@ -14,3 +14,6 @@ parameters:
         user:
             id: 3
             name: 'ROLE_USER'
+        garbageadmin:
+            id: 4
+            name: 'ROLE_GARBAGE_ADMIN'

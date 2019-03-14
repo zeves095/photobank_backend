@@ -83,6 +83,7 @@ export class UserEditor extends React.Component {
             <option value="3">Пользователь</option>
             <option value="2">Редактор</option>
             <option value="1">Модератор</option>
+          <option value="4">Администратор свалки</option>
           </select>
           <button className="blue-grey waves-effect hoverable waves-light btn" type="submit">{this.state.sent?<i className="fas fa-check"></i>:<i class="fas fa-user-check"></i>}Сохранить</button>
         </form>

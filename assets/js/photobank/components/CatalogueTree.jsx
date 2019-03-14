@@ -182,7 +182,7 @@ export class CatalogueTree extends React.Component {
         break;
       case 2:
         if(0===this.props.catalogue_data.length){view = "";break;}
-        let crud_enabled = this.props.isAuthorized&&this.props.collection_type===1;
+        let crud_enabled = this.props.isAuthorizedGarbage&&this.props.collection_type===1;
         view = <JSTree key="catalogue" collection={this.props.collection_type} catalogue_data={this.props.catalogue_data} current_node={this.props.current_node} crud_enabled={crud_enabled} onSelect={this.handleNodeChoice} onCreate={this.handleAddNode} onDelete={this.handleDeleteNode} onRestore={this.handleRestoreNode} onRename={this.handleRenameNode} onMove={this.handleMoveNode} />;
         viewClass = "tree-view";
         break;
@@ -206,7 +206,7 @@ export class CatalogueTree extends React.Component {
           <span className={"collection-tabs__tab" + (0==parseInt(this.props.collection_type,10)?" active":"")} onClick={()=>{this.handleCollectionChoice(0)}}>Товары</span>
         <span className={"collection-tabs__tab" + (1==parseInt(this.props.collection_type,10)?" active":"")} onClick={()=>{this.handleCollectionChoice(1)}}>Свалка</span>
         </div>
-        {this.props.isAuthorized&&this.props.collection_type===1?<div><input type="checkbox" onChange={this.handleShowDeleted} defaultChecked={this.state.show_deleted} /><span className="lever" style={{marginLeft:"20px"}}>Показать удаленное</span></div>:null}
+        {this.props.isAuthorizedGarbage&&this.props.collection_type===1?<div><input type="checkbox" onChange={this.handleShowDeleted} defaultChecked={this.state.show_deleted} /><span className="lever" style={{marginLeft:"20px"}}>Показать удаленное</span></div>:null}
       </span>
       <div className="inner-bump">
           <div className="catalogue-tree__crumbs crumbs">
@@ -233,6 +233,7 @@ const mapStateToProps = (state,props) =>{
     loading: selectors.catalogue.getLoadingCatalogue(state,props),
     crumbs: selectors.catalogue.getCrumbs(state,props),
     isAuthorized: selectors.user.getAuthorized(state,props),
+    isAuthorizedGarbage: selectors.user.getAuthorizedGarbage(state,props),
     clicks_disabled: selectors.catalogue.getNodeMoving(state,props)
   }
 }
