@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
-import 'jstree/dist/jstree';
+import 'jstree/dist/jstree.min';
 import 'jstree/dist/themes/default/style.css';
 
 class JSTree extends React.Component {
