@@ -29,7 +29,8 @@ class GarbageNodeRepository extends ServiceEntityRepository
       */
       public function search(GarbageQueryObject $queryObject)
       {
-        $queryBuilder = $this->createQueryBuilder('g');
+        $queryBuilder = $this->createQueryBuilder('g')
+        ->andWhere('g.deleted = false');
         if($queryObject->getField("node_name") != ""){
           $queryBuilder->andWhere('g.name LIKE :nname')
           ->setParameter('nname', '%'.$queryObject->getField("node_name").'%');
