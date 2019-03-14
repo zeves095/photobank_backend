@@ -12,8 +12,8 @@ class JSTree extends React.Component {
       settings : this.baseSettings
     };
     this.treeContainer = React.createRef();
-    this.crudPlugins = ['contextmenu', 'dnd', "themes", "html_data"];
-    this.basePlugins = ["themes", "html_data", "state"];
+    this.crudPlugins = ['contextmenu', 'dnd', 'themes', 'html_data'];
+    this.basePlugins = ['themes', 'html_data', 'state'];
   }
 
   makeTree=()=>{
@@ -21,9 +21,6 @@ class JSTree extends React.Component {
     let treeData = this.populateTree();
     let settings=this.state.settings;
     settings = {...this.state.settings, ...treeData};
-    // settings.state =  {
-    //    "key" : this.props.collection===0?"catalogue_tree":"garbage_tree",
-    // };
     if(this.props.crud_enabled){
       settings = this.configureCrud(settings);
     }else{
