@@ -114,7 +114,6 @@ export default (catalogue = defaultState, action) => {
       let nodeKey = collectionType==0?'current_node':'current_garbage_node';
       let cat_data = catalogue.get('catalogue_data').get(collectionType);
       if(!cat_data.find(node=>node.id===chosen)){chosen = null;}
-      console.log(chosen);
       return catalogue.set(nodeKey,chosen);
       break;
     }

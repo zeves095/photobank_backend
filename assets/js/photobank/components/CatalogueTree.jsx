@@ -1,7 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import selectors from '../selectors';
-//import TreeView from 'react-simple-jstree';
 import JSTree from '../../common/JstreeWrapper';
 
 import ItemSearch from './ItemSearch';
@@ -89,7 +88,6 @@ export class CatalogueTree extends React.Component {
     if(!!parseInt(this.props.current_node,10));
     let curNode = this.props.catalogue_data.filter((node)=>{return parseInt(node.id,10)===parseInt(this.props.current_node,10)})[0];
     if(!!curNode){
-      console.log(curNode.parent);
       this.props.chooseNode(curNode.parent, this.props.catalogue_data, this.props.collection_type);
     }
   }
@@ -169,7 +167,6 @@ export class CatalogueTree extends React.Component {
     switch(this.props.view){
       case 1:
         let children = this.props.catalogue_data.filter(node=>node.parent===this.props.current_node);
-        console.log(children, this.props.current_node);
         let list = [];
         if(!!this.props.current_node){list.push(<div onClick={this.traverseUp} className="list-view__cat_item list-view__cat_item--parent">../</div>);}
         for(var i = 0; i< children.length; i++){
