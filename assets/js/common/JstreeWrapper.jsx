@@ -43,7 +43,6 @@ class JSTree extends React.Component {
   }
 
   populateTree = ()=>{
-    console.log(this.props.catalogue_data, this.props.current_node);
     let settings = this.state.settings;
     let treeData = this.props.catalogue_data.map((item)=>{
       let node = {

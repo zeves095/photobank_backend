@@ -64,8 +64,8 @@ class GarbageService{
     isset($params['name'])&&$node->setName($params['name']);
     if(isset($params['parent'])){
       if(!$this->_checkParentRecursion($id, $params['parent'])){return ['successful'=>false, 'error'=>'Нельзя переназначить ресурс на дочерний'];}
-      if($node->getParent()&&$node->getParent()->getDeleted()){return ['successful'=>false, 'error'=>'Нельзя перенести в удаленую папку'];}
       $parent = $repo->findOneBy(['id'=>$params['parent']]);
+      if($parent->getDeleted()&&!$node->getDeleted()){return ['successful'=>false, 'error'=>'Нельзя перенести в удаленую папку'];}
       $node->setParent($parent);
     }
     $this->entityManager->flush();
