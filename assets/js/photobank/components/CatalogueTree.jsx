@@ -89,6 +89,7 @@ export class CatalogueTree extends React.Component {
     if(!!parseInt(this.props.current_node,10));
     let curNode = this.props.catalogue_data.filter((node)=>{return parseInt(node.id,10)===parseInt(this.props.current_node,10)})[0];
     if(!!curNode){
+      console.log(curNode.parent);
       this.props.chooseNode(curNode.parent, this.props.catalogue_data, this.props.collection_type);
     }
   }
@@ -168,13 +169,16 @@ export class CatalogueTree extends React.Component {
     switch(this.props.view){
       case 1:
         let children = this.props.catalogue_data.filter(node=>node.parent===this.props.current_node);
+        console.log(children, this.props.current_node);
         let list = [];
         if(!!this.props.current_node){list.push(<div onClick={this.traverseUp} className="list-view__cat_item list-view__cat_item--parent">../</div>);}
         for(var i = 0; i< children.length; i++){
           let child = children[i];
-          list.push(
-            <div key={child.id} title={child.id} className="list-view__cat_item list-view__cat_item--parent" onClick={()=>{this.handleNodeChoice(child.id)}} data-node={child.id}><b data-node={child.id}>{child.name}</b></div>
-          );
+          if(!child.deleted||this.state.show_deleted){
+            list.push(
+              <div key={child.id} title={child.id} className={"list-view__cat_item list-view__cat_item--parent"+(child.deleted?" deleted":"")} onClick={()=>{this.handleNodeChoice(child.id)}} data-node={child.id}><b data-node={child.id}>{child.name}</b></div>
+            );
+          }
         }
         view = list;
         viewClass = "list-view";

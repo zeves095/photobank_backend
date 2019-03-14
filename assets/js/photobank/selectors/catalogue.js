@@ -28,9 +28,6 @@ export const getCatalogueData = createSelector(catalogueData, collectionType, sh
 
 export const getCurrentNode = createSelector(currentNodeId, currentGarbageNodeId, collectionType, localStorage, (node, garbage_node, type, storage)=>{
   let result = type==0?node:garbage_node;
-  if(!result){
-    result = type==0?storage.get('current_node'):storage.get('current_garbage_node');
-  }
   return result;
 });
 

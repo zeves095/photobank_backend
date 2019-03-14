@@ -93,8 +93,17 @@ export default (catalogue = defaultState, action) => {
       let del_id = action.payload;
       let cat_data = catalogue.get('catalogue_data');
       let fetchCatalogueData = cat_data.get(catalogue.get('collection_type'));
-      let found = fetchCatalogueData.find((existing)=>del_id===existing.id);
-      if(found)fetchCatalogueData=fetchCatalogueData.splice(fetchCatalogueData.indexOf(found),1);
+      let children = fetchCatalogueData.filter(item=>{
+        let iterItem = item;
+        while(iterItem.parent !== null){
+          if(iterItem.parent===del_id){return true;}
+          iterItem = fetchCatalogueData.find(par=>par.id===iterItem.parent);
+        };
+        return false;
+      });
+      children.forEach(child=>{
+        fetchCatalogueData=fetchCatalogueData.splice(fetchCatalogueData.indexOf(child),1);
+      });
       cat_data = cat_data.set(catalogue.get('collection_type'), fetchCatalogueData);
       return catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
       break;
@@ -105,6 +114,7 @@ export default (catalogue = defaultState, action) => {
       let nodeKey = collectionType==0?'current_node':'current_garbage_node';
       let cat_data = catalogue.get('catalogue_data').get(collectionType);
       if(!cat_data.find(node=>node.id===chosen)){chosen = null;}
+      console.log(chosen);
       return catalogue.set(nodeKey,chosen);
       break;
     }

@@ -12,21 +12,22 @@ class JSTree extends React.Component {
       settings : this.baseSettings
     };
     this.treeContainer = React.createRef();
+    this.crudPlugins = ['contextmenu', 'dnd', "themes", "html_data"];
+    this.basePlugins = ["themes", "html_data", "state"];
   }
 
   makeTree=()=>{
-    console.log("MAKETREE");
     if($(this.treeContainer).jstree(true)){$(this.treeContainer).jstree(true).destroy();}
     let treeData = this.populateTree();
     let settings=this.state.settings;
     settings = {...this.state.settings, ...treeData};
-    settings.state =  {
-       "key" : this.props.collection===0?"catalogue_tree":"garbage_tree",
-    };
+    // settings.state =  {
+    //    "key" : this.props.collection===0?"catalogue_tree":"garbage_tree",
+    // };
     if(this.props.crud_enabled){
       settings = this.configureCrud(settings);
     }else{
-      settings.plugins = ["themes", "html_data", "state"];
+      settings.plugins = this.basePlugins;
     }
     this.assignHandlers();
     $(this.treeContainer).jstree(settings);
@@ -34,7 +35,6 @@ class JSTree extends React.Component {
   }
 
   updateTree = ()=>{
-    console.log("UPDATETREE");
     let treeData = this.populateTree();
     let settings = this.state.settings;
     $(this.treeContainer).jstree(true).settings.core.data = treeData.core.data;
@@ -43,7 +43,7 @@ class JSTree extends React.Component {
   }
 
   populateTree = ()=>{
-    console.log("POPULATETREE");
+    console.log(this.props.catalogue_data, this.props.current_node);
     let settings = this.state.settings;
     let treeData = this.props.catalogue_data.map((item)=>{
       let node = {
@@ -69,7 +69,7 @@ class JSTree extends React.Component {
   }
 
   configureCrud = (settings)=>{
-    settings.plugins = ['contextmenu', 'dnd', "themes", "html_data", "state"];
+    settings.plugins = this.crudPlugins;
     settings.core.check_callback = true;
     settings.contextmenu = {
       show_at_node: true,
@@ -162,13 +162,11 @@ class JSTree extends React.Component {
         data.instance.refresh(true);
       });
       $(this.treeContainer).on('select_node.jstree', (e, data) => {
-        console.log(e,data);
         let settings = data.instance.settings;
         this.handleSelectNode(data.node.id);
         this.setState({settings});
       });
       $(this.treeContainer).on('rename_node.jstree', (e, data) => {
-        console.log(e,data);
         data.node.id === "%"
         ?this.handleAddNode(data.node.parent, data.text)
         :this.handleRenameNode(data.node.id, data.text, data.node.parent);
