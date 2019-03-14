@@ -57,6 +57,11 @@
         padding:0 3px;
     opacity: 1;
   }
+
+  .show-deleted-nodes{
+    cursor: pointer;
+  }
+
   &__crumbs{
     max-width: 100%;
     display: flex;
