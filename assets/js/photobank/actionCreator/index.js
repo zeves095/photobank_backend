@@ -208,7 +208,10 @@ export function fetchExisting(id, collection){
       type: EXISTING_RESOURCES_FETCH+START,
       payload: ''
     });
-    return ResourceService.fetchExisting(id, collection)
+    let url = collection===0?utility.config.existing_uploads_url+id:utility.config.dump_existing_uploads_url+id;
+    console.log(url);
+    return fetch(url, {method: "GET"})
+    .then(response=>response.json())
     .then((data)=>{
       dispatch({
         type: EXISTING_RESOURCES_FETCH+SUCCESS,

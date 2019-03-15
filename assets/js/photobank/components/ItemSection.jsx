@@ -49,7 +49,6 @@ export class ItemSection extends React.Component{
       this.props.fetchItemData(id, this.props.collection_type);
       return null;
     }
-    console.log(this.props.item,this.props.resumable,this.props.authorized);
     let render_upload = this.props.item&&this.props.resumable&&this.props.authorized;
     let viewBtn = (
       <div className="button-block">
@@ -84,7 +83,7 @@ export class ItemSection extends React.Component{
           {this.props.render_existing&&viewBtn}
           {this.props.render_existing?<ExistingResources authorized={this.props.authorized} key={this.props.item.id} item_id={this.props.item.id} addDownloadHandler={this.props.addDownloadHandler} default_view={this.props.view} />:null}
         {!render_upload?null:<h4 className="item-view__subheader">Загрузки</h4>}
-      {!render_upload?null:<Uploads item_id={this.props.item_id} item={this.props.item} />}
+      {!render_upload?null:<Uploads item_id={this.props.item_id} item={this.props.item} collection_type={this.props.collection_type} />}
       </div> </div>
     );
   }

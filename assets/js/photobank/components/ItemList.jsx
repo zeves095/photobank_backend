@@ -28,7 +28,6 @@ export class ItemList extends React.Component{
    * @param  {String} itemId Код 1С товара
    */
   itemClickHandler=(itemId)=>{
-    console.log("ITEM ID ", itemId);
     constants.CATALOGUE_COLLECTION===this.props.collection_type
     ?this.props.chooseItem(itemId,constants.CATALOGUE_COLLECTION)
     :this.props.chooseNode(itemId,this.props.catalogue_data,constants.GARBAGE_COLLECTION);

@@ -112,14 +112,6 @@ export class ExistingResources extends React.Component{
   }
 
   componentDidUpdate(prevProps, prevState){
-    if(this.props != prevProps){
-      this.setState({
-        "view_type": this.props.default_view,
-      });
-      if(this.props.need_refresh){
-        this.props.fetchExisting(this.props.item_id, this.props.collection_type);
-      }
-    }
     if(this.props.existing != prevProps.existing){
       this.setState({
         "pagination_total_pages": Math.ceil(this.props.existing.length/this.state.pagination_limit),
