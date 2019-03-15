@@ -64,7 +64,7 @@ export class ItemSearch extends React.Component {
       <input type="text" id={this.props.filterid + "inpt1"} name="name" placeholder="Название" onChange={this.handleChange}></input>
       <label htmlFor="parent_name">Раздел каталога</label>
       <input type="text" id={this.props.filterid + "inpt2"} name="parent_name" placeholder="Раздел каталога" onChange={this.handleChange}></input>
-      <label htmlFor="search_nested" className="subinput">Искать во вложенных разделах
+      <label htmlFor="search_nested" className="subinput" name="search_nested" onClick={this.handleChange}>Искать во вложенных разделах
         <input type="checkbox" id={this.props.filterid + "inpt4"} name="search_nested" onChange={this.handleChange}></input>
       </label>
       <label htmlFor="code">Код 1С</label>

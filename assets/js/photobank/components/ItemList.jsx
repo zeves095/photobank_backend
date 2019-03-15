@@ -44,7 +44,7 @@ export class ItemList extends React.Component{
   }
 
   componentDidUpdate(prevProps){
-    prevProps.current_item===null&&this.props.current_item!==null&&this.itemClickHandler(this.props.current_item.id);
+    prevProps.current_item===null&&this.props.current_item&&this.itemClickHandler(this.props.current_item.id);
   }
 
   render() {
