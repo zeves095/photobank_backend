@@ -134,7 +134,6 @@ export default (catalogue = defaultState, action) => {
       let itemData = action.payload;
       let prefetchedItems = List(catalogue.get('items'));
       if(!prefetchedItems.find(item=>item.id===itemData.id))prefetchedItems = prefetchedItems.push(itemData);
-      console.log(itemData, prefetchedItems);
       return catalogue.set('items',prefetchedItems);
       break;
     }
