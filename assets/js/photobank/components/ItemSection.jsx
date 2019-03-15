@@ -35,7 +35,7 @@ export class ItemSection extends React.Component{
   }
 
   componentWillMount(){
-    this.props.item&&this.props.pushResumable(this.props.item.id);
+    this.props.item&&this.props.pushResumable(this.props.item.id, this.props.collection_type);
   }
 
   componentDidUpdate(prevProps){
@@ -43,7 +43,13 @@ export class ItemSection extends React.Component{
   }
 
   render() {
-    if(!this.props.item){this.props.fetchItemData(this.props.item_id);return null;}
+    if(!this.props.item){
+      let id = this.props.item_id||this.props.stored_item_id;
+      if(null===id){return "Не выбран товар";}
+      this.props.fetchItemData(id, this.props.collection_type);
+      return null;
+    }
+    console.log(this.props.item,this.props.resumable,this.props.authorized);
     let render_upload = this.props.item&&this.props.resumable&&this.props.authorized;
     let viewBtn = (
       <div className="button-block">
@@ -76,7 +82,7 @@ export class ItemSection extends React.Component{
           ? "item-view__inner--open "
           : "item-view__inner--closed ") + this.containerViewClasses[this.props.view]}>
           {this.props.render_existing&&viewBtn}
-          {this.props.render_existing?<ExistingResources authorized={this.props.authorized} item_id={this.props.item.id} addDownloadHandler={this.props.addDownloadHandler} default_view={this.props.view} />:null}
+          {this.props.render_existing?<ExistingResources authorized={this.props.authorized} key={this.props.item.id} item_id={this.props.item.id} addDownloadHandler={this.props.addDownloadHandler} default_view={this.props.view} />:null}
         {!render_upload?null:<h4 className="item-view__subheader">Загрузки</h4>}
       {!render_upload?null:<Uploads item_id={this.props.item_id} item={this.props.item} />}
       </div> </div>
@@ -86,6 +92,7 @@ export class ItemSection extends React.Component{
 
 const mapStateToProps = (state, props) =>{
   return {
+    stored_item_id: selectors.catalogue.getStoredItem(state,props),
     item: selectors.catalogue.getItemObject(state,props),
     view: selectors.localstorage.getStoredListViewtype(state,props),
     resumable: selectors.upload.getResumableInstance(state,props),

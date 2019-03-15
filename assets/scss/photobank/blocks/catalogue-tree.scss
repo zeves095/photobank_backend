@@ -18,13 +18,7 @@
   }
 
   .collection-tabs{
-    display: flex;
-    &__tab{
-      flex: 0 0 50%;
-      text-align: center;
-      padding: 5px 0;
-      cursor: pointer;
-    }
+    @include collection-tabs();
   }
 
   .view-inner{

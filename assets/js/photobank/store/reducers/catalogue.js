@@ -74,9 +74,6 @@ export default (catalogue = defaultState, action) => {
       });
       cat_data = cat_data.set(catalogue.get('collection_type'), fetchCatalogueData);
       let response = catalogue.set('fetching_catalogue',false).set('catalogue_data',cat_data);
-      if(!cat_data.find(node=>node.id===catalogue.get('current_node'))){
-        response = response.set('current_node', null);
-      }
       return response;
       break;
     }
@@ -137,6 +134,7 @@ export default (catalogue = defaultState, action) => {
       let itemData = action.payload;
       let prefetchedItems = List(catalogue.get('items'));
       if(!prefetchedItems.find(item=>item.id===itemData.id))prefetchedItems = prefetchedItems.push(itemData);
+      console.log(itemData, prefetchedItems);
       return catalogue.set('items',prefetchedItems);
       break;
     }

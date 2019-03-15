@@ -54,10 +54,11 @@ export default (upload = defaultState, action) => {
       break;
     }
     case RESUMABLE_PUSH:{
-      let itemId = action.payload;
+      let itemId = action.payload.id;
       let container = List(upload.get('resumable_container'));
       if(!container.find(resumable=>resumable.get('id')===itemId)){
         container = container.push(Map({
+          collection:action.payload.collection,
           id:itemId,
           instance: Map(new Resumable({target: utility.config.upload_target_url}))
         }));

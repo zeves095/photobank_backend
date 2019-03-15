@@ -7,6 +7,7 @@ import {LocalStorageService} from '../services/LocalStorageService';
 import {NotificationService} from '../../services/NotificationService';
 import {chooseNode, chooseItem, fetchItems} from '../actionCreator';
 import selectors from '../selectors';
+import * as constants from '../constants';
 /**
  * Компонент интерфейса для работы со списком товаров раздела каталога
  */
@@ -27,9 +28,10 @@ export class ItemList extends React.Component{
    * @param  {String} itemId Код 1С товара
    */
   itemClickHandler=(itemId)=>{
-    0===this.props.collection_type
-    ?this.props.chooseItem(itemId)
-    :this.props.chooseNode(itemId,this.props.catalogue_data,this.props.colleciton_type);
+    console.log("ITEM ID ", itemId);
+    constants.CATALOGUE_COLLECTION===this.props.collection_type
+    ?this.props.chooseItem(itemId,constants.CATALOGUE_COLLECTION)
+    :this.props.chooseNode(itemId,this.props.catalogue_data,constants.GARBAGE_COLLECTION);
   }
 
   /**
@@ -40,6 +42,10 @@ export class ItemList extends React.Component{
     this.setState({
       filter_query
     });
+  }
+
+  componentDidUpdate(prevProps){
+    prevProps.current_item===null&&this.props.current_item!==null&&this.itemClickHandler(this.props.current_item.id);
   }
 
   render() {

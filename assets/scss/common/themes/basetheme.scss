@@ -101,17 +101,6 @@ body {
   //border-right: 2px solid $color-tertiary;
   //
 
-  .collection-tabs{
-    &__tab{
-      background-color: $color-tertiary;
-      font-weight: bold;
-      &.active{
-        background-color: $color-accent;
-        color: $color-tertiary;
-      }
-    }
-  }
-
   .view-inner__list-view{
     .list-view__cat_item{
       @include list-item-color();
@@ -501,6 +490,17 @@ fieldset{
     @include button-block();
     button{
       @include button-view-color();
+    }
+  }
+}
+
+.collection-tabs{
+  &__tab{
+    background-color: $color-tertiary;
+    font-weight: bold;
+    &.active{
+      background-color: $color-accent;
+      color: $color-tertiary;
     }
   }
 }

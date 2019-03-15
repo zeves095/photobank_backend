@@ -68,9 +68,10 @@ export function fetchUnfinished(){
         payload: items
       });
       items.forEach((item)=>{
+        let collection = item.id.substring(0,1)==="9"?constants.GARBAGE_COLLECTION:constants.CATALOGUE_COLLECTION;
         dispatch({
           type: RESUMABLE_PUSH,
-          payload: item.id
+          payload: {id:item.id, collection:collection}
         });
       });
     }).catch((error)=>{
@@ -87,11 +88,14 @@ export function fetchUnfinished(){
  * Добавляет товар в контейнер resumable.js
  * @param  {[String]} itemId Код 1С товара
  */
-export function pushResumable(itemId){
-  return {
-    type: RESUMABLE_PUSH,
-    payload: itemId
-  }
+export function pushResumable(itemId, collection){
+  return dispatch=>{
+    if(itemId===null){return null;}
+    dispatch({
+      type: RESUMABLE_PUSH,
+      payload: {id:itemId, collection:collection}
+    });
+  };
 }
 
 /**
@@ -180,9 +184,9 @@ export function chooseNode(id, data, collection){
       dispatch(setLocalValue(storageKey, id)),
       dispatch(fetchNodes(id, data, collection))
     ];
-    0===parseInt(collection,10)
+    constants.CATALOGUE_COLLECTION===parseInt(collection,10)
     ?actions.push(dispatch(fetchItems(qo)))
-    :actions.push(dispatch(pushResumable(id),dispatch(purgeEmptyItems())));
+    :actions.push(dispatch(purgeEmptyItems()),dispatch(pushResumable(id, collection)));
     return Promise.all(actions)
     .then(result=>{
       dispatch({
@@ -251,11 +255,11 @@ export function fetchPresets(pagination, existing){
  * Выбирает активный товар
  * @param  {String} id Код 1С товара
  */
-export function chooseItem(id){
+export function chooseItem(id, collection){
   return dispatch=>{
     let actions = [
-      dispatch(pushResumable(id)),
       dispatch(purgeEmptyItems()),
+      dispatch(pushResumable(id, collection)),
       dispatch(setLocalValue('current_item',id)),
     ];
     return Promise.all(actions)
@@ -520,9 +524,10 @@ export function getUserInfo(){
  * Получает данные одного товара по коду 1С
  * @param  {String} id Код 1С товара
  */
-export function fetchItemData(id){
+export function fetchItemData(id, collection){
   return dispatch=>{
-    return fetch("/catalogue/node/item/"+id, {method:"GET"})
+    let url = collection===constants.CATALOGUE_COLLECTION?"/catalogue/node/item/":"/garbage/node/";
+    return fetch(url+id, {method:"GET"})
     .then((response)=>response.json())
     .then((response)=>{
       dispatch({

@@ -7,6 +7,8 @@ import {NotificationService} from '../../services/NotificationService';
 import selectors from '../selectors';
 import {chooseListViewType} from '../actionCreator';
 
+import * as constants from '../constants';
+
 
 /**
  * Компонент работы с очередью отправки файлов на сервер
@@ -20,7 +22,8 @@ export class UploadPool extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      collapse_all:true
+      collapse_all:true,
+      current_collection:this.props.collection
     }
   };
 
@@ -28,7 +31,7 @@ export class UploadPool extends React.Component{
    * Обработчик отправки всех файлов для активных товаров на сервер
    */
   handleSubmit=()=>{
-    this.props.container.forEach(resumable=>resumable.instance.upload());
+    this.props.container.filter(instance=>instance.collection===this.state.current_collection).forEach(resumable=>resumable.instance.upload());
   }
 
   /**
@@ -37,6 +40,10 @@ export class UploadPool extends React.Component{
    */
    handleViewChoice =(type)=>{
      this.props.chooseListViewType(type);
+   }
+
+   chooseCollectionType = (current_collection)=>{
+     this.setState({current_collection});
    }
 
   /**
@@ -49,14 +56,20 @@ export class UploadPool extends React.Component{
   }
 
   render(){
-    let pool = this.props.container.map(item=>{
+    let pool = this.props.container
+    .filter(instance=>instance.collection===this.state.current_collection)
+    .map(item=>{
       return(
       <div key={"pool-item" + item.id}>
-        <ItemSection item_id={item.id} open_by_default={!this.state.collapse_all} render_existing={false}/>
+        <ItemSection item_id={item.id} open_by_default={!this.state.collapse_all} render_existing={false} collection_type={this.state.current_collection} />
       </div>
     )});
     return(
       <div className="upload-pool">
+        <div className="collection-tabs">
+          <span className={"collection-tabs__tab"+(this.state.current_collection===constants.CATALOGUE_COLLECTION?" active":"")} onClick={()=>{this.chooseCollectionType(constants.CATALOGUE_COLLECTION)}}>Каталог</span>
+        <span className={"collection-tabs__tab"+(this.state.current_collection===constants.GARBAGE_COLLECTION?" active":"")} onClick={()=>{this.chooseCollectionType(constants.GARBAGE_COLLECTION)}}>Свалка</span>
+        </div>
         <button type="button" className={"view-button"+(this.props.view==="0"?" view-button--active":"")} onClick={()=>{this.handleViewChoice("0")}}><i className="fas fa-th-large"></i></button>
       <button type="button" className={"view-button"+(this.props.view==="1"?" view-button--active":"")} onClick={()=>{this.handleViewChoice("1")}}><i className="fas fa-th"></i></button>
     <button type="button" className={"view-button"+(this.props.view==="2"?" view-button--active":"")} onClick={()=>{this.handleViewChoice("2")}}><i className="fas fa-list-ul"></i></button>
@@ -72,6 +85,7 @@ export class UploadPool extends React.Component{
 
 const mapStateToProps = (state,props) =>{
   return {
+    collection: selectors.catalogue.getCollectionType(state,props),
     container: selectors.upload.getResumableContainer(state,props),
     view: selectors.localstorage.getStoredListViewtype(state,props),
   }

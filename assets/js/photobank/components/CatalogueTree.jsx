@@ -85,7 +85,6 @@ export class CatalogueTree extends React.Component {
    * Смещает выбор текущего уровня каталога на уровень выше (для кнопки "../" в представлении списка)
    */
   traverseUp = ()=>{
-    if(!!parseInt(this.props.current_node,10));
     let curNode = this.props.catalogue_data.filter((node)=>{return parseInt(node.id,10)===parseInt(this.props.current_node,10)})[0];
     if(!!curNode){
       this.props.chooseNode(curNode.parent, this.props.catalogue_data, this.props.collection_type);

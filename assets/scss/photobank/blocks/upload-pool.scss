@@ -27,4 +27,8 @@
     margin-bottom: 0;
     width: 300px;
   }
+  .collection-tabs{
+    @include collection-tabs();
+    width:300px;
+  }
 }
