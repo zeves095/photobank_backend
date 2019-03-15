@@ -27,9 +27,9 @@ class CatalogueService{
         }
         else{
           this._fetchNodeParent(currentNode, collection)
-.then((parent)=>{
-            this.fetchRootNodes(parent, collection,result)
-.then((result)=>{
+            .then((parent)=>{
+          this.fetchRootNodes(parent, collection,result)
+            .then((result)=>{
               resolve(result);
             });
           });

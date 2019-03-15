@@ -203,3 +203,14 @@ background-color: #dc4444;
 color: white;
 font-size: 14px;
 }
+
+
+@mixin collection_tabs{
+  display: flex;
+  &__tab{
+    flex: 0 0 50%;
+    text-align: center;
+    padding: 5px 0;
+    cursor: pointer;
+  }
+}

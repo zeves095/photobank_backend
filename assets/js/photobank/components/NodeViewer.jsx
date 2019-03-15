@@ -9,6 +9,7 @@ import DownloadPool from './DownloadPool';
 import {Draggable} from './../../common/Draggable';
 import {LocalStorageService} from '../services/LocalStorageService';
 import {NotificationService} from '../../services/NotificationService';
+import {fetchItemData} from '../actionCreator';
 import selectors from '../selectors';
 
 /**
@@ -24,7 +25,11 @@ export class NodeViewer extends React.Component{
     this.state ={
       "view_pool": 0,
     }
-
+    this.pools = {
+      none:0,
+      download:1,
+      upload:2
+    }
   }
 
   /**
@@ -32,7 +37,7 @@ export class NodeViewer extends React.Component{
    * @param  {Event} e Событие клика
    */
   handlePoolClick=(view_pool)=>{
-    if(this.state.view_pool === view_pool)view_pool=0;
+    if(this.state.view_pool === view_pool)view_pool=this.pools.none;
     this.setState({view_pool})
   }
 
@@ -47,8 +52,14 @@ export class NodeViewer extends React.Component{
     });
   }
 
+  componentDidUpdate(prevProps){
+    if(prevProps.item !== this.props.item){
+      this.setState({view_pool: this.pools.none});
+    }
+  }
+
   render() {
-    let itemSectionOutput = this.props.current_item!=null?(<ItemSection item_id={this.props.item.id} />):"Не выбран товар";
+    let itemSectionOutput = <ItemSection />;
 
     let section = "";
     switch(parseInt(this.state.view_pool)){
@@ -66,14 +77,14 @@ export class NodeViewer extends React.Component{
         break;
     }
     let itemSection = (
-      <div className="view-inner__item-section" key={this.props.current_item!=null?this.props.current_item.id:""}>
+      <div className="view-inner__item-section" key={!!this.props.current_item?this.props.current_item.id:""}>
         <span className="titlefix">
           <h2 className="node-viewer__component-title component-title">
             <p>Файлы</p>
             <i className="crumb-string">{this.props.crumbs}</i>
             <div className="view-switcher-button-block">
-              <button type="button" className="item-section-switcher" data-pool="1" onClick={()=>{this.handlePoolClick(1)}}>{1===this.state.view_pool?"К последнему товару":"Выгрузка"}</button>
-            {this.props.authorized?<button type="button" className="item-section-switcher" data-pool="2" onClick={()=>{this.handlePoolClick(2)}}>{2===this.state.view_pool?"К последнему товару":"Загрузка"}</button>:null}
+              <button type="button" className="item-section-switcher" data-pool="1" onClick={()=>{this.handlePoolClick(this.pools.download)}}>{1===this.state.view_pool?"К последнему товару":"Выгрузка"}</button>
+            {this.props.authorized?<button type="button" className="item-section-switcher" data-pool="2" onClick={()=>{this.handlePoolClick(this.pools.upload)}}>{2===this.state.view_pool?"К последнему товару":"Загрузка"}</button>:null}
             </div>
           </h2>
     </span>
@@ -101,8 +112,8 @@ export class NodeViewer extends React.Component{
 
 const mapStateToProps = (state,props) =>{
   return {
-    current_item: selectors.catalogue.getItemObject(state,props)||selectors.localstorage.getStoredItem(state,props),
-    item: selectors.catalogue.getItemObject(state,props)||{id:selectors.localstorage.getStoredItemId(state,props)},
+    stored_item: selectors.catalogue.getStoredItem(state,props),
+    item: selectors.catalogue.getItemObject(state,props),
     crumbs: selectors.catalogue.getCrumbString(state,props),
     authorized: selectors.user.getAuthorized(state,props),
     collection_type: selectors.catalogue.getCollectionType(state,props),
@@ -112,6 +123,7 @@ const mapStateToProps = (state,props) =>{
 }
 
 const mapDispatchToProps = {
+  fetchItemData
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NodeViewer);

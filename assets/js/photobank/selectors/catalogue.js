@@ -1,24 +1,45 @@
 import {createSelector, createStructuredSelector} from 'reselect';
 import {Map,List,Set,Record} from 'immutable';
+import * as constants from '../constants';
 
 export const unfinishedUploads = (store, props)=>store.upload.get('uploads_unfinished');
-export const currentItemId = (store, props)=>props.item_id||store.catalogue.get('current_item');
+
+export const ownPropsCollectionType = (store, props)=>props.collection_type;
+export const collectionType = (store, props)=>store.catalogue.get('collection_type');
+
+export const currentItemId = (store, props)=>store.catalogue.get('current_item');
+export const ownPropsItemId = (store, props)=>props.item_id;
+
 export const currentNodeId = (store, props)=>store.catalogue.get('current_node');
-export const currentGarbageNodeId = (store, props)=>props.item_id||store.catalogue.get('current_garbage_node');
+export const currentGarbageNodeId = (store, props)=>store.catalogue.get('current_garbage_node');
+
 export const catalogueData = (store, props)=>store.catalogue.get('catalogue_data');
 export const items = (store, props)=>props.items||store.catalogue.get('items');
 export const resumableContainer = (store, props)=>store.upload.get('resumable_container');
 export const fetchingCatalogue = (store, props)=>store.catalogue.get('fetching_catalogue');
 export const fetchingItems = (store, props)=>store.catalogue.get('fetching_items');
 export const breadcrumbs = (store, props)=>store.catalogue.get('crumbs');
-// export const collectionType = (store, props)=>store.catalogue.get('collection_type');
 export const localStorage = (store, props)=>store.localstorage.get('localstorage');
-export const collectionType = (store, props)=>localStorage(store,props).get('collection_type')||store.catalogue.get('collection_type');
 export const nodeMoving = (store,props)=>store.catalogue.get('moving_node');
 export const foundGarbageNodes = (store,props)=>store.catalogue.get('found_garbage_nodes');
 export const showDeleted = (store,props)=>store.catalogue.get('show_deleted');
 
-export const getCatalogueData = createSelector(catalogueData, collectionType, showDeleted, (catalogue, type, deleted)=>{
+export const getCollectionType = createSelector(collectionType, ownPropsCollectionType, localStorage, (type, ptype, storage)=>{
+  let collectionType;
+  if(typeof ptype !== 'undefined'){
+    collectionType = ptype;
+  }else{
+    let stored = storage.get('collection_type');
+    if(typeof stored !== 'undefined' && stored !== null){
+      collectionType = stored;
+    }else{
+      collectionType = type;
+    }
+  }
+  return parseInt(collectionType,10);
+});
+
+export const getCatalogueData = createSelector(catalogueData, getCollectionType, showDeleted, (catalogue, type, deleted)=>{
   let cat_data = catalogue.get(type);
   if(!deleted){
     cat_data = cat_data.filter(item=>!item.deleted);
@@ -26,8 +47,11 @@ export const getCatalogueData = createSelector(catalogueData, collectionType, sh
   return cat_data.toArray();
 });
 
-export const getCurrentNode = createSelector(currentNodeId, currentGarbageNodeId, collectionType, localStorage, (node, garbage_node, type, storage)=>{
-  let result = type==0?node:garbage_node;
+export const getCurrentNode = createSelector(currentNodeId, currentGarbageNodeId, getCollectionType, localStorage, (node, garbage_node, type, storage)=>{
+  let result = constants.CATALOGUE_COLLECTION===type?node:garbage_node;
+  if(!result){
+    result = constants.CATALOGUE_COLLECTION===type?storage.get('current_node'):storage.get('current_garbage_node');
+  }
   return result;
 });
 
@@ -41,8 +65,8 @@ export const getCurrentNodeIsDeleted = createSelector(getCurrentNode, getCatalog
   return deleted?deleted.deleted:null;
 });
 
-export const getNodeItems = createSelector(items, currentNodeId, collectionType, (items, id, type)=>{
-  let newItems = id!==null&&1!==type?items.filter(item=>item.node===id):List(items);
+export const getNodeItems = createSelector(items, currentNodeId, getCollectionType, (items, id, type)=>{
+  let newItems = id!==null&&constants.GARBAGE_COLLECTION!==type?items.filter(item=>item.node===id):List(items);
   return newItems.toArray();
 });
 
@@ -50,12 +74,30 @@ export const filterItems = createSelector(getNodeItems, items, currentNodeId, (n
   return nodeItems;
 });
 
-export const getItemObject = createSelector(items, catalogueData, currentItemId, currentGarbageNodeId, collectionType, (items, cat, id, garbageId, type)=>{
-  let item = type===0
-  ?items.find(item=>item.id===id)
-  :cat.get(type).find(node=>node.id===garbageId);
-  if(!item)item=null;
-  return item;
+export const getStoredItem = createSelector(getCollectionType, localStorage, (collection, storage)=>{
+  return constants.CATALOGUE_COLLECTION===collection?storage.get('current_item'):storage.get('current_garbage_node');
+});
+
+export const getItemObject = createSelector(
+  items,
+  catalogueData,
+  currentItemId,
+  currentGarbageNodeId,
+  ownPropsItemId,
+  getCollectionType,
+  (items, cat, iid, gid, pid, type)=>{
+    let id, item;
+    if(typeof pid !== 'undefined'){
+      item = items.find(item=>item.id===pid);
+      if(typeof item === 'undefined')item = cat.get(constants.GARBAGE_COLLECTION).find(node=>node.id===id);
+    }else if(constants.CATALOGUE_COLLECTION===type){
+        item = items.find(item=>item.id===iid);
+    }else{
+      id = gid;
+      item = cat.get(constants.GARBAGE_COLLECTION).find(node=>node.id===id);
+    }
+    if(!item)item=null;
+    return item;
 });
 
 export const getLoadingCatalogue = createSelector(fetchingCatalogue, (fetching)=>{
@@ -77,10 +119,6 @@ export const getCrumbString = createSelector(breadcrumbs, (crumbs)=>{
     crumbArr = crumbArr.slice(0,1).push('...').concat(crumbArr.slice(-2));
   }
   return crumbArr.join("/")
-});
-
-export const getCollectionType = createSelector(collectionType, (type)=>{
-  return parseInt(type,10);
 });
 
 export const getNodeMoving = createSelector(nodeMoving, (mov)=>{
