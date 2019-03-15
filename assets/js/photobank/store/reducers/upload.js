@@ -35,12 +35,10 @@ export default (upload = defaultState, action) => {
     case FILE_PROCESSED:{
       let fileParams = action.payload;
       let reinsert = false;
-      console.error(fileParams.itemId);
       let container = List(upload.get('resumable_container'));
       let resumable = container.find(resumable=>{return resumable.get('id')===fileParams.itemId});
       let instance = resumable.get('instance');
       let files = instance.get('files');
-      console.log(files);
       let file = files.find(file=>file===fileParams.file);
       Object.keys(fileParams).forEach((key)=>{
         if(key!=="file"){file[key] = fileParams[key]};

@@ -105,7 +105,6 @@ export class Uploads extends React.Component{
   }
 
   componentWillUnmount(){
-    console.log(this.props.item_id, "OONMONT");
     this.props.resumable.events = [];
   }
 
