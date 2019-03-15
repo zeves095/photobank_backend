@@ -48,7 +48,8 @@ export class Uploads extends React.Component{
    * Обработчик удаления всех незавершенных загрузок из списка и записей из базы
    */
   handleClearUnfinished=()=>{
-    this.props.deleteUnfinishedUploads()
+    this.props.deleteUnfinishedUploads();
+    this.props.purgeEmptyItems();
   }
 
   /**
@@ -104,6 +105,7 @@ export class Uploads extends React.Component{
   }
 
   componentWillUnmount(){
+    console.log(this.props.item_id, "OONMONT");
     this.props.resumable.events = [];
   }
 
@@ -111,32 +113,31 @@ export class Uploads extends React.Component{
 
     if(!this.props.item||!this.props.resumable){return null}
 
-    let uploadsMarkup = [];
-    for(let i = 0; i< this.props.uploads.length; i++){
+    let uploadsMarkup = this.props.uploads.map(upload=>{
       let status = "";
-      if(this.props.uploads[i].isComplete()){
+      if(upload.isComplete()){
         status = "completed";
       }else{
-        if(this.props.uploads[i].isUploading()){
+        if(upload.isUploading()){
           status = "uploading";
-        }else if(!this.props.uploads[i].ready){
+        }else if(!upload.ready){
           status = "processing";
         }else{
           status = "pending";
         }
       }
-      uploadsMarkup.push(
-          <div key={this.props.uploads[i].fileName+this.props.uploads[i].uniqueIdentifier+"pending"} className={"file-list__file-item file-item " + "file-item"+(this.props.uploads[i].isComplete()?"--completed":"--pending") +" "+ (this.props.uploads[i].ready? "": "file-item--processing ")+this.fileViewClasses[this.state.view_type]}>
-            <i data-item={this.props.uploads[i].uniqueIdentifier} onClick={()=>{this.props.deleteUpload(this.props.uploads[i].uniqueIdentifier, this.props.item.id)}} className="fas fa-trash-alt file-item__delete-upload"></i><br />
-          <span className="file-item__file-name">{this.props.uploads[i].fileName}</span>
+      return (
+          <div key={upload.fileName+upload.uniqueIdentifier+"pending"} className={"file-list__file-item file-item " + "file-item"+(upload.isComplete()?"--completed":"--pending") +" "+ (upload.ready? "": "file-item--processing ")+this.fileViewClasses[this.state.view_type]}>
+            <i data-item={upload.uniqueIdentifier} onClick={()=>{this.props.deleteUpload(upload.uniqueIdentifier, this.props.item.id)}} className="fas fa-trash-alt file-item__delete-upload"></i><br />
+          <span className="file-item__file-name">{upload.fileName}</span>
         <span className="file-item__upload-status">{this.uploadStatus[status]}</span>
-      <span className="progress-bar" id={"progress_bar"+this.props.uploads[i].uniqueIdentifier}>
-            <div className="progress-bar__percentage">{Math.round(this.props.uploads[i].progress() * 100) + "%"}</div>
-          <div className="progress-bar__bar" style={{"width":Math.round(this.props.uploads[i].progress() * 100) + "%"}}></div>
+      <span className="progress-bar" id={"progress_bar"+upload.uniqueIdentifier}>
+            <div className="progress-bar__percentage">{Math.round(upload.progress() * 100) + "%"}</div>
+          <div className="progress-bar__bar" style={{"width":Math.round(upload.progress() * 100) + "%"}}></div>
             </span>
           </div>
       );
-    }
+    });
 
     const ready = this.props.uploads_ready.length!==0 && this.props.uploads.length === this.props.uploads_ready.length ;
 

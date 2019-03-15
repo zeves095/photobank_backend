@@ -63,10 +63,7 @@ export class UploadPool extends React.Component{
       <div key={"pool-item" + item.id}>
         <ItemSection item_id={item.id} open_by_default={!this.state.collapse_all} render_existing={false} collection_type={this.state.current_collection} />
       </div>
-    )})
-    .sort((a, b)=>{
-        return a.name.localeCompare(b.name);
-    });
+    )});
     return(
       <div className="upload-pool">
         <div className="collection-tabs">

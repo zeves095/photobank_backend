@@ -10,7 +10,7 @@ export const resumableContainer = (store,props)=>store.upload.get('resumable_con
 export const getResumableInstance = createSelector(resumableContainer, currentItemId, (container, id)=>{
   let resumable = container.find(resumable=>resumable.get('id')===id);
   return resumable?resumable.get('instance').toObject():null;
-})
+});
 
 export const getResumableContainer = createSelector(resumableContainer, (container)=>{
   let newContainer = List(container).toJS();

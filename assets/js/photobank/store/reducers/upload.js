@@ -34,22 +34,24 @@ export default (upload = defaultState, action) => {
     }
     case FILE_PROCESSED:{
       let fileParams = action.payload;
-      let newFile = fileParams.file;
-      Object.keys(fileParams).forEach((key)=>{
-        if(key!=="file"){newFile[key] = fileParams[key]};
-      });
-      newFile.ready = true;
+      let reinsert = false;
+      console.error(fileParams.itemId);
       let container = List(upload.get('resumable_container'));
       let resumable = container.find(resumable=>{return resumable.get('id')===fileParams.itemId});
       let instance = resumable.get('instance');
       let files = instance.get('files');
-      files.splice(files.indexOf(fileParams.file),1,newFile);
-      instance.set('files',files);
-      resumable.set('instance',instance);
+      console.log(files);
+      let file = files.find(file=>file===fileParams.file);
+      Object.keys(fileParams).forEach((key)=>{
+        if(key!=="file"){file[key] = fileParams[key]};
+      });
+      file.ready = true;
+      instance = instance.set('files',files);
+      resumable = resumable.set('instance',instance);
       container = container.splice(container.indexOf(resumable),1);
       container = container.push(resumable);
       let resolved = upload.get('uploads_unfinished');
-      resolved = resolved.filter((upload)=>upload.file_hash!==fileParams.file_hash);
+      resolved = resolved.filter((upload)=>upload.file_hash!==fileParams.uniqueIdentifier);
       return upload.set('resumable_container',container).set('uploads_unfinished', resolved);
       break;
     }

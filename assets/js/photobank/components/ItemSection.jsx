@@ -45,7 +45,7 @@ export class ItemSection extends React.Component{
   render() {
     if(!this.props.item){
       let id = this.props.item_id||this.props.stored_item_id;
-      if(null===id){return "Не выбран товар";}
+      if(!id){return "Не выбран товар";}
       this.props.fetchItemData(id, this.props.collection_type);
       return null;
     }
@@ -83,7 +83,7 @@ export class ItemSection extends React.Component{
           {this.props.render_existing&&viewBtn}
           {this.props.render_existing?<ExistingResources authorized={this.props.authorized} key={this.props.item.id} item_id={this.props.item.id} addDownloadHandler={this.props.addDownloadHandler} default_view={this.props.view} />:null}
         {!render_upload?null:<h4 className="item-view__subheader">Загрузки</h4>}
-      {!render_upload?null:<Uploads item_id={this.props.item_id} item={this.props.item} collection_type={this.props.collection_type} />}
+      {!render_upload?null:<Uploads key={"uploads"+this.props.item.id} item_id={this.props.item.id} item={this.props.item} collection_type={this.props.collection_type} />}
       </div> </div>
     );
   }

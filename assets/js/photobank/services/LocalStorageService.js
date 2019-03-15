@@ -30,7 +30,7 @@ class LocalStorageService{
   static init(){
     if(utility.localStorage.getItem('photobank_data') != "2"){
       utility.localStorage.setItem('photobank_data',"2");
-      utility.localStorage.setItem('pb_data_current_item',"1");
+      utility.localStorage.setItem('pb_data_current_item',"");
       utility.localStorage.setItem('pb_data_download_list',"");
       utility.localStorage.setItem('pb_data_list_view_type',"1");
       utility.localStorage.setItem('pb_data_catalogue_view_type',"2");
