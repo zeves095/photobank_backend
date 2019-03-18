@@ -38,3 +38,16 @@ export const GARBAGE_COLLECTION = 1;
 export const RESOURCES_BIG_ICONS_VIEW = 0;
 export const RESOURCES_SMALL_ICONS_VIEW = 1;
 export const RESOURCES_TABLE_VIEW = 2;
+
+export const LOCALSTORAGE_VERSION = "3";
+export const CATALOGUE_VIEW_TYPES = {
+  list:"1",
+  tree:"2",
+  search:"3"
+};
+export const RESOURCE_VIEW_TYPES = {
+  large:"1",
+  small:"2",
+  table:"3"
+};
+export const DEFAULT_PAGINATION_LIMIT = "10";

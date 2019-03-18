@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import utility from './UtilityService';
+import * as constants from '../constants';
 
 /**
  * Сервис для работы с данными, сохраненными в localstorage браузера пользователя
@@ -28,14 +29,14 @@ class LocalStorageService{
    * Устанавливает изначальные значения переменных для корректной работы
    */
   static init(){
-    if(utility.localStorage.getItem('photobank_data') != "2"){
-      utility.localStorage.setItem('photobank_data',"2");
+    if(utility.localStorage.getItem('photobank_data') !== constants.LOCALSTORAGE_VERSION){
+      utility.localStorage.setItem('photobank_data',constants.LOCALSTORAGE_VERSION);
       utility.localStorage.setItem('pb_data_current_item',"");
       utility.localStorage.setItem('pb_data_download_list',"");
-      utility.localStorage.setItem('pb_data_list_view_type',"1");
-      utility.localStorage.setItem('pb_data_catalogue_view_type',"2");
-      utility.localStorage.setItem('pb_data_pagination_limit',"10");
-      utility.localStorage.setItem('pb_data_collection_type',"0");
+      utility.localStorage.setItem('pb_data_list_view_type',constants.RESOURCE_VIEW_TYPES.large);
+      utility.localStorage.setItem('pb_data_catalogue_view_type',constants.CATALOGUE_VIEW_TYPES.tree);
+      utility.localStorage.setItem('pb_data_pagination_limit',constants.DEFAULT_PAGINATION_LIMIT);
+      utility.localStorage.setItem('pb_data_collection_type',constants.CATALOGUE_COLLECTION);
     }
   }
 

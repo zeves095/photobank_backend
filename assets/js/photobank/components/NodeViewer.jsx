@@ -95,9 +95,9 @@ export class NodeViewer extends React.Component{
     );
     let inner;
     if(0===this.props.collection_type)
-      {inner = <Draggable basew="30" maxw1="50" maxw2="78" minw1="205" parent={this.refs.draggable_parent} box1={<ItemList />} box2={itemSection} id="2" />;}
+      {inner = <Draggable basew="30" maxw1="50" maxw2="90" minw1="205" parent={this.refs.draggable_parent} box1={<ItemList />} box2={itemSection} id="2" />;}
     else if(3===this.props.catalogue_view)
-      {inner = <Draggable basew="30" maxw1="50" maxw2="78" minw1="205" parent={this.refs.draggable_parent} box1={<ItemList items={this.props.found_garbage_nodes} />} box2={itemSection} id="2" />;}
+      {inner = <Draggable basew="30" maxw1="50" maxw2="90" minw1="205" parent={this.refs.draggable_parent} box1={<ItemList items={this.props.found_garbage_nodes} />} box2={itemSection} id="2" />;}
     else
       {inner = itemSection}
     return (
