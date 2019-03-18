@@ -40,7 +40,7 @@ export default (upload = defaultState, action) => {
       let files = instance.get('files');
       let file = files.find(file=>file===fileParams.file);
       Object.keys(fileParams).forEach((key)=>{
-        if(key!=="file"){file[key] = fileParams[key]};
+        if(key!=="file"){file[key] = fileParams[key]}
       });
       file.ready = true;
       instance = instance.set('files',files);

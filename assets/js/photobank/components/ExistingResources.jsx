@@ -59,8 +59,8 @@ export class ExistingResources extends React.Component{
       if(target.tagName !== "BUTTON"){
         target = target.parentNode;
       }
-      if(target.dataset.direction === 0){
-        if((start-=limit) < 0){start=0};
+      if(parseInt(target.dataset.direction, 10) === 0){
+        if((start-=limit) < 0){start=0}
         changed = true;
       }else{
         if(!(start+limit>this.props.existing.length)){start = parseInt(start+limit)};
@@ -136,9 +136,9 @@ export class ExistingResources extends React.Component{
 
     let paginationControls = this.props.existing.length!=0?(
       <div className="item-view__pagination-controls pagination-controls">
-          <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="0" type="button" disabled={this.state.pagination_start===0}><i className="fas fa-arrow-left"></i></button>
+          <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="0" type="button" disabled={this.state.pagination_start===0}><i className="fas fa-arrow-left" data-direction="0"></i></button>
         <p>{this.state.pagination_current_page}/{this.state.pagination_total_pages}</p>
-      <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="1" type="button" disabled={this.state.pagination_end>=this.props.existing.length}><i className="fas fa-arrow-right"></i></button>
+      <button onClick={this.handlePagination} className="pagination-controls__btn pagination-controls__btn--bck-btn" data-direction="1" type="button" disabled={this.state.pagination_end>=this.props.existing.length}><i className="fas fa-arrow-right" data-direction="1"></i></button>
     <p>На странице:</p><input onKeyUp={this.handlePagination} type="text" name="pagination_limit" defaultValue={this.state.pagination_limit}></input>
 </div>
     ):null;
