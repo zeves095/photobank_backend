@@ -31,6 +31,7 @@ module.exports = {
     LOGIN_ERROR_MESSAGE: '.auth__item.auth__item--error',
     LOGOUT_BUTTON: '.clogout-btn',
     LOADER: '.loading',
+    NOTIFICATION_TOAST: '.notification.notification--toast',
     upload: {
       ITEM_SEARCH_FORM: '.item-search',
       ITEM_SEARCH_NAME_INPUT: '#srchinpt1',
@@ -49,6 +50,7 @@ module.exports = {
       CATALOGUE_TREE_TREE_CHILDREN: '.jstree-children',
       CATALOGUE_TREE_LIST_UP: '.list-view__cat_item:not([data-node])',
       RESOURCE_LIST_ITEM: '.existing-files__file',
+      DOWNLOAD_TILE_BTN: '.dl-now',
     },
     linkmanager: {
       ADD_LINK_BTN: ".link-list .add-button",

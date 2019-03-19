@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {Link} from 'react-router-dom';
+import * as constants from '../constants';
 
 export class SideMenu extends React.Component{
   constructor(props){
@@ -12,6 +13,13 @@ export class SideMenu extends React.Component{
 
   handleMenuCollapse=()=>{
     this.setState({open:!this.state.open});
+  }
+
+  componentDidMount(){
+    console.log(window.innerWidth);
+    if(window&&this.state.open&&window.innerWidth<constants.MENU_COLLAPOSE_MIN_WIDTH){
+      this.handleMenuCollapse();
+    }
   }
 
   render(){

@@ -15,13 +15,7 @@ describe('Проверка поисковой системы по ресурса
     after(() => cleanupDriver(driver));
 
     it('Поиск по названию товара находит нужные ресурсы', async function () {
-      await driver.manage().deleteAllCookies();
-      await driver.get(c.SITE_URL);
-      const loginInput = await driver.findElement(By.css(c.SELECTORS.LOGIN));
-      const passwordInput = await driver.findElement(By.css(c.SELECTORS.PASSWORD));
-      await loginInput.sendKeys(c.USERS.ADMIN.LOGIN);
-      await passwordInput.sendKeys(c.USERS.ADMIN.PASSWORD);
-      await loginInput.submit();
+      await u.login(driver);
       await driver.get(c.SITE_URL+c.PAGE_LINKS);
       await u.w(driver);
       await u.waitForEl(driver, c.SELECTORS.notloading.LINK_LIST);

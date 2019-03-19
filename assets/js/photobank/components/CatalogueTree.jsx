@@ -135,10 +135,10 @@ export class CatalogueTree extends React.Component {
 
   handleMoveNode = (id, parent)=>{
     this.props.stopNodeRebase(
-      id,
-      parent,
       this.props.catalogue_data,
-      this.props.collection_type
+      this.props.collection_type,
+      id,
+      parent
     );
     //this.props.chooseNode(parent, this.props.catalogue_data, this.props.collection_type);
   }
