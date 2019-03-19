@@ -44,6 +44,9 @@ describe('Проверка аутентификации', function () {
     try{
       await u.waitForEl(driver, c.SELECTORS.LOGOUT_BUTTON);
       const logoutBtn = await driver.findElement(By.css(c.SELECTORS.LOGOUT_BUTTON));
+      if(!(await driver.findElements(By.css(c.SELECTORS.MENU_OPEN))).length){
+        await (await driver.findElement(By.css(c.SELECTORS.MENU_COLLAPSE_BTN))).click();
+      }
       await logoutBtn.click();
       await driver.get(c.SITE_URL + c.PAGE_UPLOAD); // проверяем что после клика по выходу - мы разлогинены и нас будет перекидывать на страницу аутентификации.;
       await driver.findElement(By.css(c.SELECTORS.LOGIN));
