@@ -1,4 +1,11 @@
 module.exports = {
+  ABS_FILE_PATHS:[
+    '/home/efimov/Documents/ups/1.jpg',
+    '/home/efimov/Documents/ups/2.jpg',
+    '/home/efimov/Documents/ups/3.jpg',
+    '/home/efimov/Documents/ups/4.jpg',
+  ],
+
   MAX_SLEEP: 30000,
   DEBUG_SLEEP: 1000,
   DEBUG: false,
@@ -32,6 +39,8 @@ module.exports = {
     LOGOUT_BUTTON: '.clogout-btn',
     LOADER: '.loading',
     NOTIFICATION_TOAST: '.notification.notification--toast',
+    MENU_OPEN: '.menublock.open',
+    MENU_COLLAPSE_BTN: 'i.menu-collapse',
     upload: {
       ITEM_SEARCH_FORM: '.item-search',
       ITEM_SEARCH_NAME_INPUT: '#srchinpt1',
@@ -50,7 +59,19 @@ module.exports = {
       CATALOGUE_TREE_TREE_CHILDREN: '.jstree-children',
       CATALOGUE_TREE_LIST_UP: '.list-view__cat_item:not([data-node])',
       RESOURCE_LIST_ITEM: '.existing-files__file',
-      DOWNLOAD_TILE_BTN: '.dl-now',
+      DOWNLOAD_POOL_BTN: '.item-section-switcher[data-pool="1"]',
+      UPLOAD_POOL_BTN: '.item-section-switcher[data-pool="2"]',
+      DOWNLOAD_ALL_BTN: '.download-all-btn',
+      UPLOAD_ALL_BTN: '.upload-pool__upload-all',
+      BROWSE_FILES_BTN: '.browse-files-btn',
+      UPLOAD_FILES_BTN: '.upload-files-btn',
+      GARBAGE_SWITCH: '.collection-tabs__tab--garbage',
+      RESOURCE_TILE_BTN: {
+          download: '.dl-now',
+          download_queue: '.dl-cart-add',
+          open_tab: '.open-in-tab',
+          copy_url: '.get-url',
+      }
     },
     linkmanager: {
       ADD_LINK_BTN: ".link-list .add-button",

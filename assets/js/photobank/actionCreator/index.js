@@ -353,6 +353,7 @@ export function completeUpload(id, files, collection){
     .then(()=>{
       dispatch(fetchExisting(id,collection));
       dispatch(fetchUnfinished());
+      NotificationService.toast('up-done');
     });
   };
 }

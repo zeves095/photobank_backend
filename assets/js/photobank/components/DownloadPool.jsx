@@ -75,7 +75,7 @@ export class DownloadPool extends React.Component{
       <div className="download-pool__pending-wrapper">
         {downloads}
       </div>
-        <button type="button" onClick={this.handleDownload}>Скачать все</button>
+        <button type="button" className="download-all-btn" onClick={this.handleDownload}>Скачать все</button>
     </div>
         :<h2>Нет загрузок</h2>}
       </div>
