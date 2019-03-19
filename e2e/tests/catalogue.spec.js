@@ -15,13 +15,7 @@ describe('Проверка навигации по каталогам', function
   after(() => cleanupDriver(driver));
 
   it('[вид: дерево] При клике по дереву каталога - подгружаются его подкаталоги', async function () {
-    await driver.manage().deleteAllCookies();
-    await driver.get(c.SITE_URL);
-    const loginInput = await driver.findElement(By.css(c.SELECTORS.LOGIN));
-    const passwordInput = await driver.findElement(By.css(c.SELECTORS.PASSWORD));
-    await loginInput.sendKeys(c.USERS.ADMIN.LOGIN);
-    await passwordInput.sendKeys(c.USERS.ADMIN.PASSWORD);
-    await loginInput.submit();
+    await u.login(driver);
     await u.w(driver);
     await u.waitForEl(driver,c.SELECTORS.upload.CATALOGUE_TREE_TREE_VIEW);
     const treeViewBtn = await driver.findElement(By.css(c.SELECTORS.upload.CATALOGUE_TREE_TREE_VIEW));

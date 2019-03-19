@@ -15,13 +15,7 @@ describe('Проверка поисковой системы (и фильтро�
   after(() => cleanupDriver(driver));
 
   it('Поиск по названию находит нужные товары', async function () {
-    await driver.manage().deleteAllCookies();
-    await driver.get(c.SITE_URL);
-    const loginInput = await driver.findElement(By.css(c.SELECTORS.LOGIN));
-    const passwordInput = await driver.findElement(By.css(c.SELECTORS.PASSWORD));
-    await loginInput.sendKeys(c.USERS.ADMIN.LOGIN);
-    await passwordInput.sendKeys(c.USERS.ADMIN.PASSWORD);
-    await loginInput.submit();
+    await u.login(driver);
     await u.w(driver);
     await u.waitForEl(driver,c.SELECTORS.upload.CATALOGUE_TREE_SEARCH_VIEW);
     const searchViewBtn = await driver.findElement(By.css(c.SELECTORS.upload.CATALOGUE_TREE_SEARCH_VIEW));

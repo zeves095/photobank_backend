@@ -16,7 +16,7 @@ export class PhotoBankWrapper extends Component {
 
   render() {
     return (
-      <div id="photobank-main" onClick={this.testImport}>
+      <div id="photobank-main">
         <Provider store = {store}>
           <PhotoBank />
         </Provider>

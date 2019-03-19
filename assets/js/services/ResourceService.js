@@ -1,5 +1,5 @@
 import utility from '../photobank/services/UtilityService';
-
+import {NotificationService} from './NotificationService';
 /**
  * Сервис для получения и обновления данных по ресурсам
  */
@@ -40,6 +40,13 @@ class ResourceService{
       anchor.click();
     }
     document.body.removeChild(anchor);
+    let l = resources.length;
+    let res_titles = ['ресурс', 'ресурса', 'ресурсов'];
+    let dl_titles = ['Скачан', 'Скачано', 'Скачано'];
+    let cases = [2, 0, 1, 1, 1, 2];
+    let res_string =  res_titles[ (l%100>4 && l%100<20)? 2 : cases[(l%10<5)?l%10:5] ];
+    let dl_string =  dl_titles[ (l%100>4 && l%100<20)? 2 : cases[(l%10<5)?l%10:5] ];
+    NotificationService.toast('custom', dl_string+" "+resources.length+" "+res_string);
   }
 
   /**
