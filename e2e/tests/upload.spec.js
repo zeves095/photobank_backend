@@ -8,6 +8,7 @@ let u = require('../utils/utils.js');
 
 describe('Загрузка ресурсов на сервер', function () {
   this.timeout(0);
+  const absPath = process.env.TEST_UPLOAD_FILE_PATH;
   let driver;
   before(async () => {
     driver = await prepareDriver();
@@ -40,7 +41,7 @@ describe('Загрузка ресурсов на сервер', function () {
 
     await u.waitForEl(driver, c.SELECTORS.upload.BROWSE_FILES_BTN);
     let fileInput = await driver.findElement(By.css(c.SELECTORS.upload.BROWSE_FILES_BTN+">input[type='file']"));
-    await fileInput.sendKeys(c.ABS_FILE_PATHS[0]);
+    await fileInput.sendKeys(absPath+c.ABS_FILE_PATHS[0]);
     let uploadBtn = await driver.findElement(By.css(c.SELECTORS.upload.UPLOAD_FILES_BTN));
     let resBefore = await driver.findElements(By.css(c.SELECTORS.upload.RESOURCE_LIST_ITEM));
     await uploadBtn.click();
@@ -77,7 +78,7 @@ describe('Загрузка ресурсов на сервер', function () {
 
     await u.waitForEl(driver, c.SELECTORS.upload.BROWSE_FILES_BTN);
     let fileInput = await driver.findElement(By.css(c.SELECTORS.upload.BROWSE_FILES_BTN+">input[type='file']"));
-    await fileInput.sendKeys(c.ABS_FILE_PATHS.join('\n'));
+    await fileInput.sendKeys(absPath+c.ABS_FILE_PATHS.join('\n'+absPath));
     let uploadBtn = await driver.findElement(By.css(c.SELECTORS.upload.UPLOAD_FILES_BTN));
     let resBefore = await driver.findElements(By.css(c.SELECTORS.upload.RESOURCE_LIST_ITEM));
     await uploadBtn.click();
@@ -116,7 +117,7 @@ describe('Загрузка ресурсов на сервер', function () {
 
       await u.waitForEl(driver, c.SELECTORS.upload.BROWSE_FILES_BTN);
       let fileInput = await driver.findElement(By.css(c.SELECTORS.upload.BROWSE_FILES_BTN+">input[type='file']"));
-      await fileInput.sendKeys(c.ABS_FILE_PATHS.join('\n'));
+      await fileInput.sendKeys(absPath+c.ABS_FILE_PATHS.join('\n'+absPath));
     }
 
     let poolBtn = await driver.findElement(By.css(c.SELECTORS.upload.UPLOAD_POOL_BTN));
@@ -137,18 +138,22 @@ describe('Загрузка ресурсов на сервер', function () {
     await u.login(driver);
     await u.w(driver);
 
+    await u.waitForEl(driver,c.SELECTORS.upload.CATALOGUE_TREE_TREE_VIEW);
+    const treeViewBtn = await driver.findElement(By.css(c.SELECTORS.upload.CATALOGUE_TREE_TREE_VIEW));
+    await treeViewBtn.click();
+
     await u.waitForEl(driver,c.SELECTORS.upload.GARBAGE_SWITCH);
     let garbageSwitch = driver.findElement(By.css(c.SELECTORS.upload.GARBAGE_SWITCH));
     await garbageSwitch.click();
     await u.waitForEl(driver, c.SELECTORS.notloading.NODE_LIST);
 
-    await u.waitForEl(driver,c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE);
-    let searchSubmitBtn = await driver.findElement(By.css(c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE));
+    await u.waitForEl(driver,c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE_ANCHOR);
+    let searchSubmitBtn = await driver.findElement(By.css(c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE_ANCHOR));
     await searchSubmitBtn.click();
 
     await u.waitForEl(driver, c.SELECTORS.upload.BROWSE_FILES_BTN);
     let fileInput = await driver.findElement(By.css(c.SELECTORS.upload.BROWSE_FILES_BTN+">input[type='file']"));
-    await fileInput.sendKeys(c.ABS_FILE_PATHS.join('\n'));
+    await fileInput.sendKeys(absPath+c.ABS_FILE_PATHS.join('\n'+absPath));
     let uploadBtn = await driver.findElement(By.css(c.SELECTORS.upload.UPLOAD_FILES_BTN));
     let resBefore = await driver.findElements(By.css(c.SELECTORS.upload.RESOURCE_LIST_ITEM));
     await uploadBtn.click();

@@ -68,12 +68,10 @@ export class ExistingResource extends React.Component {
    * Обработчик начала установки приоритета ресурса
    * @param  {[type]} e Событие клика
    */
-  handlePriority = (e)=>{
+  handlePriority = ()=>{
     if(!this.props.authorized){return}
-    let file = e.target.dataset["file"];
-    if(this.state.priority_active === file){file = null}
     this.setState({
-      "priority_active": file
+      "priority_active": true
     });
   }
 
@@ -101,7 +99,18 @@ export class ExistingResource extends React.Component {
       key:"priority",
       value:priority,
       item:this.props.item_id,
+    }, this.props.collection_type);
+    this.setState({
+      "priority_active": false
     });
+  }
+
+  componentDidUpdate(prevProps){
+    if(this.state.priority_active && prevProps.file!==this.props.file){
+      this.setState({
+        "priority_active": false
+      });
+    }
   }
 
   render() {
@@ -140,7 +149,7 @@ export class ExistingResource extends React.Component {
     );
     let priorityStack = [];
     let priorityCtx = "";
-    if(this.state.priority_active === this.props.file.id){
+    if(this.state.priority_active){
       for(let j=0; j<this.props.max_add; j++){
         priorityStack.push(<div className={"item " + (this.props.file.priority === j?"active":"")} onClick={()=>{this.handlePriorityUpdate(j)}} data-priority={j}>{j}</div>);
       }
@@ -154,13 +163,13 @@ export class ExistingResource extends React.Component {
       {constants.RESOURCES_TABLE_VIEW!==this.props.view ? dlControls : null}
         {this.props.file.src_filename}
       </a>
-      <div className={"edit-input " + (this.props.file.type === "2"?"edit-input--add-file":"")}>
+      <div className={"edit-input " + (parseInt(this.props.file.type,10) === constants.RESOURCE_FILE_TYPES.add?"edit-input--add-file":"")}>
         <select onChange={(e)=>{this.handleTypeUpdate(e)}} name="type" defaultValue={this.props.file.type} disabled={!this.props.authorized}>
-          <option disabled={this.props.current_main >= this.props.max_main?true:false} value="1">Основноe{this.props.current_main+"/"+this.props.max_main}</option>
-            <option disabled={this.props.current_add >= this.props.max_add?true:false} value="2">Доп.{this.props.current_add+"/"+this.props.max_add}</option>
-          <option value="3">Исходник</option>
+          <option key={"res-type-option-"+constants.RESOURCE_FILE_TYPES.main} selected={constants.RESOURCE_FILE_TYPES.main===this.props.file.type} disabled={this.props.current_main >= this.props.max_main?true:false} value={constants.RESOURCE_FILE_TYPES.main}>Основноe{this.props.current_main+"/"+this.props.max_main}</option>
+            <option key={"res-type-option-"+constants.RESOURCE_FILE_TYPES.add} selected={constants.RESOURCE_FILE_TYPES.add===this.props.file.type} disabled={this.props.current_add >= this.props.max_add?true:false} value={constants.RESOURCE_FILE_TYPES.add}>Доп.{this.props.current_add+"/"+this.props.max_add}</option>
+          <option key={"res-type-option-"+constants.RESOURCE_FILE_TYPES.original} selected={constants.RESOURCE_FILE_TYPES.original===this.props.file.type} value={constants.RESOURCE_FILE_TYPES.original}>Исходник</option>
         </select>
-        {this.props.file.type === "2"
+        {parseInt(this.props.file.type,10) === constants.RESOURCE_FILE_TYPES.add
             ? <span className="edit-input__priority-btn" data-file={this.props.file.id} onClick={this.handlePriority}>{this.props.file.priority}{priorityCtx}</span>
             : null
         }

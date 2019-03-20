@@ -1,10 +1,16 @@
 module.exports = {
   ABS_FILE_PATHS:[
-    '/home/efimov/Documents/ups/1.jpg',
-    '/home/efimov/Documents/ups/2.jpg',
-    '/home/efimov/Documents/ups/3.jpg',
-    '/home/efimov/Documents/ups/4.jpg',
+    '1.jpg',
+    '2.jpg',
+    '3.jpg',
+    '4.jpg',
   ],
+
+  RESOURCE_TYPES:{
+    main: 1,
+    add: 2,
+    original: 3,
+  },
 
   MAX_SLEEP: 30000,
   DEBUG_SLEEP: 1000,
@@ -53,9 +59,12 @@ module.exports = {
       CATALOGUE_TREE_SEARCH_VIEW: '.component-title__view-icons>i[data-view="3"]',
       CATALOGUE_TREE_LIST_VIEW: '.component-title__view-icons>i[data-view="1"]',
       CATALOGUE_TREE_TREE_VIEW: '.component-title__view-icons>i[data-view="2"]',
+      CATALOGUE_TREE_LIST: '.catalogue-tree__view-inner',
       CATALOGUE_TREE_LIST_ITEM: '.list-view__cat_item[data-node]',
       CATALOGUE_TREE_LIST_ROOT: '.catalogue-tree__crumbs .crumbs__crumb:first-child',
-      CATALOGUE_TREE_TREE_NODE: '.jstree-anchor',
+      CATALOGUE_TREE_TREE_NODE_ANCHOR: '.jstree-anchor',
+      CATALOGUE_TREE_TREE_NODE: '.jstree-node',
+      CATALOGUE_TREE_TREE_NODE_DELETED: '.jstree-node.deleted',
       CATALOGUE_TREE_TREE_CHILDREN: '.jstree-children',
       CATALOGUE_TREE_LIST_UP: '.list-view__cat_item:not([data-node])',
       RESOURCE_LIST_ITEM: '.existing-files__file',
@@ -66,12 +75,36 @@ module.exports = {
       BROWSE_FILES_BTN: '.browse-files-btn',
       UPLOAD_FILES_BTN: '.upload-files-btn',
       GARBAGE_SWITCH: '.collection-tabs__tab--garbage',
+      RESOURCE_LIST_VIEW_TYPES:{
+        large: '.item-view button[data-view="0"]',
+        small: '.item-view button[data-view="1"]',
+        table: '.item-view button[data-view="2"]',
+      },
       RESOURCE_TILE_BTN: {
           download: '.dl-now',
           download_queue: '.dl-cart-add',
           open_tab: '.open-in-tab',
           copy_url: '.get-url',
-      }
+      },
+      RESOURCE:{
+        ADDITIONAL_FILE_OPTION_SELECTED: 'option[selected][value="2"]',
+        ORIGINAL_FILE_OPTION_SELECTED: 'option[selected][value="3"]',
+        TYPE_SELECT: '.edit-input select',
+        PRIORITY_BTN: '.edit-input__priority-btn',
+        ADDITIONAL_TYPE_OPTION: '.edit-input option[value="2"]',
+        MAIN_TYPE_OPTION: '.edit-input option[value="1"]',
+        UPDATE_RESOURCES_BTN: 'button.update-resources',
+        PRESET: '.info__info-field--preset-done',
+      },
+      NODE_CRUD:{
+        SHOW_DELETED: '.show-deleted-nodes input[type="checkbox"]',
+        ADD_BTN: '.btn.crud-add',
+        RENAME_BTN: '.btn.crud-rename',
+        DELETE_BTN: '.btn.crud-delete',
+        ADD_INPUT: '.crud-controls--add input[name="name"]',
+        RENAME_INPUT: '.crud-controls--rename input[name="name"]',
+        SUBMIT: '.crud-controls button'
+      },
     },
     linkmanager: {
       ADD_LINK_BTN: ".link-list .add-button",
@@ -85,6 +118,9 @@ module.exports = {
       RESOURCE_SEARCH_SUBMIT: ".resource-search-form button[type=submit]",
       RESOURCE_SEARCH_RESULT: ".resource.list-item",
       RESOURCE_SEARCH_SELECT_ALL: ".resource-search-results button[name=button]",
+      LINK_ADD_SUBMIT: '.link-add-form .confirmator-button',
+      COLLAPSE_ADDER_BTN: '.collapse-link-adder',
+      LINK_DONE: '.link-list .link', 
     },
     notloading: {
       ITEM_LIST: ".item-list .view-inner__container:not(.loading)",
@@ -94,5 +130,11 @@ module.exports = {
       RESOURCE_LIST: ".item-resources:not(.loading)",
       LINK_LIST: ".link-list .component-body:not(.loading)"
     }
+  },
+  SELECTORS_XPATH:{
+    ORIGINAL_FILE: '//div[@class="item-view"]//option[@selected][@value="3"]/../../..',
+    ADDITIONAL_FILE: '//div[@class="item-view"]//option[@selected][@value="2"]/../../..',
+    MAIN_FILE: '//div[@class="item-view"]//option[@selected][@value="1"]/../../..',
+    CATALOGUE_TREE_NODE: '//a[@class="jstree-anchor"]',
   },
 };
