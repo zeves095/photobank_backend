@@ -179,19 +179,20 @@ class ResourceController extends AbstractController
      * @param ResourceService $resourceService Сервис для работы с ресурсами
      *
      * @Route(
-     *      "/catalogue/node/item/resource/{_code}_{_priority}.{_format}",
+     *      "/catalogue/node/item/resource/{_code}_{_priority}_{_preset}.{_format}",
      *      methods={"GET"},
      *      name="catalogue_node_item_resource_by_priority_raw",
      *      requirements={
      *          "id"="\d+",
-     *          "_priority"="\d{1,3}",
+     *          "_priority"="\d{1,100}",
+     *          "_preset"="\d{1,3}",
      *          "_format": "jpg|json|bool"
      *      }
      * )
      */
-    public function getResourceByPriorityRaw($_format, $_priority, $_code, ResourceService $resourceService)
+    public function getResourceByPriorityRaw($_format, $_priority, $_preset, $_code, ResourceService $resourceService)
     {
-        $resource = $resourceService->getByItemAndPriority($_code, $_priority);
+        $resource = $resourceService->getByItemPriorityPreset($_code, $_priority, $_preset);
 
         if($_format == 'bool'){
             return new Response(($resource?1:0));
