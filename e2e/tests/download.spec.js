@@ -39,7 +39,7 @@ describe('Скачивание существующих ресурсов', funct
         await driver.executeScript("arguments[0].scrollIntoView(true)", item);
         await driver.wait(until.elementIsVisible(item), 500, 'Could not locate the child element within the time specified');
       }
-      await driver.actions().mouseMove(resources[0]).perform();
+      await driver.actions({bridge: true}).move({origin:resources[0]}).perform();
       let dl = await driver.findElement(By.css(c.SELECTORS.upload.RESOURCE_TILE_BTN.download));
       await u.waitForEl(driver,c.SELECTORS.upload.RESOURCE_TILE_BTN.download);
       await dl.click();
@@ -71,7 +71,7 @@ describe('Скачивание существующих ресурсов', funct
         try{
           resources = await driver.findElements(By.css(c.SELECTORS.upload.RESOURCE_LIST_ITEM));
           for(let i = 0; i<resources.length; i++){
-            await driver.actions().mouseMove(resources[i]).perform();
+            await driver.actions({bridge: true}).move({origin:resources[i]}).perform();
             let dl = await driver.findElement(By.css(c.SELECTORS.upload.RESOURCE_TILE_BTN.download_queue));
             await u.waitForEl(driver,c.SELECTORS.upload.RESOURCE_TILE_BTN.download_queue);
             await dl.click();

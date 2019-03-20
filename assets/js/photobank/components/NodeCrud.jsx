@@ -50,12 +50,6 @@ export class NodeCrud extends React.Component {
     let node_id = this.props.node;
     let parent_id = e.target.id.substring(0, e.target.id.length-7);
     this.props.onMove(node_id,parent_id);
-    // this.props.stopNodeRebase(
-    //   node_id,
-    //   parent_id,
-    //   this.props.catalogue_data,
-    //   this.props.collection_type
-    // );
     document.body.removeEventListener("click",this.bodyListener,false);
   }
 
@@ -70,7 +64,7 @@ export class NodeCrud extends React.Component {
       </div>
     );
     const renameElement = (
-      <div className="crud-controls crud-controls--add">
+      <div className="crud-controls crud-controls--rename">
         <p>Переименовать папку</p>
       <label htmlFor="node-name">Название</label>
         <input type="text" name="name" id="node-name" onChange={(e)=>this.setState({name:e.target.value})} />
@@ -78,7 +72,7 @@ export class NodeCrud extends React.Component {
       </div>
     );
     const removeElement = (
-      <div className="crud-controls crud-controls--add">
+      <div className="crud-controls crud-controls--delete">
         <p>{this.props.node_deleted?"Восстановить":"Удалить"} папку</p>
         <span className="button-block"><button onClick={this.props.node_deleted?this.handleRestoreNode:this.handleRemoveNode}><i className="fas fa-folder-minus"></i>{this.props.node_deleted?"Восстановить":"Удалить"}</button></span>
       </div>
@@ -87,9 +81,9 @@ export class NodeCrud extends React.Component {
     return (
       <div className="catalogue-tree__node-crud node-crud">
         <div className="node-crud__operations button-block">
-          <button className="btn" onClick={()=>this.handleChooseOperation(0)} title="Добавить подпапку"><i className="fas fa-folder-plus"></i></button>
-        <button className="btn" onClick={()=>this.handleChooseOperation(1)} title="Переименовать папку"><i className="fas fa-sync-alt"></i></button>
-    <button className="btn" onClick={()=>this.handleChooseOperation(2)} title={(this.props.node_deleted?"Восстановить":"Удалить")+" папку"}><i className="fas fa-folder-minus"></i></button>
+          <button className="btn crud-add" onClick={()=>this.handleChooseOperation(0)} title="Добавить подпапку"><i className="fas fa-folder-plus"></i></button>
+          <button className="btn crud-rename" onClick={()=>this.handleChooseOperation(1)} title="Переименовать папку"><i className="fas fa-sync-alt"></i></button>
+          <button className="btn crud-delete" onClick={()=>this.handleChooseOperation(2)} title={(this.props.node_deleted?"Восстановить":"Удалить")+" папку"}><i className="fas fa-folder-minus"></i></button>
         </div>
         {elems[this.state.operation]}
       </div>

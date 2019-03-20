@@ -27,6 +27,7 @@
         "babel-plugin-dynamic-import-node": "^2.2.0",
         "chai": "^4.2.0",
         "chromedriver": "^2.45.0",
+        "dotenv": "^7.0.0",
         "enzyme": "^3.8.0",
         "enzyme-adapter-react-16": "^1.7.1",
         "esdoc": "^1.1.0",
@@ -48,7 +49,7 @@
         "react-router-dom": "^4.3.1",
         "redux-mock-store": "^1.5.3",
         "sass-loader": "^7.1.0",
-        "selenium-webdriver": "^3.6.0",
+        "selenium-webdriver": "^4.0.0",
         "webpack-notifier": "^1.6.0"
     },
     "license": "UNLICENSED",

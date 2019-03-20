@@ -109,7 +109,7 @@ export function fetchRootNodes(id, collection){
       type: CATALOGUE_ROOT_NODES_FETCH+START,
       payload: id
     });
-    return CatalogueService.fetchRootNodes(id, collection)
+    return CatalogueService.fetchRootNodes(collection, id)
       .then((data)=>{
       dispatch({
         type: CATALOGUE_ROOT_NODES_FETCH+SUCCESS,

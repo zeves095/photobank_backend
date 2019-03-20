@@ -180,8 +180,6 @@
         }
       }
     }
-
-
     &--detailed{
       .existing-files{
         display:table;
@@ -229,6 +227,10 @@
           @include table-cell();
           padding: 6px 2px;
         }
+        select{
+          display: block;
+          height: 18px;
+        }
         .file>.edit-input{
           select{
             width: 125px;
@@ -239,7 +241,7 @@
           &--add-file{
             min-width: 120px;
             select{
-              width:100px;
+              width:auto;
               display: inline-block;
             }
             input{
@@ -311,6 +313,10 @@
         .info__info-field, .file>a, .file>select, .file>span, .edit-input,
         .file-item>a, .file-item>span{
           @include table-cell();
+        }
+        .file>select{
+          display: block;
+          height: 18px;
         }
       }
       .progress-bar{

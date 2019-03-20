@@ -21,8 +21,8 @@ describe('Проверка навигации по каталогам', function
     const treeViewBtn = await driver.findElement(By.css(c.SELECTORS.upload.CATALOGUE_TREE_TREE_VIEW));
     await treeViewBtn.click();
     await u.waitForEl(driver, c.SELECTORS.notloading.NODE_LIST);
-    await u.waitForEl(driver, c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE);
-    let rootNode = await driver.findElement(By.css(c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE));
+    await u.waitForEl(driver, c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE_ANCHOR);
+    let rootNode = await driver.findElement(By.css(c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE_ANCHOR));
     rootNode.click();
     try{
       const subNodes = await driver.findElements(By.css(c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE+">"+c.SELECTORS.upload.CATALOGUE_TREE_TREE_CHILDREN));
@@ -38,8 +38,8 @@ describe('Проверка навигации по каталогам', function
     let browseStep = 0;
     while(numOfItemsInNode < 1){
       await u.waitForEl(driver, c.SELECTORS.notloading.NODE_LIST);
-      await u.waitForEl(driver, c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE);
-      let catNodes = await driver.findElements(By.css(c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE));
+      await u.waitForEl(driver, c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE_ANCHOR);
+      let catNodes = await driver.findElements(By.css(c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE_ANCHOR));
       await catNodes[browseStep++].click();
       await u.waitForEl(driver, c.SELECTORS.notloading.ITEM_LIST);
       await driver.findElements(By.css(c.SELECTORS.upload.ITEM_LIST_ITEM)).then((items)=>{numOfItemsInNode = items.length;});
