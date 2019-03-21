@@ -75,7 +75,7 @@ export class UserEditor extends React.Component {
           <input defaultValue={this.props.user.name} type="text" ref="name-input" name="name"></input>
           <label htmlFor="email">Email</label>
           <input defaultValue={this.props.user.email} type="text" ref="email-input" name="email"></input>
-          <p><label><input defaultChecked={this.props.user.active} type="checkbox" ref="active-input" name="active" /><span>Активен</span></label></p>
+        <p><label><input defaultChecked={this.props.user.active} type="checkbox" ref="active-input" name="active" /><span className="user-active-checkbox-label">Активен</span></label></p>
           <label htmlFor="password">Пароль</label>
           <div className="password-field"><i className={this.state.hide_password?"fas fa-eye":"fas fa-eye-slash"} onClick={this.hidePassword}></i><input defaultValue={this.props.user.password} type={this.state.hide_password?"password":"text"} ref="password-input" name="password"></input></div>
           <label htmlFor="role">Уровень доступа</label>
@@ -85,7 +85,7 @@ export class UserEditor extends React.Component {
             <option value="1">Модератор</option>
           <option value="4">Администратор свалки</option>
           </select>
-          <button className="blue-grey waves-effect hoverable waves-light btn" type="submit">{this.state.sent?<i className="fas fa-check"></i>:<i class="fas fa-user-check"></i>}Сохранить</button>
+          <button className="blue-grey waves-effect hoverable waves-light btn" type="submit">{this.state.sent?<i className="fas fa-check"></i>:<i className="fas fa-user-check"></i>}Сохранить</button>
         </form>
       </div>
     );

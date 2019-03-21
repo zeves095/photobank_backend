@@ -55,7 +55,7 @@ class SizeField extends React.Component {
         </div>
         {!this.state.hidden?
           <React.Fragment>
-          <span className="input-half-width">
+          <span className="input-half-width width-input">
           <label className="control-label">
             Ширина
           <input type="number" value={width} max={this.props.schema.properties.width.maximum} min={this.props.schema.properties.width.minimum} onChange={this.onChange("width")} onBlur={this.onBlur("width")} />
@@ -63,7 +63,7 @@ class SizeField extends React.Component {
         {typeof this.props.errorSchema.width !== 'undefined'&&this.props.errorSchema.width.__errors.length>0?<div className="plaque warning"><i className="fas fa-times-circle left-icon"></i>{this.props.errorSchema.width.__errors[0]}</div>:null}
           </label>
         </span>
-        <span className="input-half-width">
+        <span className="input-half-width height-input">
         <label className="control-label">
           Высота
         <input type="number" value={height} max={this.props.schema.properties.height.maximum} min={this.props.schema.properties.height.minimum} onChange={this.onChange("height")} onBlur={this.onBlur("height")} />

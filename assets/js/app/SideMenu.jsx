@@ -16,7 +16,6 @@ export class SideMenu extends React.Component{
   }
 
   componentDidMount(){
-    console.log(window.innerWidth);
     if(window&&this.state.open&&window.innerWidth<constants.MENU_COLLAPOSE_MIN_WIDTH){
       this.handleMenuCollapse();
     }
