@@ -124,13 +124,11 @@ describe('Загрузка ресурсов на сервер', function () {
     await poolBtn.click();
     let uploadAllBtn = await driver.findElement(By.css(c.SELECTORS.upload.UPLOAD_ALL_BTN));
     await uploadAllBtn.click();
-    await u.lw(driver);
 
     await u.waitForEl(driver, c.SELECTORS.NOTIFICATION_TOAST);
+    await u.w(driver);
     let toast = await driver.findElement(By.css(c.SELECTORS.NOTIFICATION_TOAST));
     expect(await toast.getText()).to.equal("Загрузка на сервер завершена");
-
-    await u.lw(driver);
     await u.s(driver);
   });
 

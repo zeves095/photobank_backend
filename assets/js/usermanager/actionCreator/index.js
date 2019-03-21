@@ -1,4 +1,6 @@
 import {UserService} from '../services/UserService';
+import {NotificationService} from '../../services/NotificationService';
+import utility from '../../photobank/services/UtilityService';
 
 import {
   ADD_USER,
@@ -16,8 +18,14 @@ export function fetchUsers(){
       type:FETCH_USERS+START,
       payload:""
     })
-    return UserService.fetchUsers()
-.then((users)=>{
+    return fetch(utility.config.user_get_url, {method:"GET"})
+    .then(response=>{
+      if(!response.ok){
+        NotificationService.throw('users-fetch-fail');
+      }else{
+        return response.json()}
+      })
+    .then((users)=>{
       dispatch({
         type:FETCH_USERS+SUCCESS,
         payload:users
@@ -56,18 +64,29 @@ export function submitUser(user){
       type: SUBMIT_USER+START,
       payload: user.id
     });
-    return UserService.submitUser(user)
-.then(result=>{
-      dispatch({
-        type:SUBMIT_USER+SUCCESS,
-        payload: user
-      });
-      dispatch(fetchUsers());
+    user.active = user.active?1:0;
+    return fetch(utility.config.user_set_url, {method:"POST", body:JSON.stringify(user)})
+    .then(result=>{
+      if(result.ok){
+        dispatch({
+          type:SUBMIT_USER+SUCCESS,
+          payload: user
+        });
+        NotificationService.toast('user-submit');
+        dispatch(fetchUsers());
+      }else{
+        dispatch({
+          type:SUBMIT_USER+FAIL,
+          payload:""
+        });
+        NotificationService.throw('user-submit-fail');
+      }
     }).catch(e=>{
       dispatch({
         type:SUBMIT_USER+FAIL,
         payload:""
-      })
+      });
+      NotificationService.throw('user-submit-fail');
     });
   }
 }

@@ -76,8 +76,8 @@ describe('Скачивание существующих ресурсов', funct
             await u.waitForEl(driver,c.SELECTORS.upload.RESOURCE_TILE_BTN.download_queue);
             await dl.click();
             await u.waitForEl(driver,c.SELECTORS.NOTIFICATION_TOAST);
+            await u.sw(driver);
             let notificationCloseBtn = await driver.findElement(By.css(c.SELECTORS.NOTIFICATION_TOAST+">button"));
-            await driver.wait(until.elementIsVisible(notificationCloseBtn), 500, 'Could not locate the child element within the time specified');
             await notificationCloseBtn.click();
           }
           numOfResources += resources.length;

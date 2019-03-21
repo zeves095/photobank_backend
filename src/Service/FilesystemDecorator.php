@@ -102,6 +102,14 @@ protected $fileSystem;
   }
 
   /**
+   * Возвращает оригинальный сервис
+   */
+  public function getUndecorated()
+  {
+    return $this->fileSystem;
+  }
+
+  /**
     * Проверяет файловую систему на наличие проверочного файла
     *
     * @return bool true в случае если файл найден, false если нет

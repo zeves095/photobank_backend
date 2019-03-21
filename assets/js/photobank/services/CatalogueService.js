@@ -16,7 +16,6 @@ class CatalogueService{
   static fetchRootNodes(collection, currentNode = null, prevresult = []){
     let result = prevresult;
     return new Promise((resolve, reject)=>{
-      console.log(collection,currentNode);
       let searchNode = (currentNode!=null?currentNode:"");
       let url = constants.CATALOGUE_COLLECTION===collection?utility.config.get_nodes_url:utility.config.get_garbage_nodes_url;
       fetch(url+searchNode, {method:"GET"})
