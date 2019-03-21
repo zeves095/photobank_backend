@@ -49,16 +49,6 @@ export default {
   uiSchema: {
     target: {"ui:widget": "text"},
     size: {"ui:field":SizeField},
-    // {
-    //   width: {
-    //     "ui:widget": "updown",
-    //     "ui:help": "Значения от 32 до 4096"
-    //   },
-    //   height: {
-    //     "ui:widget": "updown",
-    //     "ui:help": "Значения от 32 до 2160"
-    //   }
-    // },
     max_requests: {"ui:widget": "hidden"},
     expires_by: {"ui:widget": "hidden"},
     access: {"ui:widget": "hidden"},
@@ -66,10 +56,6 @@ export default {
   },
   uiSchema_admin:{
     size: {"ui:field":SizeField},
-    // {
-    //   width: {"ui:widget": "updown"},
-    //   height: {"ui:widget": "updown"}
-    // },
     target: {"ui:widget": "text"},
     max_requests: {"ui:widget": "updown"},
     expires_by: {"ui:widget": "date"},

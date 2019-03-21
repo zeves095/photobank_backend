@@ -29,7 +29,7 @@ export default (upload = defaultState, action) => {
   switch(action.type){
     case UPLOADS_UNFINISHED_FETCH+SUCCESS:{
       let uploads = List(action.payload);
-      return upload.set('uploads_unfinished',uploads);//.set('resumable_container',container).set('uploads_unfinished',uploads);
+      return upload.set('uploads_unfinished',uploads);
       break;
     }
     case FILE_PROCESSED:{

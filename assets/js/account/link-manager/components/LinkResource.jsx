@@ -26,7 +26,6 @@ export class LinkResource extends React.Component{
    * @param  {Number} id Идентификатор ресурса
    */
   handleRemoveChosenResource = (id)=>{
-        //this.props.removeResourceFromPool(e.target.dataset['res']);
     this.props.removeResourceFromPool(id);
   }
 

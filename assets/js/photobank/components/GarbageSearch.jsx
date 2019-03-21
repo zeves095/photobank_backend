@@ -1,7 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-
-//import {GarbageQueryObject} from '../services/GarbageQueryObject';
 import {searchGarbage} from '../actionCreator';
 /**
  * Компонент интерфейса поиска товаров
