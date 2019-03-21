@@ -1,5 +1,4 @@
 import React from 'react';
-// import $ from 'jquery';
 import {UserEditor} from './../usermanager/UserEditor';
 import {UserService} from './../usermanager/services/UserService';
 import {NotificationService} from '../services/NotificationService';

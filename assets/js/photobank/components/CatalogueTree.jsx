@@ -141,7 +141,6 @@ export class CatalogueTree extends React.Component {
       id,
       parent
     );
-    //this.props.chooseNode(parent, this.props.catalogue_data, this.props.collection_type);
   }
 
   /**

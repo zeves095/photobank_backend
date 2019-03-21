@@ -26,7 +26,6 @@ describe('Проверка поисковой системы (и фильтро�
     await searchSubmitBtn.click();
     await u.waitForEl(driver, c.SELECTORS.notloading.ITEM_LIST);
     let searchResults = await driver.findElements(By.css(c.SELECTORS.upload.ITEM_LIST_ITEM));
-    //searchResults = await searchResults.filter(async item=>(await item.getAttribute('innerHTML')).includes(c.FORM_DATA.ITEM_NAME));
     let tbd = [];
     for(let i = 0; i<searchResults.length; i++){
       let inner = await searchResults[i].getAttribute('innerText');

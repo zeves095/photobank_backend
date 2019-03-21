@@ -35,9 +35,3 @@ export const getPendingDownloads = createSelector(localStorage, (storage)=>{
   let downloads = storage.get('pending_downloads');
   return downloads?downloads:[];
 });
-
-// export const getStoredDownloads = createSelector(localStorage, catalogueData, (storage, catalogue)=>{
-//   let nodeId = storage.current_node;
-//   let curNode = catalogue.find(node=>node.id===nodeId);
-//   return curNode?curNode.id:null;
-// });

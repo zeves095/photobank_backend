@@ -12,7 +12,7 @@ class PhotoBankRouter extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      menu_open:true,//LocalStorageService.get('menu_open'),
+      menu_open:true,
     }
   }
 
