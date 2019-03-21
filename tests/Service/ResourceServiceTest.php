@@ -145,7 +145,7 @@ class ResourceServiceTest extends WebTestCase
 
     $priority = $this->correctResource['type'] == 1?1:$this->correctResource['priority']+1;
 
-    $result = $resourceService->getByItemAndPriority($this->correctItemWithResource['id'], $priority);
+    $result = $resourceService->getByItemPriorityPreset($this->correctItemWithResource['id'], $priority);
     $this->assertEquals($result->getId(), $this->correctResource['id']);
 
   }
