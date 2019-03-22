@@ -81,7 +81,7 @@ export function fetchUnfinished(){
       });
       NotificationService.throw('server-error');
     });
-  }
+  };
 }
 
 /**
@@ -109,7 +109,7 @@ export function fetchRootNodes(id, collection){
       type: CATALOGUE_ROOT_NODES_FETCH+START,
       payload: id
     });
-    return CatalogueService.fetchRootNodes(id, collection)
+    return CatalogueService.fetchRootNodes(collection, id)
       .then((data)=>{
       dispatch({
         type: CATALOGUE_ROOT_NODES_FETCH+SUCCESS,
@@ -122,7 +122,7 @@ export function fetchRootNodes(id, collection){
       });
       NotificationService.throw('failed-root-nodes');
     });
-  }
+  };
 }
 
 /**
@@ -151,9 +151,9 @@ export function fetchNodes(id, data, collection){
         });
         NotificationService.throw('fetch-nodes-fail');
       }else{
-        return response.json()}
+        return response.json();
       }
-    )
+    })
     .then((data)=>{
       dispatch({
         type: CATALOGUE_DATA_FETCH+SUCCESS,
@@ -166,7 +166,7 @@ export function fetchNodes(id, data, collection){
       });
       NotificationService.throw('fetch-nodes-fail');
     });
-  }
+  };
 }
 
 /**
@@ -184,17 +184,17 @@ export function chooseNode(id, data, collection){
       dispatch(setLocalValue(storageKey, id)),
       dispatch(fetchNodes(id, data, collection))
     ];
-    constants.CATALOGUE_COLLECTION===parseInt(collection,10)
-    ?actions.push(dispatch(fetchItems(qo)))
-    :actions.push(dispatch(purgeEmptyItems()),dispatch(pushResumable(id, collection)));
+    constants.CATALOGUE_COLLECTION===parseInt(collection,10)?
+    actions.push(dispatch(fetchItems(qo))):
+    actions.push(dispatch(purgeEmptyItems()),dispatch(pushResumable(id, collection)));
     return Promise.all(actions)
     .then(result=>{
       dispatch({
         type: NODE_CHOICE,
         payload: id
-      })
+      });
     });
-  }
+  };
 }
 
 /**
@@ -223,7 +223,7 @@ export function fetchExisting(id, collection){
       });
       NotificationService.throw('server-error');
     });
-  }
+  };
 }
 
 /**
@@ -250,7 +250,7 @@ export function fetchPresets(pagination, existing){
       });
       NotificationService.throw('server-error');
     });
-  }
+  };
 }
 
 /**
@@ -270,8 +270,8 @@ export function chooseItem(id, collection){
         type: ITEM_CHOICE,
         payload: id
       });
-    })
-  }
+    });
+  };
 }
 
 /**
@@ -297,7 +297,7 @@ export function fetchItems(query){
       });
       NotificationService.throw('server-error');
     });
-  }
+  };
 }
 
 /**
@@ -319,7 +319,7 @@ export function prepareFileForUpload(file, existing, item){
       });
       UploadService.commitUpload(fileParams,existing);
     });
-  }
+  };
 }
 
 /**
@@ -336,9 +336,9 @@ export function deleteUpload(filehash, item){
         payload: {hash:filehash,item}
       });
     }).catch((e)=>{
-      NotificationService.throw('remove-upload-error')
+      NotificationService.throw('remove-upload-error');
     });
-  }
+  };
 }
 
 /**
@@ -353,8 +353,9 @@ export function completeUpload(id, files, collection){
     .then(()=>{
       dispatch(fetchExisting(id,collection));
       dispatch(fetchUnfinished());
+      NotificationService.toast('up-done');
     });
-  }
+  };
 }
 
 /**
@@ -365,14 +366,14 @@ export function completeUpload(id, files, collection){
 export function deletePendingUploads(id, files){
   return dispatch=>{
     let deleteStack = [];
-    files.forEach(file=>{deleteStack.push(dispatch(deleteUpload(file.uniqueIdentifier, id)))});
+    files.forEach(file=>{deleteStack.push(dispatch(deleteUpload(file.uniqueIdentifier, id)));});
     return Promise.all(deleteStack,(result)=>{
       dispatch({
         type:DELETE_ALL_PENDING,
         payload:id
-      })
+      });
     });
-  }
+  };
 }
 
 /**
@@ -383,14 +384,14 @@ export function deletePendingUploads(id, files){
 export function deleteUnfinishedUploads(uploads, id){
   return dispatch=>{
     let deleteStack = [];
-    uploads.forEach((upload)=>{deleteStack.push(dispatch(deleteUpload(upload.file_hash, id)))});
+    uploads.forEach((upload)=>{deleteStack.push(dispatch(deleteUpload(upload.file_hash, id)));});
     return Promise.all(deleteStack,(result)=>{
       dispatch({
         type:DELETE_ALL_UNFINISHED,
         payload:id
-      })
+      });
     });
-  }
+  };
 }
 
 /**
@@ -407,7 +408,7 @@ export function setLocalValue(key,value){
         payload:{key,value}
       });
     }
-  }
+  };
 }
 
 /**
@@ -423,7 +424,7 @@ export function addToLocalValue(key,add){
       type:LOCAL_STORAGE_VALUE_SET,
       payload:{key,value}
     });
-  }
+  };
 }
 
 /**
@@ -439,7 +440,7 @@ export function spliceFromLocalValue(key,remove){
       type:LOCAL_STORAGE_VALUE_SET,
       payload:{key,value}
     });
-  }
+  };
 }
 
 /**
@@ -453,7 +454,7 @@ export function clearDownloads(){
       type:LOCAL_STORAGE_VALUE_SET,
       payload:{key:"pending_downloads",value}
     });
-  }
+  };
 }
 
 /**
@@ -467,7 +468,7 @@ export function getLocalStorage(key = null){
       type:LOCAL_STORAGE_VALUE_SET+(!key&&ALL),
       payload:data
     });
-  }
+  };
 }
 
 /**
@@ -477,7 +478,7 @@ export function getLocalStorage(key = null){
 export function chooseListViewType(id=1){
   return dispatch=>{
     return dispatch(setLocalValue('list_view_type', id));
-  }
+  };
 }
 
 /**
@@ -487,7 +488,7 @@ export function chooseListViewType(id=1){
 export function chooseCatalogueViewType(id=1){
   return dispatch=>{
     return dispatch(setLocalValue('catalogue_view', id));
-  }
+  };
 }
 
 /**
@@ -519,7 +520,7 @@ export function getUserInfo(){
       });
       NotificationService.throw('server-error');
     });
-  }
+  };
 }
 
 /**
@@ -543,7 +544,7 @@ export function fetchItemData(id, collection){
       });
       NotificationService.throw('server-error');
     });
-  }
+  };
 }
 
 /**
@@ -553,7 +554,7 @@ export function fetchItemData(id, collection){
 export function addResourceToDownloads(id){
   return dispatch=>{
     return dispatch(addToLocalValue('pending_downloads',id));
-  }
+  };
 }
 
 /**
@@ -571,7 +572,7 @@ export function updateResourceField(params, collection){
     .then(response=>{
       dispatch(fetchExisting(params.item,collection));
     });
-  }
+  };
 }
 
 /**
@@ -585,7 +586,7 @@ export function searchItems(query){
       qo[key]=query[key];
     });
     return dispatch(fetchItems(qo));
-  }
+  };
 }
 
 /**
@@ -608,7 +609,7 @@ export function searchGarbage(query){
         payload:data
       });
     });
-  }
+  };
 }
 
 /**
@@ -630,8 +631,8 @@ export function pushCrumbs(data, node){
  */
 export function removeDownload(id){
   return dispatch=>{
-    return dispatch(spliceFromLocalValue("pending_downloads", id))
-  }
+    return dispatch(spliceFromLocalValue("pending_downloads", id));
+  };
 }
 
 /**
@@ -647,7 +648,7 @@ export function getDownloadResourceData(resources){
         if(res[r] == ""){continue;}
         downloads.push({
           "id": res[r].id,
-          "preset": Object.keys(utility.config["presets"])[res[r].preset],
+          "preset": Object.keys(utility.config.presets)[res[r].preset],
           "name": res[r].src_filename,
           "sizepx": res[r].size_px
         });
@@ -657,7 +658,7 @@ export function getDownloadResourceData(resources){
         payload: downloads
       });
     });
-  }
+  };
 }
 
 /**
@@ -668,7 +669,7 @@ export function downloadResources(resources){
   return dispatch=>{
     ResourceService.downloadResource(resources);
     dispatch(clearDownloads());
-  }
+  };
 }
 
 /**
@@ -682,7 +683,7 @@ export function chooseCollectionType(type){
       type: CHOOSE_COLLECTION,
       payload: type
     });
-  }
+  };
 }
 
 /**
@@ -717,7 +718,7 @@ export function addGarbageNode(name,parent,data,type){
       });
       NotificationService.throw('node-create-fail');
     });
-  }
+  };
 }
 
 /**
@@ -753,7 +754,7 @@ export function updateGarbageNode(id,name,parent,data,type){
       });
       NotificationService.throw('node-update-fail');
     });
-  }
+  };
 }
 
 /**
@@ -834,13 +835,13 @@ export function startNodeRebase(){
       type:NODE_REBASE+START,
       payload:''
     });
-  }
+  };
 }
 
 /**
  * Конец перемещения ноды свалки
  */
-export function stopNodeRebase(node_id=null, parent_id=null, data, type){
+export function stopNodeRebase(data, type, node_id=null, parent_id=null){
   return dispatch=>{
     dispatch(updateGarbageNode(node_id, null, parent_id, data, type)).then((result)=>{
       dispatch({
@@ -848,7 +849,7 @@ export function stopNodeRebase(node_id=null, parent_id=null, data, type){
         payload:{node_id, parent_id}
       });
     });
-  }
+  };
 }
 
 /**
@@ -859,6 +860,6 @@ export function showDeletedNodes(val){
     dispatch({
       type: SHOW_DELETED,
       payload:val
-    })
-  }
+    });
+  };
 }

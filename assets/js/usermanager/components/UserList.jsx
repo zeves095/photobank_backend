@@ -38,11 +38,11 @@ export class UserList extends React.Component {
       <div className="user-list col s4">
         <h4>Пользователи</h4>
         {usersActive}
-        <button className="blue-grey waves-effect hoverable waves-light btn" type="button" onClick={this.showInactive}>{this.state.show_inactive?"Скрыть неактивных":"Показать неактивных"}</button>
+        <button className="show-inactive-btn blue-grey waves-effect hoverable waves-light btn" type="button" onClick={this.showInactive}>{this.state.show_inactive?"Скрыть неактивных":"Показать неактивных"}</button>
         <div className={"users-inactive" + (this.state.show_inactive?"":" hidden")}>
           {usersInactive}
         </div>
-        <button className="blue-grey waves-effect hoverable waves-light btn" type="button" onClick={()=>{this.props.addUser(this.props.users)}}><i className="fas fa-user-plus"></i>Добавить</button>
+        <button className="blue-grey waves-effect hoverable waves-light btn add-user-btn" type="button" onClick={()=>{this.props.addUser(this.props.users)}}><i className="fas fa-user-plus"></i>Добавить</button>
       </div>
     );
   }

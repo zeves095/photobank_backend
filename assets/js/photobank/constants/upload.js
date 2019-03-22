@@ -50,4 +50,9 @@ export const RESOURCE_VIEW_TYPES = {
   small:"2",
   table:"3"
 };
+export const RESOURCE_FILE_TYPES = {
+  main:1,
+  add:2,
+  original:3,
+};
 export const DEFAULT_PAGINATION_LIMIT = "10";

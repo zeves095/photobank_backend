@@ -37,6 +37,9 @@ class NotificationService{
       "node-update-fail":"Не удалось обновить раздел каталога",
       "node-remove-fail":"Не удалось удалить раздел. Возможно, папка не пуста.",
       "node-create-fail":"Не удалось создать раздел.",
+      "user-submit":"Польователь увспешно создан/обновлен",
+      "user-submit-fail":"Неверные данные пользователя",
+      "users-fetch-fail":"Невозможно получить список ползователей",
     }
     return keys;
   }

@@ -247,19 +247,21 @@ class ResourceService{
    * @param  integer $priority Приоритет ресурса
    * @return Resource $resource Найденный ресурс
    */
-  public function getByItemAndPriority($itemId, $priority = 1)
+  public function getByItemPriorityPreset($itemId, $priority = 1, $preset = 0)
   {
     $repo = $this->entityManager->getRepository(Resource::class);
     if($priority == 1){
       $findParams = [
         'item'=>$itemId,
-        'type'=>1
+        'type'=>1,
+        'preset'=>$preset
       ];
     }else{
       $findParams = [
         'item'=>$itemId,
         'type'=>2,
-        'priority'=>$priority-1
+        'priority'=>$priority-1,
+        'preset'=>$preset
       ];
     }
     $resource = $repo->findOneBy($findParams);

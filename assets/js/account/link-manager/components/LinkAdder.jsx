@@ -32,7 +32,7 @@ export class LinkAdder extends React.Component{
     let link_adder = (
       <div className={"link-adder__inner "+(this.props.link_adding?"open":"")}>
         <div className="component-header component-header--subcomponent adder-controls">
-          <div className="button-block"><button type="button" name="button" onClick={this.handleCloseAdder}><i className="fas fa-times-circle"></i></button></div>
+          <div className="button-block"><button type="button" name="button" className="collapse-link-adder" onClick={this.handleCloseAdder}><i className="fas fa-times-circle"></i></button></div>
         </div>
       <div className="component-body__bottom-section resource-section">
         <ResourceExplorer />

@@ -299,6 +299,9 @@
     "symfony/polyfill-intl-icu": {
         "version": "v1.9.0"
     },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.10.0"
+    },
     "symfony/polyfill-mbstring": {
         "version": "v1.9.0"
     },
@@ -337,15 +340,6 @@
             "version": "3.3",
             "ref": "f8a63faa0d9521526499c0a8f403c9964ecb0527"
         }
-    },
-    "symfony/security-core": {
-        "version": "v4.2.2"
-    },
-    "symfony/security-csrf": {
-        "version": "v4.2.2"
-    },
-    "symfony/security-guard": {
-        "version": "v4.2.2"
     },
     "symfony/security-http": {
         "version": "v4.2.2"

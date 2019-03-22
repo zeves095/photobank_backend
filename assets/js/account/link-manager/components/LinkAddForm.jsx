@@ -89,14 +89,6 @@ export class LinkAddForm extends React.Component {
   }
 
   /**
-   * Обработчик потери фокуса формы. Сейчас не испоьзуется, но пусть будет пока.
-   * @param  {Object} data Данные формы
-   */
-  handleFormBlur = (data)=>{
-    //this.props.validateLinkAddForm(data);
-  }
-
-  /**
    * Создает список вопросов для подтвердждения в компоненте Confirmator. Проверяет, пытается ли юзер создать ссылки для ресурсов, у которых уже есть ссылки, либо добавить ссылки в уже существующую группу
    */
   getConfirmatorQuestions= ()=>{
@@ -146,7 +138,6 @@ const mapStateToProps = (state) =>{
 const mapDispatchToProps = {
   submitLink,
   updateLink,
-  //validateLinkAddForm
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LinkAddForm);

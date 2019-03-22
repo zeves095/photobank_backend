@@ -1,23 +1,24 @@
-const webdriver = require('selenium-webdriver')
-const chromeDriver = require('chromedriver')
-const path = require('path')
+require('dotenv').config();
 
-const chromeDriverPathAddition = `:${path.dirname(chromeDriver.path)}`
+const webdriver = require('selenium-webdriver');
+const chromeDriver = require('chromedriver');
+const path = require('path');
+const chromeDriverPathAddition = `:${path.dirname(chromeDriver.path)}`;
 
 exports.prepareDriver = async () => {
-  process.on('beforeExit', () => this.browser && this.browser.quit())
-  process.env.PATH += chromeDriverPathAddition
+  process.on('beforeExit', () => this.browser && this.browser.quit());
+  process.env.PATH += chromeDriverPathAddition;
 
   return await new webdriver.Builder()
     .disableEnvironmentOverrides()
     .forBrowser('chrome')
     .setLoggingPrefs({browser: 'ALL', driver: 'ALL'})
-    .build()
-}
+    .build();
+};
 
 exports.cleanupDriver = async (driver) => {
   if (driver) {
-    driver.quit()
+    driver.quit();
   }
-  process.env.PATH = process.env.PATH.replace(chromeDriverPathAddition, '')
-}
+  process.env.PATH = process.env.PATH.replace(chromeDriverPathAddition, '');
+};

@@ -13,7 +13,7 @@ class CatalogueService{
    * @param  {Number} [currentNode=null] Текущий раздел каталога
    * @param  {Array}  [prevresult=[]] Предыдущий результат выполнения функции
    */
-  static fetchRootNodes(currentNode = null, collection, prevresult = []){
+  static fetchRootNodes(collection, currentNode = null, prevresult = []){
     let result = prevresult;
     return new Promise((resolve, reject)=>{
       let searchNode = (currentNode!=null?currentNode:"");
@@ -28,12 +28,15 @@ class CatalogueService{
         else{
           this._fetchNodeParent(currentNode, collection)
             .then((parent)=>{
-          this.fetchRootNodes(parent, collection,result)
+          this.fetchRootNodes(collection,parent,result)
             .then((result)=>{
               resolve(result);
             });
           });
         }
+      }).catch((e)=>{
+        this.fetchRootNodes(collection, null)
+        .then((result)=>resolve(result));
       });
     });
   }
