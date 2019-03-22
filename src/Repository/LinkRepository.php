@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Link;
 use App\Entity\Resource;
 use App\Entity\CatalogueNodeItem;
+use App\Entity\GarbageNode;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -40,13 +41,13 @@ class LinkRepository extends ServiceEntityRepository
     public function fetchWithResourceAndItemInfo($user_id)
     {
       $query = $this->getEntityManager()->createQuery(
-        'SELECT l.id as link_id, r.id as resource_id, i.id as item_id, l.target,
+        'SELECT DISTINCT l.id as link_id, r.id as resource_id, i.id as item_id, l.target,
         l.external_url, i.name as item_name
         FROM '.$this->_entityName.' l
-        INNER JOIN '.(Resource::class).' r
-        INNER JOIN '.(CatalogueNodeItem::class).' i
-        WHERE l.src_id = r.id
-        AND r.item = i.id
+        INNER JOIN '.(Resource::class).' r WITH r.id = l.src_id
+        LEFT JOIN r.item i
+        LEFT JOIN r.garbageNode gn
+        WHERE (r.item = i.id OR r.garbageNode = gn.id )
         AND l.created_by = '. $user_id
       );
       return $query->execute();
