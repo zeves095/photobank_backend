@@ -124,6 +124,30 @@ class ResourceRepository extends ServiceEntityRepository
       return $query->execute();
     }
 
+    public function getByItemPriorityPreset($item,$priority,$preset){
+      $ent = 'r';
+      $queryBuilder = $this->createQueryBuilder($ent)
+      ->andWhere('r.item = :i')
+      ->setParameter('i', $item);
+      if($preset != 0){
+        $queryBuilder->join($this->_entityName, 'r2')
+        ->andWhere('r2.id = r.gid')
+        ->andWhere('r.preset = :prst')
+        ->setParameter('prst',$preset);
+        $ent = 'r2';
+      }
+      if($priority == 1){
+        $queryBuilder->andWhere($ent.'.type = :t')
+        ->setParameter('t',1);
+      }else{
+        $queryBuilder->andWhere($ent.'.type = :t')
+        ->setParameter('t',2)
+        ->andWhere($ent.'.priority = :p')
+        ->setParameter('p',$priority-1);
+      }
+      return $queryBuilder->getQuery()->getOneOrNullResult();
+    }
+
     /**
     * Выполняет поиск ресурсов по ряду полей из формы
     *
