@@ -216,7 +216,7 @@ export class CatalogueTree extends React.Component {
               {view}
             </div>
           </div>
-          {this.props.collection_type===1&&this.props.isAuthorized?<NodeCrud onSelect={this.handleNodeChoice} onCreate={this.handleAddNode} onDelete={this.handleDeleteNode} onRestore={this.handleRestoreNode} onRename={this.handleRenameNode} onMove={this.handleMoveNode} />:null}
+          {this.props.collection_type===1&&this.props.isAuthorized&&this.props.current_node?<NodeCrud onSelect={this.handleNodeChoice} onCreate={this.handleAddNode} onDelete={this.handleDeleteNode} onRestore={this.handleRestoreNode} onRename={this.handleRenameNode} onMove={this.handleMoveNode} />:null}
         </div>
       </div>
     );
