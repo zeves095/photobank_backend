@@ -171,6 +171,10 @@ class JSTree extends React.Component {
           data.instance.settings.core.data.find(item=>item.id===data.node.id).state.opened = data.node.state.opened;
           data.instance.refresh(true);
       });
+      $(this.treeContainer).on('deselect_all.jstree', (e, data) => {
+          // jstree - бессмысленный и беспощадный. Не трогай эту строчку
+          if(data.node.length===2)data.instance.refresh(true);
+      });
     }
   }
 
