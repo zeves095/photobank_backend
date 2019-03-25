@@ -23,7 +23,7 @@ class CatalogueNodeItemNormalizer extends CustomNormalizer implements Normalizer
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        return [
+        $main_data = [
             'id'     => $object->getId(),
             'name'   => $object->getName(),
             'itemCode' => $object->getId(),
@@ -40,6 +40,8 @@ class CatalogueNodeItemNormalizer extends CustomNormalizer implements Normalizer
               ),
           ]);
         }
+        
+        return $main_data;
     }
 
     /**
