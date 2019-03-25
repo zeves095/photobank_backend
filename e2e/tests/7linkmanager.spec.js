@@ -47,8 +47,8 @@ describe('Проверка системы внешних ссылок', function
       let collapseBtn = await driver.findElement(By.css(c.SELECTORS.linkmanager.COLLAPSE_ADDER_BTN));
       await collapseBtn.click();
 
-      await u.w(driver);
       await u.waitForEl(driver, c.SELECTORS.notloading.LINK_LIST);
+      await u.lw(driver);
       let newLinkCount = (await driver.findElements(By.css(c.SELECTORS.linkmanager.LINK_DONE))).length;
 
       expect(newLinkCount-initialLinkCount).to.equal(numOfLinks);
@@ -119,8 +119,8 @@ describe('Проверка системы внешних ссылок', function
       let collapseBtn = await driver.findElement(By.css(c.SELECTORS.linkmanager.COLLAPSE_ADDER_BTN));
       await collapseBtn.click();
 
-      await u.w(driver);
       await u.waitForEl(driver, c.SELECTORS.notloading.LINK_LIST);
+      await u.lw(driver);
       let newLinkCount = (await driver.findElements(By.css(c.SELECTORS.linkmanager.LINK_DONE))).length;
 
       expect(newLinkCount-initialLinkCount).to.equal(numOfLinks);
