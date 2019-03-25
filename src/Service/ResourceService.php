@@ -287,28 +287,50 @@ class ResourceService{
     return $upload_directory.$path;
   }
 
-    protected function _getNodeByItemId(string $item_id)
-    {
-        if(preg_match('/^9\d{10}$/', $item_id)){ // отработка ресурса для помойки
-            $repository = $this->entityManager->getRepository(GarbageNode::class);
-        }else{
-            $repository = $this->entityManager->getRepository(CatalogueNodeItem::class);
-        }
+  public function getItemResourcesMetadata($codes)
+  {
 
-        $item = $repository->findOneBy( ['id' => $item_id] );
-        if (!$item) {
-            $error_string = $this->translator->trans("Product not founded",[],'file_uploader') . '. '. $this->translator->trans("The code is:",[],'file_uploader') . ' ' . $item_id ;
-            throw new ItemNotFoundException($error_string);
+    $numofpresets = sizeof($this->container->getParameter('presets'))+1;
+    $repo = $this->entityManager->getRepository(Resource::class);
+    foreach($codes as $code){
+      $fetched = $repo->getExistingResourcesOptimized($code);
+      $data[$code] = [];
+      foreach($fetched as $row){
+        $preset_src = explode(',',$row['presets']);
+        $presets = array_fill(0,$numofpresets,0);
+        foreach($preset_src as $prs){
+          $presets[$prs] = 1;
         }
-
-        return $item;
+        if($row['type'] == '1'){
+          $data[$code]['1'] = $presets;
+        }elseif($row['type'] == '2' && $row['priority'] != '0'){
+          $data[$code][strval($row['priority'] + 1)] = $presets;
+        }
+      }
     }
+    return $data;
+  }
 
-    protected function _setParentNode(&$resource, $item){
-        if( $item instanceof CatalogueNodeItem ){
-            $resource->setItem($item);
-        }elseif($item instanceof GarbageNode){
-            $resource->setGarbageNode($item);
-        }
-    }
+  protected function _getNodeByItemId(string $item_id)
+  {
+      if(preg_match('/^9\d{10}$/', $item_id)){ // отработка ресурса для помойки
+          $repository = $this->entityManager->getRepository(GarbageNode::class);
+      }else{
+          $repository = $this->entityManager->getRepository(CatalogueNodeItem::class);
+      }
+      $item = $repository->findOneBy( ['id' => $item_id] );
+      if (!$item) {
+          $error_string = $this->translator->trans("Product not founded",[],'file_uploader') . '. '. $this->translator->trans("The code is:",[],'file_uploader') . ' ' . $item_id ;
+          throw new ItemNotFoundException($error_string);
+      }
+      return $item;
+  }
+
+  protected function _setParentNode(&$resource, $item){
+      if( $item instanceof CatalogueNodeItem ){
+          $resource->setItem($item);
+      }elseif($item instanceof GarbageNode){
+          $resource->setGarbageNode($item);
+      }
+  }
 }

@@ -261,4 +261,24 @@ class ResourceRepository extends ServiceEntityRepository
 
       }
 
+      /**
+       * Получает массив ресурсов товара с существующими пресетами для проверки существования необходимых картинок при запросе с сайта
+       * @param  String $code Код 1с товара
+       */
+      public function getExistingResourcesOptimized($code)
+      {
+
+        $em = $this->getEntityManager();
+        $connection = $em->getConnection();
+        $db_name = $connection->getDatabase();
+        $table_name = $em->getClassMetadata($this->_entityName)->getTableName();
+
+        $sql = 'SELECT GROUP_CONCAT(preset) presets, MIN(r.`type`) type, MAX(r.`priority`) priority FROM '.$db_name.'.'.$table_name.' r WHERE r.item_id = "'.$code.'" GROUP BY r.`gid`;';
+        $query = $connection->prepare($sql);
+        $query->execute();
+        $response = $query->fetchAll();
+
+        return $response;
+      }
+
 }
