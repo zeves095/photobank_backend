@@ -27,6 +27,7 @@ describe('Проверка работы со свалкой', function () {
 
     let nodeName = 'testnodecreate';
 
+    await u.waitForEl(driver, c.SELECTORS.upload.NODE_CRUD.ADD_INPUT);
     let addInput = await driver.findElement(By.css(c.SELECTORS.upload.NODE_CRUD.ADD_INPUT));
     await addInput.sendKeys(nodeName);
     let submitBtn = await driver.findElement(By.css(c.SELECTORS.upload.NODE_CRUD.SUBMIT));
@@ -67,6 +68,7 @@ describe('Проверка работы со свалкой', function () {
 
     let nodeName = 'testnoderename';
 
+    await u.waitForEl(driver, c.SELECTORS.upload.NODE_CRUD.RENAME_BTN);
     let renameBtn = await driver.findElement(By.css(c.SELECTORS.upload.NODE_CRUD.RENAME_BTN));
     await renameBtn.click();
     await u.waitForEl(driver, c.SELECTORS.upload.NODE_CRUD.RENAME_INPUT);
@@ -77,6 +79,7 @@ describe('Проверка работы со свалкой', function () {
     let submitBtn = await driver.findElement(By.css(c.SELECTORS.upload.NODE_CRUD.SUBMIT));
     await submitBtn.click();
     await u.waitForEl(driver, c.SELECTORS.notloading.NODE_LIST);
+    await u.w(driver);
 
     rootNode = await driver.findElement(By.css(c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE_ANCHOR));
     expect(await rootNode.getText()).to.equal(nodeName);
@@ -99,6 +102,7 @@ describe('Проверка работы со свалкой', function () {
     let rootNode = await driver.findElement(By.css(c.SELECTORS.upload.CATALOGUE_TREE_TREE_NODE_ANCHOR));
     rootNode.click();
 
+    await u.waitForEl(driver, c.SELECTORS.upload.NODE_CRUD.DELETE_BTN);
     let deleteBtn = await driver.findElement(By.css(c.SELECTORS.upload.NODE_CRUD.DELETE_BTN));
     await deleteBtn.click();
     await u.waitForEl(driver, c.SELECTORS.upload.NODE_CRUD.SUBMIT);

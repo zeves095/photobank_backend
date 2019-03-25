@@ -19,6 +19,9 @@ export class SideMenu extends React.Component{
   }
 
   componentDidMount(){
+    if(window&&this.state.open&&window.innerWidth<constants.MENU_COLLAPOSE_MIN_WIDTH){
+      this.handleMenuCollapse();
+    }
     return fetch("/account/getinfo/", {method:"GET"})
     .then((response)=>response.json())
     .then((data)=>{
@@ -29,9 +32,6 @@ export class SideMenu extends React.Component{
           }
         });
     });
-    if(window&&this.state.open&&window.innerWidth<constants.MENU_COLLAPOSE_MIN_WIDTH){
-      this.handleMenuCollapse();
-    }
   }
 
   render(){

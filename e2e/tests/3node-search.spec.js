@@ -41,6 +41,7 @@ describe('Проверка поисковой системы (и фильтро�
     var {numOfItemsInNode,nodeName} = await u.getVerifiedData(driver);
     await u.s(driver);
     await u.waitForEl(driver,c.SELECTORS.upload.CATALOGUE_TREE_SEARCH_VIEW);
+    await u.waitForEl(driver,c.SELECTORS.notloading.NODE_LIST);
     const searchViewBtn = await driver.findElement(By.css(c.SELECTORS.upload.CATALOGUE_TREE_SEARCH_VIEW));
     await searchViewBtn.click();
     let nodeInput = await driver.findElement(By.css(c.SELECTORS.upload.ITEM_SEARCH_FORM+">"+c.SELECTORS.upload.ITEM_SEARCH_NODE_INPUT));
@@ -56,8 +57,9 @@ describe('Проверка поисковой системы (и фильтро�
 
   it('Поиск включает фильтрацию по разделу каталога (рекурсивно) и находит нужные товары', async function () {
     var {numOfNestedItems,nodeName} = await u.getVerifiedData(driver);
-    await u.waitForEl(driver, c.SELECTORS.notloading.NODE_LIST);
     await u.waitForEl(driver,c.SELECTORS.upload.CATALOGUE_TREE_SEARCH_VIEW);
+    await u.waitForEl(driver,c.SELECTORS.notloading.NODE_LIST);
+    await u.w(driver);
     const searchViewBtn = await driver.findElement(By.css(c.SELECTORS.upload.CATALOGUE_TREE_SEARCH_VIEW));
     await searchViewBtn.click();
     let nodeInput = await driver.findElement(By.css(c.SELECTORS.upload.ITEM_SEARCH_FORM+">"+c.SELECTORS.upload.ITEM_SEARCH_NODE_INPUT));

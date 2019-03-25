@@ -79,6 +79,7 @@ describe('Проверка поисковой системы по ресурса
       await u.waitForEl(driver, c.SELECTORS.notloading.LINK_LIST);
       const addLinkButton = await driver.findElement(By.css(c.SELECTORS.linkmanager.ADD_LINK_BTN));
       await addLinkButton.click();
+      await u.waitForEl(driver, c.SELECTORS.linkmanager.RESOURCE_SEARCH_PRESET_ID);
       let presetInput = await driver.findElement(By.css(c.SELECTORS.linkmanager.RESOURCE_SEARCH_PRESET_ID));
       presetInput.sendKeys(Key.BACK_SPACE);
       let typeInput = await driver.findElement(By.css(c.SELECTORS.linkmanager.RESOURCE_SEARCH_TYPE_ID));
@@ -112,6 +113,7 @@ describe('Проверка поисковой системы по ресурса
       itemNameInput.sendKeys(c.FORM_DATA.ITEM_NAME);
       let searchSubmitBtn = await driver.findElement(By.css(c.SELECTORS.linkmanager.RESOURCE_SEARCH_SUBMIT));
       await searchSubmitBtn.click();
+      await u.lw(driver);
       await u.waitForEl(driver, c.SELECTORS.notloading.RESOURCE_SEARCH_RESULTS);
       let searchResults = await driver.findElements(By.css(c.SELECTORS.linkmanager.RESOURCE_SEARCH_RESULT));
       let resourceId = await searchResults[0].getAttribute('data-res');
@@ -120,6 +122,8 @@ describe('Проверка поисковой системы по ресурса
       itemNameInput.sendKeys(Key.BACK_SPACE.repeat(50));
       await u.w(driver);
       searchSubmitBtn.click();
+      await u.waitForEl(driver, c.SELECTORS.notloading.RESOURCE_SEARCH_RESULTS);
+      await u.w(driver);
       await u.waitForEl(driver, c.SELECTORS.notloading.RESOURCE_SEARCH_RESULTS);
       searchResults = await driver.findElements(By.css(c.SELECTORS.linkmanager.RESOURCE_SEARCH_RESULT));
       let newResourceId = await searchResults[0].getAttribute('data-res');
