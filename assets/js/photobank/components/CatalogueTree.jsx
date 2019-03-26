@@ -24,6 +24,8 @@ import {
   updateGarbageNode,
   fetchNodes
 } from '../actionCreator';
+
+import * as constants from '../constants';
 /**
  * [state description]
  * @type {Object}
@@ -148,7 +150,7 @@ export class CatalogueTree extends React.Component {
    */
   componentWillMount(){
     this.props.chooseCollectionType(this.props.collection_type);
-    this.handleNodeChoice(this.props.current_node);
+    this.handleNodeChoice(this.props.view===constants.CATALOGUE_SEARCH_VIEW?null:this.props.current_node);
   }
 
   componentDidUpdate(prevProps){
