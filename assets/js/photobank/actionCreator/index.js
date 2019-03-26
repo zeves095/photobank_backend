@@ -133,9 +133,6 @@ export function fetchRootNodes(id, collection){
  */
 export function fetchNodes(id, data, collection){
   return (dispatch)=>{
-    if(data.length === 0){
-      return dispatch(fetchRootNodes(id, collection));
-    }
     dispatch({
       type: CATALOGUE_DATA_FETCH+START,
       payload: ''
