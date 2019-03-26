@@ -22,7 +22,8 @@ import {
   startNodeRebase,
   stopNodeRebase,
   updateGarbageNode,
-  fetchNodes
+  fetchNodes,
+  fetchRootNodes
 } from '../actionCreator';
 
 import * as constants from '../constants';
@@ -150,7 +151,8 @@ export class CatalogueTree extends React.Component {
    */
   componentWillMount(){
     this.props.chooseCollectionType(this.props.collection_type);
-    this.handleNodeChoice(this.props.view===constants.CATALOGUE_SEARCH_VIEW?null:this.props.current_node);
+    this.props.fetchRootNodes(this.props.current_node, this.props.collection_type)
+    .then(a=>{this.handleNodeChoice(this.props.view===constants.CATALOGUE_SEARCH_VIEW?null:this.props.current_node)});
   }
 
   componentDidUpdate(prevProps){
@@ -158,7 +160,12 @@ export class CatalogueTree extends React.Component {
       this.props.pushCrumbs(this.props.catalogue_data, this.props.current_node);
     }
     if(this.props.collection_type !== prevProps.collection_type){
-      this.handleNodeChoice(this.props.current_node);
+      if(this.props.catalogue_data.length===0){
+        this.props.fetchRootNodes(this.props.current_node, this.props.collection_type)
+        .then(a=>{this.handleNodeChoice(this.props.view===constants.CATALOGUE_SEARCH_VIEW?null:this.props.current_node)});
+      }else{
+        this.handleNodeChoice(this.props.current_node);
+      }
     }
   }
 
@@ -251,7 +258,8 @@ const mapDispatchToProps = {
   restoreGarbageNode,
   startNodeRebase,
   stopNodeRebase,
-  fetchNodes
+  fetchNodes,
+  fetchRootNodes
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogueTree);
