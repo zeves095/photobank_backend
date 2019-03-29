@@ -12,6 +12,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use \Imagine\Imagick\Imagine;
 use \Imagine\Image\Box;
 use \Imagine\Image\ImageInterface;
+use \Imagine\Filter\Advanced\Border;
+use \Imagine\Image\Palette\Color\ColorInterface;
+use \Imagine\Filter\Basic\Crop;
+use \Imagine\Image\Point;
+use \Imagine\Filter\Advanced\OnPixelBased;
+use \Imagine\Filter\Advanced\Canvas;
+use \Imagine\Filter\Basic\Thumbnail;
 
 
 /**
@@ -156,17 +163,152 @@ private $fileSystem;
     * @param mixed[] $params Параметры генерации. Включают в себя путь к источнику, конечному файлу, размеру и режиму генерации
     *
     */
-  private function _generateImage($params){
+  private function _generateImage($params)
+  {
     $imageProcessor = new Imagine();
-    $size = new Box($params['width'],$params['height']);
-    $mode = $params['mode']==1?ImageInterface::THUMBNAIL_OUTBOUND:ImageInterface::THUMBNAIL_INSET;
+
     $processorDirectory = $this->container->getParameter('upload_directory').'/imgproc/';
     if(!$this->fileSystem->exists($processorDirectory)){$this->fileSystem->mkDir($processorDirectory);}
     if(!$this->fileSystem->exists(dirname($params['target']))){$this->fileSystem->mkDir(dirname($params['target']));}
-    $imageProcessor->open($params['source'])
-    ->thumbnail($size, $mode)
-    ->save($params['target']);
-    $imageProcessor = null;
+
+    $image = $imageProcessor->open($params['source']);
+
+    $targetSize = [$params['width'],$params['height']];
+
+    $imgSize = $this->_getImageDimentions($image);
+
+    $imgRatio = $imgSize[0]/$imgSize[1];
+    $targetRatio = $targetSize[0]/$targetSize[1];
+
+    if($imgRatio !== $targetRatio){
+      $image = $this->_fixRatio($image, $targetRatio, $imageProcessor);
+    }
+
+    $retImg = $this->_getThumbnail($image, $targetSize, $params['mode']);
+
+    $retImg->save($params['target']);
   }
+
+private function _getThumbnail($image, $targetSize)
+  {
+    $size = new Box($targetSize[0], $targetSize[1]);
+    $thumb = new Thumbnail($size);
+    $image = $thumb->apply($image);
+    return $image;
+  }
+
+function _growMargins($image, $interface, $size, $placement)
+{
+  $palette = new \Imagine\Image\Palette\RGB();
+  $color = new \Imagine\Image\Palette\Color\RGB($palette, [255,255,255], 100);
+
+  $tempImg = $image->copy();
+
+  $box = new Box($size[0], $size[1]);
+
+  $imgSize = $this->_getImageDimentions($tempImg);
+
+  if($imgSize[0]<$size[0]){
+    $growAxis = 0;
+  }elseif($imgSize[1]<$size[1]){
+    $growAxis = 1;
+  }
+
+  $start = new Point($placement[0], $placement[1]);
+
+  $b = new Canvas($interface, $box, $start, $color);
+  return $b->apply($tempImg);
+}
+
+private function _isImageWhite($image)
+{
+  $avg = 255;
+  $counter = 0;
+  $step = 15;
+  $onpixel = new OnPixelBased(function($i, $p) use (&$avg, &$counter, $step) {
+    if($counter%$step!=0){return;}
+    $color = $i->getColorAt($p);
+    $localAvg = ($color->getValue(ColorInterface::COLOR_RED) + $color->getValue(ColorInterface::COLOR_GREEN) + $color->getValue(ColorInterface::COLOR_BLUE))/3;
+    $avg = (int)(($avg+$localAvg)/2);
+  });
+  $onpixel->apply($image);
+  return $avg === 255;
+}
+
+private function _cropMargin($image, $size, $returnMargin=false, $index=0)
+{
+
+  $tempImg = $image->copy();
+  $imgSize = $this->_getImageDimentions($tempImg);
+  $cropSize = $imgSize;
+
+  if($imgSize[0]>$size[0]){
+    $cropAxis = 0;
+  }elseif($imgSize[1]>$size[1]){
+    $cropAxis = 1;
+  }
+
+  $startCoords = [[0,0],[0,0]];
+  $cropSize[$cropAxis] = ($imgSize[$cropAxis]-$size[$cropAxis])/2;
+  $startCoords[1][$cropAxis] = $imgSize[$cropAxis]-$cropSize[$cropAxis];
+  if(!$returnMargin){
+    $startCoords[0][$cropAxis] = $cropSize[$cropAxis];
+    $cropSize[$cropAxis] = $size[$cropAxis];
+  }
+
+  $cropBox = new Box($cropSize[0], $cropSize[1]);
+  $start = new Point($startCoords[$index][0],$startCoords[$index][1]);
+  $cropf = new Crop($start, $cropBox);
+
+  return $cropf->apply($tempImg);
+}
+
+private function _areMarginsWhite($image, $targetSize)
+{
+  $margins = [$this->_cropMargin($image, $targetSize,true, 0), $this->_cropMargin($image, $targetSize,true, 1)];
+  return $this->_isImageWhite($margins[0])&&$this->_isImageWhite($margins[1]);
+}
+
+private function _getImageDimentions($image)
+{
+  $imagePath = $this->_getImagePath($image);
+  $imgSize = getimagesize($imagePath);
+  return [$imgSize[0],$imgSize[1]];
+}
+
+private function _getImagePath($image)
+{
+  $meta = $image->metadata()->toArray();
+  $path = $meta['filepath'];
+  return $path;
+}
+
+private function _fixRatio($image, $ratio, $interface)
+{
+  $imgSize = $this->_getImageDimentions($image);
+  $targetSize = $imgSize;
+  $currentRatio = $imgSize[0]/$imgSize[1];
+  $fixAxis = (int)($ratio>$currentRatio);
+  if($fixAxis===0){
+    $targetSize[0] = $imgSize[1]*$ratio;
+  }elseif($fixAxis===1){
+    $targetSize[1] = $imgSize[0]/$ratio;
+  }
+  $marginsWhite = $this->_areMarginsWhite($image, $targetSize);
+  if($marginsWhite){
+    return $this->_cropMargin($image, $targetSize);
+  }else{
+    $targetSize = $imgSize;
+    $fixAxis = $fixAxis===1?0:1;
+    if($fixAxis===0){
+      $targetSize[0] = $imgSize[0]*($ratio/$currentRatio);
+    }elseif($fixAxis===1){
+      $targetSize[1] = $imgSize[1]/($ratio/$currentRatio);
+    }
+    $placement = [0,0];
+    $placement[$fixAxis] = ($targetSize[$fixAxis] - $imgSize[$fixAxis])/2;
+    return $this->_growMargins($image, $interface, $targetSize, $placement);
+  }
+}
 
 }

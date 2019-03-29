@@ -417,11 +417,12 @@ class ResourceController extends AbstractController
         {
 
           // TODO Типы прописаны хардом, надо поменять
+          // Дима, поменяй
           $response = new JsonResponse();
           $presets = [
               1=>'Основное',
               2=>'Дополнительное',
-              3=>'Исходник'
+              3=>'Без статуса'
           ];
           $response->setData($presets);
           return $response;

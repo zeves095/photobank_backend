@@ -15,10 +15,15 @@ parameters:
             name: 'large'
             width: 3840
             height: 2160
+        square:
+            id: 4
+            name: 'square'
+            width: 600
+            height: 600
     preset_collections:
         main:
           id: 1
-          presets: [1,2,3]
+          presets: [1,2,3,4]
         additional:
           id: 2
           presets: [1,2]
