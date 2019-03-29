@@ -43,7 +43,7 @@ export class PhotoBank extends React.Component {
 
   render() {
     if(this.props.catalogue_data === {} || !this.state.ready){return (<h1>ЗАГРУЗКА...</h1>)}
-    let inner = null===this.props.show_node_viewer?<CatalogueTree />:<Draggable basew="20" maxw1="35" maxw2="85"  minw1="225" box1={<CatalogueTree />} box2={<NodeViewer />} id="1" parent={this.refs.draggable_parent}/>;
+    let inner = null===this.props.show_node_viewer?<CatalogueTree />:<Draggable basew="20" maxw1="35" maxw2="85" box1={<CatalogueTree />} box2={<NodeViewer />} id="1" parent={this.refs.draggable_parent}/>;
     return (
       <div className="photobank-main">
         <div id="notification-overlay"></div>
