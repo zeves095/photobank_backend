@@ -15,6 +15,7 @@
 /bin/phpDocumentor*
 /build/api-cache/
 /tests/mock/generated/
+/private_test/
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
