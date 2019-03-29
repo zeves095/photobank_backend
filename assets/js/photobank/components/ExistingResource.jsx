@@ -167,7 +167,7 @@ export class ExistingResource extends React.Component {
         <select onChange={(e)=>{this.handleTypeUpdate(e)}} name="type" defaultValue={this.props.file.type} disabled={!this.props.authorized}>
           <option key={"res-type-option-"+constants.RESOURCE_FILE_TYPES.main} selected={constants.RESOURCE_FILE_TYPES.main===this.props.file.type} disabled={this.props.current_main >= this.props.max_main?true:false} value={constants.RESOURCE_FILE_TYPES.main}>Основноe{this.props.current_main+"/"+this.props.max_main}</option>
             <option key={"res-type-option-"+constants.RESOURCE_FILE_TYPES.add} selected={constants.RESOURCE_FILE_TYPES.add===this.props.file.type} disabled={this.props.current_add >= this.props.max_add?true:false} value={constants.RESOURCE_FILE_TYPES.add}>Доп.{this.props.current_add+"/"+this.props.max_add}</option>
-          <option key={"res-type-option-"+constants.RESOURCE_FILE_TYPES.original} selected={constants.RESOURCE_FILE_TYPES.original===this.props.file.type} value={constants.RESOURCE_FILE_TYPES.original}>Исходник</option>
+          <option key={"res-type-option-"+constants.RESOURCE_FILE_TYPES.original} selected={constants.RESOURCE_FILE_TYPES.original===this.props.file.type} value={constants.RESOURCE_FILE_TYPES.original}>Без статуса</option>
         </select>
         {parseInt(this.props.file.type,10) === constants.RESOURCE_FILE_TYPES.add
             ? <span className="edit-input__priority-btn" data-file={this.props.file.id} onClick={this.handlePriority}>{this.props.file.priority}{priorityCtx}</span>
