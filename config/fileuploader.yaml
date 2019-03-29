@@ -1,4 +1,6 @@
 parameters:
+  csv_import_directory: '%kernel.project_dir%/%env(resolve:UPLOADS_PARENT)%/uploads/import'
+  import_directory: '%kernel.project_dir%/%env(resolve:IMPORT_DIRECTORY)%'
   upload_directory: '%kernel.project_dir%/%env(resolve:UPLOADS_PARENT)%/uploads'
   upload_target_url: '/api/upload/'
   existing_uploads_url: '/catalogue/node/item/resources/'

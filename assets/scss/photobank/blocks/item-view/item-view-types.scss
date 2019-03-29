@@ -181,6 +181,10 @@
       }
     }
     &--detailed{
+      .item-resources{
+        overflow-y: auto;
+        width:95%;
+      }
       .existing-files{
         display:table;
         width:100%;

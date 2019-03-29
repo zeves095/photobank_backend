@@ -76,6 +76,7 @@ border: 2px dashed #b5b1b1;
   }
   .item-view__inner {
     @include component-inner();
+    margin: 0;
     transition: 0.5s;
     max-height: auto;
     overflow: hidden;
